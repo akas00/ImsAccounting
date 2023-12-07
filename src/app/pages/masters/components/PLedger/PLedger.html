@@ -1,0 +1,555 @@
+<style>
+  label {
+    width: 150px;
+    font-size: 15px;
+    color: #403c3c;
+  }
+
+  input {
+    height: 30px;
+  }
+</style>
+<!-- begin form here -->
+<form [formGroup]="form">
+  <div class="sticky-top">
+    <div class="row clearfix" style=" padding: 0px 20px;">
+      <div class="col-md-6">
+        <h3 class="page-title">{{ Title }}</h3>
+      </div>
+      <div class="col-md-6" style="float: right;">
+        <div class="col-md-6" style="display: contents;">
+          <button style="float:right" type="button" (click)="cancel()" title="Cancel" class="btn btn-info">
+            Back
+          </button>
+        </div>
+        <button style="float:right;margin-right:10px" type="button" (click)="SumbitSave()" title="onSave"
+          class="btn btn-info" [disabled]="!this.parentGroup" *ngIf="grp == 'G'">
+          Save
+        </button>
+        <button style="float:right;margin-right:10px" type="button" [disabled]="!form.valid"  (click)="SumbitSave()" title="onSave"
+          class="btn btn-info">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="main-container" style="padding-top : 10px; margin-bottom: 0px">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="tabbable" id="warehouse-tabs">
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a class="nav-link active" href="#general-info4" data-toggle="tab">General Info</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#contact-details" data-toggle="tab">Contact Details</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#gst" data-toggle="tab">GST</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#other" data-toggle="tab">Other</a>
+            </li>
+            <!-- <li class="nav-item">
+              <a class="nav-link" href="#route" data-toggle="tab">Route</a>
+            </li> -->
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active" id="general-info4">
+              <!-- General Info -->
+              <div class="form-group row">
+                <div class="col-sm-12">
+                  
+                  <div *ngIf='HideACNAME==false' class="form-group row col-sm-6">
+                    <label class="col-sm-2 form-control-label">{{ formObj.Name }}<a style="color: red">*</a>:</label>
+                    <div class="col-sm-6">
+                      <input type="text" class="form-control" formControlName="ACNAME" placeholder="Name" />
+                      <div *ngIf="
+                          !form.controls['ACNAME'].valid &&
+                          form.controls['ACNAME']?.touched
+                        " class="text-danger">
+                        <span *ngIf="form.get('ACNAME').hasError('required')">
+                          Name is required.
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="isGroup == 0">
+                    <div *ngIf="PType == 'V'" class="form-group row col-sm-6">
+                      <label class="col-sm-2 form-control-label">Precise Name:</label>
+                      <div class="col-sm-6">
+                        <input type="text" class="form-control" formControlName="SHORTNAME" placeholder="Short Name" />
+                      </div>
+                    </div>
+                    <div *ngIf="PType == 'C' && fromTree != 1 " class="form-group row col-sm-6">
+                      <label class="col-sm-2 form-control-label">Customer ID<a style="color: red">*</a> :</label>
+                      <div class="col-sm-6">
+                        <input type="text" class="form-control" formControlName="CUSTOMERID" placeholder="SAP-CODE" />
+                      </div>
+                    </div>
+                    <div *ngIf="PType == 'C' && fromTree != 1 " class="form-group row col-sm-6">
+                      <label class="col-sm-2 form-control-label">Category:</label>
+                      <div class="col-sm-6">
+                        <select class="form-control" [(ngModel)]="geo" [ngModelOptions]="{standalone:true}"
+                          style="height:30px;padding-bottom: 0px;">
+                          <option>None</option>
+                          <option *ngFor="let i of GeoList" value="{{i.OrgTypeCode}}">{{
+                            i.OrgTypeName
+                          }}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div *ngIf="PType == 'V'" class="form-group row col-sm-6">
+                      <label class="col-sm-2 form-control-label">Currency :</label>
+                      <div class="col-sm-6">
+                        <select class="form-control" formControlName="Currency"
+                          style="height:30px;padding-bottom: 0px;">
+                          <option value="INDIAN RUPEE">INDIAN RUPEE</option>
+                          <option value="USD">USD</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group row col-sm-6">
+                      <label class="col-sm-2 form-control-label">{{ formObj.PMode }}
+                      </label>
+                      <div class="col-sm-6">
+                        <select class="form-control" formControlName="PMODE" style="height:30px;padding-bottom: 0px;"
+                          (change)="ChangePMODE($event.target.value)">
+                          <option value="cash">Cash</option>
+                          <option value="credit">Credit</option>
+                          <option value="cashandcredit">Both Cash and Credit</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="form-group row col-sm-6">
+                      <label class="col-sm-2 form-control-label">Credit Limit:
+                      </label>
+                      <div class="col-sm-6">
+                        <input [style.background-color]="CreditDisabled()"
+                          [readOnly]="CrDisabled == 'disabled' ? true : false" type="number" class="form-control"
+                          formControlName="CRLIMIT" placeholder="CRLIMIT" />
+                      </div>
+                    </div>
+                    <div class="form-group row col-sm-6">
+                      <label class="col-sm-2 form-control-label">Credit Days:
+                      </label>
+                      <div class="col-sm-6">
+                        <input [style.background-color]="CreditDisabled()"
+                          [readOnly]="CrDisabled == 'disabled' ? true : false" type="number" class="form-control"
+                          formControlName="CRPERIOD" placeholder="CRPERIOD" />
+                      </div>
+                    </div>
+
+                    <!-- <div *ngIf="PType == 'V'" class="form-group row col-sm-6">
+                      <label class="col-sm-2 form-control-label">Credit Balance:
+                      </label>
+                      <div class="col-sm-6">
+                        <input type="number" class="form-control" formControlName="CBALANCE" placeholder="CRPERIOD" />
+                      </div>
+                    </div> -->
+
+                    <div class="form-group row col-sm-6">
+                      <label class="col-sm-2 form-control-label">
+                        {{ formObj.PSType }} <a style="color: red">*</a></label>
+                      <div class="col-sm-6">
+                        <select class="form-control" formControlName="PSTYPE" style="height:30px;padding-bottom: 0px;">
+                          <option value="local">Local</option>
+                          <option value="interstate">Interstate</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div *ngIf="PType == 'V'" class="form-group row col-sm-6">
+                      <label class="col-sm-2 form-control-label">Branch:</label>
+                      <div class="col-sm-6">
+                        <select class="form-control" formControlName="DIV" style="height:30px;padding-bottom: 0px;">
+                          <option *ngFor="let i of BranchList" value="{{ i.INITIAL }}">{{ i.NAME }}</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="form-group row col-sm-6">
+                      <label class="col-sm-2 form-control-label">GST Type <a style="color: red">*</a></label>
+                      <div class="col-sm-6">
+                        <select class="form-control" formControlName="GSTTYPE" style="height:30px;padding-bottom: 0px;">
+                          <option value="Regular">Regular</option>
+                          <option value="Composite">Composite</option>
+                          <option value="Unregistered">Unregistered</option>
+                          <option value="UIN Holder">UIN Holder</option>
+                        </select>
+                      </div>
+                    </div>
+                    <!-- *ngIf="PType == 'V'" -->
+                    <div class="form-group row col-sm-6" *ngIf="fromTree != 1 && fromTree != 2  "   >
+                      <label class="col-sm-2 form-control-label">Integration Type:</label>
+                      <div class="col-sm-6">
+                        <select class="form-control" formControlName="MAILTYPE"
+                          style="height:30px;padding-bottom: 0px;">
+                          <option value="None">None</option>
+                          <option value="SAP">SAP</option>
+                          <option CSV="None">CSV</option>
+                          <option value="EDI">EDI</option>
+                          <option value="Inline HTML">Inline HTML</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="form-group row col-sm-6">
+                      <label class="col-sm-2 form-control-label">Status:</label>
+                      <div class="col-sm-6">
+                        <select class="form-control" formControlName="ISACTIVE"
+                          style="height:30px;padding-bottom: 0px;">
+                          <option value=1>Active</option>
+                          <option value=0>Inactive</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane" id="contact-details">
+              <!-- Contact Details -->
+              <div class="form-group row">
+                <div class="col-sm-12">
+                  <div class="form-group row col-sm-6">
+                    <label class="col-sm-6 form-control-label">Address</label>
+                    <div class="col-sm-6">
+                      <input type="text" class="form-control" formControlName="TEMPADDRESS" placeholder="Temp Address" />
+                    </div>
+                  </div>
+                  <div *ngIf="PType == 'C' && fromTree != 1 " class="form-group row col-sm-6">
+                    <label class="col-sm-6 form-control-label">Shipping Address:</label>
+                    <div class="col-sm-6">
+                      <input type="text" class="form-control" formControlName="ADDRESS"
+                        placeholder="Shipping Address" />
+                    </div>
+                  </div>
+                  <div class="form-group row col-sm-6">
+                    <label class="col-sm-6 form-control-label">State <a style="color: red">*</a></label>
+                    <div class="col-sm-6">
+
+                      <select class="form-control" style="color:black" name="STATE" id="STATE" formControlName="STATE">
+                        <option *ngFor="let i of StateList" value={{i.StateCode}}>{{i.StateName}}</option>
+                      </select>
+                      <!-- <div
+                        *ngIf="
+                          !form.controls['STATE'].valid &&
+                          form.controls['STATE']?.touched
+                        "
+                        class="text-danger"
+                      >
+                        <span *ngIf="form.get('STATE').hasError('required')">
+                          State is required.
+                        </span>
+                      </div> -->
+                    </div>
+                  </div>
+
+                  <div class="form-group row col-sm-6">
+                    <label class="col-sm-2 form-control-label">City:</label>
+                    <div class="col-sm-6">
+                      <input type="text" class="form-control" formControlName="CITY" placeholder="City" />
+                    </div>
+                  </div>
+                  <div class="form-group row col-sm-6">
+                    <label class="col-sm-2 form-control-label">District:</label>
+                    <div class="col-sm-6">
+                      <select formControlName="DISTRICT" class="form-control">
+                        <option *ngFor="let i of DistrictList" value={{i.Name}} >{{i.Name}}</option>
+                        
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row col-sm-6">
+                    <label class="col-sm-2 form-control-label">Area:</label>
+                    <div class="col-sm-6">
+                      <input type="text" class="form-control" formControlName="AREA" placeholder="AREA" />
+                    </div>
+                  </div>
+                  <div *ngIf="PType == 'C'" class="form-group row col-sm-6">
+                    <label class="col-sm-2 form-control-label">Land Mark:</label>
+                    <div class="col-sm-6">
+                      <input type="text" class="form-control" formControlName="LANDMARK" placeholder="LandMark" />
+                      <div *ngIf="
+                          !form.controls['LANDMARK'].valid &&
+                          form.controls['LANDMARK']?.touched
+                        " class="text-danger">
+                        <span *ngIf="form.get('LANDMARK').hasError('required')">
+                          Postal Code is required.
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row col-sm-6">
+                    <label class="col-sm-2 form-control-label">Phone:</label>
+                    <div class="col-sm-6">
+                      <input type="text" class="form-control" formControlName="PHONE" placeholder="PHONE" />
+                    </div>
+                  </div>
+
+                  <div class="form-group row col-sm-6">
+                    <label class="col-sm-2 form-control-label">Mobile <a style="color: red">*</a></label>
+                    <div class="col-sm-6">
+                      <input type="text" class="form-control" formControlName="MOBILE" placeholder="MOBILE" />
+                    </div>
+                  </div>
+                  <div class="form-group row col-sm-6">
+                    <label class="col-sm-2 form-control-label">Email </label>
+                    <div class="col-sm-6">
+                      <input type="text" class="form-control" formControlName="EMAIL" placeholder="EMAIL" />
+                    </div>
+                  </div>
+                  
+                  <div *ngIf="PType == 'V'" class="form-group row col-sm-6">
+                    <label class="col-sm-2 form-control-label">Fax</label>
+                    <div class="col-sm-6">
+                      <input type="text" class="form-control" formControlName="FAX" placeholder="FAX" />
+                    </div>
+                  </div>
+                  <div *ngIf="PType == 'V'" class="form-group row col-sm-6">
+                    <label class="col-sm-2 form-control-label">Postal Code
+                    </label>
+                    <div class="col-sm-6">
+                      <input type="text" class="form-control" formControlName="POSTALCODE" placeholder="POSTALCODE" />
+                      <div *ngIf="
+                          !form.controls['POSTALCODE'].valid &&
+                          form.controls['POSTALCODE']?.touched
+                        " class="text-danger">
+                        <span *ngIf="form.get('POSTALCODE').hasError('required')">
+                          Postal Code is required.
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="isGroup == 0" class="form-group row col-sm-6">
+                    <label class="col-sm-2 form-control-label">TITLE:</label>
+                    <div class="col-sm-6">
+                      <select class="form-control" formControlName="TITLE" style="height:30px;padding-bottom: 0px;">
+                        <option value="Mr">Mr.</option>
+                        <option value="Mrs">Mrs.</option>
+                        <option value="Mrs">Others.</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row col-sm-6">
+                    <label class="col-sm-2 form-control-label">Contact Person </label>
+                    <div class="col-sm-6">
+                      <input type="text" class="form-control" formControlName="CONTACTPERSON" placeholder="Contact Person Name" />
+                    </div>
+                  </div>
+                  <div class="form-group row col-sm-6">
+                    <label class="col-sm-2 form-control-label">Person Mobile </label>
+                    <div class="col-sm-6">
+                      <input type="text" class="form-control" formControlName="CONTACTMOBILE" placeholder="Contact Persons Mobile" />
+                    </div>
+                  </div>
+                  <div class="form-group row col-sm-6">
+                    <label class="col-sm-2 form-control-label">Person Email </label>
+                    <div class="col-sm-6">
+                      <input type="text" class="form-control" formControlName="CONTACTEMAIL" placeholder="Contact Persons Email" />
+                    </div>
+                  </div>
+                  <div *ngIf="PType == 'V'&& userProfile.CompanyInfo.ORG_TYPE!= 'retailer' && fromTree != 2  " class="form-group row col-sm-6">
+                      <label class="col-sm-6 form-control-label">ERP Stock Location Code</label>
+                      <div class="col-sm-6">
+                        <input type="text" class="form-control" formControlName="ERPSTOCKLOCATIONCODE" placeholder="ERP Stock Location Code" />
+                      </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane" id="gst">
+              <!-- GST  -->
+              <div class="form-group row">
+                <div class="col-sm-12">
+                  <div class="form-group row col-sm-6">
+                    <label class="col-sm-2 form-control-label">PANNO:</label>
+                    <div class="col-sm-6">
+                      <input type="text" class="form-control" formControlName="VATNO" placeholder="VNO" />
+                    </div>
+                  </div>
+
+                  <div class="form-group row col-sm-6">
+                    <label class="col-sm-2 form-control-label">GST No:</label>
+                    <div class="col-sm-6">
+                      <input type="text" class="form-control" formControlName="GSTNO" placeholder="GSTNO" />
+                    </div>
+                  </div>
+                  <div class="form-group row col-sm-6">
+                    <label class="col-sm-6 form-control-label">Aadhar No:</label>
+                    <div class="col-sm-6">
+                      <input type="text" class="form-control" formControlName="ADHARNO" placeholder="ANO" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane" id="other">
+              <!-- OTHER  -->
+              <div class="form-group row">
+                <div class="col-sm-12">
+                  <!-- <div *ngIf="PType == 'C'" class="form-group row col-sm-6">
+                    <label class="col-sm-2 form-control-label"
+                      >Category/Channel:</label
+                    >
+                    <div class="col-sm-6">
+                      <select
+                        class="form-control"
+                        formControlName="Channel"
+                        style="height:30px;padding-bottom: 0px;"
+                      >
+                        <option>None</option>
+                        <option
+                          *ngFor="let i of ChannelList"
+                          value="i.ChannelCode"
+                          >{{ i.ChannelName }}</option
+                        >
+                      </select>
+                    </div>
+                  </div> -->
+
+                  <div *ngIf="PType == 'C'" class="form-group row col-sm-6">
+                    <label class="col-sm-2 form-control-label">Customer Type:</label>
+                    <div class="col-sm-6">
+                      <select class="form-control" formControlName="CTYPE" style="height:30px;padding-bottom: 0px;">
+                        <option value="RETAIL INVOICE">RETAIL INVOICE</option>
+                        <option value="E-COMMERCE">E-COMMERCE</option>
+                        <option value="EXEMPTED">EXEMPTED</option>
+                        <option value="TAX INVOICE">TAX INVOICE</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div *ngIf="PType == 'C' && fromTree != 1 " class="form-group row col-sm-6">
+                    <label class="col-sm-2 form-control-label">Price Level:</label>
+                    <div class="col-sm-6">
+                      <select class="form-control" [(ngModel)]="geo" [ngModelOptions]="{standalone:true}"
+                        style="height:30px;padding-bottom: 0px;" (change)="changePriceLevel()">
+                        <option>None</option>
+                        <option *ngFor="let i of GeoList" value="{{i.OrgTypeCode}}">{{
+                          i.OrgTypeName
+                        }}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <!-- <div *ngIf="PType == 'C'" class="form-group row col-sm-6">
+                    <label class="col-sm-2 form-control-label"
+                      >Price Level Config:</label
+                    >
+                    <div class="col-sm-6">
+                      <select
+                        class="form-control"
+                        formControlName="PRICELEVELCONFIG"
+                        style="height:30px;padding-bottom: 0px;"
+                      >
+                        <option value="None">None</option>
+                        <option value="Apply from Pricelevl Master"
+                          >Apply from Pricelevl Master</option
+                        >
+                        <option value="Apply from Pricelevel Table"
+                          >Apply from Pricelevel Table</option
+                        >
+                        <option value="Apply from PL.Table then PL.Master"
+                          >Apply from PL.Table then PL.Master</option
+                        >
+                      </select>
+                    </div>
+                  </div>  -->
+                  <!-- <div *ngIf="PType == 'V'" class="form-group row col-sm-6">
+                    <label class="col-sm-2 form-control-label">ERP Plant Code<a style="color: red">*</a></label>
+                    <div class="col-sm-6">
+                      <input type="text" class="form-control" formControlName="ERPPLANTCODE" placeholder="SAP-CODE" />
+                    </div>
+                  </div> -->
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane" id="route">
+              <!-- ROUTE -->
+              <div class="form-group row">
+                <div class="col-sm-6">
+                  <div class="form-group row col-sm-12">
+                    <label class="col-sm-2 form-control-label">Route:</label>
+                    <div class="col-sm-6">
+                      <select class="form-control" formControlName="ROUTE" style="height:30px;padding-bottom: 0px;"
+                        (change)="RouteClick($event.target.value)">
+                        <option>None</option>
+                        <option *ngFor="let i of RouteList" value="{{ i.RouteCode }}">{{ i?.RouteName }}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row col-sm-12">
+                    <label class="col-sm-2 form-control-label">Sales Officer:</label>
+                    <div class="col-sm-6">
+                      <select class="form-control" formControlName="SO" style="height:30px;padding-bottom: 0px;"
+                        (change)="SOChange($event.target.value)">
+                        <option>None</option>
+                        <option [value]="i.CODE" *ngFor="let i of solist">{{
+                          i.NAME
+                        }}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row col-sm-12">
+                    <label class="col-sm-2 form-control-label">Officer Code:</label>
+                    <div class="col-sm-6">
+                      <select class="form-control" formControlName="SO" (change)="SOChange($event.target.value)"
+                        style="height:30px;padding-bottom: 0px;">
+                        <option>None</option>
+                        <option [value]="i.CODE" *ngFor="let i of solist">{{ i.CODE }}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row col-sm-12">
+                    <label class="col-sm-2 form-control-label">Route Days:</label>
+                    <div class="col-sm-6">
+                      <select class="form-control" formControlName="RouteDays" style="height:30px;padding-bottom: 0px;">
+                        <option>Sunday</option>
+                        <option>Monday</option>
+                        <option>Tuesday</option>
+                        <option>Wednesday</option>
+                        <option>Thursday</option>
+                        <option>Friday</option>
+                        <option>Saturday</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button type="button" class="btn btn-secondary" (click)="RouteAdd()">
+                    Add
+                  </button>
+                </div>
+
+                <div class="col-sm-6">
+                  <div class="form-group row col-sm-12" style="border: 1px solid #cccccc;    height: 180px;">
+                    <table style="width:100%;height: 110px;">
+                      <tr>
+                        <th style="width:5%">SNO</th>
+                        <th style="width:35%">Route Name</th>
+                        <th style="width:35%">Sales Officer</th>
+                        <th style="width:20%">Officer Code</th>
+
+                        <th style="width:5%"></th>
+                      </tr>
+                     <ng-container *ngIf="SOTableList.length">
+                      <tr *ngFor="let i of SOTableList;let ind = index">
+                        <td>1</td>
+                        <td>{{ i?.RouteName }}</td>
+                        <td>{{ i?.SONAME }}</td>
+                        <td>{{ i?.SOCODE }}</td>
+                        <td>
+                          <button class="glyphicon glyphicon-trash" (click)="deleteSOList(ind)"></button>
+                        </td>
+                      </tr>
+                     </ng-container>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

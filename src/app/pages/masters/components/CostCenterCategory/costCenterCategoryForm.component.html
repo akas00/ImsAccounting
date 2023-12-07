@@ -1,0 +1,59 @@
+<form class="row" class="form-horizontal" [formGroup]="form"  style="margin-top: 15px;">
+<div class="Cost-Center-Category-section">
+    <span class="title-section">COST CENTER CATEGORY MASTER</span>
+    <button type="button" routerLink="/pages/dashboard/dashboard" class="btn back-btn pull-right">Back</button>
+    <button type="submit" [disabled]="mode=='view'" class="btn save-btn pull-right" (click)=" onSave() ">Save</button>
+</div>
+
+
+    <ba-card [title]="modeTitle" baCardClass="with-scroll">
+
+   <div class="form-group row">
+    <label  class="col-sm-2 form-control-label">Name:</label>
+    <div class="col-sm-5">
+    <input type="text" id="Parent" formControlName="COSTCENTERGROUPNAME"  class="form-control"   placeholder="Name" autocomplete="off">
+    </div>
+  </div>
+
+  <!-- <button (click)="onSave()" title="Save" class="btn btn-info" [disabled]="mode=='view'">Save</button>
+
+  <button type="button"  routerLink="/pages/dashboard/dashboard" title="Cancel" class="btn btn-info">Back</button> -->
+     
+    </ba-card>
+    
+
+
+             
+  </form>
+ 
+
+<!-- <form class="row" class="form-horizontal"  [formGroup]="addCostCenterForm"  style="margin-top: 15px;">
+
+<div class="Cost-Center-Category-section">
+    <span class="title-section">COST CENTER CATEGORY MASTER</span>
+    <button type="button" routerLink="/pages/dashboard/dashboard" class="btn back-btn pull-right">Back</button>
+    <button type="submit" class="btn save-btn pull-right" (click)=" onSave() ">Save</button>
+</div>
+
+
+
+<div class="row d-flex justify-content-around">
+
+
+    <div class=" offset-md-4 col-lg-5 col-md-5 col-sm-10 col-10">
+        <div class="Cost-Center-Category-body">
+            <div class="node-header"><label class="node-title">Add Cost Center Category</label></div>
+            <div class="node-body">
+                
+                    <div class="sv"><label for="categoryName">Category Name:
+                        </label>
+                        <input type="text" formControlName="COSTCENTERGROUPNAME"
+                            class="form-control categoryName ng-untouched ng-pristine ng-invalid">
+                    </div>
+               
+            </div>
+        </div>
+    </div>
+</div>
+
+</form> -->

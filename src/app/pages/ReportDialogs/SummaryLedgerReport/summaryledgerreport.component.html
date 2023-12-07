@@ -1,0 +1,241 @@
+<style>
+    #treediv {
+        overflow-y: scroll;
+        height: 190px;
+    }
+
+    .action-btn {
+        width: 80%;
+        height: 80%;
+        display: block;
+        margin: 0 auto;
+        background-color: inherit;
+        border: none;
+    }
+    .input-text{
+        width : 100%;
+        /* height: 30px !important; */
+        font-weight: bold;
+    }
+    .td-class{
+        border: none !important;
+    }
+    .date-input{
+        width: 93%;
+        font-size: 12px !important;
+        height: 30px !important;
+    }
+      @media screen and (max-width:991px) {
+         .report-container{
+           width: 100% !important;
+    }
+    }
+</style>
+
+<div class="container report-container">
+    <div class="row">
+        <!-- Filter Starts -->
+        <div class="col-12 col-md-12">
+            <div style="background-color : #ffffff;">
+                <div class="row">
+                    <div class="modal-header" style="border:0px;">
+                        <button type="button" class="close" data-dismiss="modal"
+                            (click)="closeReportBox()">&times;</button>
+                        <h4 class="modal-title" style="padding-left: 3%;">Account Group Ledger Report</h4>
+                    </div>
+                    <div class="col-md-12" style="padding-top: 2%;  height:52vh; overflow:auto;">
+                        <div class="col-md-6">
+                            <!-- <date-filters></date-filters> -->
+                            <fieldset>
+                                <legend style="font-size:11px;font-weight: bold; width:auto; margin-bottom: -4px;">Date Range Selection :</legend>
+                                <table>
+                                    <tr>
+                                        <td class="td-class"><label class="smallBoldLabel">From:(AD)</label></td>
+                                        <td class="td-class"><label class="smallBoldLabel">To:(AD)</label></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td-class">
+                                                <input type="date"
+                                                class="date-input form-control" placeholder="Year Start Date"
+                                                    [(ngModel)]="_reportFilterService.SummaryLedgerObj.SummaryLedger_DATE1"
+                                                    (change)="changeEntryDate($event.target.value,'AD')"
+                                                    max="{{masterService.date1 | date:'yyyy-MM-dd'}}" min="{{masterService.date2 | date:'yyyy-MM-dd'}}"
+                                                    >
+                                        </td>
+                                        <td class="td-class">
+                                                <input type="date"
+                                                class="date-input form-control" placeholder="Year Start Date"
+                                                    [(ngModel)]="_reportFilterService.SummaryLedgerObj.SummaryLedger_DATE2"
+                                                    (change)="changeEndDate($event.target.value,'AD')"
+                                                    max="{{masterService.date1 | date:'yyyy-MM-dd'}}" min="{{masterService.date2 | date:'yyyy-MM-dd'}}"
+                                                    >
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td-class">
+                                          <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDatefrom'"
+                                            (change)="changeEntryDate($event.detail.value,'BS')"
+                                            [label]="'From'"
+                                            [(ngModel)]="_reportFilterService.SummaryLedgerObj.SummaryLedger_BSDATE1">
+                                          </nepali-date-picker>
+                                                <!-- <input id="nepaliDate"
+                                                    style="text-align:center;"
+                                                    class="nepali-calendar ndp-nepali-calendar date-input form-control"
+                                                    [(ngModel)]="_reportFilterService.SummaryLedgerObj.SummaryLedger_BSDATE1" type="text"
+                                                    (change)="changeEntryDate($event.target.value,'BS')"
+                                                    placeholder="yyyy-mm-dd" />                             -->
+                                        </td>
+                                        <td class="td-class">
+                                          <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDateTo'"
+                                            (change)="changeEndDate($event.detail.value,'BS')"
+                                            [label]="'To'"
+                                            [(ngModel)]="_reportFilterService.SummaryLedgerObj.SummaryLedger_BSDATE2">
+                                          </nepali-date-picker>
+                                                <!-- <input id="nepaliDate" style="text-align:center;"
+                                                    class="nepali-calendar ndp-nepali-calendar date-input form-control"
+                                                    [(ngModel)]="_reportFilterService.SummaryLedgerObj.SummaryLedger_BSDATE2" type="text"
+                                                    (change)="changeEndDate($event.target.value,'BS')"
+                                                    placeholder="yyyy-mm-dd" /> -->
+                                        </td>
+                                    </tr>
+                                </table>
+                            </fieldset>
+
+                            <fieldset>
+                                <legend>Division Selection:</legend>
+                                <select [(ngModel)]="_reportFilterService.SummaryLedgerObj.SummaryLedger_DIV" style="height: 30px !important;"
+                                class="form-control input-text" >
+                                    <option value="%"  *ngIf="masterService.userSetting.userwisedivision==0 ||  masterService.showAll">ALL</option>
+                                    <option *ngFor="let div of division" value="{{ div.INITIAL }}">
+                                        {{ div.NAME }}
+                                    </option>
+                                </select>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Cost Center:</legend>
+                                <select [(ngModel)]="_reportFilterService.SummaryLedgerObj.SummaryLedger_CostCenter"
+                                style="height: 30px !important;"
+                                class="form-control input-text" >
+                                    <option value="%"> </option>
+                                    <option *ngFor="let i of CostcenterList" value={{i.CCID}}>{{i.COSTCENTERNAME}}
+                                    </option>
+                                </select>
+                            </fieldset>
+                        </div>
+                        <!-- The One With Tree Part-->
+                        <div class="col-md-6 filter-part">
+                            <div class="col-md-12">
+                                <label class="smallBoldLabel" style="padding-right:15px;">Summary Report By:</label>
+                                <select [(ngModel)]="_reportFilterService.SummaryLedgerObj.SummaryLedger_ReportType"
+                                    (change)="checkValue()" style="height: 30px !important;"
+                                    class="form-control input-text" >
+                                    <option value=0>A/C Group Wise</option>
+                                    <option value=2>Cost Center Wise</option>
+                                </select>
+                            </div>
+                            <fieldset *ngIf="showTree">
+                                <legend><label class="smallBoldLabel">&nbsp;A/C Group Wise</label>
+                                </legend>
+                                <div id=treediv>
+                                    <div>
+                                        <div class="col-md-6">
+                                            <label class="smallBoldLabel">Account Ledger</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input name="filter" #filter (keyup)="filterNodes(filter.value, tree)"
+                                                placeholder="&nbsp;Search Account" class="filterclass form-control" style="font-weight: bold;"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12"
+                                        style=" overflow: auto; border: black;border-width: 2px;margin:10px;font-size:10px;">
+                                        <Tree #tree [nodes]="nodes " [focused]="true "
+                                            [options]="customTemplateStringOptions" (onEvent)="onEvent($event) "
+                                            (onActivate)="onselect(tree,$event)">
+                                            <ng-template #treeNodeTemplate let-node>
+                                                <span *ngIf="node.data.TYPE=='G' && node.children.length>0"
+                                                    title="{{node.data.subTitle}} " [contextMenu]="myContextMenu
+                                                                      " [contextMenuSubject]="node.data "
+                                                    style="margin-left:24px"><img src="../../../assets/img/Folder.jpg"
+                                                        alt="Group" height="20" width="20" style="margin-top:-2px">
+                                                    {{ node.data.ACNAME }}{{ childrenCount(node) }}</span>
+                                                <span *ngIf="node.data.TYPE=='G' && node.children.length==0"
+                                                    title="{{node.data.subTitle}} " [contextMenu]="myContextMenu
+                                                                      " [contextMenuSubject]="node.data "><img
+                                                        src="../../../assets/img/Folder.jpg" alt="Group" height="20"
+                                                        width="20" style="margin-top:-2px">
+                                                    {{ node.data.ACNAME }}{{ childrenCount(node) }}</span>
+                                                <span *ngIf="node.data.TYPE=='A'" title="{{node.data.subTitle}} "
+                                                    [contextMenu]="myContextMenu
+                                                                      " [contextMenuSubject]="node.data "><img
+                                                        src="../../../assets/img/File.png" alt="ListItem" height="20"
+                                                        width="15" style="margin-top:-2px">
+                                                    {{ node.data.ACNAME }}</span>
+                                            </ng-template>
+                                            <ng-template #loadingTemplate>Loading, please hold....</ng-template>
+                                        </Tree>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <!-- The One With Tree Part End-->
+
+                            <div *ngIf="showCCtable">
+                                <!-- <costcenter-filters></costcenter-filters> -->
+                                <fieldset>
+                                    <legend><label class="smallBoldLabel">&nbsp;Cost Center Wise</label></legend>
+                                    <div>
+                                        <div class="col-md-10">
+                                            <select [(ngModel)]="_reportFilterService.SummaryLedgerObj.CCENTER"
+                                            style="height: 30px !important;"
+                                            class="form-control input-text">
+                                                <option *ngFor="let i of CostcenterList" [ngValue]="i">
+                                                    {{i.COSTCENTERNAME}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-info" *ngIf="showMultipleCC"
+                                                (click)="addCostcenterToList()">Add</button>
+                                        </div>
+                                        <div class="col-md-12" *ngIf="showMultipleCC">
+                                            <table style="height:150px;">
+                                                <tr class="smallBoldLabel">
+                                                    <th style="width:3px;font-weight: bold;">S.No.</th>
+                                                    <th style="width:10px;font-weight: bold;">Cost Center</th>
+                                                    <th style="width:4px;font-weight: bold;">Action</th>
+                                                </tr>
+                                                <tr *ngFor="let data of _reportFilterService.SummaryLedgerObj.SummaryLedger_multipleCostcenter;let i = index"
+                                                    class="smallBoldLabel">
+                                                    <td style="width:3px;">{{ i + 1 }}</td>
+                                                    <td style="width:10px;">{{data.COSTCENTERNAME}}</td>
+                                                    <td style="width:4px;">
+                                                        <button type="button" class="action-btn"
+                                                            (click)="deleteCostcenter(i)">Delete</button>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="_reportFilterService.showAllcontactsInCC" class="checkbox" style="padding-top:5px;width:200px;">
+                                        <label class="smallBoldLabel">
+                                            <input type="checkbox"
+                                                [(ngModel)]="_reportFilterService.SummaryLedgerObj.SummaryLedger_showAllContacts"
+                                                (change)="checkCostCnterValue()">
+                                            Show All Cost Center
+                                        </label>
+                                    </div>
+                                </fieldset>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="width : 97%; margin : 0px auto;">
+                        <button class="btn btn-info confirm-btn" type="button" (click)=onload()>RUN</button>
+                        <button type="button" (click)="closeReportBox()" title="Cancel"
+                            class="btn btn-info">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Filter Ends -->
+    </div>
+</div>

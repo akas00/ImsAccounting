@@ -1,0 +1,253 @@
+<style>
+  .modal-content {
+    padding: 1px;
+    margin: 0px;
+    float: right;
+  }
+
+  tbody > tr:hover {
+    background-color: #f3f5f4;
+    cursor: pointer;
+  }
+  tr {
+    font-size: 11px;
+  }
+  .selected-row {
+    background-color: #ced6d3 !important;
+  }
+
+  .table > tbody > tr > td {
+    line-height: 30px !important;
+  }
+  .table > thead > tr > th {
+    line-height: 5px !important;
+  }
+  .table > tbody > tr > td:first-child {
+    text-align: left !important;
+    padding: 0px 0px 0px 11px !important;
+  }
+
+  .modal-content {
+    box-shadow: -10px 0px 10px 1px #aaaaaa;
+  }
+
+  .modal-content-main-area {
+    max-height: 100%;
+    height: 100%;
+    overflow: auto;
+    overflow-x: hidden;
+  }
+
+  .modal-content-summary-area {
+    max-height: 20%;
+    height: 20%;
+    overflow: auto;
+    overflow-x: hidden;
+  }
+
+  .ellipsis {
+    /* width: 220px;
+    text-overflow: ellipsis;
+    overflow: hidden; */
+    white-space: nowrap;
+  }
+</style>
+<div
+  class="modal-sticky"
+  [class.modal-sticky-hide]="!isActive"
+  style="display : block; padding: 0px; width:58%;bottom: 7%;"
+>
+  <!-- Modal content -->
+  <div
+    class="modal-content modal-content-main-area"
+    style="width: 143% !important"
+  >
+    <div *ngIf="_trnMainService.TrnMainObj">
+      <div>
+        <div class="modal-header" style="padding: 0px;background: #8cccfb;">
+          <button class="close" aria-label="Close" (click)="hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" style="text-align: center;">
+            Party Opening Details
+          </h4>
+        </div>
+        <div
+          class="col-md-12 table-scroll"
+          *ngIf="_trnMainService.TrnMainObj.TrntranList?.length > 0"
+        >
+          <table class="table">
+            <thead>
+              <tr style="background: #8cccfb;">
+                <th width="1%">SN.</th>
+                <th width="15%">VOUCHER NO.</th>
+                <th width="10%">VOUCHER DATE</th>
+                <th width="10%">VOUCHER BSDATE</th>
+                <th width="10%">AMT</th>
+                <th width="10%">CLEAR AMT</th>
+                <th width="10%">DUE AMT</th>
+                <th width="10%">DUE DAYS</th>
+                <th width="10%">DUE DATE</th>
+                <th width="10%">DUE BSDATE</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="_trnMainService.TrnMainObj.TrntranList[currentIndex]" 
+            style="position: absolute;
+            height: 420px;width: 98%;
+            overflow-y: scroll;">
+              <tr
+                *ngFor="
+                  let item of _trnMainService.TrnMainObj.TrntranList[
+                    currentIndex
+                  ].PartyDetails;
+                  let i = index
+                "
+              >
+                <td style="width:1%;">{{ i + 1 }}</td>
+                <td>
+                  <input
+                    type="text"
+                    name="ref_vchrno_{{ i }}"
+                    (keydown.Delete)="deleteRow(i)"
+                    [(ngModel)]="
+                      _trnMainService.TrnMainObj.TrntranList[currentIndex]
+                        .PartyDetails[i].REFVNO
+                    "
+                    [disabled]="_trnMainService.isAutoDetailShow==true"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="date"
+                    name="ref_date_{{ i }}"
+                    (keydown.Delete)="deleteRow(i)"
+                    [(ngModel)]="
+                      _trnMainService.TrnMainObj.TrntranList[currentIndex]
+                        .PartyDetails[i].REFDATE
+                    "
+                    (change)="changeEntryDate($event.target.value,'AD',currentIndex,i)" 
+                    [disabled]="_trnMainService.isAutoDetailShow==true"
+                  />
+                </td>
+                <td>
+                  <input
+                  type="text"
+                    name="ref_bsdate_{{ i }}"
+                    (keydown.Delete)="deleteRow(i)"
+                    [(ngModel)]="
+                      _trnMainService.TrnMainObj.TrntranList[currentIndex]
+                        .PartyDetails[i].REF_BSDATE"
+                    (change)="changeEntryDate($event.target.value,'BS',currentIndex,i)" 
+                    placeholder="dd/mm/yyyy" style="width: 100px;"
+                    [disabled]="_trnMainService.isAutoDetailShow==true"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    decimalPlacesRestriction="2"
+                    (change)="onAmountChange(i)"
+                    name="amount_{{ i }}"
+                    (keydown.Delete)="deleteRow(i)"
+                    [(ngModel)]="
+                      _trnMainService.TrnMainObj.TrntranList[currentIndex]
+                        .PartyDetails[i].AMOUNT
+                    "
+                    style="text-align: right;width: 100px;"
+                    [disabled]="_trnMainService.isAutoDetailShow==true"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    decimalPlacesRestriction="2"
+                    (change)="onAmountChange(i)"
+                    name="clr_amount_{{ i }}"
+                    (keydown.Delete)="deleteRow(i)"
+                    [(ngModel)]="
+                      _trnMainService.TrnMainObj.TrntranList[currentIndex]
+                        .PartyDetails[i].CLRAMOUNT
+                    "
+                    style="text-align: right;width: 100px;"
+                    [disabled]="_trnMainService.isAutoDetailShow==true"
+                  />
+                </td>
+                <td>
+                    <input
+                    disabled
+                      type="number"
+                      decimalPlacesRestriction="2"
+                      name="clr_amount_{{ i }}"
+                      (keydown.Delete)="deleteRow(i)"
+                      [ngModel]="_trnMainService.TrnMainObj.TrntranList[currentIndex]
+                      .PartyDetails[i].DUEAMT | twoDigitNumber"
+                      style="text-align: right;width: 100px;"
+                      [disabled]="_trnMainService.isAutoDetailShow==true"
+                      (ngModelChange)="_trnMainService.TrnMainObj.TrntranList[currentIndex]
+                      .PartyDetails[i].DUEAMT = $event" 
+                    />
+                  </td>
+                  <td>
+                  <input
+                  
+                    type="number"
+                    decimalPlacesRestriction="2"
+                    name="clr_amount_{{ i }}"
+                    (keydown.Delete)="deleteRow(i)"
+                    [(ngModel)]="
+                     _trnMainService.TrnMainObj.TrntranList[currentIndex]
+                      .PartyDetails[i].DUEDAYS"
+                    style="text-align: right;width: 100px;"
+                   (change)="daysChange($event.target.value,currentIndex,i)"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="date"
+                    name="due_date_{{ i }}"
+                    [(ngModel)]="
+                      _trnMainService.TrnMainObj.TrntranList[currentIndex]
+                        .PartyDetails[i].DUEDATE
+                    "
+                    (keydown.Enter)="addRow(i)"
+                    (keydown.Tab)="addRow(i)"
+                    (keydown.Delete)="deleteRow(i)"
+                    (change)="changeDueDate($event.target.value,'AD',currentIndex,i)"  
+                    [disabled]="_trnMainService.isAutoDetailShow==true"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    name="due_bsdate_{{ i }}"
+                    [(ngModel)]="
+                      _trnMainService.TrnMainObj.TrntranList[currentIndex]
+                        .PartyDetails[i].DUE_BSDATE"
+                    (keydown.Enter)="addRow(i)"
+                    (keydown.Tab)="addRow(i)"
+                    (keydown.Delete)="deleteRow(i)"
+                    (change)="changeDueDate($event.target.value,'BS',currentIndex,i)" 
+                    placeholder="dd/mm/yyyy" style="width: 100px;"
+                    [disabled]="_trnMainService.isAutoDetailShow==true"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div
+          class="col-md-12 table-scroll"
+          *ngIf="_trnMainService.TrnMainObj.TrntranList?.length == 0"
+        >
+          Invalid Configuration detected.
+        </div>
+        <div class="modal-footer" style="margin-top: 38%;">
+          <button *ngIf="_trnMainService.isAutoDetailShow!=true" class="btn btn-info pull-right" (click)="apply()">Apply
+          </button>
+          <button *ngIf="_trnMainService.isAutoDetailShow==true" class="btn btn-info pull-right" (click)="hide()">Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

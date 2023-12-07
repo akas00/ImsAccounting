@@ -1,0 +1,229 @@
+<style>
+   .loginImage{
+    background-image: url('../../../assets/img/Desktop\ -\ 2a.png');
+    /* background-size: 100vw,80vw; */
+    height: 100vh;
+        background-repeat: no-repeat;
+        background-color: #fff;
+        background-position: right;
+        background-size: contain;
+   /* background: linear-gradient(90deg, rgba(50,59,126,1) 1%, rgba(255,255,255,1) 47%, rgba(255,255,255,1) 88%); */
+   }
+
+   @media screen and (max-width:991px) {
+    .loginImage{
+      background-size: cover;
+    
+    }
+   
+
+    
+   }
+   .loginInput{
+     border: none;
+
+   }
+   ::placeholder{
+    color: #7e8699;
+     font-size: 15px;
+   }
+</style>
+
+<div class="loginImage" >
+   <div  class="ims-logo"><img  src="../../../assets/img/download 2.png" alt=""></div>
+  <div  class="login-vector"><img src="../../../assets/img/cuate.png" alt=""></div>
+  <div>
+    <!--<a routerLink="/register" class="auth-link">New to ng2-admin? Sign up!</a>-->
+
+    <!-- <div class="row">
+      <div class="col-md-12">
+          <img src="assets/img/Login design.jpg" class="responsive_image" alt="Dashboard">
+        </div>
+    </div> -->
+
+
+
+<form   [formGroup]="form" (ngSubmit)="onSubmit(form.value)"  class="form-horizontal">
+  <div class="row" >
+    <div class="col-lg-3 col-md-6 " style="height: 70vh;">
+  <div class="loginForm" >
+ <h5 style="color:#E0672E; font-weight:600; margin-bottom: 20px; margin-left: 20px; font-size: 22px; margin-bottom: 40px;">Welcome to IMS-Accounting</h5>
+     
+      <ul style="padding-right: 20px; padding-left:20px;">
+        <li style="list-style: none; position: relative;">          
+          <input style="background:#E8F0FE ;color: #000; border: 1px solid #ddd; padding-left: 35px !important;" type="text"  autocomplete="off" [formControl]="email"  placeholder="USERNAME"  class="form-control loginInput" id="inputEmail3" >
+          <img src="../../../assets/icon/user.png" alt="" style="    width: 20px ; opacity: 0.5;
+          position: absolute;
+          top: 4px; left: 5px;
+      ">
+        </li>
+        <!-- <hr style="border: 1px solid #ddd; color: white;width: 80%;margin-left: 2px;"> -->
+        <li style="list-style: none; margin-top: 30px; position: relative;">          
+          <input type="password" style="background: #E8F0FE;color: #000;border: 1px solid #ddd; padding-left: 35px !important;" autocomplete="off" [formControl]="password" placeholder="PASSWORD" class="form-control loginInput" id="loginpassword" >
+          <img src="../../../assets/icon/padlock.png" alt="" style="    width: 20px; opacity: 0.5;
+          position: absolute;
+          top: 4px; left: 5px;
+      ">
+        </li>
+      </ul>
+
+      <div class="row" style="margin-left: 7px;">
+        <div class="col-sm-4" >
+          <label style="color: #E0672E; margin-top: 2px;">FiscalYear :</label>
+        </div>
+        <div class="col-sm-4 FiscalYear" style="margin-top: 5px;">
+          <select class="" [formControl]="NewPhiscalYear" (change)="updateFiscalYear()"  style="margin-left: -50px;padding: 5px 10px; border: 1px solid #ddd; border-radius: 3px; background:#E8F0FE;color: #7e8699;" >
+            <option *ngFor ="let fy of PhiscalYearList" [value]= 'fy.PhiscalID' style="color: gray;">{{fy.PhiscalID}}</option>
+          </select>
+
+         
+        </div>
+        <div class="col-sm-6">
+
+        </div>
+        
+      </div>
+      <div class="row" style="margin-left: 15px;">
+        <!-- <div class="col-sm-6">
+          <label style="color: white;"> Forget Password </label>
+        </div> -->
+        <!-- <div class="col-sm-6">
+          <button [disabled]="!form.valid || !submitButtonStatus" type="submit" class="btn btn-default btn-auth">                
+            <span *ngIf="submitButtonStatus">
+                Sign in
+            </span>
+            <span *ngIf="!submitButtonStatus">Logging in ...
+                <i class="fa fa-spinner fa-pulse  fa-fw"></i></span>
+  
+          </button>
+        </div> -->
+        
+      </div>
+        <div class="row" style=" margin-top: 30px;">
+        <div class="col-lg-12" style="text-align: center;">
+          <button [disabled]="!form.valid || !submitButtonStatus" type="submit" class="btn btn-default btn-auth" style="background-color: #E0672E;">                
+            <span *ngIf="submitButtonStatus" style="color: #fff; text-transform: uppercase;">
+                Sign in
+            </span>
+            <span *ngIf="!submitButtonStatus">
+                <i class="fa fa-spinner fa-pulse  fa-fw"></i>Sign</span>
+  
+          </button>
+        </div>
+      </div>
+
+
+    </div>
+
+    <div class="col-sm-2">
+      <!-- <div class="row">
+        <div class="col-sm-6">
+          <button [disabled]="!form.valid || !submitButtonStatus" type="submit" class="btn btn-default btn-auth">                
+            <span *ngIf="submitButtonStatus">
+                Sign in
+            </span>
+            <span *ngIf="!submitButtonStatus">
+                <i class="fa fa-spinner fa-pulse  fa-fw"></i>Sign</span>
+  
+          </button>
+        </div>
+      </div> -->
+    </div>
+  </div>
+     
+    
+  </div>
+</form>
+
+
+    <!-- <form [formGroup]="form" (ngSubmit)="onSubmit(form.value)" class="form-horizontal" style="height: 500px;">
+      <div class="auth-main" *ngIf="SendMail!=true && loginService.searchUser!=true || loginService.loginpage==true">
+        <div class="auth-block">
+          <h1>Sign in </h1>
+          <div class="form-group row" [ngClass]="{'has-error': (email.touched), 'has-success': (email.touched)}">
+            <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+
+            <div class="col-sm-10">
+              <input [formControl]="email" type="text" class="form-control" id="inputEmail3" placeholder="Email">
+            </div>
+          </div>
+          <div class="form-group row" [ngClass]="{'has-error': (!password.valid && password.touched), 'has-success': (password.valid && password.touched)}">
+            <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
+
+            <div class="col-sm-10">
+              <input [formControl]="password" type="password" class="form-control" id="inputPassword3" placeholder="Password">
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="offset-sm-2 col-sm-10">
+              <button [disabled]="!form.valid || !submitButtonStatus" type="submit" class="btn btn-default btn-auth">
+                
+                <span *ngIf="submitButtonStatus">
+                    Sign in
+                </span>
+                <span *ngIf="!submitButtonStatus">Logging in ...
+                    <i class="fa fa-spinner fa-pulse  fa-fw"></i></span>
+      
+              </button>
+              
+            </div>
+          </div>
+          <div class="form-group row">
+            <div *ngIf="submitButtonStatus" class="offset-sm-2 col-sm-10">
+              <label for="inputEmail3" class="col-sm-6 control-label" (click)="ForgetPassword()" style="margin-left:-12px"><a >Forgot password?</a></label>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="loginService.searchUser==true && loginService.sendMail!=true && loginService.loginpage!=true">
+        <SearchUser></SearchUser>
+      </div>
+      <div *ngIf="loginService.sendMail==true && loginService.securityCode!=true && loginService.loginpage!=true">
+        <SendEmail></SendEmail>
+      </div>
+      <div *ngIf="loginService.securityCode==true && loginService.newPassword!=true && loginService.loginpage!=true">
+        <enterSecurity></enterSecurity>
+      </div>
+      <div *ngIf="loginService.newPassword==true && loginService.loginpage!=true">
+        <newPassword></newPassword>
+      </div>
+
+    </form> -->
+
+    <!--<div class="auth-sep"><span><span>or Sign in with one click</span></span></div>
+
+    <div class="al-share-auth">
+      <ul class="al-share clearfix">
+        <li><i class="socicon socicon-facebook" title="Share on Facebook"></i></li>
+        <li><i class="socicon socicon-twitter" title="Share on Twitter"></i></li>
+        <li><i class="socicon socicon-google" title="Share on Google Plus"></i></li>
+      </ul>
+    </div>-->
+  </div>
+</div>
+<div class="modal fade" bsModal #childModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" aria-label="Close" (click)="childModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Information</h4>
+      </div>
+      <div class="modal-body">
+        {{DialogMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+  a:hover {
+    color: #f7d559 !important;
+    cursor: pointer;
+  }
+</style>
+
+
+

@@ -1,0 +1,149 @@
+﻿<style>
+  .modal-content {
+    padding: 1px;
+    margin: 0px;
+    float: right;
+  }
+
+  tbody>tr:hover {
+    background-color: #f3f5f4;
+    cursor: pointer;
+  }
+
+  tr {
+    font-size: 11px;
+  }
+
+  .selected-row {
+    background-color: #ced6d3 !important;
+  }
+
+  .table>tbody>tr>td {
+    line-height: 30px !important;
+  }
+
+  .table>thead>tr>th {
+    line-height: 5px !important;
+  }
+
+  .table>tbody>tr>td:first-child {
+    text-align: left !important;
+    padding: 0px 0px 0px 11px !important;
+  }
+
+  .modal-content {
+    box-shadow: -10px 0px 10px 1px #aaaaaa;
+  }
+
+  .modal-content-main-area {
+    max-height: 100%;
+    height: 100%;
+    overflow: auto;
+    overflow-x: hidden;
+  }
+
+  .modal-content-summary-area {
+    max-height: 20%;
+    height: 20%;
+    overflow: auto;
+    overflow-x: hidden;
+  }
+
+  .ellipsis {
+    /* width: 220px;
+      text-overflow: ellipsis;
+      overflow: hidden; */
+    white-space: nowrap;
+  }
+
+</style>
+
+<button *ngIf="_trnMainService.TrnMainObj.VoucherType ==3 &&  _trnMainService.userProfile.CompanyInfo.ORG_TYPE=='superdistributor' && 
+ this._trnMainService.userSetting.SHOW_PURCHASE_MENU == 1" 
+  (click)="onViewClicked()" style="margin: 0px 4px;" class="btn btn-info pull-right" [disabled]="this.masterService.Mode=='DRILL'">
+  VIEW F4
+</button>
+<button #back (click)="onBackClicked()" class="btn btn-info pull-right" *ngIf="!showSecondaryButtons" style="margin-left: 8px;">
+  F10 BACK
+</button>
+<button *ngIf="_trnMainService.TrnMainObj.VoucherType ==3 &&  _trnMainService.userProfile.CompanyInfo.ORG_TYPE=='superdistributor' && 
+this._trnMainService.userSetting.SHOW_PURCHASE_MENU == 1" 
+  (click)="onNewClick()" style="margin: 0px 4px;" class="btn btn-info pull-right" [disabled]="this.masterService.Mode=='DRILL'">
+  RESET
+</button>
+<button *ngIf="_trnMainService.TrnMainObj.VoucherType ==3 &&  _trnMainService.userProfile.CompanyInfo.ORG_TYPE=='superdistributor' && 
+this._trnMainService.TrnMainObj.Mode != 'NEW' && this._trnMainService.userSetting.SHOW_PURCHASE_MENU == 1 &&
+this._trnMainService.TrnMainObj.TRNAC=='PANT99999'" 
+style="margin: 0px 4px;" class="btn btn-info pull-right" (click)="onAddCosting()" [disabled]="this.masterService.Mode=='DRILL'">
+  Add Costing
+</button>
+
+<button *ngIf="_trnMainService.TrnMainObj.VoucherType ==3 &&  _trnMainService.userProfile.CompanyInfo.ORG_TYPE=='superdistributor' && 
+this._trnMainService.TrnMainObj.Mode != 'NEW' && this._trnMainService.userSetting.SHOW_PURCHASE_MENU == 1 &&
+this._trnMainService.TrnMainObj.TRNAC=='PANT99999'" 
+style="margin: 0px 4px;" class="btn btn-info pull-right" (click)="onImportDetailsClick()" [disabled]="this.masterService.Mode=='DRILL'">
+  IMPORT DETAILS
+</button>
+<import-purchase-details #ImportPurchaseDetail></import-purchase-details>
+
+<generic-popup-grid #genericGrid [popupsettings]="gridPopupSettings" (onItemDoubleClick)="onItemDoubleClick($event)">
+</generic-popup-grid>
+
+<div class="print-modal-sticky" *ngIf="promptPrintDevice" style="display : block; padding: 0px;  margin-bottom: 25px;height: auto;
+  position: absolute;right: 65%;top: 5px;width: 50%;z-index: 9999999">
+
+  <div class="modal-content modal-content-main-area">
+    <div class="modal-header">
+      <h4 class="modal-title" id="myModalLabel">Available Printing Device Supported</h4>
+    </div>
+    <div class="modal-body">
+      <form>
+        <input type="radio" [formControl]="printControl" name="printOption" value=0>POS Printer<br>
+        <input type="radio" [formControl]="printControl" name="printOption" value=1 checked>Cannon printer [A4]<br>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancelprint()">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)="setPrinterAndprint()">Print</button>
+    </div>
+  </div>
+
+</div>
+<div class="modal-sticky" *ngIf="showAdvanceAdjustmentPopUp" style="display : block; padding: 0px;  margin-bottom: 25px;height: 210px;
+  position: absolute;right: 50%;top: 5px;width: 600px;z-index: 9999999">
+
+  <div class="modal-content modal-content-main-area">
+    <div class="modal-header">
+      <h4 class="modal-title" id="myModalLabel">Please choose the Option for advance Adjustment to this bill...</h4>
+    </div>
+    <div class="modal-body">
+      <div class="col-md-12">
+        <div class="row">
+          <label style="width: 30%;">Adjustment Type:</label>
+          <select
+            style="width:60%;"
+            [(ngModel)]="_trnMainService.TrnMainObj.AdvanceAdjustmentObj.AdjustmentType"        
+          >
+          <option value="full">Full Adjustment</option>
+          <option value="partial">Partial Adjustment</option>
+         
+          </select>
+        </div>
+      
+        <div  class="row" *ngIf="_trnMainService.TrnMainObj.AdvanceAdjustmentObj.AdjustmentType=='partial'" >
+        <label style="width: 30%;">Partial Amount :</label>
+        <input       
+          type="number"
+          style="width:60%;"
+          [(ngModel)]="_trnMainService.TrnMainObj.AdvanceAdjustmentObj.PartialAmount"       
+        />
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button type="button" style="margin-top: 5px;" class="btn btn-default" data-dismiss="modal" (click)="cancelAdvanceAdjustment()">Cancel</button>
+      <button type="button" style="margin-top: 5px;" class="btn btn-primary" (click)="OkAdvanceAdjustment()">Adjust</button>
+    </div>
+  </div>
+
+</div>

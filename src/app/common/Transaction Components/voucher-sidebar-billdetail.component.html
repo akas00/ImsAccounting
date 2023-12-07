@@ -1,0 +1,135 @@
+<style>
+  .toggable-sidebar {
+    position: absolute;
+    right: -280px;
+    transition: 0.3s;
+    padding: 15px;
+    width: 260px;
+    text-decoration: none;
+    font-size: 20px;
+    border-radius: 0 5px 5px 0;
+    background: #c0c0c0;
+    color: #000000;
+    height: 100%;
+    width: 20%;
+    margin: 0px;
+    border: 1px solid #f1ebeb;
+  }
+  .mySidenav-show {
+    right: 0 !important;
+  }
+
+  .btn-toggler {
+    position: absolute;
+    left: -45px;
+    top: 3px;
+    background: #8cccfb !important;
+    border-color: #8cccfb !important;
+    padding: 5px 12px 5px 5px !important;
+    font-size: 10px !important;
+    width: 45px !important;
+  }
+  .toggler-btn-icon-reverse {
+    transform: rotate(180deg);
+  }
+
+  .table-summary > tbody > tr > td {
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .table-summary > tbody > tr > td:first-child {
+    text-align: left !important;
+  }
+</style>
+
+<div
+  class=" plainBackGround toggable-sidebar"
+  [ngClass]="{ 'mySidenav-show': hideShow }"
+>
+  <button class="btn btn-info btn-toggler" (click)="hideShow = !hideShow"> F10
+    <i
+      class=" fa fa-angle-double-left"
+      [ngClass]="{ 'toggler-btn-icon-reverse': hideShow }"
+    ></i>
+  </button>
+  <table
+    class="table table-summary"
+    style="text-align: left; white-space: nowrap;"
+  >
+    <tr>
+      <td>{{_trnMainService.voucherNoHeader}}:</td>
+      <td>{{ _trnMainService.TrnMainObj.CHALANNO }}</td>
+    </tr>
+    <tr>
+      <td>Bill Date:</td>
+      <td>
+        {{ _trnMainService.TrnMainObj.TRN_DATE | date: "dd-MM-yyyy" }}
+      </td>
+    </tr>
+
+    <tr>
+      <td>Disc%</td>
+      <td>
+        <input
+          [disabled]="
+            _trnMainService.TrnMainObj.Mode == 'VIEW' &&
+            _trnMainService.TrnMainObj.VoucherType == 61
+          "
+          style="height: 23px;width: 90px;"
+          type="number"
+          [(ngModel)]="_trnMainService.TrnMainObj.DCRATE"
+          (change)="_trnMainService.FlatDiscountPercentChange()"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Disc Amt</td>
+      <td>
+        <input
+          [disabled]="
+            _trnMainService.TrnMainObj.Mode == 'VIEW' &&
+            _trnMainService.TrnMainObj.VoucherType == 61
+          "
+          style="height: 23px;width: 90px;"
+          type="number"
+          [(ngModel)]="_trnMainService.TrnMainObj.TOTALFLATDISCOUNT"
+          (change)="_trnMainService.FlatDiscountAmountChange()"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Total Disc</td>
+      <td *ngIf="_trnMainService.userProfile.CompanyInfo.ORG_TYPE != 'retailer'">
+        {{ _trnMainService.TrnMainObj.TOTALDISCOUNT | twoDigitNumber }}
+      </td>
+      <td *ngIf="_trnMainService.userProfile.CompanyInfo.ORG_TYPE == 'retailer'">
+        {{_trnMainService.TrnMainObj.TOTALDISCOUNT_VATINCLUDED | twoDigitNumber}}
+      </td>
+    </tr>
+    <tr>
+      <td>Round off Amount</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Taxable Amt:</td>
+      <td>{{ _trnMainService.TrnMainObj.TAXABLE | twoDigitNumber }}</td>
+    </tr>
+    <!-- <tr>
+  <td>Non-Taxable:</td>
+  <td>{{ _trnMainService.TrnMainObj.NONTAXABLE | twoDigitNumber }}</td>
+</tr> -->
+    <tr>
+      <td>Total GST:</td>
+      <td>{{ _trnMainService.TrnMainObj.VATAMNT | twoDigitNumber }}</td>
+    </tr>
+    <tr>
+      <td>Rounding Adj:</td>
+      <td>{{ _trnMainService.TrnMainObj.ROUNDOFF | twoDigitNumber }}</td>
+    </tr>
+    <tr>
+      <td>Net Amt</td>
+      <td>{{ _trnMainService.TrnMainObj.NETAMNT | twoDigitNumber }}</td>
+    </tr>
+  </table>
+</div>

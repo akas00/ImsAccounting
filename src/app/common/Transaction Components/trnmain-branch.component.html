@@ -1,0 +1,62 @@
+<form [formGroup]="TrnMainForm">
+    <div *ngIf="masterService.ShowMore==true" class="row plainBackGround">
+        <div [hidden]="TrnMainObj.VoucherType==9" class="row">
+            <div class="col-md-6">
+                <label *ngIf="TrnMainObj.VoucherType == '7'" style="width:105.5px;">Branch In :</label>
+                <label *ngIf="TrnMainObj.VoucherType == '8'" style="width:105.5px;">Branch Out :</label>
+                <select style="width:78%;" formControlName="BILLTOADD" (change)="changeBranch($event.target.value)">
+                    <option *ngFor="let d of masterService.allDivisionList$ | async" [ngValue]="d.INITIAL">{{d.NAME}}</option>
+                </select>
+            </div>
+            <div class="col-md-6" *ngIf="AppSettings.enableCostCenter!=0">
+                <!--<label style="width:101.5px;">To Warehouse :</label>
+                <select style="width:78%;" formControlName="BILLTOADD">
+                    <option *ngFor="let w of WarehouseList" [ngValue]="w.NAME">{{w.NAME}}</option>
+                </select>-->
+                <label style="width:105.5px;">CostCenter :</label>
+                <select *ngIf="AppSettings.enableCostCenter!=0" style="width:78%;" formControlName="COSTCENTER">
+                    <option *ngFor="let c of masterService.costCenterList$ | async" [ngValue]="c.CostCenterName">{{c.CostCenterName}}</option>
+                </select>
+            </div>
+        </div>
+
+        <!--<div class="col-md-5">
+                <label style="width:85.5px;">Warehouse :</label>
+                <select style="width:78%;" formControlName="WAREHOUSE">
+                    <option *ngFor="let w of WarehouseList" [ngValue]="w.NAME">{{w.NAME}}</option>
+                </select>
+            </div>-->
+        <div *ngIf="TrnMainObj.VoucherType==9" class="row">
+            <div class="col-md-6">
+                <tr>
+                    <td style="width: 125px;height: 28px;font-weight: normal;margin: 2px;vertical-align: middle;font-size: 13px;padding-top: 4px;">Settlement Mode</td>
+                    <td style="width: 500px;">
+                        <select style="width:95%;" formControlName="SettleMode" (change)="SettlementChange()">
+                            <option *ngFor="let s of settlementList" [ngValue]="s">{{s.DESCRIPTION}}</option>
+                        </select>
+                    </td>
+                </tr>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label style="width:105.5px;">Warehouse :</label>
+                <select style="width:78%;" formControlName="WAREHOUSE">
+                    <option *ngFor="let w of masterService.warehouseList$ | async" [ngValue]="w.NAME">{{w.NAME}}</option>
+                </select>
+            </div>
+        </div>
+        <!--<div class="row">
+            
+        </div>-->
+        <div class="row">
+            <div class="col-md-12">
+                <label style="width:105.5px;">Remarks :</label>
+                <input type="text" style="min-width:89.4%;" formControlName="REMARKS" (change)="formValidCheck">
+            </div>
+        </div>
+
+
+
+    </div>
+</form>

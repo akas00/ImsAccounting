@@ -1,0 +1,80 @@
+<!-- <div class="widgets">
+    <div class ="row">
+        <button type="button" class="btn btn-info" (click)="newChalan()" style="margin-left:18px; margin-bottom: 10px;">New Chalan </button>
+        </div>
+    
+      <div class="row">
+        <ba-card  title="Chala Master" baCardClass="with-scroll">
+          <ng2-smart-table [settings]="settings" [source]="source" (edit)="onEditClick($event)" (view)="onViewClick($event)" (deleteConfirm)="onDeleteConfirm($event)"></ng2-smart-table>
+        </ba-card>
+      </div>  
+</div> -->
+
+<!--New Ui design for chalan master-->
+
+<div class="row col-md-12">
+  <div class="col-md-4">
+      <h5 style="font-weight: bold;font-size: 1.1rem;">Chalan Master</h5>
+
+  </div>
+  <div class="col-md-8">
+      <!-- <button class="btn btn-info pull-right" style="font-size: 12px;" routerLink="/pages/dashboard">Back</button> -->
+      <button type="button" class="btn btn-info pull pull-right" (click)="newChalan()" style="font-size: 12px;">Add New Chalan </button>
+
+  </div>
+</div>
+
+<div class="row" style="align-items: center;">
+  <div class="col-md-12 col-sm-8" style="margin-top:0.5rem">
+
+    <div class="card" style="margin: auto; width: 63rem;">
+      <div class="card-header">
+        
+        <span class="col-md-6" >Chalan Lists</span>
+        <div style="margin-left: 15rem;">
+          <input type="text" name="search" [(ngModel)]="filter" #searchFilter="ngModel" class="form-control" placeholder="Search..." style="width: 15rem; height: 1.7rem; padding: 0px 6px;">
+        </div>
+       
+        
+      </div>
+
+      <div class="card-body">
+        <table class="table table-striped">
+          <thead>
+              <tr style="position: sticky; top:0;line-height: 1.5rem;">
+                  <th scope="col" style="width:3%">S.N</th>
+                  <th scope="col" style="width:18%">Voucher Name</th>
+                  <th scope="col" style="width:18%">Series</th>
+                  <th scope="col" style="width:18%">Prefix</th>
+                  <th scope="col" style="text-align:center;width:15%">Action</th>
+              </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="this.source">
+              <tr *ngFor="let chalan of (this.source.data|searchData:filter); let i=index">
+                <td style="width:3%;">{{i+1}}</td>
+                <td style="width:18%;">{{chalan.VName}}</td>
+                <td style="width:18%;">{{chalan.Series}}</td>
+                <td style="width:18%;">{{chalan.VType}}</td>
+                <td style="width:15%;text-align: center;">
+                <button style="width: 60px;" type="button" class="btn btn-sm btn-info mr-1 btn-sm" data-toggle="modal" (click)="onViewClick(chalan)">View</button>
+                <button style="width: 60px;" type="button" class="btn btn-sm btn-info mr-1 btn-sm" data-toggle="modal" (click)="onEditClick(chalan)">Edit</button>
+                <button style="width: 60px;" type="button" class="btn btn-sm btn-info mr-1 btn-sm" data-toggle="modal" (click)="onDeleteClick(chalan)">Delete</button>
+
+                </td> 
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="this.source.data && (this.source.data|searchData:filter).length === 0">
+              <tr>
+                <td colspan="5">
+                  <div class="font-weight-bold">Chalan Master Information are unavailable.</div>
+                </td>
+              </tr>
+          </ng-container>
+          </tbody>
+      </table>
+      </div>
+
+    </div>
+  </div>
+</div>

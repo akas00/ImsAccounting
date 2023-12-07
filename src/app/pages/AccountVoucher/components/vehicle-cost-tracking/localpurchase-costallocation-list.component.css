@@ -1,0 +1,89 @@
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-header::after {
+  display: none;
+}
+
+.card-body {
+  padding: 5px !important;
+  max-height: 455px !important;
+}
+
+.main-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 60px 0px;
+
+}
+
+.scroll-touch {
+  -webkit-overflow-scrolling: touch !important;
+}
+
+.table td,
+.table th {
+  padding: 0.10rem !important;
+}
+
+.sticky-top {
+  margin-top: 60px;
+  height: 100vh;
+}
+
+tbody {
+  display: block;
+  height: 59vh;
+  overflow: auto;
+}
+
+thead,
+tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  /* even columns width , fix width of table too*/
+}
+
+th {
+  font-size: 15px;
+  font-weight: bold;
+  font-family: Roboto, Arial, sans-serif;
+
+}
+
+td {
+  font-size: 13px;
+  font-family: Roboto, Arial, sans-serif;
+
+}
+
+.btn-sm {
+  line-height: 3px;
+}
+
+.table tbody tr td {
+  line-height: 24px;
+}
+
+.btn-info {
+  margin: auto 1px;
+}
+
+
+.card-header {
+  padding: 10px 20px;
+}
+
+.searchBy {
+  font-size: 13px;
+  margin-left: 18rem;
+}
+
+.form-control {
+  font-size: 13px !important;
+}

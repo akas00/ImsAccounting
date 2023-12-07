@@ -1,0 +1,195 @@
+<div>
+    <div *ngIf="control.type=='text'">
+        <div class="smalllabeldiv">
+            <label class="smallBoldLabel">{{control.label}}</label>
+        </div>
+        <div [formGroup]="form">
+            <input type="text" style="height:25px;width:100%"   formControlName="{{control.name}}"/>
+        </div>
+    </div>
+
+    <div *ngIf="control.type=='select'">
+        <div class="smalllabeldiv">
+            <label class="smallBoldLabel">{{control.label}}</label>
+        </div>
+        <div>
+            <input ngui-auto-complete [source]="dropListItem.bind(this)" max-num-list="25" [(ngModel)]="selectedName" (ngModelChange)="selectChangeEvent($event)"
+                style="width:250px;height:25px" list-formatter="{{control.options.displayname}}" name="{{control.name}}" display-property-name="{{control.options.displayname}}">
+
+
+            <!--<select style="width:250px;height:25px" id="{{control.name}}" name="{{control.name}}" formControlName="{{control.name}}">
+         <option *ngFor="let s of selectList" [ngValue]="s.INITIAL">{{s.NAME}}</option></select>-->
+            <!--{{control.options.displayname}}-->
+        </div>
+    </div>
+
+    <div *ngIf="control.type=='MultiSelect'" >
+        <div style="float:left;padding-right:5px">
+        <div class=" smalllabeldiv">
+            <label class="smallBoldLabel">{{control.label}}</label>
+        </div>
+        <div style="width:250px">
+            <input ngui-auto-complete [source]="dropListItem.bind(this)" max-num-list="25" [(ngModel)]="selectedObj" (ngModelChange)="selectChangeEvent($event)"
+                style="width:220px;height:25px;float:left" list-formatter="{{control.options.displayname}}" name="{{control.name}}" display-property-name="{{control.options.displayname}}">
+            <button style="height: 25px;width:25px;float:left" (click)="onAddSelectedObj()" [disabled]="selectedObj==null || multiNameList.indexOf(selectedName)>-1 ">+</button>
+        </div>
+        </div>
+        <div style="float:left;padding-right:15px" class="borderdiv">
+        <div *ngIf="multiNameList.length>0" style="max-width:500px;text-align:left">
+            <div class="scrolldiv">
+                <span *ngFor="let cc of multiNameList;let i=index" class="multiboxspan">{{cc}}<a>
+                <button type="button" (click)="onRemoveMultiObj(i)" style="border: transparent;background: transparent;color:red" > x </button></a></span>
+            </div>
+        </div>
+        <div *ngIf="multiNameList.length>0 && control.options.singleLedgerOption!=null">
+            <label class="smallBoldLabel"><input type="checkbox" style="vertical-align: middle;" (change)="$event.target.checked?(form.controls[control.options.singleLedgerOption].setValue(1)):(form.controls[control.options.singleLedgerOption].setValue(0))">Merge In Single Ledger</label>
+        </div>
+        </div>
+        <!--<select style="width:220px;height:25px" [(ngModel)]="selectedCostcenter">
+     <option *ngFor="let cc of costcenterList" [ngValue]="cc">{{cc.CostCenterName}}</option></select>
+        <button style="height: 25px;width:25px;" (click)="onAddCostCenter(selectedCostcenter)" [disabled]="selectedCostcenter==null">+</button>
+    </div>
+   <div  *ngIf="multiSelectCostCenterList.length>0" style="width:300px;text-align:left">
+        <div class="scrolldiv">
+            <span *ngFor="let cc of multiSelectCostCenterList;let i=index" class="multiboxspan">{{cc.CostCenterName}}<a>
+                <button type="button" (click)="onRemoveCostCenter(i)" style="border: transparent;background: transparent;color:red" > x </button></a></span>
+        </div>
+    </div>
+    <div   *ngIf="multiSelectCostCenterList.length>0">
+        <label class="smallBoldLabel"><input type="checkbox" style="vertical-align: middle;">Merge In Single Ledger</label>
+        </div>-->
+    </div>
+
+    <div    *ngIf="control.type=='checkbox'" style="text-align:left;margin-left:10px;font-size:12px">
+        <label><input type="checkbox" style="vertical-align: middle;margin:10px" (change)="IndividualcheckboxChangeEvent($event.target.checked)" [checked]="form.value[control.name]==1" >{{control.label}}</label>
+    </div>
+      <div    *ngIf="control.type=='rcheckbox'" style="text-align:left;margin-left:10px;font-size:12px">
+        <label><input type="checkbox" style="vertical-align: middle;margin:10px" (change)="IndividualrcheckboxChangeEvent($event.target.checked)" [checked]="form.value[control.name]==0" >{{control.label}}</label>
+    </div>
+
+    <div *ngIf="control.type=='date'">
+        <div >
+        <div class="smalllabeldiv">
+            <label class="smallBoldLabel">{{control.label}}(AD)</label>
+        </div>
+        <div>
+            <input type="date" style="width:250px;height:25px;text-align:center" [(ngModel)]="ledgerdialog.DATE1" (change)="changeAccountReportDate($event.target.value,'AD')"
+            />
+        </div>
+        </div>
+        <div >
+           
+        <div class=" smalllabeldiv">
+            <label class="smallBoldLabel">{{control.label}}(BS)</label>
+        </div>
+        <div>
+            <input id="nepaliDate" style="width:250px;height:25px;text-align:center" class="nepali-calendar ndp-nepali-calendar" [(ngModel)]="ledgerdialog.BSDATE1"
+                onclick="showNdpCalendarBox('nepaliDate')" type="text" (change)="changeAccountReportDate($event.target.value,'BS')"
+                (click)="clickDate($event.target.value)" placeholder="yyyy-mm-dd" />
+        </div>
+        </div>
+    </div>
+
+    <div *ngIf="control.type=='doubleselect'">
+       <div style="float:left">
+            <div class=" smalllabeldiv">
+                <label class="smallBoldLabel">{{control.label}} Code</label>
+            </div>
+            <div>
+                <input ngui-auto-complete [source]="dropListItem.bind(this)" max-num-list="25" [(ngModel)]="selectedCode" (ngModelChange)="selectChangeEvent($event)"
+                    style="width:250px;height:25px" list-formatter="{{control.options.displayCode}}" name="{{control.name}}"
+                    display-property-name="{{control.options.displayCode}}">
+            </div>
+        </div>
+        <div  style="float:left">
+            <div class=" smalllabeldiv">
+                <label class="smallBoldLabel">{{control.label}} Name</label>
+            </div>
+            <div>
+                <input ngui-auto-complete [source]="dropListItem.bind(this)" max-num-list="25" [(ngModel)]="selectedName" (ngModelChange)="selectChangeEvent($event)"
+                    style="width:220px;height:25px;float:left" list-formatter="{{control.options.displayname}}" name="{{control.name}}"
+                    display-property-name="{{control.options.displayname}}">
+            </div>
+        </div>
+    </div>
+
+    <div class="row"  *ngIf="control.type=='MultiDoubleSelect'">
+        <div style="float:left;padding-left:15px;padding-right:2px">
+            <div class=" smalllabeldiv">
+                <label class="smallBoldLabel">{{control.label}} Code</label>
+            </div>
+            <div>
+                <input ngui-auto-complete [source]="dropListItemForCode.bind(this)" max-num-list="25" [(ngModel)]="selectedCode" (ngModelChange)="selectChangeEvent($event)"
+                    style="width:250px;height:25px" list-formatter="{{control.options.displayCode}}" name="{{control.name}}"
+                    display-property-name="{{control.options.displayCode}}">
+            </div>
+        </div>
+        <div style="float:left;padding-left:2px;padding-right:5px">
+            <div class=" smalllabeldiv">
+                <label class="smallBoldLabel">{{control.label}} Name</label>
+            </div>
+            <div style="width:250px">
+                <input ngui-auto-complete [source]="dropListItem.bind(this)" max-num-list="25" [(ngModel)]="selectedName" (ngModelChange)="selectChangeEvent($event)"
+                    style="width:220px;height:25px;float:left" list-formatter="{{control.options.displayname}}" name="{{control.name}}"
+                    display-property-name="{{control.options.displayname}}">
+                <button style="height: 25px;width:25px;float:left" (click)="onAddSelectedObj()" [disabled]="selectedName==null || selectedName=='' || multiNameList.indexOf(selectedName)>-1">+</button>
+            </div>
+        </div>
+        <div style="float:left" class="borderdiv">
+            <div *ngIf="multiNameList.length>0" style="max-width:500px;text-align:left">
+                <div class="scrolldiv">
+                    <span *ngFor="let cc of multiNameList;let i=index" class="multiboxspan">{{cc}}<a>
+                <button type="button" (click)="onRemoveMultiObj(i)" style="border: transparent;background: transparent;color:red" > x </button></a></span>
+                </div>
+            </div>
+            <div *ngIf="multiNameList.length>0 && control.options.singleLedgerOption!=null">
+                <label class="smallBoldLabel"><input type="checkbox" style="vertical-align: middle;" (change)="$event.target.checked?(form.controls[control.options.singleLedgerOption].setValue(1)):(form.controls[control.options.singleLedgerOption].setValue(0))">Merge In Single Ledger</label>
+            </div>
+        </div>
+        <!--<div >
+        <select style="width:250px;height:25px" [(ngModel)]="selectedAccount" (ngModelChange)="acChange(selectedAccount)">
+    <option *ngFor="let ac of accountList" [ngValue]="ac">{{ac.ACCODE}}</option></select>
+    </div>
+    <div class=" smalllabeldiv">
+        <label class="smallBoldLabel">{{control.label}} Name</label>
+    </div>
+    <div >
+        <select style="width:220px;height:25px" [(ngModel)]="selectedAccount"  (ngModelChange)="acChange(selectedAccount)">
+    <option *ngFor="let ac of accountList" [ngValue]="ac">{{ac.ACNAME}}</option></select>
+        <button style="height: 25px;width:25px;" (click)="onAddAccount(selectedAccount)" [disabled]="selectedAccount==null || multiSelectList.indexOf(selectedAccount)>-1">+</button>
+    </div>
+    <div   *ngIf="multiSelectList.length>0" style="width:300px;text-align: left">
+        <div class="scrolldiv">
+            <span *ngFor="let m of multiSelectList;let i=index" class="multiboxspan">{{m.ACNAME}}<a>
+                <button type="button" (click)="onRemoveAccount(i)" style="border: transparent;background: transparent;color:red"> x </button></a></span>
+        </div>
+    </div>
+    <div  *ngIf="multiSelectList.length>0">
+        <label class="smallBoldLabel"><input type="checkbox" style="vertical-align: middle;" (change)="$event.target.checked?(form.controls['InSingleLedger'].setValue(1)):(form.controls['InSingleLedger'].setValue(0))">Merge In Single Ledger</label>
+        </div>-->
+    </div>
+<div *ngIf="control.type=='reportOptions'">
+     <div *ngFor="let p of control.reportOptions" [formGroup]="form">
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border" style="font-size: 12px;width:initial;font-weight:bold">{{p.description}}</legend>
+                        <div *ngIf="p.type=='radio'" class="row">
+                            <div *ngFor="let r of p.options" style="margin-left:20px;float:left;font-size:12px">
+                              <label style="font-size:12px">  <input type="radio"  [value]="r.value"  formControlName="{{p.mappingname}}">{{r.name}}</label>
+                            </div>
+                        </div>
+                        <div *ngIf="p.type=='checkbox'" class="row">
+                            <div *ngFor="let r of p.options" style="margin-left:20px;float:left">
+                                <input type="checkbox" (change)="checkboxchangeEvent($event.target.checked,r.name,p.description)" [checked]="r.value==1">{{r.name}}
+                            </div>
+                        </div>
+                    </fieldset>
+                    </div>
+                    </div>
+<div *ngIf="control.type=='DebitorsReportOptionsAndDueAging'">
+    <DebitorsReportOptionsAndDueAging [form]="form" [reportname]="control.listName"></DebitorsReportOptionsAndDueAging>
+</div>
+        <div *ngIf="control.type=='tree'"  style="padding: 0px">
+            <treeledgerandparty [form]="form" [control]="control"></treeledgerandparty>
+        </div>
+</div>
+

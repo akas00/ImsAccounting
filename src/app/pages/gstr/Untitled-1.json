@@ -1,0 +1,149 @@
+{
+    "gstin": "20AAFCP4091G1ZP",
+    "ret_period": "102019",
+    "sup_details": {
+        "osup_det": {
+            "txval": 1.1954364146E8,
+            "iamt": 0.0,
+            "camt": 7251997.15,
+            "samt": 7251883.23,
+            "csamt": 0.0
+        },
+        "osup_zero": {
+            "txval": 0.0,
+            "iamt": 0.0,
+            "camt": 0.0,
+            "samt": 0.0,
+            "csamt": 0.0
+        },
+        "osup_nil_exmp": {
+            "txval": 389615.08,
+            "iamt": 0.0,
+            "camt": 0.0,
+            "samt": 0.0,
+            "csamt": 0.0
+        },
+        "isup_rev": {
+            "txval": 0.0,
+            "iamt": 0.0,
+            "camt": 0.0,
+            "samt": 0.0,
+            "csamt": 0.0
+        },
+        "osup_nongst": {
+            "txval": 0.0,
+            "iamt": 0.0,
+            "camt": 0.0,
+            "samt": 0.0,
+            "csamt": 0.0
+        }
+    },
+    "inter_sup": {
+        "unreg_details": [],
+        "comp_details": [],
+        "uin_details": []
+    },
+    "itc_elg": {
+        "itc_avl": [
+            {
+                "ty": "IMPG",
+                "iamt": 0.0,
+                "camt": 0.0,
+                "samt": 0.0,
+                "csamt": 0.0
+            },
+            {
+                "ty": "IMPS",
+                "iamt": 0.0,
+                "camt": 0.0,
+                "samt": 0.0,
+                "csamt": 0.0
+            },
+            {
+                "ty": "ISRC",
+                "iamt": 0.0,
+                "camt": 0.0,
+                "samt": 0.0,
+                "csamt": 0.0
+            },
+            {
+                "ty": "ISD",
+                "iamt": 0.0,
+                "camt": 0.0,
+                "samt": 0.0,
+                "csamt": 0.0
+            },
+            {
+                "ty": "OTH",
+                "iamt": 1.331667083E7,
+                "camt": 40821.83,
+                "samt": 40821.83,
+                "csamt": 0.0
+            }
+        ],
+        "itc_rev": [
+            {
+                "ty": "RUL",
+                "iamt": 0.0,
+                "camt": 0.0,
+                "samt": 0.0,
+                "csamt": 0.0
+            },
+            {
+                "ty": "OTH",
+                "iamt": 0.0,
+                "camt": 0.0,
+                "samt": 0.0,
+                "csamt": 0.0
+            }
+        ],
+        "itc_net": {
+            "iamt": 1.331667083E7,
+            "camt": 40821.83,
+            "samt": 40821.83,
+            "csamt": 0.0
+        },
+        "itc_inelg": [
+            {
+                "ty": "RUL",
+                "iamt": 0.0,
+                "camt": 0.0,
+                "samt": 0.0,
+                "csamt": 0.0
+            },
+            {
+                "ty": "OTH",
+                "iamt": 0.0,
+                "camt": 0.0,
+                "samt": 0.0,
+                "csamt": 0.0
+            }
+        ]
+    },
+    "inward_sup": {
+        "isup_details": [
+            {
+                "ty": "GST",
+                "inter": 372675.0,
+                "intra": 0.0
+            },
+            {
+                "ty": "NONGST",
+                "inter": 0.0,
+                "intra": 0.0
+            }
+        ]
+    }, 
+    "intr_ltfee": {
+        "intr_details": {
+            "iamt": 0.0,
+            "camt": 0.0,
+            "samt": 0.0,
+            "csamt": 0.0
+        },
+        "ltfee_details": {
+            "camt": 0.0,
+            "samt": 0.0
+        }
+    }
+}

@@ -1,0 +1,26 @@
+<style>
+  .ims-datepicker-wrapper {
+    width: 80%;
+    display: inline-block;
+  }
+
+  .ims-date-input {
+    height: 33px;
+    border: 1px solid #e6e6e6;
+    width: 130px
+  }
+
+</style>
+<div class="ims-datepicker-wrapper">
+  <input id="{{index}}" type="text" placeholder="Datepicker" class="form-control ims-date-input" (change)="onDateEnterTab($event)"
+    (keydown)="IsNumeric($event)" (keydown.enter)="onDateEnterTab($event)" (keydown.Tab)="onDateEnterTab($event)"
+    maxlength="10" maxDate="date" placeholder="dd/mm/yyyy" [(ngModel)]="date" endkey="" >
+</div>
+<i class="fa fa-caret-down ims-date-picker" (click)="show()"></i>
+
+
+<input type="text" id="date{{ID}}{{index}}" style="position:absolute;overflow: hidden;
+width: 0;
+-webkit-user-modify: read-only;
+opacity: 0;" ngxDaterangepickerMd [locale]="locale" [(ngModel)]="selectedDate" [singleDatePicker]="true"
+  [autoApply]="true" (ngModelChange)="onvalueChange($event)" />

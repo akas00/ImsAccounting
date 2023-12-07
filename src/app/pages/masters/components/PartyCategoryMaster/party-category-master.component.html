@@ -1,0 +1,49 @@
+<div class="sticky-top">
+  <div class="row clearfix" style=" padding: 0px 20px;">
+    <div class="col-md-6">
+      <h3 class="page-title">Party Category Master</h3>
+    </div>
+    <div class="col-md-6" style="float: right;">
+      <button type="button " class="btn btn-info pull-right" (click)="cancel()" style="margin-right : 10px;">
+        Back
+      </button>
+      <button type="button " class="btn btn-info pull-right" (click)="reset()" style="margin-right : 10px;">
+        Reset
+      </button>
+      <button class="btn btn-info pull-right" style="margin-right : 10px;" (click)="save()"
+        [disabled]="!detailsObj.ORGTYPECODE && !detailsObj.ORGTYPENAME">
+        Save
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="main-container" style="padding-top : 10px; margin-bottom: 0px">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="col-md-6">
+        <div class="form-group row">
+          <label class="col-md-3 from-control-label">Party Category Code:</label>
+          <div class="col-md-6">
+            <input type="text" class="form-control" [(ngModel)]="detailsObj.ORGTYPECODE">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-3 from-control-label">Party Category Name:</label>
+          <div class="col-md-6">
+            <input type="text" class="form-control" [(ngModel)]="detailsObj.ORGTYPENAME">
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="userSetting.Country == 1">
+          <label class="col-md-3 from-control-label">Party Type:</label>
+          <div class="col-md-6">
+            <select class="form-control" [(ngModel)]="detailsObj.PARTYTYPE">
+              <option value="C">Customer</option>
+              <option value="V">Supplier</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

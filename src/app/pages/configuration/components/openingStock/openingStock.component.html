@@ -1,0 +1,36 @@
+<style>
+    .voucherclass {
+        margin-left: 10px;
+        height: 23px;
+        vertical-align: middle;
+        font-size: 13px;
+        border: 1px solid #cbcbcb;
+        border-radius: 3px;
+        color: black;
+        padding-left: 4px;
+    }
+</style>
+<div class="row" style="margin: 0px; margin-top:-13px">
+    <ba-card style="margin-top:-15px;">
+        <div style="margin-top:-10px" [formGroup]="form">
+
+            <label style="margin-top:20px;">Voucher No. :</label>
+            <input type="text" class="voucherclass" formControlName="CHALANNO" readonly="true">
+
+
+
+            <label style="width:60.5px; margin-left: 30px; margin-left: 10px;">Division :</label>
+            <select formControlName="DIVISION" class="voucherclass">
+                    <option *ngFor=" let d of masterService.divisionList$ | async " [ngValue]="d.INITIAL ">{{d.NAME}}</option>
+                </select>
+                    </div>
+    </ba-card>
+</div>
+    <div class="row " style="margin: 0px; margin-top:-5px ">
+        <productentry [voucherType]="voucherType "></productentry>
+    </div>
+
+    <div style="padding-bottom: 10px ">
+        <button  style="margin-right: 4px;" *ngIf="TrnMainObj.Mode=='NEW'" (click)="onSaveClicked() "  class="btn btn-info ">Save</button>
+        <button (click)="onCancelClicked() " class="btn btn-info ">Back</button>
+    </div>

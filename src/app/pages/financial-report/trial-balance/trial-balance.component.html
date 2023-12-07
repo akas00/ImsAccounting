@@ -1,0 +1,248 @@
+<style>
+  td {
+    padding: 5px !important;
+  }
+
+  .border-bottom {
+    border-bottom: 1px solid !important;
+    width: 100%;
+    float: right;
+  }
+
+  .white-space {
+    white-space: pre !important
+  }
+
+  thead {
+    background: #c5e3ed;
+  }
+
+
+
+  .selected-row {
+    background-color: #787878 !important;
+    color: white;
+    font-size: 14px;
+  }
+
+  .text-bold {
+    font-weight: bold
+  }
+
+</style>
+
+
+
+<div class="clearfix">
+  <div class="col-md-1" style="padding: 0;width:30px;">
+    <table>
+      <tr style="height:30px;width:30px">
+        <td style="border: 1pt solid black;cursor: pointer" (click)="loadFilter()">
+          <i style="margin:5px"><span class="glyphicon glyphicon-filter" title="Filters"></span></i>
+        </td>
+      </tr>
+      <tr>
+        <td style="border: 1pt solid black;">
+
+          <i (click)="ExportReportInExcel()" style="margin:5px"> <span class="glyphicon glyphicon-export"></span></i>
+        </td>
+      </tr>
+
+      <tr>
+        <td style="border: 1pt solid black;">
+          <i (click)="print()" style="margin:5px"> <span class="glyphicon glyphicon-print"></span></i>
+        </td>
+      </tr>
+      <tr>
+        <td style="border: 1pt solid black;" class="cell-with-comment">
+          <i (click)="showPreviouslyLoadedReports()" style="margin:5px"> <span class="glyphicon glyphicon-open-file"></span></i>
+          <span class="cell-comment">
+            Open Report List [F4]
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div id="trialBalance" class="col-md-11" #tblTable tabindex="-1" *ngIf="_reportFilterService.ReportFilterObj.tblData"
+    style="height: 540px !important;overflow-y:scroll;background: #ffffff;padding: 0px; width: 97% !important">
+    <div class="header" style="position: sticky;top:0">
+      <table style="width:100%" id="report-header">
+        <thead style="border:1px solid;background: #c5e3ed;">
+          <tr>
+            <td rowspan="3" [ngStyle]="{'width.%':getHeaderWidth()}" style="border-right:1px solid">Particulars</td>
+            <td colspan="6" class="text-center" style="border-bottom: 1px solid">
+              <b>{{companyProfile?.CompanyInfo?.NAME}}</b> <br>
+              <b>{{_reportFilterService.ReportFilterObj.DATE1 | date:'shortDate'}} to
+                {{_reportFilterService.ReportFilterObj.DATE2|date:'shortDate'}}
+              </b>
+            </td>
+          </tr>
+          <tr class="text-center">
+            <td colspan="2" style="border-right:1px solid;border-bottom:1px solid"
+              *ngIf="_reportFilterService.ReportFilterObj.showOpeningBalance">
+              Opening Balance
+            </td>
+            <td colspan="2" style="border-right:1px solid;border-bottom:1px solid"
+              *ngIf="_reportFilterService.ReportFilterObj.showTransaction">
+              Running Balance
+            </td>
+            <td colspan="2" style="border-right:1px solid;border-bottom: 1px solid"
+              *ngIf="_reportFilterService.ReportFilterObj.showClosingBalance">
+              Closing Balance
+            </td>
+          </tr>
+          <tr>
+            <ng-container *ngIf="_reportFilterService.ReportFilterObj.showOpeningBalance">
+              <td style="border-right:1px solid" class="text-center">
+                Debit
+              </td>
+              <td style="border-right:1px solid" class="text-center">
+                Credit
+              </td>
+            </ng-container>
+            <ng-container *ngIf="_reportFilterService.ReportFilterObj.showTransaction">
+              <td style="border-right:1px solid" class="text-center">
+                Debit
+              </td>
+              <td style="border-right:1px solid" class="text-center">
+                Credit
+              </td>
+            </ng-container>
+            <ng-container *ngIf="_reportFilterService.ReportFilterObj.showClosingBalance">
+              <td style="border-right:1px solid" class="text-center">
+                Debit
+              </td>
+              <td style="border-right:1px solid" class="text-center">
+                Credit
+              </td>
+            </ng-container>
+          </tr>
+        </thead>
+      </table>
+    </div>
+    <table style="width: 100%" id="report-body">
+
+      <tbody class="trial-balance">
+
+        <ng-container *ngFor="let tbl of _reportFilterService.ReportFilterObj.tblData;let i=index">
+          <tr *ngIf="(i+1)!=_reportFilterService.ReportFilterObj.tblData.length"
+            [class.selected-row]="_reportFilterService.selectedRowIndex == i"
+            (click)="_reportFilterService.selectedRowIndex=i" (dblclick)="_reportFilterService.selectedRowIndex=i;onDoubleClick(i)">
+            <td [ngStyle]="{'width.%':getHeaderWidth()}"><span class="white-space">{{tbl?.ACNAME}}</span></td>
+            <ng-container *ngIf="_reportFilterService.ReportFilterObj.showOpeningBalance">
+              <td class="text-right" width="10%">
+                <span [ngClass]="{'text-bold':tbl.TYPE=='G'}">{{tbl?.OPENIGN_DR}}</span> <br>
+                <div *ngIf="tbl.TYPE=='G'" class="border-bottom"></div>
+              </td>
+              <td class="text-right">
+                <span [ngClass]="{'text-bold':tbl.TYPE=='G'}">{{tbl?.OPENING_CR}}</span> <br>
+                <div *ngIf="tbl.TYPE=='G'" class="border-bottom"></div>
+
+              </td>
+            </ng-container>
+            <ng-container *ngIf="_reportFilterService.ReportFilterObj.showTransaction">
+              <td class="text-right" width="10%">
+                <span [ngClass]="{'text-bold':tbl.TYPE=='G'}">{{tbl?.RUNNING_DR}}</span> <br>
+                <div *ngIf="tbl.TYPE=='G'" class="border-bottom"></div>
+              </td>
+              <td class="text-right" width="10%">
+                <span [ngClass]="{'text-bold':tbl.TYPE=='G'}">{{tbl?.RUNNING_CR}}</span> <br>
+                <div *ngIf="tbl.TYPE=='G'" class="border-bottom"></div>
+
+              </td>
+            </ng-container>
+            <ng-container *ngIf="_reportFilterService.ReportFilterObj.showClosingBalance">
+              <td class="text-right" width="10%">
+                <span [ngClass]="{'text-bold':tbl.TYPE=='G'}">{{tbl?.CLOSING_DR}}</span> <br>
+                <div *ngIf="tbl.TYPE=='G'" class="border-bottom"></div>
+
+              </td>
+              <td class="text-right" width="10%">
+                <span [ngClass]="{'text-bold':tbl.TYPE=='G'}">{{tbl?.CLOSING_CR}}</span> <br>
+                <div *ngIf="tbl.TYPE=='G'" class="border-bottom"></div>
+
+              </td>
+            </ng-container>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+    <div style="position: sticky;bottom:0">
+      <table id="report-footer" style="width:100%;table-layout: fixed;font-size: 15px;font-weight: 600">
+        <tfoot style="background: #c5e3ed;">
+          <tr>
+            <td [ngStyle]="{'width.%':getHeaderWidth()}">
+              {{_reportFilterService.ReportFilterObj.tblData[_reportFilterService.ReportFilterObj.tblData.length-1]?.ACNAME}}
+            </td>
+            <ng-container *ngIf="_reportFilterService.ReportFilterObj.showOpeningBalance">
+              <td style="width: 10%;text-align: right;">
+                {{_reportFilterService.ReportFilterObj.tblData[_reportFilterService.ReportFilterObj.tblData.length-1]?.OPENIGN_DR}}
+              </td>
+              <td style="text-align: right;" [ngStyle]="{'width.%':getopeningHeaderWidth()}">
+                {{_reportFilterService.ReportFilterObj.tblData[_reportFilterService.ReportFilterObj.tblData.length-1]?.OPENIGN_DR}}
+              </td>
+            </ng-container>
+            <ng-container *ngIf="_reportFilterService.ReportFilterObj.showTransaction">
+              <td style="width: 10%;text-align: right;">
+                {{_reportFilterService.ReportFilterObj.tblData[_reportFilterService.ReportFilterObj.tblData.length-1]?.RUNNING_DR}}
+              </td>
+              <td style="width: 10%;text-align: right;">
+                {{_reportFilterService.ReportFilterObj.tblData[_reportFilterService.ReportFilterObj.tblData.length-1]?.RUNNING_CR}}
+              </td>
+            </ng-container>
+            <ng-container *ngIf="_reportFilterService.ReportFilterObj.showClosingBalance">
+              <td style="text-align: center;">
+                {{_reportFilterService.ReportFilterObj.tblData[_reportFilterService.ReportFilterObj.tblData.length-1]?.CLOSING_DR}}
+              </td>
+              <td style="width: 8%;text-align: center;">
+                {{_reportFilterService.ReportFilterObj.tblData[_reportFilterService.ReportFilterObj.tblData.length-1]?.CLOSING_CR}}
+              </td>
+            </ng-container>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="modal-sticky" *ngIf="showReportListDialog"
+  style="overflow: auto;right: 40%;width: 30%;z-index: 9999999">
+
+  <div class="modal-content modal-content-main-area">
+    <div style="height: 28px; margin-top: 5px; ">
+      <div class="col-md-12">
+        <h4 class="modal-title" id="myModalLabel">Loaded Report List</h4>
+      </div>
+
+    </div>
+    <div class="table-responsive">
+
+      <table class="table" style="display: grid;">
+        <thead>
+          <tr>
+            <th style="width: 1%; ">SI NO </th>
+            <th style="width: 8%; ">Report Name</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor=" let column of previouslyLoadedReportsList; let i= index ;">
+            <td style="width: 1%; ">{{i+1}}</td>
+            <td style="width: 8%; " [routerLink]="column.activeurlpath">{{column.reportname}}</td>
+          </tr>
+
+        </tbody>
+      </table>
+
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="CancelReportList()">Cancel</button>
+    </div>
+  </div>
+
+</div>
+
+<report-filter #reportFilter (filterEmiiter)="applyFilter($event)" [reportType]="reportType"></report-filter>

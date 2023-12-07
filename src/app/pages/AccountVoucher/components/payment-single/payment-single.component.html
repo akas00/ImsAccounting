@@ -1,0 +1,30 @@
+<div class="sticky-top">
+    <div class="clearfix">
+      <div class="col-md-2">
+        <voucher-master-toggler></voucher-master-toggler>
+      </div>
+      <div class="col-md-3">
+        <h3 style="color: black;">Single Payment</h3>
+      </div>
+      <div class="col-md-7">
+        <account-master-action (onBillTrackEmit)="BillTrack()"></account-master-action>
+      </div>
+    </div>
+  </div>
+  <div class="main-container">
+    <div [hidden]="!masterService.ShowMore" class="clearfix">
+      <!-- <voucher-date-entry style="margin-top:-15px;"></voucher-date-entry> -->
+      <trnmain-voucher-entry></trnmain-voucher-entry>
+      <SeriesDialog
+        [voucherType]="voucherType"
+        (sendPrefix)="prefixChanged($event)"
+      ></SeriesDialog>
+    </div>
+    <div class="clearfix" style="margin-top: 5px">
+      <trntran-voucher-entry #trnmainentry></trntran-voucher-entry>
+    </div>
+  </div>
+  <div class="sticky-bottom" style="background: gray;">
+      <account-voucher-summary></account-voucher-summary>
+  </div>
+  

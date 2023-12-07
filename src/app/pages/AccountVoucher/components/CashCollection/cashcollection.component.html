@@ -1,0 +1,406 @@
+<style>
+  td {
+    border: 1px solid #e6e6e6;
+    height: 24px;
+  }
+
+  input {
+    padding: 8px;
+    border: 0px;
+    width: 99%;
+    margin: 1.5% 2%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+
+  th {
+    font-weight: bold;
+    font-family: Roboto, Arial, sans-serif;
+  }
+
+  .input_hight {
+    height: 24px;
+  }
+
+  select {
+    margin: 5px 0;
+    margin-left: 2%;
+  }
+
+  select label {
+    margin-top: 9px;
+  }
+
+  .totalvalue {
+    align-items: center;
+  }
+
+  .totalvalue label {
+    white-space: nowrap;
+    margin-bottom: 0 !important;
+    padding: 0 10px;
+
+  }
+
+  .totalvalue input {
+    height: 25px;
+  }
+
+  input:disabled,
+  select:disabled,
+  textarea:disabled {
+    cursor: not-allowed !important;
+    color: black !important;
+    background-color: #EBEBE4 !important;
+  }
+</style>
+
+<div class="clearfix">
+  <div>
+    <div class="row" style="margin-top: 10px;">
+      <div class="col-md-2">
+
+        <label
+          style="font-family: Segoe UI Light;font-weight: bold;font-size: 20px;padding-left: 5%;padding-top: 3%;width: 100%;">CASH
+          COLLECTION
+        </label>
+      </div>
+      <div class="col-md-7">
+        <div class="row col-md-12">
+          <div class="col-md-3" style="margin-top: 1%;">
+            <label>Voucher No :</label>
+            <b>{{CashCollectionObj.CC_VCHRNO}}</b>
+          </div>
+          <div class="col-md-6 entryDate" style="display: flex; align-items: center;">
+            <label style="flex: 0 0 15%; margin-bottom: 0; white-space: nowrap;">Entry Date:</label>
+            <input style="flex: 0 0 30%; height: 24px;
+          font-size: 12px;" placeholder="Year Start Date" type="date" [(ngModel)]="CashCollectionObj.ENTRYDATE"
+              (change)="changeEntryDate($event.target.value,'AD')" [disabled]="CashCollectionObj.MODE=='VIEW'"> <span
+              style="margin-right: 10px;">A.D</span>
+
+            <div style="flex: 0 0 30%; height: 24px;
+          font-size: 12px; display: flex;
+      align-items: center;">
+              <nepali-date-picker name="nepaliDateEntry" [id]="'nepaliDateEntry'"
+                (change)="changeEntryDate($event.detail.value,'BS')" [(ngModel)]="CashCollectionObj.ENTRY_BSDATE"
+                [label]="'dd/mm/yyyy'" [disabled]="CashCollectionObj.MODE=='VIEW'">
+              </nepali-date-picker> <span>B.S</span>
+            </div>
+          </div>
+          <div class="col-md-3" *ngIf="CashCollectionObj.MODE=='VIEW'" style="margin-top: 1%;">
+            <label>RV No :</label>
+            <b>{{CashCollectionObj.RV_VCHRNO}}</b>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3" style="margin-top:10px">
+        <button style="margin: 0px 4px;" (click)="back()" class="btn btn-info pull-right">
+          F10 BACK
+        </button>
+        <button style="margin: 0px 4px;" class="btn btn-info pull-right" (click)="saveClick()"
+          [disabled]="CashCollectionObj.MODE=='VIEW'">
+          F6 Save
+        </button>
+        <button style="margin: 0px 4px;" class="btn btn-info pull-right" (click)="onViewClicked()">
+          F6 View
+        </button>
+        <button style="margin: 0px 4px;" (click)="reset()" class="btn btn-info pull-right">
+          F3 Reset
+        </button>
+      </div>
+    </div>
+
+    <div class="col-md-12" style="border-bottom: 1px solid #828080;
+        margin-top:10px;
+        margin-bottom: 5px;
+        padding-bottom: 10px;
+        background: #e2eaea; padding-top: 9px;
+        width: 100%;
+       ">
+      <div style="display: flex;">
+      </div>
+      <div class="col-md-4">
+        <div class="d-flex" style="display: flex;">
+          <label style="flex: 0 0 50%;    flex: 0 0 33%;
+        margin-left: 13%;">In (A.D)</label>
+          <label style="flex: 0 0 50%;">In (B.S)</label>
+        </div>
+
+        <div class="fromdate" style="display: flex; align-items: center;">
+          <label style="flex: 0 0 10%;">From:</label>
+          <input style="flex: 0 0 30%; height: 24px;
+      font-size: 12px;" placeholder="Year Start Date" type="date" [(ngModel)]="CashCollectionObj.DATE1"
+            (change)="changeDate1($event.target.value,'AD')" [disabled]="CashCollectionObj.MODE=='VIEW'">
+
+          <div style="flex: 0 0 30%; height: 24px;
+      font-size: 12px;">
+            <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDatefrom'"
+              (change)="changeDate1($event.detail.value,'BS')" [label]="'dd/mm/yyyy'" [(ngModel)]="CashCollectionObj.BSDATE1"
+              [disabled]="CashCollectionObj.MODE=='VIEW'">
+            </nepali-date-picker>
+          </div>
+        </div>
+
+        <div class="fromdate" style="display: flex; align-items: center;">
+          <label style="flex: 0 0 10%;">To:</label>
+          <input style="flex: 0 0 30%; height: 24px;
+      font-size: 12px;" placeholder="Year Start Date" type="date" [(ngModel)]="CashCollectionObj.DATE2"
+            (change)="changeDate2($event.target.value,'AD')" [disabled]="CashCollectionObj.MODE=='VIEW'">
+
+          <div style="flex: 0 0 30%; height: 24px;
+      font-size: 12px;">
+            <nepali-date-picker name="nepaliDateTo" [id]="'nepaliDateTo'"
+              (change)="changeDate2($event.detail.value,'BS')" [label]="'dd/mm/yyyy'"[(ngModel)]="CashCollectionObj.BSDATE2"
+              [disabled]="CashCollectionObj.MODE=='VIEW'">
+            </nepali-date-picker>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3" style="margin-top: 8px;">
+        <!-- <div class="areaWrapper" style="display: flex;">
+          <label style="flex: 0 0 30%; margin-top: 9px;">Area :</label>
+          <select style="flex: 0 0 65%" class="form-select form-control"   [(ngModel)]="CashCollectionObj.AREA_NAME">
+            <option >katmhandu</option>
+            <option value="bkt">Bhaktapur</option>
+          </select>
+        </div> -->
+        <div class="SalesmanWrapper" style="display: flex;">
+
+          <label style="flex: 0 0 30%; margin-top: 9px;">Salesman :</label>
+          <input type="text" style="height:24px;width: 95% !important;" (keydown.Enter)="EnterClick()"
+            [(ngModel)]="CashCollectionObj.SALESMAN_NAME" placeholder="Press Enter to Select Salesman"
+            autocomplete="off" (keydown)="preventInput($event)" [disabled]="CashCollectionObj.MODE=='VIEW'">
+        </div>
+        <div class="ReceiptMode" style="display: flex;">
+          <label style="flex: 0 0 30%; margin-top: 9px;">Receipt Mode :</label>
+          <select style="flex: 0 0 65%" class="form-select form-control" [(ngModel)]="CashCollectionObj.RECEIPT_MODE"
+            [disabled]="CashCollectionObj.MODE=='VIEW'">
+            <option value="cash">Cash</option>
+          </select>
+        </div>
+        <div class="daybasis" style="display: flex;">
+          <label style="flex: 0 0 30%; margin-top: 9px;">Days Basis :</label>
+          <select style="flex: 0 0 65%" class="form-select form-control" [(ngModel)]="CashCollectionObj.DAYS_BASIS"
+            [disabled]="CashCollectionObj.MODE=='VIEW'">
+            <option value="BILLDATE_WISE">Bill Date Wise</option>
+            <!-- <option value="DUEDATE_WISE">Due Date Wise</option> -->
+          </select>
+        </div>
+      </div>
+      <div class="col-md-4" style="margin-top: 9px;">
+        <div style="display: flex;">
+          <label style="flex: 0 0 35%; margin-top: 9px;">Cash and Bank A/C: </label>
+          <input type="text" style="height:24px;width: 95% !important;" (keydown.Enter)="CashBankList()"
+            [(ngModel)]="CashCollectionObj.CASHBANK_ACNAME" placeholder="Press Enter to Select Cash/Bank"
+            autocomplete="off" (keydown)="preventInput($event)" [disabled]="CashCollectionObj.MODE=='VIEW'">
+        </div>
+        <div style="display: flex;">
+          <label style="flex: 0 0 35%; margin-top: 9px;">Customer Name :</label>
+          <input type="text" style="height:24px;width: 95% !important;" (keydown.Enter)="showAcList(); "
+            [(ngModel)]="CashCollectionObj.CUS_ACNAME" placeholder="Press Enter to Select A/C" autocomplete="off"
+            (keydown)="preventInput($event)" [disabled]="CashCollectionObj.MODE=='VIEW'">
+        </div>
+        <!-- <div class="costCenter" style="display: flex;">
+          <label style="flex: 0 0 35%; margin-top: 9px;">Cost Center :</label>
+          <input type="text" style="height:24px;width: 95% !important;" (keydown.Enter)="showCostCenterList(); "
+            [(ngModel)]="CashCollectionObj.COSTCENTER_NAME" placeholder="Press Enter to Select Costcenter"
+            autocomplete="off" (keydown)="preventInput($event)">
+
+        </div> -->
+        <div style="display: flex;">
+          <label style="flex: 0 0 35%; margin-top: 9px;">Remarks :</label>
+          <input type="text" [(ngModel)]="CashCollectionObj.REMARKS" style="flex: 0 0 61%;
+          color: #000000;
+          border: 1px solid #cbcbcb;
+          border-radius: 5px;
+          background-color: #ffffff;
+          box-shadow: none;
+          font-size: 14px;
+          margin: 0;
+          height: 25px !important;
+          margin-left: 1.95%;" [disabled]="CashCollectionObj.MODE=='VIEW'">
+          <button style="margin: 0px 4px; margin-left: 35px;" (click)="loadsalesdata()" class="btn btn-info pull-right"
+            [disabled]="CashCollectionObj.MODE=='VIEW'">
+            Load Data
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div style="padding-right: 0px !important; padding-left: 0px !important;">
+      <div style="height:56vh; overflow-y: scroll">
+        <table style="margin-bottom: 5px;font-size: 13px;width: 100%;">
+          <thead>
+            <tr style=" border-bottom: 2px solid #E6E6E6;
+                              border-top: 2px solid #E6E6E6;
+                              height: 30px;
+                              background: silver;
+                              color: black;">
+              <th style="width: 2%;">SNo.</th>
+              <th style="width:19%;padding-left: 1%;">Customer Name</th>
+              <th style="width: 11%;padding-left: 1%;">
+                Bill No
+              </th>
+              <th style="width: 11%;padding-left: 1%;">
+                Bill Date
+              </th>
+              <th style="width: 11%;padding-left: 1%;">
+                Due Date
+              </th>
+              <th style="width:7%;padding-left: 1%;">
+                Bill Amount
+              </th>
+              <th style="width:7%;padding-left: 1%;">
+                Due Amount
+              </th>
+              <th style="width:7%;padding-left: 1%;">
+                Balance
+              </th>
+              <th style="width:3%;">
+                <div class="form-check" style="margin-bottom: 0;">
+                  <input class="form-check-input" type="checkbox" (change)="handleChange($event)" id="selectAll"
+                    [disabled]="CashCollectionObj.MODE=='VIEW'">
+                </div>
+              </th>
+              <th style="width:7%;padding-left: 1%;">
+                Cash Collection
+              </th>
+              <th style="width:7%;padding-left: 1%;">
+                Receipt No.
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let i of DetailList;let x = index">
+              <tr style="border: 1px solid #e6e6e6;max-height:25px;">
+                <td style="line-height:21px; text-align:center">
+                  {{x+1}}
+                </td>
+                <td style="line-height:21px; text-align:center">
+                  <input type="text" [(ngModel)]="i.CUSTOMER_ACNAME" style="height:24px;width: 95% !important;"
+                    placeholder="Press Enter to select" disabled>
+                </td>
+                <td style="line-height:21px; text-align:center">
+                  <input type="text" [(ngModel)]="i.BILL_NO" class="input_hight"
+                    style="height:24px;width: 94% !important;" placeholder="Press Enter to select" disabled>
+                </td>
+                <td style="line-height:21px; text-align:center">
+                  <input type="date" class="input_hight billDate" [(ngModel)]="i.BILL_DATE" disabled>
+                </td>
+
+                <td style="line-height:21px; text-align:center">
+                  <input type="date" class="input_hight dueDate" [(ngModel)]="i.DUE_DATE" disabled>
+                </td>
+                <td style="line-height:21px; text-align:center">
+                  <input type="number" [(ngModel)]="i.BILL_AMOUNT" class="input_hight"
+                    style="height:24px;float: right;width: 93% !important;padding-right: 0px;text-align: right;"
+                    disabled>
+                </td>
+                <td style="line-height:21px; text-align:center">
+                  <input type="number" [(ngModel)]="i.DUE_AMOUNT" class="input_hight"
+                    style="height:24px;float: right;width: 93% !important;padding-right: 0px;text-align: right;"
+                    disabled>
+                </td>
+                <td style="line-height:21px; text-align:center">
+                  <input type="text" [(ngModel)]="i.BALANCE" class="input_hight"
+                    style="height:24px;width: 90% !important" disabled>
+                </td>
+                <td style="line-height:21px; text-align:center">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" (change)="ChooseCashCollection($event, x)"
+                      [(ngModel)]="i.IS_CHECKED" [disabled]="CashCollectionObj.MODE=='VIEW'">
+
+                  </div>
+                </td>
+                <td style="line-height:21px; text-align:center">
+                  <input type="number" [(ngModel)]="i.CASH_COLLECTION" style="height: 24px;width: 94% !important;"
+                    (keydown.Enter)="CalculateBal(x)" (keydown.Tab)="CalculateBal(x)" autocomplete="off"
+                    [disabled]="i.IS_CHECKED==true || CashCollectionObj.MODE=='VIEW'">
+                </td>
+                <td style="line-height:21px; text-align:center">
+                  <input type="text" class="input_hight receiptNo" [(ngModel)]="i.RECEIPT_NO"
+                    [disabled]="CashCollectionObj.MODE=='VIEW'">
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+
+
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row" style="position: fixed;
+bottom: 20px; background-color: #fff;">
+
+  <tr>
+    <td style="width: 5%;"></td>
+    <td style="width: 19%;">
+      <h5 style="font-weight: bold; margin: 0 ;padding-left:10px;">Total:</h5>
+    </td>
+    <td>
+      <div class="totalvalue " style="display: flex;">
+        <label for="" style="flex:0 0 10% ;">Total Bill : </label>
+        <input type="text" [(ngModel)]="this.TotalBillCount" disabled>
+
+      </div>
+    </td>
+
+    <td>
+      <div class="totalvalue " style="display: flex;">
+        <label for="" style="flex:0 0 30% ;">Total Bill AMT : </label>
+        <input type="text" [(ngModel)]="this.CashCollectionBillAmount" disabled>
+
+      </div>
+    </td>
+
+    <td>
+      <div class="totalvalue" style="display: flex;">
+        <label for="" style="flex:0 0 30% ;">Total Due AMT : </label>
+
+        <input type="text" [(ngModel)]="this.CashCollectionDueAmount" disabled>
+      </div>
+    </td>
+    <td>
+      <div class="totalvalue " style="display: flex;">
+        <label for="" style="flex:0 0 30% ;">Total Balance : </label>
+        <input type="text" [(ngModel)]="this.CashCollectionTotalBalance" disabled>
+      </div>
+    </td>
+
+    <td>
+      <div class="totalvalue " style="display: flex;">
+        <label for="" style="flex:0 0 30% ;">Total Cash Collection : </label>
+        <input type="text" [(ngModel)]="CashCollectionObj.TOTAL_CASHCOLLECTION" disabled>
+      </div>
+    </td>
+    <td style="width: 7%;">
+    </td>
+
+  </tr>
+
+</div>
+
+
+
+<generic-popup-grid #genericGridACList [popupsettings]="gridACListPopupSettings"
+  (onItemDoubleClick)="onAcSelect($event)"></generic-popup-grid>
+
+<generic-popup-grid #genericeSalesManList [popupsettings]="gridCostSalesManPopupSetting"
+  (onItemDoubleClick)="onSalesManSelect($event)"></generic-popup-grid>
+
+<generic-popup-grid #genericGridCashBankList [popupsettings]="gridCashBankListPopupSettings"
+  (onItemDoubleClick)="onCashBankSelect($event)"></generic-popup-grid>
+
+<generic-popup-grid #genericGridCostCenterList [popupsettings]="gridCostCenterListPopupSettings"
+  (onItemDoubleClick)="onCostcenterSelect($event)"></generic-popup-grid>
+
+<generic-popup-grid #genericGridCCvoucherList [popupsettings]="gridCCvoucherListPopupSettings"
+  (onItemDoubleClick)="onVoucherDoubleClick($event)">
+</generic-popup-grid>

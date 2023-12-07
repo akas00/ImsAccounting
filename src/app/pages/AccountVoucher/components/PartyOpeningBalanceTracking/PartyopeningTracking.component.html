@@ -1,0 +1,136 @@
+<style>
+    .modal-content {
+      padding: 1px;
+      margin: 0px;
+      float: right;
+    }
+  
+    .table-scroll {
+      overflow-y: scroll;
+      overflow-x: hidden;
+    }
+  
+    tbody>tr:hover {
+      background-color: #f3f5f4;
+      cursor: pointer;
+    }
+  
+    tr {
+      font-size: 11px;
+    }
+  
+    .selected-row {
+      background-color: #ced6d3 !important;
+    }
+  
+    td {
+      padding: 2px;
+      border: 1px solid black;
+    }
+  
+    th {
+      padding: 2px;
+      border: 1px solid black;
+    }
+  
+    .modal-sticky {
+      position: fixed;
+      bottom: 45px;
+      right: 14%;
+      width: 120%;
+      height: 76%;
+      z-index: 2;
+    }
+  
+    .input {
+      width: 80%
+    }
+  
+    td {
+      line-height: 0px !important;
+      height: 26px
+    }
+  
+    .table>tbody>tr>td {
+      border-top: 0px solid gainsboro !important;
+    }
+  
+    .TopMargin {
+      Margin-Top: 10px
+    }
+  
+    .table>tbody>tr>td:first-child {
+      text-align: left !important;
+    }
+  
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  
+    label {
+      height: 21px;
+      font-weight: normal;
+      margin: 2px;
+      vertical-align: middle;
+      font-size: 13px;
+      padding-top: 6px;
+    }
+  
+  </style>
+  <div class="modal-sticky" [class.modal-sticky-hide]="!isActive" style="display : block; padding: 0px;">
+    <!-- Modal content -->
+    <div class="modal-content" style="background-color: #f1f1f1; width:60% !important;height: 450px;
+      border: 1px solid;">
+      <div class="modal-header" style="padding: 0px;background: #f1f1f1;;">
+  
+        <h4 class="modal-title" style="text-align: center;">
+        Opening Balance Tracking
+        </h4>
+      </div>
+  
+      <div class="col-md-9 plainBackGround"
+        style="height:80px;margin : 0px;  border-bottom: 1px solid silver;padding-top: 12px;">
+        <div class="col-md-12">
+          <label style="width: 30%;">Voucher Number: </label>
+          <input type="text" style="width:65%" name="VOUCHERNO" [(ngModel)]="VOUCHERNO">
+        </div>
+  
+        <div class="col-md-12">
+            <label style="width: 30%;">Amount: </label>
+            <input type="text" style="width:65%" name="amt" [(ngModel)]="Amount">
+          </div>
+  
+      </div>
+      <div class="col-md-3 plainBackGround"
+        style="height:80px;margin : 0px;  border-bottom: 1px solid silver;padding-top: 12px;">
+        <button style="height: 40px" class="btn btn-info" (click)="onAddClick()">Add</button>  
+      </div>
+  
+      <div class="col-md-12" style="overflow: scroll;max-height: 300px;height:300px">
+        <table style="width:100%">
+          <tr style="background-color: silver;">
+          
+            <th>Voucher No</th>
+            <th> Amount</th>
+            <th>Action</th>
+          </tr>
+          <tbody *ngFor="let i of BillList; let index = index">
+            <tr>
+              
+              <td>{{i.VOUCHERNO}}</td>
+              <td>{{i.AMOUNT}}</td>
+              <td>
+                <i class="fa fa-trash fa-2x" style="color: #2dacd1;" (click)="remove(i)"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-md-12">
+        <button style="height: 26px;width: 100px;" class="btn btn-info" (click)="okClick()">OK</button>
+        <button style="height: 26px;width: 100px;" class="btn btn-info" (click)="hide()">Cancel</button>
+      </div>
+    </div>
+  

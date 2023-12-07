@@ -1,0 +1,104 @@
+<style>
+    .sync_container {
+  position: fixed !important;
+  transform: translate(70px, -30px);
+  /* min-height: calc(100vh - 60px); */
+  background: #ffffff;
+  z-index: 99999;
+  width: 25%;
+  top: 22.5%;
+  left: 22%;
+  }
+  
+  .card{
+    margin: 20px auto !important;
+    width: 35%;
+  }
+  
+  .page-title {
+  text-align: center;
+  }
+  
+  .form-control {
+  font-size: 12px;
+  }
+  
+  .button-group {
+  position: absolute;
+  right: 3%;
+  top: 3%;
+  }
+  
+  .card-body {
+  /* line-height: 0.4rem; */
+  height: 17rem;
+  }
+  .form-check-label{
+  padding-left: 0rem;
+  vertical-align: unset;
+  font-size: 15px;
+  }
+  </style>
+  
+    <!-- <div *ngIf="showSyncPopup" class="card" style="margin-bottom: 0px;">  -->
+        <!-- <div class="card-header">
+            <h5 class="page-title" style="font-weight: bold;">SYNC LIST</h5>
+            <div class="button-group">
+                <button type="button" title="Close" class="btn btn-info" (click)="closeDialog()">&times;</button>
+            </div>
+        </div> -->
+  <!-- <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="card-body" style="height: 17rem; overflow-y: scroll; overflow-x: hidden;">
+          <table class="table table-summary" style="text-align: left;">
+            <tr *ngFor="let data of synclist; let i=index">
+              <td><input type="checkbox" [value]="data.value" (change)="onCheckboxChange($event)" style="padding-left: 30px;"></td>
+              <td><label class="form-check-label">{{data.name}}</label></td>
+              <td><label class="form-check-label">Last Synced On:&nbsp;{{data.lastsyndate}}</label></td>
+            </tr>
+           
+          </table>
+  
+        </div>
+        <div class="card-footer" style="height: 50px;">
+          
+          <button class="btn btn-sm btn-info " type="submit">SYNC</button>
+         
+        </div>
+        
+        </form> -->
+  
+    <!-- </div> -->
+    <!-- && IsOnSync == 1 -->
+    <div *ngIf="showSyncPopup && this.userSetting.IsOnSync == 1 ">
+      <div class="modal-sticky" style="display : block; padding: 0px;  margin-bottom: 20px;margin-right:16.5rem;">
+        <div class="modal-content modal-content-main-area" style="width: 70%;">
+          <div class="modal-header" style="padding: 0px;background: #82cdfa;">
+            <h5 class="modal-title" style=" padding-left: 5px;text-align: center;
+            font-weight: bold; height:18px;padding-top: 12px;">SYNC LIST</h5>
+           <button class="close" aria-label="Close" (click)=" closeModal()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          </div>
+          <!-- <div class="modal-body"></div> -->
+          <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <div class="card-body" style="height: 17rem; overflow-y: scroll; overflow-x: hidden;">
+              <table class="table table-summary" style="text-align: left;">
+                <tr *ngFor="let data of synclist; let i=index">
+                  <td><input class="inputGroup" type="checkbox" [value]="data.value" (change)="onCheckboxChange($event)" style="padding-left: 30px;"></td>
+                  <td><label class="form-check-label">{{data.name}}</label></td>
+                  <td><label class="form-check-label">Last Synced On:&nbsp;{{data.lastsyndate}}</label></td>
+                </tr>
+               
+              </table>
+      
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-sm btn-info" type="submit" style="font-size: 12px;">SYNC</button>
+            </div>  
+            </form>
+          
+
+        </div>
+      </div>
+    </div>
+  

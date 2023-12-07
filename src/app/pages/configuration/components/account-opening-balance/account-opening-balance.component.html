@@ -1,0 +1,60 @@
+
+<style>
+    .sectionWrapper{
+      display: flex;
+      flex-direction: column;
+      height: 94vh;
+    }
+
+    .midTableWrapper{
+      flex: 1; 
+      overflow: auto;
+      overflow-x:hidden;
+    }
+    .footer-wrapper {
+      background: lightgreen;
+      min-height: 87px;
+    }
+
+  </style>
+
+<div class="sectionWrapper">
+  <div class="topWwrapper">
+
+      <div class="sticky-top">
+    <div class="clearfix">
+      <div class="col-md-2">
+        <voucher-master-toggler></voucher-master-toggler>
+      </div>
+      <div class="col-md-3">
+        <h2 style="color: black;">{{ _trnMainService.pageHeading }}</h2>
+      </div>
+      <div class="col-md-7">
+        <opening-balance-action></opening-balance-action>
+      </div>
+    </div>
+  </div>
+  <div class="main-container">
+    <div[hidden]="!masterService.ShowMore" class="clearfix"> 
+      <trnmain-voucher-entry></trnmain-voucher-entry> 
+    </div>
+
+  </div>
+
+  </div>
+   <div class="midTableWrapper">
+        <div class="clearfix" style="margin-top: 5px">
+      <trntran-voucher-entry></trntran-voucher-entry>
+    </div>
+
+   </div>
+    
+     <div class="footer-wrapper" style="background: gray;">
+      <account-voucher-summary></account-voucher-summary>
+  </div>
+
+</div>
+
+
+
+  

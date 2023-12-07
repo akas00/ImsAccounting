@@ -1,0 +1,228 @@
+<div class="sticky-top">
+  <div class="row clearfix" style=" padding: 0px 20px;">
+    <div class="col-md-6">
+      <h3 class="page-title">{{ modeTitle }}</h3>
+    </div>
+    <div class="col-md-6" style="float: right;">
+      <button type="button " class="btn btn-info pull-right" (click)="cancel()" style="margin-right : 10px;">
+        Back
+      </button>
+      <button *ngIf="viewMode == false" (click)="onSave()" class="btn btn-info pull-right" style="margin-right : 10px;">
+        Save
+      </button>
+    </div>
+  </div>
+</div>
+<div class="main-container" style="padding-top : 10px; margin-bottom: 0px">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="tabbable" id="warehouse-tabs">
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a class="nav-link active" href="#general-info3" data-toggle="tab">General Info</a>
+          </li>
+          <!-- <li class="nav-item">
+                      <a class="nav-link" href="#tab2" data-toggle="tab">Section 2</a>
+                    </li> -->
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="general-info3">
+            <form class="row" class="form-horizontal" [formGroup]="form">
+              <!-- <ba-card baCardClass="with-scroll">  -->
+              <div class="col-md-6">
+                <!-- <div class="form-group row">
+                                            <label class="col-sm-4 form-control-label">Location Name</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" [style.background-color]="disabled()"
+                                                    [style.background-color]="editDisabled()" style="color:black"
+                                                    class="form-control" id="brandTypeName" name="brandTypeName"
+                                                    formControlName="ADDRESS" placeholder="Location Name" />
+                                                                                                                          
+                                            </div>
+                                    </div> -->
+                <div class="form-group row">
+                  <label class="col-sm-4 form-control-label">Bank Name*</label>
+                  <div class="col-sm-8">
+                    <input type="text" [style.background-color]="disabled()" [style.background-color]="editDisabled()"
+                      style="color:black" class="form-control" id="brandTypeName" name="brandTypeName"
+                      formControlName="ACNAME" placeholder="Account Name" />
+
+                  </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 form-control-label">Account Type* </label>
+                    <div class="col-sm-8">
+                      <select class="form-control" formControlName="CTYPE">
+  
+                        <option value='Saving account'>Saving account</option>
+                        <option value='Current account'>Current account</option>
+                        <option value='Bank OCC account'>Bank OCC account</option>
+  
+                      </select>
+                    </div>
+                  </div>
+                <div class="form-group row">
+                  <label class="col-sm-4 form-control-label">Branch Name</label>
+                  <div class="col-sm-8">
+                    <input type="text" [style.background-color]="disabled()" [style.background-color]="editDisabled()"
+                      style="color:black" class="form-control" id="branchNameId" name="BranchName"
+                      formControlName="ADDRESS" placeholder="Branch Name" />
+
+                  </div>
+                </div>
+                
+                <div class="form-group row">
+                  <label class="col-sm-4 form-control-label">Branch Code</label>
+                  <div class="col-sm-8">
+                    <input type="text" [style.background-color]="disabled()" [style.background-color]="editDisabled()"
+                      style="color:black" class="form-control" id="branchCodeId" name="BranchCode"
+                      formControlName="ACCODE" placeholder="Branch Code" />
+
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-sm-4 form-control-label">IFSC code</label>
+                  <div class="col-sm-8">
+                    <input type="text" [style.background-color]="disabled()" [style.background-color]="editDisabled()"
+                      style="color:black" class="form-control" id="IFCS_CODE" name="IFCS_CODE"
+                      formControlName="IFCS_CODE" placeholder="IFCS CODE" />
+
+                  </div>
+                </div>
+
+
+
+
+                <div class="form-group row">
+                  <label class="col-sm-4 form-control-label">Account Credit Limit</label>
+                  <div class="col-sm-8">
+                    <input type="number" [style.background-color]="disabled()" [style.background-color]="editDisabled()"
+                      style="color:black" class="form-control" id="brandTypeName" name="brandTypeName"
+                      formControlName="CRLIMIT" placeholder="Account Credit Limit" />
+
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-sm-4 form-control-label">Account Number</label>
+                  <div class="col-sm-8">
+                    <input type="text" [style.background-color]="disabled()" [style.background-color]="editDisabled()"
+                      style="color:black" class="form-control" id="brandTypeName" name="brandTypeName"
+                      formControlName="BANKACCOUNTNUMBER" placeholder="Account Number" />
+
+                  </div>
+                </div>
+
+                <!-- <div class="form-group row">
+                                                <label class="col-sm-4 form-control-label">Building</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" [style.background-color]="disabled()"
+                                                        [style.background-color]="editDisabled()" style="color:black"
+                                                        class="form-control" id="brandTypeName" name="brandTypeName"
+                                                        formControlName="BANKBUILDING" placeholder="Building" />
+                                                                                                                              
+                                                </div>
+                                        </div> -->
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group row">
+                  <label class="col-sm-4 form-control-label">City</label>
+                  <div class="col-sm-8">
+                    <input type="text" [style.background-color]="disabled()" [style.background-color]="editDisabled()"
+                      style="color:black" class="form-control" id="brandTypeName" name="brandTypeName"
+                      formControlName="CITY" placeholder="City" />
+
+                  </div>
+                </div>
+
+                <div class="form-group row">
+                  <label class="col-sm-4 form-control-label">Phone No</label>
+                  <div class="col-sm-8">
+                    <input type="text" [style.background-color]="disabled()" [style.background-color]="editDisabled()"
+                      style="color:black" class="form-control" id="brandTypeName" name="brandTypeName"
+                      formControlName="PHONE" placeholder="Phone No" />
+
+                  </div>
+                </div>
+
+                <!-- <div class="form-group row">
+                  <label class="col-sm-4 form-control-label">GST No</label>
+                  <div class="col-sm-8">
+                    <input type="text" [style.background-color]="disabled()" [style.background-color]="editDisabled()"
+                      style="color:black" class="form-control" id="brandTypeName" name="brandTypeName"
+                      formControlName="GSTNO" placeholder="GST NO" />
+
+                  </div>
+                </div> -->
+
+                <div class="form-group row">
+                  <label class="col-sm-4 form-control-label">Location Type</label>
+                  <div class="col-sm-8">
+                    <select class="form-control" formControlName="PSTYPE">
+                      <option value='local'>Local</option>
+                      <option value='interstate'>Interstate</option>
+                      <option value='import'>Import</option>
+                      <option value='unregistered'>Unregistered</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- <div class="form-group row">
+                                                <label class="col-sm-4 form-control-label">Cost Center  Enables</label>
+                                                <div class="col-sm-8">
+                                                  <select class="form-control" formControlName="BANKCOSTCENTER">
+                                                      <option value=1>Yes</option>
+                                                      <option value=0>No</option>
+                                                  </select>                                                                                                                            
+                                                </div>
+                                        </div> -->
+                                        <div class="form-group row">
+                                          <label class="col-sm-4 form-control-label">State </label>
+                                          <div class="col-sm-8">
+                      
+                                            <select class="form-control"  formControlName="STATE">
+                                              <option *ngFor="let i of StateList" value={{i.StateCode}}>{{i.StateName}}</option>
+                                            </select>
+                                          
+                                          </div>
+                                        </div>
+                                        <div class="form-group row">
+                                          <label class="col-sm-4 form-control-label">Country</label>
+                                          <div class="col-sm-8">
+                                            <input type="text" 
+                                              style="color:black" class="form-control" id="COUNTRY" name="COUNTRY"
+                                              formControlName="BANKBUILDING" placeholder="Country Name" />
+                        
+                                          </div>
+                                        </div>
+
+                <div class="form-group row">
+                  <label class="col-sm-4 form-control-label">Bank Account Status</label>
+                  <div class="col-sm-8">
+                    <select class="form-control" formControlName="ISACTIVE">
+                      <option value=1>Active</option>
+                      <option value=0>InActive</option>
+                    </select>
+                  </div>
+                </div>
+
+
+              </div>
+
+
+
+
+
+              <!-- </ba-card>  -->
+            </form>
+          </div>
+          <!-- <div class="tab-pane" id="tab2">
+                      <p>
+                        Howdy, I'm in Section 2.
+                      </p>
+                    </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

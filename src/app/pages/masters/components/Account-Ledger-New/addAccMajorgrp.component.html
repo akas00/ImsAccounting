@@ -1,0 +1,42 @@
+<form [formGroup]="Addform">
+<div class="row" class="form-horizontal">
+    <ba-card [title]="modeTitle" baCardClass="with-scroll">
+    <div class="form-group row">
+    <label class="col-sm-2 form-control-label">Group Name:</label>
+    <div class="col-sm-5">
+       <input type="text" class="form-control" formControlName="ACNAME" placeholder="Group Name">
+        <div class="alert alert-danger" *ngIf="Addform.controls['ACNAME'].touched && !Addform.controls['ACNAME'].valid">GroupName is Required.</div>
+     
+    </div> 
+  </div>
+ 
+  </ba-card>
+    </div>
+    
+  <button type="button" (click)="onSave()" title="Save" class="btn btn-info">Save</button>
+
+  <button type="button" (click)="cancel()" title="Cancel" class="btn btn-info">Back</button>
+  </form>
+  <div class="modal fade" bsModal #childModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" aria-label="Close" (click)="hideChildModal()">
+          <span aria-hidden="true">&times;</span>
+          
+        </button>
+                        <h4 class="modal-title">Information</h4>
+                    </div>
+                    <div class="modal-body">
+                        {{DialogMessage}}
+                    </div>
+                    <!--<div class="modal-footer">
+                        <button class="btn btn-info confirm-btn" (click)="hideChildModal()">Save changes</button>
+                        <button class="btn btn-info confirm-btn" type="button" (click)=onsubmit()>Save</button>
+                    </div>!-->
+
+                </div>
+            </div>
+        </div>
+     <div>

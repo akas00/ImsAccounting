@@ -1,0 +1,412 @@
+<style>
+  td {
+    border: 1px solid #e6e6e6;
+  }
+
+  input {
+    padding: 8px;
+  }
+</style>
+<div class="clearfix">
+  <div [ngClass]="showWholeSubledger ? 'col-md-7' : 'col-md-12'"
+    style="padding-right: 0px !important; padding-left: 0px !important;">
+    <div style="height:480px; overflow-y: scroll">
+      <table style="margin-bottom: 5px;font-size: 13px;width: 100%;" (click)="hideDetail()" *ngIf="_transactionService">
+        <thead>
+          <tr style=" border-bottom: 2px solid #E6E6E6;
+                            border-top: 2px solid #E6E6E6;
+                            height: 30px;
+                            background: silver;
+                            color: black;">
+            <th style="width:5%">SNo.</th>
+            <th style="width:20%">{{ _transactionService.TableAcHeader }}</th>
+            <th *ngIf="
+                voucherType == 12 || voucherType == 15 ||  voucherType == 62 ||  voucherType == 22 || voucherType == 23 || voucherType == 64
+              " style="width:10%">
+              Dr Amount
+            </th>
+            <th *ngIf="
+                voucherType == 17
+              " style="width:10%">
+              Amount
+            </th>
+            <th *ngIf="
+                voucherType == 18 || voucherType == 16 || voucherType == 12 || voucherType == 62 || voucherType == 22 || voucherType == 23
+              " style="width:10%">
+              Cr Amount
+            </th>
+            <th *ngIf="_transactionService.AppSettings.enableCostCenter==1" style="width:15%">Cost Center</th>
+            <th>Narration</th>
+            <th *ngIf="voucherType==17 || voucherType==18 || voucherType==62">Trn Type</th>
+            <th style="width:10%" *ngIf="voucherType==17 || voucherType==18 || voucherType==62">Number</th>
+            <th style="width:10%" *ngIf="voucherType==17 || voucherType==18 || voucherType==62">Date</th>
+            <th style="width:10%"
+              *ngIf="voucherType==17 || voucherType==18 || voucherType==62 || voucherType==12 || voucherType==16 || voucherType==15">
+              Main ledger</th>
+
+            <!-- <th *ngIf="viewMode==false"></th> -->
+          </tr>
+        </thead>
+        <tbody *ngFor="let t of _transactionService.TrnMainObj.TrntranList; let i = index" (click)="rowClick(i)">
+          <tr style="border: 1px solid #e6e6e6;max-height:25px;" (click)="setSelectedRow(i,t)">
+            <td style="line-height:21px; text-align:center">
+              <!-- <div
+                *ngIf="t.AccountItem && t.AccountItem.HASSUBLEDGER == 1"
+                style="display:inline-block"
+              >
+                *
+              </div> -->
+              {{ i + 1 }}.
+            </td>
+            <td class="cell-with-comment">
+              <div *ngIf="t.ROWMODE == 'new' || t.ROWMODE == 'edit'">
+                <input #ACCODEInput id="ACCODEInput_{{i}}" autocomplete="off" [focus]="addFocus"
+                  style="height:23px;width: 100%;" (keydown.Enter)="showAcList(i); ACCODEInput.blur();"
+                  (keydown.Tab)="showAcList(i); ACCODEInput.blur();" (keydown.Delete)="clearRow($event, i);"
+                  (keydown)="preventInput($event)" (focus)="onAcRowFocus(i)"
+                  value="{{ t.acitem != null ? t.acitem.ACNAME : '' }}"
+                  (ngModelChange)="TrnTranAccNameChange($event)" />
+                <span class="cell-comment">
+                  press ENTER or TAB to Select
+                  {{ _transactionService.TableAcHeader }}
+                </span>
+              </div>
+              <div style="line-height:21px;" *ngIf="t.ROWMODE != 'new' && t.ROWMODE != 'edit'">
+                {{ t.AccountItem.ACNAME }}
+              </div>
+            </td>
+            <td *ngIf="
+                voucherType == 17 || voucherType == 15 || voucherType == 12 || voucherType == 62 || voucherType == 22 || voucherType == 23 || voucherType == 64
+              ">
+              <div *ngIf="t.ROWMODE == 'new' || t.ROWMODE == 'edit'">
+                <input #DrAmtInput id="DrAmtInput_{{i}}" class="text-right" decimalPlacesRestriction="2" [disabled]="
+                    t.acitem == null || t.acitem.ACID == null || (t.CRAMNT != null && t.CRAMNT != 0)
+                  " style="width:100%;padding-left:4px" type="number" [(ngModel)]="t.DRAMNT"
+                  (change)="TrnTranDrAmtChange($event,i)" (keydown.Enter)="enterDabitAmount(i,$event)"
+                  (keydown.Tab)="focusNext(2, i, $event)" (keydown.f12)="showPartyOpeningDetails(i, 'drAmt')"
+                  (keydown.Delete)="clearRow($event, i);" />
+              </div>
+              <div *ngIf="t.ROWMODE != 'new' && t.ROWMODE != 'edit'">
+                <input disabled class="text-right" decimalPlacesRestriction="2" style="width:100%;padding-left:4px"
+                  type="number" [(ngModel)]="t.DRAMNT" />
+              </div>
+            </td>
+            <td *ngIf="
+                voucherType == 16 || voucherType == 18 || voucherType == 12 || voucherType == 62 || voucherType == 22 || voucherType == 23
+              ">
+              <div *ngIf="t.ROWMODE == 'new' || t.ROWMODE == 'edit'">
+                <input #CrAmtInput id="CrAmtInput_{{i}}" class="text-right" decimalPlacesRestriction="2"
+                  (keyup.Enter)="focusNext(3, i, $event)" (keydown.Tab)="focusNext(3, i, $event)"
+                  (keydown.f12)="showPartyOpeningDetails(i, 'crAmt')" (keydown.Delete)="clearRow($event, i);"
+                  [disabled]="
+                    t.acitem == null ||
+                    t.acitem.ACID == null ||
+                    (t.DRAMNT != null && t.DRAMNT != 0)
+                  " style="width:100%;padding-left:4px" type="number" [(ngModel)]="t.CRAMNT"
+                  (change)="TrnTranCrAmtChange($event)" (focus)="setSelectedRow(i)" />
+              </div>
+
+
+
+              <div *ngIf="t.ROWMODE != 'new' && t.ROWMODE != 'edit'">
+                <input disabled class="text-right" decimalPlacesRestriction="2" style="width:100%;padding-left:4px"
+                  type="number" [(ngModel)]="t.CRAMNT" />
+              </div>
+            </td>
+            <td *ngIf="_transactionService.AppSettings.enableCostCenter==1" class="cell-with-comment">
+              <div *ngIf="t.ROWMODE == 'new' || t.ROWMODE == 'edit'" style="width: 100%;">
+                <input #CostCenterInput id="CostCenterInput_{{i}}" autocomplete="off" [(ngModel)]="t.CostCenter"
+                  style="height:23px;width: 100%;" (keyup.Enter)="showCostCenterList(i); CostCenterInput.blur()"
+                  (keydown.Tab)="showCostCenterList(i); CostCenterInput.blur()" (keydown.Delete)="clearRow($event, i);"
+                  (keydown)="preventInput($event)" />
+                <span class="cell-comment">
+                  press ENTER or TAB to Select Cost Center
+                </span>
+              </div>
+
+              <div *ngIf="t.ROWMODE != 'new' && t.ROWMODE != 'edit'" style="width: 100%;">
+                <div style="width:100%;line-height:21px;">
+                  {{ t.CostCenter }}
+                </div>
+              </div>
+            </td>
+            <td>
+              <div *ngIf="t.ROWMODE == 'new' || t.ROWMODE == 'edit'" style="width: 100%">
+                <input #narration
+                  *ngIf="(this.voucherType != 22 && this.voucherType != 23 && this.voucherType != 16 && this.voucherType != 15)"
+                  id="narration_{{i}}" placeholder="Narration" style="width:100%; padding-left:4px;" type="text"
+                  [(ngModel)]="t.NARATION" (keyup.Enter)="TrnTranRowOk($event, i);"
+                  (keydown.Tab)="TrnTranRowOk($event, i);" (keydown.Delete)="clearRow($event, i);" />
+                <input #narration1
+                  *ngIf="(this.voucherType == 22 || this.voucherType == 23 || this.voucherType == 16 || this.voucherType == 15)"
+                  id="narration_{{i}}" placeholder="Narration" style="width:100%; padding-left:4px;" type="text"
+                  [(ngModel)]="t.NARATION" (keydown.Tab)="TrnTranRowOk($event, i); narration1.blur();"
+                  (keydown.Enter)="TrnTranRowOk($event, i); narration1.blur();"
+                  (keydown.Delete)="clearRow($event, i);" />
+              </div>
+              <div *ngIf="t.ROWMODE != 'new' && t.ROWMODE != 'edit'">
+                <div style="width:100%;line-height:21px;">{{ t.NARATION }}</div>
+              </div>
+            </td>
+
+            <td *ngIf="voucherType==17 || voucherType==18 || voucherType==62">
+              <select id="transactionType_{{i}}" name="transactionType" [(ngModel)]="t.NARATION1" class="form-control"
+                (keydown.enter)="focusNext(5, i, $event)" (keydown.Tab)="focusNext(5, i, $event)"
+                (change)="onTrnTypeChange($event.target.value,i)">
+                <option value="none" selected>None</option>
+                <option value="cheque">Cheque</option>
+                <option value="DemandDraft">Demand Draft</option>
+                <option value="e-transfer">E-Transfer</option>
+                <option value="others">Others</option>
+              </select>
+
+            </td>
+            <td *ngIf="(voucherType==17 || voucherType==18 || voucherType==62)">
+              <div *ngIf="(t.ROWMODE == 'new' || t.ROWMODE == 'edit')" style="width: 100%">
+                <input #chequeNo id="ChequeNo_{{i}}" style="width:100%; padding-left:4px;" type="text"
+                  [(ngModel)]="t.ChequeNo" (keydown)="IsNumeric($event,i)" (keyup.Enter)="focusNext(6, i, $event)"
+                  (keydown.Tab)="focusNext(6, i, $event)" (keydown.Delete)="clearRow($event, i);" />
+              </div>
+              <div *ngIf="t.ROWMODE != 'new' && t.ROWMODE != 'edit'">
+                <div style="width:100%;line-height:21px;">{{ t.ChequeNo }}</div>
+              </div>
+            </td>
+            <td *ngIf="voucherType==17 || voucherType==18 || voucherType==62">
+              <div *ngIf="t.ROWMODE == 'new' || t.ROWMODE == 'edit'" style="width: 100%" id="ChequeDate_{{i}}"
+                class="trndatepicker chequeDate">
+                <!-- <input #chequeDate id="ChequeDate_{{i}}" style="width:100%; padding-left:4px;" type="date"
+                  [(ngModel)]="t.ChequeDate" (keydown.Tab)="onChequeDateEnter($event, i); chequeDate.blur();"
+                  (keydown.Enter)="onChequeDateEnter($event, i); chequeDate.blur();"
+                  (keydown.Delete)="clearRow($event, i);" /> -->
+
+
+                <ims-date-picker (onDateChange)="setChequeDate($event,i)" [index]="'chequeDate_'+i"
+                  [date]="getChequeDate(i)" [ID]="i"></ims-date-picker>
+
+
+
+              </div>
+
+
+
+
+
+
+
+              <div *ngIf="t.ROWMODE != 'new' && t.ROWMODE != 'edit'">
+                <input #chequeDate style="width:100%; padding-left:4px;" type="date" [(ngModel)]="t.ChequeDate"
+                  disabled />
+                <!-- <div style="width:100%;line-height:21px;">{{ t.ChequeDate | date:'dd-mm-yyyy' }}</div> -->
+              </div>
+            </td>
+
+
+
+            <td>
+              {{t?.rootparentname}}
+
+              <!-- rootparentname -->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div *ngIf="showWholeSubLedger">
+    <div *ngIf="hideSubledger == false" class="col-md-5" style="padding-left: 0px;padding-left: 5px;">
+      <label style="text-align:center; display: block; font-size: 18px;">Sub-Ledger Entry</label>
+
+      <div style="background-color: #FFFFFF;height:450px;overflow-x: scroll;">
+        <table class="table" style="margin-bottom: 5px; font-size: 12.5px; overflow: scroll">
+          <thead>
+            <tr style="border-bottom: 2px solid #E6E6E6; border-top: 2px solid #E6E6E6;    height: 30px;
+                            background: silver;
+                            color: black;">
+              <th>SNo.</th>
+              <th>Subledger Name</th>
+              <th *ngIf="voucherType == 16 || voucherType == 18">Dr Amount</th>
+              <th *ngIf="voucherType == 17 || voucherType == 15">Cr Amount</th>
+              <th *ngIf="viewMode == false"></th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let sl of subledgers; let i = index" style="border-top:0px">
+            <tr style="border: 1px solid #e6e6e6;max-height:25px;">
+              <td style="line-height:21px;">{{ i + 1 }}.</td>
+              <td>
+                <div *ngIf="sl.ROWMODE == 'new' || sl.ROWMODE == 'edit'">
+                  <select [(ngModel)]="sl.SubledgerItem" style="width: 235px;">
+                    <option *ngFor="let sublist of subledgerDropDownList" [ngValue]="sublist">{{ sublist.ACNAME }}
+                    </option>
+                  </select>
+                </div>
+                <div *ngIf="sl.ROWMODE == 'save'" style="line-height:21px;">
+                  {{ sl.SubledgerItem.ACNAME }}
+                </div>
+              </td>
+
+              <td>
+                <div *ngIf="sl.ROWMODE == 'new' || sl.ROWMODE == 'edit'">
+                  <div *ngIf="voucherType == 16 || voucherType == 18" style="width: 90px">
+                    <input [disabled]="
+                        sl.SubledgerItem == null ||
+                        sl.SubledgerItem.ACNAME == null
+                      " style="width:90px;" type="number" [(ngModel)]="sl.DRAMNT" (keyup)="subLedgerDrAmtChanges()" />
+                  </div>
+                  <div *ngIf="voucherType == 17 || voucherType == 15">
+                    <input [disabled]="
+                        sl.SubledgerItem == null ||
+                        sl.SubledgerItem.ACNAME == null
+                      " style="width:90px;" type="number" [(ngModel)]="sl.CRAMNT" (keyup)="subLedgerCrAmtChanges()" />
+                  </div>
+                </div>
+                <div *ngIf="sl.ROWMODE == 'save'">
+                  <div *ngIf="voucherType == 16 || voucherType == 18" style="width:90px;line-height:21px;">
+                    {{ sl.DRAMNT }}
+                  </div>
+                  <div *ngIf="voucherType == 17 || voucherType == 15" style="width:90px;line-height:21px;">
+                    {{ sl.CRAMNT }}
+                  </div>
+                </div>
+              </td>
+              <td style="display:flex;" *ngIf="viewMode == false">
+                <!--<button style="margin-top:4.5px;" [disabled]="sl.SubledgerItem==null ||sl.SubledgerItem.ACNAME==null||((voucherType==17 || voucherType==15) && sl.CRAMNT==null)||((voucherType==17 || voucherType==15) && sl.CRAMNT<=0) ||((voucherType==16 || voucherType==18) && sl.DRAMNT==null)||((voucherType==16 || voucherType==18) && sl.DRAMNT<=0)" *ngIf="sl.ROWMODE!='save'"  (click)="SubLedgerRowOk(i)"  class="glyphicon glyphicon-ok"></button>                                         -->
+                <button *ngIf="sl.ROWMODE == 'save'" (click)="editSubledgerRow(i)"
+                  class="glyphicon glyphicon-edit"></button>
+                <button *ngIf="sl.ROWMODE == 'save'" style="margin-left:3px" (click)="clearSubLedgerRow(i)"
+                  class="glyphicon glyphicon-remove"></button>
+                <!--<button *ngIf="sl.ROWMODE!='save'" style="margin-top:4.5px; margin-left:3px;" (click)="clearSubLedgerRow(i)" class="glyphicon glyphicon-remove"></button>-->
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td colspan="3" style="line-height: 22px;">
+                <div *ngIf="sl.ROWMODE == 'new' || sl.ROWMODE == 'edit'" style="display:inline-block">
+                  <!--<div *ngIf="sl.ROWMODE=='new' || sl.ROWMODE=='edit'">-->
+                  <input placeholder="Narration" style="width:281px;padding-left:4px; margin-bottom:4px;" type="text"
+                    [(ngModel)]="sl.NARATION" />
+                </div>
+                <div *ngIf="
+                    sl.ROWMODE == 'save' &&
+                    sl.NARATION != null &&
+                    sl.NARATION != ''
+                  ">
+                  <div style="width:281px; line-height:21px;">
+                    ( {{ sl.NARATION }} )
+                  </div>
+                </div>
+                <div style="display:inline-block;" *ngIf="viewMode == false && sl.ROWMODE != 'save'">
+                  <button style="margin-top:1.5px; margin-left:3px;" [disabled]="
+                      sl.SubledgerItem == null ||
+                      sl.SubledgerItem.ACNAME == null ||
+                      ((voucherType == 17 || voucherType == 15) &&
+                        sl.CRAMNT == null) ||
+                      ((voucherType == 17 || voucherType == 15) &&
+                        sl.CRAMNT <= 0) ||
+                      ((voucherType == 16 || voucherType == 18) &&
+                        sl.DRAMNT == null) ||
+                      ((voucherType == 16 || voucherType == 18) &&
+                        sl.DRAMNT <= 0)
+                    " *ngIf="sl.ROWMODE != 'save'" (click)="SubLedgerRowOk(i)" class="glyphicon glyphicon-ok"></button>
+                  <button *ngIf="sl.ROWMODE != 'save'" style="margin-top:1.5px;" (click)="clearSubLedgerRow(i)"
+                    class="glyphicon glyphicon-remove"></button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="form-inline" style="margin-top:5px">
+        <label style="text-align: right;width: 270px">SubLedger Total:</label>
+        <input disabled type="text" value="{{ subLedgerTotal }}" style="padding-left:4px;width: 100px" />
+      </div>
+    </div>
+
+    <div *ngIf="hideSubledgerList == false" class="col-md-5" style="padding-left: 5px;padding-right: 0px;"
+      id="sub-ledger">
+      <label style="text-align:center; display: block; font-size: 18px;">Sub-Ledger List</label>
+      <div style="display: block; height:325px;overflow: scroll">
+        <table class="table" style="margin-bottom: 5px; font-size: 12.5px;">
+          <thead>
+            <tr style="border-bottom: 2px solid #E6E6E6; border-top: 2px solid #E6E6E6">
+              <th>SNo.</th>
+              <th>Subledger Name</th>
+              <th *ngIf="voucherType == 16 || voucherType == 18">Dr Amount</th>
+              <th *ngIf="voucherType == 17 || voucherType == 15">Cr Amount</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let tList of TrnTranList; let i = index" style="border: 0px;">
+            <tr *ngIf="tList.AccountItem && tList.AccountItem.HASSUBLEDGER == 1">
+              <td *ngIf="
+                  tList.AccountItem.ACCODE != null ||
+                  tList.AccountItem.ACNAME != null
+                ">
+                <strong></strong>
+              </td>
+              <td style="border-bottom: 2px solid #E6E6E6;line-height:21px;" *ngIf="
+                  tList.AccountItem.ACCODE != null ||
+                  tList.AccountItem.ACNAME != null
+                ">
+                <strong>{{ tList.AccountItem.ACNAME }}:</strong>
+              </td>
+              <td style="border-bottom: 2px solid #E6E6E6;line-height:21px;"></td>
+            </tr>
+
+            <tr *ngFor="
+                let sList of TrnTranList[i].SubledgerTranList;
+                let j = index
+              ">
+              <td *ngIf="
+                  sList.SubledgerItem != null &&
+                  sList.SubledgerItem.ACNAME != null
+                " style="line-height:21px">
+                {{ j + 1 }}.
+              </td>
+              <td style="line-height:21px;" *ngIf="sList.SubledgerItem != null">
+                {{ sList.SubledgerItem.ACNAME }}
+              </td>
+              <td *ngIf="
+                  (voucherType == 16 || voucherType == 18) &&
+                  sList.SubledgerItem != null
+                " style="line-height:21px">
+                {{ sList.DRAMNT }}
+              </td>
+              <td *ngIf="
+                  (voucherType == 17 || voucherType == 15) &&
+                  sList.SubledgerItem != null
+                " style="line-height:21px">
+                {{ sList.CRAMNT }}
+              </td>
+            </tr>
+            <!--<tr *ngFor="let sList of TrnTranList[i].SubledgerTranList;let j=index">
+                            <td></td>
+                            <td colspan="3" style="line-height: 22px;">
+                                <div *ngIf="sList.ROWMODE=='save' && sList.NARATION!=null && sList.NARATION!='' && sList.SubledgerItem != null">
+                                    <div style="width:281px; line-height:21px;">( {{sList.NARATION}} )</div>
+                                </div>
+                            </td>
+                        </tr>-->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="form-inline" style="margin-top:5px">
+        <label style="text-align: right;width: 270px">SubLedger Total:</label>
+        <input disabled type="text" value="{{ subLedgerTotal }}" style="padding-left:4px;width: 100px" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<generic-popup-grid #genericGridACList [popupsettings]="gridACListPopupSettings"
+  (onItemDoubleClick)="onAcSelect($event)"></generic-popup-grid>
+
+<generic-popup-grid #genericGridCostCenterList [popupsettings]="gridCostCenterListPopupSettings"
+  (onItemDoubleClick)="onCostCenterSelect($event)"></generic-popup-grid>
+
+<voucherTracking #voucherTrack [ACBalanceType]="ACBalanceType"></voucherTracking>
+<party-opening-details-popup (onPopUpClose)="TrnTranCrAmtChange();TrnTranDrAmtChange()" #partyOpeningDetailsPopup>
+</party-opening-details-popup>
+<openingBalanceTracking (openingbalancelist)="saveopeningbilllist($event)" #openingbalancetracking>
+</openingBalanceTracking>

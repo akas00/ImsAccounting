@@ -1,0 +1,24 @@
+.md-dialog-container {
+    height: auto !important; 
+    width:auto !important;
+    overflow: hidden !important;
+    box-shadow: 0px !important;
+}
+
+
+.mat-dialog-container{
+    background: transparent !important;
+    box-shadow: none !important;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: hidden !important;
+    height: 350px !important;
+    
+}
+
+.auth-main{
+    position: inherit !important;
+    display: inherit !important;
+}
+.cdk-overlay-pane, .md-overlay-pane { height: auto !important; }
+.cdk-overlay-pane, .md-overlay-pane { flex: 1 1 0; }

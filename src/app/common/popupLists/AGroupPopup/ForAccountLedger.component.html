@@ -1,0 +1,98 @@
+<style>
+  .modal-content {
+    padding: 1px;
+    margin: 0px;
+    float: right;
+  }
+
+  .table-scroll {
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+
+  tbody>tr:hover {
+    background-color: #f3f5f4;
+    cursor: pointer;
+  }
+
+  tr {
+    font-size: 11px;
+  }
+
+  .selected-row {
+    background-color: #ced6d3 !important;
+  }
+
+  .modal-sticky-account {
+    position: fixed;
+    right: 5px;
+    width: 50%;
+    height: 74%;
+    z-index: 9999999;
+  }
+
+  .table>tbody>tr>td {
+    line-height: 30px !important;
+  }
+</style>
+<div class="modal-sticky-account" [class.modal-sticky-hide]="!isActive"
+  style="display : block; padding: 0px;margin-top: -14px;">
+  <!-- Modal content -->
+  <div class="modal-content" *ngIf="popupsettings" style="
+            background-color: #f5f5f5 !important">
+    <div class="modal-header" style="padding: 0px;">
+      <h4 class="modal-title" style="text-align: center;">
+        {{ popupsettings.title }}
+      </h4>
+    </div>
+    <div class="row clearfix">
+      <div class="col-md-12">
+        <div class="col-md-6" style="margin: 2px 0px;">
+          <select style="width: 100%;" [(ngModel)]="filterOption" (ngModelChange)="triggerSearch($event)">
+            <option [value]="" selected>Select Filter Option</option>
+            <option [value]="item.key" *ngFor="let item of popupsettings.columns">{{ item.title }}</option>
+          </select>
+        </div>
+        <div class="col-md-6" style="margin: 2px 0px;">
+          <input #inputBox type="text" style="width: 100%;" placeholder="enter text for search"
+            [(ngModel)]="filterValue" (ngModelChange)="triggerSearch($event)" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 table-scroll" style="height: 30%;max-height: 380px">
+      <table class="table">
+        <thead>
+          <tr style="    background: #63bbb2;">
+            <th *ngFor="let item of popupsettings.columns">{{ item.title }}</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="itemList">
+          <!-- (dblclick)="doubleClick(itemObj)" -->
+          <tr class="highlight" [class.selected-row]="selectedRowIndex == i" *ngFor="
+                    let itemObj of itemList 
+                      | filter: filterOption :filterValue  
+                      | paginate
+                        : {
+                            id: tabindex,
+                            itemsPerPage: pageSize,
+                            currentPage: pageNumber 
+                          };
+                    let i = index
+                  " (click)="singleClick(i,itemObj)" title="click for detail view">
+            <td *ngFor="let item of popupsettings.columns" style="text-align: left !important;">
+              {{ itemObj[item.key] }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="row clearfix" style="float: center; margin : 4px 0px;">
+        <div class="col-md-12" style="width:100%" *ngIf="itemList.length">
+          <pagination-controls [id]="tabindex" (pageChange)="onPageChange($event)" maxSize="5" directionLinks="true"
+            autoHide="true" responsive="true" previousLabel="Previous" nextLabel="Next"
+            screenReaderPaginationLabel="Pagination" screenReaderPageLabel="page"
+            screenReaderCurrentLabel="Account List"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

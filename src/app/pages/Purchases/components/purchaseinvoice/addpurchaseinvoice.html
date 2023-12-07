@@ -1,0 +1,210 @@
+﻿<style>
+  .table tr th {
+    text-align: center;
+    vertical-align: middle;
+  }
+</style>
+
+<div class="sticky-top" *ngIf="!_trnMainService.TrnMainObj.hasShipName">
+  <div class="row clearfix">
+    <div class="col-md-2">
+      <voucher-master-toggler></voucher-master-toggler>
+    </div>
+    <div class="col-md-2">
+      <h2 style="color: black;">{{ _trnMainService.pageHeading }}</h2>
+    </div>
+    <div class="col-md-8">
+      <voucher-master-action 
+      (onLoadFromHoTaxInvoiceClickEmit)="showSupplierSalesInvoiceFromHOPopup($event)"
+      (onLoadFromSAPFTPClickEmit)="showSAPPurchaseInvoice($event)"
+      (onPInvoieFileUploadPopupEmit)="showPurchaseInvoicePopup($event)"
+      >
+    </voucher-master-action>
+      <generic-popup-grid #genericHOSalesInvoiceGridTI [popupsettings]="gridHoSalesInvoicePopupSettings"
+        (onItemDoubleClick)="onHoSalesInvoiceSelect($event)"></generic-popup-grid>
+
+      <generic-popup-grid #genericsGridSAPPI [popupsettings]="gridSAPPIPopupSettings"
+        (onItemDoubleClick)="onSAPPurchaseInvoiceSelect($event)">
+      </generic-popup-grid>
+    </div>
+  </div>
+</div>
+<div class="main-container" *ngIf="!_trnMainService.TrnMainObj.hasShipName">
+  <div *ngIf="masterService.ShowMore" class="row clearfix">
+    <trnmain-purchase-entry></trnmain-purchase-entry>
+  </div>
+  <div class="row" style="margin-top: 5px">
+    <div class="col-md-12">
+      <productentry></productentry>
+    </div>
+  </div>
+</div>
+<div class="sticky-bottom" *ngIf="!_trnMainService.TrnMainObj.hasShipName">
+  <voucher-total-area></voucher-total-area>
+</div>
+
+
+
+
+<div *ngIf="_trnMainService.TrnMainObj.hasShipName">
+
+  <div style="display : block; padding: 0px;left: 10px;
+  padding: 0px;
+  top: 101px;
+  width: 99%;">
+    <!-- Modal content -->
+    <div>
+      <div>
+        <div>
+          <div style="padding: 0px;background: #ecad79;">
+            <div class="col-md-3">
+              <h3>Sales Invoice</h3>
+            </div>
+            <div class="col-md-3">
+              <h3>
+                Ship To:-{{_trnMainService.TrnMainObj.AdditionalObj.SHIPNAMEVIEW}}
+              </h3>
+            </div>
+            <div class="col-md-3">
+              <button class="btn btn-info" (click)="saveTaxInvoice()">Save</button>
+              <button class="btn btn-info" (click)="popupClose()">Cancel</button>
+            </div>
+
+
+
+
+          </div>
+          <div>
+
+            <div style="background-color: #FFFFFF;height:450px;overflow-x: scroll;width: 100%">
+              <table class="table" style="margin-bottom: 5px; font-size: 12.5px;width: 2000px;overflow: scroll">
+                <tr style="border-bottom: 2px solid #E6E6E6; border-top: 2px solid #E6E6E6;    height: 30px;
+                                      background: silver;
+                                      color: black;">
+                  <th>S.No.</th>
+                  <th>Code</th>
+                  <th>Description</th>
+                  <th>BatchNo
+                  </th>
+                  <th>Mfg Dt
+                  </th>
+                  <th>Exp Dt
+                  </th>
+                  <th>Qty</th>
+                  <th>Packing</th>
+                  <th>MRP</th>
+                  <th>Cost Price</th>
+                  <th>Selling Price</th>
+                  <th>Disc %</th>
+                  <th>Disc Amt</th>
+                  <th>GST%</th>
+                  <th>GST TaxAmt</th>
+                  <th>P Dis.</th>
+                  <th>S Dis.</th>
+                  <th>L Dis.</th>
+                  <th>OS Dis.</th>
+
+                  <th>Net Amnt</th>
+                  <th>Remarks</th>
+                </tr>
+                <tbody *ngFor="let tList of _trnMainService.TrnMainObj.ProdList;let i=index" style="border: 1px">
+                  <tr style="border: 1px solid #e6e6e6;max-height:25px;">
+                    <td id="sno{{i}}" style="border: 1px solid #e6e6e6;width:20px;">{{i+1}}</td>
+
+                    <td style="height:23px;border: 1px solid #e6e6e6;width:80px">
+                      {{tList.MENUCODE}}
+                    </td>
+
+                    <td style="border: 1px solid #e6e6e6;width:300px;background-color: #f9f9f9;">
+                      {{tList.ITEMDESC}}
+                    </td>
+                    <td style="border: 1px solid #e6e6e6;width:300px;background-color: #f9f9f9;">
+                      {{tList.BATCH}}
+                    </td>
+
+
+
+
+
+
+
+                    <td style="height:23px;border: 1px solid #e6e6e6;width:150px">{{tList.MFGDATE | date: 'dd-MM-yyyy'}}
+                    </td>
+
+                    <td style="height:23px;border: 1px solid #e6e6e6;width:150px">{{tList.EXPDATE | date: 'dd-MM-yyyy'}}
+                    </td>
+                    <td style="border: 1px solid #e6e6e6;width:300px;background-color: #f9f9f9;">
+                      {{_trnMainService.TrnMainObj.TOTALQTY}}
+                    </td>
+
+                    <td style="height:23px;border: 1px solid #e6e6e6;width:100px">
+                      {{tList.ALTUNIT}}
+                    </td>
+
+                    <td style="height:23px;border: 1px solid #e6e6e6;width:100px;background-color: #f9f9f9;">
+                      {{tList.MRP | twoDigitNumber}}</td>
+
+
+
+                    <td style="height:23px;border: 1px solid #e6e6e6;width:100px"> {{tList.ALTRATE2 | twoDigitNumber}}
+                    </td>
+                    <td style="height:23px;border: 1px solid #e6e6e6;width:100px"> {{tList.ALTRATE | twoDigitNumber}}
+
+                    </td>
+                    <td style="height:23px;border: 1px solid #e6e6e6;width:100px"> {{tList.INDDISCOUNTRATE}}
+
+                    </td>
+
+                    <td style="height:23px;border: 1px solid #e6e6e6;width:100px">{{tList.INDDISCOUNT}}
+
+
+
+                    <td style="height:23px;border: 1px solid #e6e6e6;width:100px;">
+
+                      {{tList.GSTRATE_ONLYFORSHOWING}}</td>
+                    <td style="height:23px;border: 1px solid #e6e6e6;width:100px;">
+                      {{_trnMainService.nullToZeroConverter(tList.VAT) |twoDigitNumber}}</td>
+                    <td style="height:23px;border: 1px solid #e6e6e6;width:100px;">
+                      {{ _trnMainService.nullToZeroConverter(tList.PrimaryDiscount)|twoDigitNumber}}</td>
+                    <td style="height:23px;border: 1px solid #e6e6e6;width:100px;">
+                      {{_trnMainService.nullToZeroConverter(tList.SecondaryDiscount)|twoDigitNumber}}</td>
+                    <td style="height:23px;border: 1px solid #e6e6e6;width:100px;">
+                      {{_trnMainService.nullToZeroConverter(tList.LiquiditionDiscount) |twoDigitNumber}}</td>
+                    <td style="height:23px;border: 1px solid #e6e6e6;width:100px;">
+                    </td>
+
+
+
+
+                    <td style="height:23px;border: 1px solid #e6e6e6;width:100px">
+                      {{_trnMainService.nullToZeroConverter(tList.NETAMOUNT)|twoDigitNumber}}</td>
+
+
+
+                    <td style="height:23px;border: 1px solid #e6e6e6;width:150px">{{tList.REMARKS}}
+                    </td>
+
+                  </tr>
+
+                </tbody>
+
+              </table>
+
+
+
+
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <file-uploader-popup
+    #fileUploadPopup 
+    [popupsettings]="fileUploadPopupSettings"
+    (onUploaded) = "fileUploadSuccess($event)"
+> 
+</file-uploader-popup> -->

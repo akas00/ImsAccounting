@@ -1,0 +1,59 @@
+<div class="sticky-top">
+    <div class="row clearfix" style=" padding: 0px 20px;">
+      <div class="col-md-6">
+        <h3 class="page-title"></h3>
+      </div>
+      <div class="col-md-6" style="float: right;">
+        <button type="button " class="btn btn-info pull-right" (click)="cancel()" style="margin-right : 10px;">
+          Back
+        </button>
+        <button  *ngIf="mode == 'edit' || mode == 'add'" (click)="onSave()" class="btn btn-info pull-right" style="margin-right : 10px;">
+          Save
+        </button>
+        <button  *ngIf="mode == 'delete'" (click)="onDelete()" class="btn btn-info pull-right" style="margin-right : 10px;">
+            Delete
+          </button>
+      </div>
+    </div>
+  </div>
+
+<div class="main-container" style="padding-top : 10px; margin-bottom: 0px">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="tabbable" id="warehouse-tabs">
+            <ul class="nav nav-tabs">
+              <li class="nav-item">
+                <a class="nav-link active" href="#general-info3" data-toggle="tab"> </a>
+              </li>
+       
+            </ul>
+            <div class="tab-content">
+              <div class="tab-pane active" id="general-info3">            
+                    <div class="col-md-12">
+                        <div class="col-md-6">                           
+                            <div class="form-group row">
+                                <label class="col-sm-3 form-control-label">Sub Ledger Name</label>
+                                <div class="col-sm-9">
+                                  <input type="text"  style="color:black" class="form-control"
+                                    id="Prefix" name="Prefix" [(ngModel)]="subLedgerMasterObj.SL_ACNAME" placeholder="Sub Ledger Name" [disabled]="mode == 'view' || mode == 'delete'"/>
+                                </div>
+                              </div>
+
+                              <div class="form-group row">
+                                <label class="col-sm-3 form-control-label">Pan No.</label>
+                                <div class="col-sm-9">
+                                  <input  type="text"  style="color:black" class="form-control"
+                                    id="Prefix" name="Prefix" [(ngModel)]="subLedgerMasterObj.PAN_NO" [maxLength]="10" placeholder="Pan No" [disabled]="mode == 'view' || mode == 'delete'"/>
+                                </div>
+                              </div>
+
+                          </div>
+                    </div>
+        
+                   
+                </div>
+            </div>  
+         </div>   
+      </div>
+    </div>
+</div>

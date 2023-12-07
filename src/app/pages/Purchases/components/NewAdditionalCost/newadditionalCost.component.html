@@ -1,0 +1,659 @@
+<style>
+    th {
+        padding: 0px 5px;
+        font-family: Roboto, Arial, sans-serif;
+        font-size: 13px;
+    }
+
+    td {
+        font-size: 12px;
+    }
+
+    tbody {
+        display: block;
+        height: 25vh;
+        overflow: auto;
+    }
+
+    thead,
+    tbody tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+        /* even columns width , fix width of table too*/
+    }
+
+    .costingMethodWrapper {
+        border: 1px solid #ddd;
+        margin-top: -83px;
+        padding: 0px 10px 5px 10px;
+    }
+
+    .costingMethodWrapper label {
+
+        width: 100px;
+        background: #F1F1F1;
+        margin-top: -11px;
+        padding-left: 6px;
+    }
+
+    .costingMethodWrapper a {
+        font-size: 12px;
+    }
+
+    .title-wrapper {
+        width: 128px;
+        background: #F1F1F1;
+        margin-top: -29px;
+        margin-bottom: 10px;
+        padding-left: 13px;
+
+    }
+    .tablebody td{
+        border: 1px solid black !important;
+        /* position: relative;  */
+    }
+    td:hover .tooltips{
+        opacity: 1;
+        visibility: visible;
+
+
+    }
+    .tableBorder{
+        position: relative  !important;
+    }
+    .tooltips{
+        opacity: 0;
+        visibility: hidden;
+       
+
+    transition: 0.3s ease-in-out;
+    position: absolute;
+    top: 23px;
+    background: #000;
+    padding: 0 5px;
+    border-radius: 5px;
+    font-size: 12px !important;
+    z-index: 999999;
+    /* right: -60%; */
+    
+    
+    }
+    .tooltips p{
+        color: #fff !important;
+        margin-bottom: 0;
+        font-size: 11px;
+        line-height: 1.8;
+    }
+    .showTooltips:hover .tooltips{
+        opacity: 1;
+        visibility: visible;
+
+    }
+    .showTooltips:hover .tooltips:after{
+        display: block;
+
+    }
+
+    .tablebody th{
+        border: 1px solid black;
+    }
+
+    /* .tooltips:after {
+        content: "";
+    position: absolute;
+    left: 5px;
+    margin-left: -5px;
+    top: -54%;
+    transform: translateY(-57%);
+    border: 10px solid #000;
+    border-color: transparent black transparent transparent;
+    transform: rotate(90deg);
+    display: none;
+ 
+} */
+
+
+</style>
+
+<form disabled [formGroup]="form" style="padding: 10px; border:1.5px solid #ddd;">
+
+    <div class="row" style="margin-bottom: 10px;" *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'">
+        <div class="col-lg-2">
+            <div class="form-wrapper" style="display: flex;"> <label style="flex:0 0 40%">Ref Bill No : </label>
+                <input id="REFPINO_AD" type="text" style="width: 100%;" [(ngModel)]='masterService.RefObj.Ref_BILLNO'
+                    [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'" [ngModelOptions]="{standalone: true}">
+            </div>
+
+        </div>
+        <div class="col-lg-3">
+            <div class="form-wrapper" style="display: flex;margin-left: -15px;"> <label style="flex:0 0 30%">Ref Bill
+                    Date : </label>
+                <input type="date" style="width: 100%;" [(ngModel)]='masterService.RefObj.Ref_TRNDATE'
+                    (change)="changeToBSDate($event.target.value,'AD')" [ngModelOptions]="{standalone: true}"
+                    [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'">
+                <input style="width: 100%;" [(ngModel)]='masterService.RefObj.Ref_BSDATE'
+                    [ngModelOptions]="{standalone: true}" readonly disabled>
+            </div>
+        </div>
+
+
+        <div class="col-lg-3">
+            <div class="form-wrapper" style="display: flex;margin-left: -25px;"> <label style="flex:0 0 30%">Supplier
+                    Name:</label>
+                <input type="text" style="width: 100%;" placeholder="Press Enter or Tab" (keydown.Tab)="SupplierList()"
+                    (keydown.Enter)="SupplierList()" [(ngModel)]='masterService.RefObj.Ref_SupplierName'
+                    [ngModelOptions]="{standalone: true}" [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'">
+            </div>
+
+        </div>
+        <div class="col-lg-2">
+            <div class="form-wrapper" style="display: flex;margin-left: -15px;"> <label style="flex:0 0 30%">PAN No :
+                </label>
+                <input type="text" style="width: 50%;" [(ngModel)]='masterService.RefObj.Ref_SupplierVAT'
+                    [ngModelOptions]="{standalone: true}" readonly disabled>
+            </div>
+
+        </div>
+        <div lass="col-lg-2">
+            <div class="form-wrapper" style="display: flex;margin-left: -15px;">
+                <label style="flex:0 0 60%;margin-left: -40px;">Group Costing Mode</label>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <select class="form-control" style="height: 25px;font-size: 12px;" name="ACNAME"
+                            [(ngModel)]="GcostMode" [ngModelOptions]="{standalone:true}"
+                            (change)="byQuantity($event.target.value)"
+                            [disabled]="_transactionService.TrnMainObj.Mode=='VIEW' || PI == true"
+                            (keydown.Enter)="gcostEntered()">
+                            <option value=""></option>
+                            <option value="Qty">ON QTY</option>
+                            <option value="Amount">ON AMOUNT</option>
+
+                        </select>
+                    </div>
+                </div>
+
+
+                <!-- </div> -->
+                <!-- <div  > -->
+
+                <!-- <div class="title-wrapper" style="width: 158px;">
+         <span class="form-title">Group Costing Mode</span>
+    </div> -->
+
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-7">
+
+            <div style="border: 1px solid #ddd; padding: 20px 10px 10px 10px;">
+
+                <div class="title-wrapper">
+                    <span class="form-title">Bill-Details</span>
+                </div>
+
+                <div class="row" style="margin-top: -10px;">
+                    <div class="col-lg-5 showTooltips">
+                        <div class="form-wrapper " style="display: flex;"> <label style="flex:0 0 25%">Dr Account 
+                            </label>
+                            <input id="AdditionalCostAc_" type="text"
+                                [(ngModel)]="masterService.AdditionalPurchaseAcObj"
+                                [ngModelOptions]="{standalone: true}" style="width: 100%;"
+                                (keydown.Enter)="TabAcBox('AC')" autocomplete="off" placeholder="press Enter to select"
+                                [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'">
+                        </div>
+                        <ng-container *ngIf="_transactionService.userSetting.ENABLESUBLEDGER==1">
+                            <div style="display: flex;"  >
+                                <!-- <label style="flex:0 0 35%">Sub-ledger 
+                                </label> -->
+                                <!-- <input  autocomplete="off" id="Dr_Sub_ledger"
+                                  style="height:23px;width: 100%; display: none;" (keyup.Enter)="onsubLedgerTabDr(i)" 
+                                  [(ngModel)]="masterService.DR_SL_ACNAME" [ngModelOptions]="{standalone: true}"
+                                  placeholder="press ENTER to Select"  [disabled]="masterService.disable_DrSubLedger==true || _transactionService.TrnMainObj.Mode=='VIEW'"
+                                 
+                                   /> -->
+                                   <div class="tooltips">
+                                    <p *ngIf="masterService.AdditionalPurchaseAcObj && masterService.DR_SL_ACNAME">Sub Ledger :</p>
+                                    <p class="subledgerSelected">{{masterService.DR_SL_ACNAME}}</p>
+                                   </div>
+                                  
+                               
+                              </div>
+
+                        </ng-container>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-wrapper" style="display: flex;"> <label style="flex:0 0 35%">Amount  </label>
+                            <input *ngIf="_transactionService.TrnMainObj.Mode!='VIEW'" id="AmountsAD_"
+                                class="form-control col-md-2" type="number" [(ngModel)]="masterService.AdditionalAMOUNT"
+                                [ngModelOptions]="{standalone: true}" style="width: 100%;">
+                            <input *ngIf="_transactionService.TrnMainObj.Mode=='VIEW'" id="AmountsAD_"
+                                class="form-control col-md-2" type="number" [(ngModel)]="masterService.AdditionalAMOUNT"
+                                [ngModelOptions]="{standalone: true}" style="width: 100%;"
+                                disabled="_transactionService.TrnMainObj.Mode=='VIEW'">
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'" 
+                        class="form-wrapper" style="display: flex;"> <label style="flex:0 0 35%">Remarks : </label>
+                            <input id="RemarksAD_" type="text" class="form-control col-md-9"
+                                [(ngModel)]="masterService.AdditionalREMARKS" [ngModelOptions]="{standalone: true}"
+                                style="width: 100%;" [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'"
+                                (keydown.Enter)="remarksEntered()" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-5">
+                        <div *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'" class="form-wrapper" style="display: flex;"> <label style="flex:0 0 25%">Description 
+                            </label>
+                            <input type="text" style="width: 100%;" [(ngModel)]='masterService.AdditionalDesc'
+                                [ngModelOptions]="{standalone: true}"
+                                [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'">
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'"  class="form-wrapper" style="display: flex;"> <label style="flex:0 0 35%">VAT : </label>
+                            <input type="number" style="width: 100%;" [(ngModel)]='masterService.AdditionalVAT'
+                                [ngModelOptions]="{standalone: true}"
+                                [disabled]="_transactionService.TrnMainObj.Mode=='VIEW' || masterService.IsTaxableBill==0">
+                        </div>
+                    </div>
+                    <div class="col-lg-4 showTooltips">
+                        <div *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'" class="form-wrapper" style="display: flex;"> <label style="flex:0 0 35%">Cr. Account 
+                            </label>
+                            <input type="text" placeholder="Press Enter to select"
+                                [(ngModel)]="masterService.AdditionalPurchaseCreditAcObj"
+                                [ngModelOptions]="{standalone: true}" style="width: 100%;"
+                                (keydown.Enter)="TabAcBox('CreditAC')"
+                                [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'">
+                        </div>
+
+                        <ng-container *ngIf="_transactionService.userSetting.ENABLESUBLEDGER==1 && masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'">
+                            <div style="display: flex;" >
+                                <!-- <label style="flex:0 0 35%">Sub-ledger 
+                                </label> -->
+
+                                <!-- <input  autocomplete="off" id="Cr_Sub_ledger" 
+                                style="height:23px;width: 100%;display:none" (keyup.Enter)="onsubLedgerTabCr(i)" 
+                                [(ngModel)]="masterService.CR_SL_ACNAME" [ngModelOptions]="{standalone: true}"
+                                placeholder="press ENTER to Select"  [disabled]="masterService.disable_CrSubLedger==true || _transactionService.TrnMainObj.Mode=='VIEW' "
+                               
+                                 /> -->
+                                 <div class="tooltips">
+                                  <p *ngIf="masterService.AdditionalPurchaseCreditAcObj && masterService.CR_SL_ACNAME ">Sub Ledger :</p>
+                                  <p class="subledgerSelected">{{masterService.CR_SL_ACNAME}}</p>
+                                 </div>
+
+                                
+
+                                
+                               
+                              </div>
+
+                        </ng-container>
+                       
+                      
+                       
+                    </div>
+                 
+                </div>
+
+            </div>
+
+        </div>
+        <div class="col-lg-3" >
+            <div class="row">
+                <div style="border: 1px solid #ddd; padding: 20px 10px 10px 10px;" *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'" >
+
+                    <div class="title-wrapper">
+                        <span class="form-title">TDS Adjustment</span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-7 showTooltips">
+                            <div class="form-wrapper" style="display: flex;"> <label style="flex:0 0 20%">A/C : </label>
+                                <input id="AdditionalCostAc_" type="text" [(ngModel)]="masterService.TDSAccount_Name"
+                                    [ngModelOptions]="{standalone: true}" style="width: 100%;flex:0 0 80%;"
+                                    (keydown.Enter)="TabTDSAccount()" autocomplete="off"
+                                    placeholder="press Enter to select"
+                                    [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'">
+                            </div>
+
+                            <ng-container *ngIf="_transactionService.userSetting.ENABLESUBLEDGER==1 && masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'">
+                                <div style="display: flex;" >
+                                    <!-- <label style="flex:0 0 35%">Sub-ledger 
+                                    </label> -->
+    
+                                    <!-- <input  autocomplete="off" id="Ac_Sub_ledger" 
+                                    style="height:23px;width: 100%;display:none;" (keyup.Enter)="onsubLedgerTabAc(i)" 
+                                    [(ngModel)]="masterService.TDS_SL_ACNAME" [ngModelOptions]="{standalone: true}"
+                                    placeholder="press ENTER to Select"  
+                                   
+                                     /> -->
+                                     <div class="tooltips">
+                                        
+                                      <p *ngIf="masterService.TDSAccount_Name && masterService.TDS_SL_ACNAME">Sub Ledger :</p>
+                                      <p class="subledgerSelected">{{masterService.TDS_SL_ACNAME}}</p>
+                                     </div>
+                                  </div>
+    
+                            </ng-container>
+                        </div>
+                        <div class="col-lg-5">
+                            <div class="form-wrapper" style="display: flex;"> <label style="flex:0 0 50%;margin-left: -10px;">Amount :
+                                </label>
+                                <input type="number" style="flex:0 0 55%; width: 100%;"
+                                    [(ngModel)]="masterService.TDSAmount" [ngModelOptions]="{standalone: true}"
+                                    [disabled]="_transactionService.TrnMainObj.Mode=='VIEW' || !masterService.TDSAccount_ACID">
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+                                    <div *ngIf="masterService.RefObj.PURCHASE_TYPE==  'LOCALPURCHASE'">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="col-lg-4">
+                                                    <label style="flex:0 0 60%;margin-left: 0px;width: 130px !important;">Group Costing Mode</label>
+                                                </div>
+                                                <div class="col-lg-8">
+                                                    <select class="form-control" style="height: 25px;font-size: 12px;" name="ACNAME" [(ngModel)]="GcostMode"
+                                                    [ngModelOptions]="{standalone:true}" (change)="byQuantity($event.target.value)"
+                                                    [disabled]="_transactionService.TrnMainObj.Mode=='VIEW' || PI == true" (keydown.Enter)="gcostEntered()">
+                                                    <option value=""></option>
+                                                    <option value="Qty">ON QTY</option>
+                                                    <option value="Amount">ON AMOUNT</option>
+                                                </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                <div  class="checkboxWrapper" style="display: flex; margin-top: 0px;" *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'">
+                    <div class="check-box" style="margin-right: 7px;">
+                        <input type="checkbox" id="taxable" name="taxable"
+                            (change)="ChangeIsTaxableBill($event.target.checked)"
+                            [checked]="masterService.IsTaxableBill== 1"
+                            [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'">
+                        <label for="taxable" style="width: 70%; white-space: nowrap;"> Is Taxable Additional
+                            Bill</label><br>
+                    </div>
+                    <div class="check-box">
+                        <input type="checkbox" id="accountposting" name="acposting"
+                            (change)="$event.target.checked?(masterService.DoAccountPosting=1):(masterService.DoAccountPosting=0)"
+                            [checked]="masterService.DoAccountPosting== 1"
+                            [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'">
+                        <label for="accountposting" style="width: 70%; white-space: nowrap;"> Do Account
+                            Posting</label><br>
+
+                    </div>
+
+                </div>
+
+
+
+
+            </div>
+        </div>
+        <div class="col-lg-2" style="margin-top: -10px;">
+            <!-- <div class="row">
+             <div  style="border: 1px solid #ddd; padding: 20px 10px 10px 10px;     margin: 0px 10px;">
+               
+                     <div class="title-wrapper" style="width: 158px;">
+                  <span class="form-title">Group Costing Mode</span>
+             </div>
+                
+                <div class="row">
+                    <div class="col-lg-12">
+                     
+                        <select class="form-control col-md-1" name="ACNAME"  [(ngModel)]="GcostMode" [ngModelOptions]="{standalone:true}"
+                        (change)="byQuantity($event.target.value)"
+                        [disabled]="_transactionService.TrnMainObj.Mode=='VIEW' || PI == true" (keydown.Enter)="gcostEntered()">
+                        <option value=""></option>
+                        <option value="Qty">ON QTY</option>
+                        <option value="Amount">ON AMOUNT</option>
+
+                    </select>
+                        </div>
+                    </div>
+                   
+                    
+                </div> 
+                
+            
+            </div> -->
+
+            <div class="row">
+                    <fieldset style="margin-right: 15px !important;">
+                        <legend style="font-size: 14px;">Costing Mode:</legend>
+                        <div style="display: flex;">
+                            <label class="smallBoldLabel"><input type="radio" name="addcosting" value="COSTING"
+                                    [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'" [(ngModel)]="masterService.addcosting"
+                                    [ngModelOptions]="{standalone:true}" checked>&nbsp;Costing</label>
+                            <label class="smallBoldLabel" style="width: 100px;margin-left: -20px;"><input type="radio" name="addcosting"
+                                    value="NONCOSTING" [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'"
+                                    [(ngModel)]="masterService.addcosting"
+                                    [ngModelOptions]="{standalone:true}">&nbsp;Non-Costing</label>
+            
+                        </div>
+                    </fieldset>
+                    <ng-container *ngIf="_transactionService.userSetting.SHOW_IMPORT_DOC_ITEM==1">
+                        <div class="check-box" *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'">
+                            <input type="checkbox" id="isecaitem" name="acposting"
+                                (change)="ChangeECA_ITEM($event.target.checked)"
+                                [checked]="masterService.IS_ECA_ITEM== 1"
+                                [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'">
+                            <label for="isecaitem" style="width: 70%; white-space: nowrap;">Is Import Document Item</label>
+                        </div>
+                    </ng-container>
+        </div>
+
+            <div>
+                <button style="width: 85px;margin-top: 2px;float: right;" class="btn btn-info btn-add-focus"
+                    (click)="onAddClick()" *ngIf="_transactionService.TrnMainObj.Mode!='VIEW'">Add</button>
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+</form>
+
+<div class="tableCOntent" style="margin-top: 7px;">
+    <div class="row" style="width: 105%;">
+
+        <div class="wrapper">
+            <div style="margin-left:0px; margin-right:0px;">
+
+
+                <div #prodlistTable >
+                    <table id="fix" class="table" style="width:99% !important">
+                        <thead>
+                            <tr style="border-bottom: 10px solid #c0c0c0;
+                                                                                                    border-top: 2px solid #c0c0c0;
+                                                                                                    height: 30px;
+                                                                                                    background: silver;
+                                                                                                    color: black;
+                                                                                                    position: sticky;">
+                                 <th style="width: 2%;text-align: center;">S.N
+                                </th>
+                                <th  style="width: 5%;" *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'">Ref Bill No
+                                </th>
+                                <th *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'" style="width: 6%;text-align: center;">Date
+                                </th>
+                               
+                                <th  style="width: 10%;text-align: center;">Dr Account
+                                </th>
+                                <th *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'" style="width: 7%;">Description
+                                </th>
+                                <th  style="width: 5%;text-align: center;">Amount
+                                </th>
+                                <th  style="width: 3%;" *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'">VAT
+                                </th>
+                                <th *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'" style="width: 6%;">Remarks
+                                </th>
+                                <th *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'" style="width: 8%;">Cr Account
+                                </th>
+                                <th  style="width: 6%;" *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'">TDS Amount
+                                </th>
+                                <th *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'" style="width: 6%;">TDS A/C
+                                </th>
+                                <th *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'" style="width:9%;">Supplier Name
+                                </th>
+                                <th  *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'" style="width: 6%;">AC Posting
+                                </th>
+                                <th *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'" style="width: 8%;">Taxable Add Bill
+                                </th>
+                                <th  style="width: 6%;">Cost Mode
+                                </th>
+                                <th  style="width: 4%;">Costing
+                                </th>
+                                <th *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE' && _transactionService.userSetting.SHOW_IMPORT_DOC_ITEM==1" style="width: 7%;">Imp Doc Item
+                            </th>
+                            </tr>
+                        </thead>
+
+                        <tbody style="background-color: #e9e9e9;">
+                            <tr *ngFor="let l of _addionalcostService.GRPcostList;let i=index"
+                                (dblclick)="TableRowDoubleClickEvent(l)" (click)="checkRow(i)">
+                                <td class="tableBorder" style="width: 2%;text-align: center;">{{i+1}}</td>
+                                <td class="tableBorder" style="width: 5%;" *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'">{{l.Ref_BILLNO}}</td>
+                                <td *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'"  class="tableBorder" style="width:6%">{{l.Ref_TRNDATE}}</td>
+
+                               
+                                <td class="tableBorder" style="width:10%">{{l.costAc.ACNAME}}
+                                    <div class="tooltips">
+                                        <p *ngIf="l.DR_SL_ACNAME">Sub Ledger :</p>
+                                        <p>{{l.DR_SL_ACNAME}}</p>
+                                     </div>
+                                </td>
+                                <td *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'" class="tableBorder"style="width: 7%;">{{l.AdditionalDesc}}</td>
+                                <td class="tableBorder" style="width: 5%;text-align: right;">{{l.amount | twoDigitNumber}}</td>
+                                <td class="tableBorder" style="width: 3%;text-align: right;" *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'">{{l.AdditionalVAT | twoDigitNumber}}</td>
+                                <td *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'"  class="tableBorder" style="width: 6%;">{{l.remarks}}</td>
+                                <td *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'"  class="tableBorder" style="width: 8%;">{{l.creditAc.ACNAME}}
+                                    <div class="tooltips">
+                                        <p *ngIf="l.CR_SL_ACNAME">Sub Ledger :</p>
+                                        <p>{{l.CR_SL_ACNAME}}</p>
+                                     </div>
+                                </td>
+                                <td *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'"  class="tableBorder" style="width: 6%;text-align: right;">{{l.TDSAmount | twoDigitNumber}}</td>
+                                <td *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'" class="tableBorder" style="width: 6%;">{{l.TDSAccount_Name}}
+                                    <div class="tooltips">
+                                        <p *ngIf="l.TDS_SL_ACNAME">Sub Ledger :</p>
+                                        <p>{{l.TDS_SL_ACNAME}}</p>
+                                     </div>
+                                </td>
+                                <td *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'"  class="tableBorder" style="width: 9%;">{{l.Ref_SupplierName}}</td>
+                                <td *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'" class="tableBorder" style="width: 6%;">{{l.DoAccountPosting}}</td>
+                                <td *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE'" class="tableBorder" style="width: 8%;">{{l.IsTaxableBill}}</td>
+                                <!-- <td class="tableBorder" style="width:50px">{{l.CostingType}}</td> -->
+                                <td class="tableBorder" style="width: 6%;">{{l.GCOSTMODE}}</td>
+                                <!-- <td class="tableBorder" style="width:50px">{{l.desca}}</td> -->
+                                <td class="tableBorder" style="width: 5%;">{{l.CostingNonCosting}}</td>
+                                <!-- <td class="tableBorder" style="width:50px">{{l.batch}}</td> -->
+                                <td *ngIf="masterService.RefObj.PURCHASE_TYPE!==  'LOCALPURCHASE' && _transactionService.userSetting.SHOW_IMPORT_DOC_ITEM==1" class="tableBorder" style="width: 6%;">{{l.IS_ECA_ITEM}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="sticky-bottom" style="background: gray;">
+    <div class="row">
+        <div class="col-md-6">
+            &nbsp;
+        </div>
+        <div class="col-md-4" style="text-align: end;">
+            <label style="font-weight: bold;font-size: 16px; width: 125px;">Total Amount:</label>
+        </div>
+        <div class="col-md-2" style="text-align: end;">
+            <label
+                style="font-size: 15px; font-weight: bold; margin-right: 2rem; ">{{this._addionalcostService.addGRPCostTotAmount|
+                number}} </label>
+        </div>
+    </div>
+</div>
+
+<div class="modal-sticky" *ngIf="masterService.showCostPopup" style="display : block; padding: 0px;  margin-bottom: 25px;
+position: absolute;right: 30%;top: 5px;width: 700px;z-index: 9999999;background-color: white;height: 290px;">
+    <div style="padding: 0px;background: #f1f1f1;">
+        <h4 style="text-align: center;background-color: #8cccfb; padding: 3px 0;">
+            Local Purchase Cost Allocation Details
+        </h4>
+    </div>
+    <table style="width:98%;height:0px;margin-left: 7px;overflow-y: scroll;">
+        <thead>
+            <tr
+            style="background-color:#8cccfb;    font-size: 13px; position: sticky;top: -1px;font-weight: bolder;height: 25px;">
+            <!-- <th style="width: 3%"></th> -->
+            <th style="width: 20%;text-align: center;">Ref No</th>
+            <th style="width: 52%;text-align: center;">ACNAME</th>
+            <th style="width: 15%;text-align: center;">Amount</th>
+            <th style="width: 20%;text-align: center;">PI Voucherno</th>
+        </tr>
+        </thead>
+
+        <tbody class="tablebody">
+            <!-- <tr>
+                    <td style="text-align: center;width: 3%"><input type="checkbox" [(ngModel)]="ALLCHECKBOX" 
+                        (change)="selectAllCheckboxes()">
+                    </td>
+                    <td colspan="4">Select All</td>
+            </tr> -->
+            <tr style="font-size: 12px;" *ngFor="let i of masterService.pi_costdetaillist; let index = index" >
+                <!-- <td style="text-align: center;width: 3%"><input type="checkbox" [(ngModel)]="i.checkbox">
+                </td> -->
+                <td style="width: 20%;padding-left: 3px;">{{i.CAPITALPURCHASE_VCHRNO}}</td>
+                <td style="width: 52%;padding-left: 3px;">{{i.ACNAME}}</td>
+                <td style="width: 15%;text-align: right;padding-right: 3px;">{{i.AMOUNT| twoDigitNumber}}</td>
+                <td style="width: 20%;padding-left: 3px;">{{i.VCHRNO}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div style="margin-top: 1%;">
+        <!-- <button class="btn btn-sm btn-info pull-right" style="margin-left: 1%;margin-right: 1%;"(click)="cancel()">Cancel</button> -->
+        <button class="btn btn-sm btn-info pull-right" style="margin-right: 1%;" (click)="ok()">Load</button>
+    </div>
+</div>
+
+<generic-popup-grid #gridSubLedgerSettingListCr [popupsettings]="gridSubLedgerSettingCr"
+  (onItemDoubleClick)="onSubLedgerSelectCr($event)"></generic-popup-grid>
+  <generic-popup-grid #gridSubLedgerSettingListDr [popupsettings]="gridSubLedgerSettingDr"
+  (onItemDoubleClick)="onSubLedgerSelectDr($event)"></generic-popup-grid>
+  <generic-popup-grid #gridSubLedgerSettingListAc [popupsettings]="gridSubLedgerSettingAc"
+  (onItemDoubleClick)="onSubLedgerSelectAc($event)"></generic-popup-grid>
+
+
+<generic-popup-grid #genericGridACParty [popupsettings]="gridACListPartyPopupSettings"
+    (onItemDoubleClick)="ACNameSelect_Additional($event)"></generic-popup-grid>
+
+<generic-popup-grid #genericGridCreditACListParty [popupsettings]="gridCreditACListPartyPopupSettings"
+    (onItemDoubleClick)="ACNameSelect_Credit($event)"></generic-popup-grid>
+
+<generic-popup-grid #genericGridItem [popupsettings]="gridItemPopupSettings"
+    (onItemDoubleClick)="dblClickItemSelection($event)"></generic-popup-grid>
+
+<generic-popup-grid #genericGridBatch [popupsettings]="gridBatchPopupSettings"
+    (onItemDoubleClick)="dblClickBatchSelection($event)"></generic-popup-grid>
+
+<!-- <generic-popup-grid #genericGridRefBill [popupsettings]="gridPopupSettingsForRefBill"
+  (onItemDoubleClick)="onRefBillSelected($event)"></generic-popup-grid> -->
+
+<generic-popup-grid #genericGridACList [popupsettings]="gridACListPopupSettings"
+    (onItemDoubleClick)="onAcSelect($event)"></generic-popup-grid>
+
+<generic-popup-grid #genericGridSupplier [popupsettings]="gridPopupSettingsForSupplier"
+    (onItemDoubleClick)="onSupplierSelected($event)"></generic-popup-grid>

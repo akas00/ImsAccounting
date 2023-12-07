@@ -1,0 +1,57 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit(form.value)" class="form-horizontal" style=" padding-top:200px">
+<div class="mvl ptm uiInterstitial uiInterstitialLarge uiBoxWhite" style="margin: auto;width: 50%;padding: 20px;background-color: white; height:auto;">
+    <div class="uiHeader uiHeaderBottomBorder mhl mts uiHeaderPage interstitialHeader">
+        <div class="clearfix uiHeaderTop">
+            <div class="rfloat _ohf">
+               <div class="uiHeaderActions"></div>
+            </div>
+            <div style="padding:5px;border-bottom: solid 1px #dcdcdc; margin-bottom: 10px;">
+                <h2 class="uiHeaderTitle" aria-hidden="true">Find Your Account</h2>
+            </div>
+        </div>
+    </div>
+    <div class="phl ptm uiInterstitialContent">
+        <div class="identify_yourself_block">
+            <table>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <div>Please enter your username to search for your account.</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><input type="text" class="inputtext" name="email" placeholder="Username" autofocus="1"  [formControl]="email" (keydown.enter)="clickedEnter()"></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+   <div style="padding:20px">
+       <button class="rfloat _ohf" type="button" title="Save" style="background-color: white;color: black;border: 2px solid #dcdcdc;"(click)="Cancel()">Cancel</button>
+       <button class="rfloat _ohf" type="button" title="Save" style="background-color: white;color: black;border: 2px solid  #4CAF50; margin-right:5px;" (click)="SearchUser()">Search</button>
+   </div>
+</div>
+</form>
+<div class="modal fade" bsModal #childModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" aria-label="Close" (click)="hideChildModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+                        <h4 class="modal-title" style="border-bottom: solid 1px #dcdcdc;">Information</h4>
+                    </div>
+                    <div class="modal-body">
+                        {{DialogMessage}}
+                    </div>
+                    
+                </div>
+            </div>
+        </div>

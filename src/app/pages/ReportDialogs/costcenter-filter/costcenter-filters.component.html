@@ -1,0 +1,61 @@
+
+<style>
+    .action-btn {
+        width: 80%;
+        height: 80%;
+        display: block;
+        margin: 0 auto;
+        background-color: inherit;
+        border: none;
+    }
+    .input-text{
+        width : 100%; 
+        /* height: 30px !important; */
+        font-weight: bold;
+    }
+</style>
+
+ <fieldset>
+    <legend><label class="smallBoldLabel">&nbsp;Cost Center Wise</label></legend>
+    <div *ngIf="_reportFilterService.showAllcontactsInCC" class="checkbox" style="padding-top:5px;width:200px;">
+        <label class="smallBoldLabel">
+            <input type="checkbox"
+                [(ngModel)]="_reportFilterService.ReportFilterObject.showAllContacts"
+                (change)="checkValue()">
+            Show All Cost Center
+        </label>
+    </div>
+    <div>
+        <div class="col-md-10">
+            <select [(ngModel)]="_reportFilterService.ReportFilterObject.CCENTER"
+            style="height: 30px !important;" 
+            class="form-control input-text">
+                <option *ngFor="let i of CostcenterList" [ngValue]="i">
+                    {{i.COSTCENTERNAME}}
+                </option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-info" *ngIf="showMultipleCC"
+                (click)="addCostcenterToList()">Add</button>
+        </div>
+        <div class="col-md-12" *ngIf="showMultipleCC">
+            <table style="height:150px;">
+                <tr class="smallBoldLabel">
+                    <th style="width:3px;font-weight: bold;">S.No.</th>
+                    <th style="width:10px;font-weight: bold;">Cost Center</th>
+                    <th style="width:4px;font-weight: bold;">Action</th>
+                </tr>
+                <tr *ngFor="let data of _reportFilterService.ReportFilterObject.multipleCostcenter;let i = index"
+                    class="smallBoldLabel">
+                    <td style="width:3px;">{{ i + 1 }}</td>
+                    <td style="width:10px;">{{data.COSTCENTERNAME}}</td>
+                    <td style="width:4px;">
+                        <button type="button" class="action-btn"
+                            (click)="deleteCostcenter(i)">Delete</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</fieldset>

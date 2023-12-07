@@ -1,0 +1,57 @@
+﻿<style>
+    #thSize {
+        padding-left: 4px;
+        padding-right: 4px;
+    }
+
+    #divStyle {
+        border: 2px solid #E6E6E6;
+        padding-left: 0px;
+        padding-right: 0px;
+        padding-top: 15px;
+    }
+</style>
+
+ <div class="row">
+    <ba-card [title]="modelTitle" baCardClass="with-scroll">
+        
+<form>
+  <div class="form-group">
+    <label>Account Name:</label>
+    <input type="AccountName" class="form-control" id="AccountName" placeholder="Account Name">
+  </div>
+  <div class="form-group">
+    <label>Account Code:</label>
+    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Account Code">
+  </div>
+  <div class="checkbox">
+    <ba-checkbox [(ngModel)]="isChecked" [label]="'checked Account'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
+  </div>
+
+   <fieldset style="border:1px solid black; margin-top:30px;">
+                <label style="background-color:white; position: absolute; margin-top:-17px; margin-left: 20px; padding:5px;">Ptype</label>
+
+                <table>
+                    <tr>
+                        <td> <label style="width:100px; padding:5px; margin-top:10px; margin-left:50px;">Cash: </label><input  value="C" type="radio">
+                        <td> <label style="width:100px; padding:5px; margin-top:10px; margin-left:30px;">other: </label><input  type="radio" value="O">
+                    </tr>
+                    <tr>
+                        <td> <label style="width:100px; padding:5px; margin-top:10px; margin-left:50px;">Bank: </label><input  value="B" type="radio">
+
+                    </tr>
+
+                </table>
+
+            </fieldset>
+              
+    <div class="col-md-12" id="divStyle" style="border:0px;">
+        <button (click)="save()" type="button" class="btn btn-info">Save</button>
+        <button (click)="cancelClick()" type="button" class="btn btn-info">Back</button>
+        
+    </div>
+</form>
+    </ba-card>
+ </div>
+
+    

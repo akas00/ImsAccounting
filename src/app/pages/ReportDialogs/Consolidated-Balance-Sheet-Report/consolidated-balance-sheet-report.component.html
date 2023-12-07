@@ -1,0 +1,110 @@
+<style>
+    .input-text {
+        width: 100%;
+        /* height: 30px !important; */
+        font-weight: bold;
+    }
+
+    .td-class {
+        border: none !important;
+    }
+
+    .date-input {
+        width: 93%;
+        font-size: 12px !important;
+        height: 30px !important;
+    }
+     @media screen and (max-width:991px) {
+         .report-container{
+           width: 100% !important;
+    }
+    .report-height{
+        height:52vh; 
+        overflow:auto;
+    }
+    }
+         @media screen and (max-width:767px) {
+            .smallBoldLabel{
+                  width: auto !important;
+            }
+            
+        
+    }
+</style>
+<div class="container report-container" style="background-color : #ffffff; padding :1%; height : auto;  ">
+    <div class="row">
+        <div class="modal-header" style="width : 97%; margin : 0px auto;">
+            <button type="button" class="close" data-dismiss="modal" (click)="closeReportBox()">&times;</button>
+            <h4 class="modal-title">Consolidated Balance Sheet Report</h4>
+        </div>
+        <div class="col-md-12 report-height" style="padding-top: 2%;">
+            <!-- Left Column -->
+            <div class="col-md-6">
+                <fieldset>
+                    <legend style="font-size:11px;font-weight: bold; width:auto;margin-bottom: -4px;">Date Range
+                        Selection :
+                    </legend>
+                    <table>
+                        <tr>
+                            <!-- <td class="td-class"><label class="smallBoldLabel">From:(AD)</label></td> -->
+                            <!-- <td class="td-class"><label class="smallBoldLabel">To:(AD)</label></td> -->
+                        </tr>
+                        <tr>
+                            <td class="td-class">
+                                <input type="date" class="date-input form-control" placeholder="Year Start Date"
+                                    [(ngModel)]="_reportFilterService.ConsolidatedBalanceSheetObj.Consolidated_BalanceSheet_DATE2"
+                                    (change)="changeEndDate($event.target.value,'AD')"
+                                    max="{{masterService.date1 | date:'yyyy-MM-dd'}}"
+                                    min="{{masterService.date2 | date:'yyyy-MM-dd'}}">
+                            </td>
+                            <td class="td-class">
+                                <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDatefrom'"
+                                    (change)="changeEndDate($event.detail.value,'BS')" [label]="'From'"
+                                    [(ngModel)]="_reportFilterService.ConsolidatedBalanceSheetObj.Consolidated_BalanceSheet_BSDATE2">
+                                </nepali-date-picker>
+
+                            </td>
+                        </tr>
+                        <tr>
+
+                        </tr>
+                    </table>
+                </fieldset>
+
+
+            </div>
+            <!-- Right Column -->
+            <div class="col-md-6">
+                <div class="col-md-12 checkbox" style="padding-top:5px;">
+                    <label class="smallBoldLabel" style="margin-left: 0px;">
+                        <input type="checkbox" style="margin-left:119px;"
+                            [(ngModel)]="_reportFilterService.ConsolidatedBalanceSheetObj.Consolidated_BalanceSheet_SHOWDEBTORSCREDITORS"
+                            (change)="
+                    $event.target.checked
+                      ? (_reportFilterService.ConsolidatedBalanceSheetObj.Consolidated_BalanceSheet_SHOWDEBTORSCREDITORS = 1)
+                      : (_reportFilterService.ConsolidatedBalanceSheetObj.Consolidated_BalanceSheet_SHOWDEBTORSCREDITORS = 0)">&nbsp;&nbsp;Show
+                        Debtors / Creditors Party List
+                    </label>
+                </div>
+
+                <div class="col-md-12 checkbox" style="padding-top:5px">
+                    <label class="smallBoldLabel" style="margin-left: 0px;">
+                        <input type="checkbox" style="margin-left: 121px;"
+                            [(ngModel)]="_reportFilterService.ConsolidatedBalanceSheetObj.Consolidated_BalanceSheet_SHOWTOTALINGROUP" (change)="
+                    $event.target.checked
+                      ? (_reportFilterService.ConsolidatedBalanceSheetObj.Consolidated_BalanceSheet_SHOWTOTALINGROUP = 1)
+                      : (_reportFilterService.ConsolidatedBalanceSheetObj.Consolidated_BalanceSheet_SHOWTOTALINGROUP = 0)">&nbsp;&nbsp;Show Group
+                        Total In Report
+                    </label>
+                </div>
+                <!-- </fieldset> -->
+
+            </div>
+        </div>
+
+        <div class="modal-footer" style="width : 97%; margin : 0px auto;">
+            <button class="btn btn-info confirm-btn" type="button" (click)=onload()>RUN</button>
+            <button type="button" (click)="closeReportBox()" title="Cancel" class="btn btn-info">Close</button>
+        </div>
+
+    </div>

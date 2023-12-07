@@ -1,0 +1,303 @@
+<style>
+    .voucherclass {
+        margin-left: 10px;
+        height: 23px;
+        vertical-align: middle;
+        font-size: 13px;
+        border: 1px solid #cbcbcb;
+        border-radius: 3px;
+        color: black;
+        padding-left: 4px;
+    }
+
+    .hidebutton {
+        visibility: hidden;
+        /* Hide button */
+    }
+
+    .hoverButtonVisible:hover button {
+        visibility: visible;
+        /* On :hover of div show button */
+    }
+
+    .TableRowSize {
+        height: 23px;
+        border: 1px solid #e6e6e6;
+        width: 100px" 
+
+    }
+</style>
+
+<div class="row"
+    style="margin: 0px;    color: #666666;  background-color: #ffffff; border: 0; border-radius: 5px; position: relative;   margin-bottom: 10px;   box-shadow:0 5px 5px 0 rgba(0, 0, 0, 0.25);">
+    <div style="margin-top:-10px;padding:10px">
+        <h4 style="text-align:center; margin-bottom:0px">Scheme</h4>
+        <div class="row" style="margin-top:10px">
+            <!-- <div class="col-sm-3half">
+                <label style="width:100%;">Scheme ID :</label>
+            </div>
+            <div class="col-md-2">
+                <input class="voucherclass" type="text" style="width:100%" disabled placeholder="Auto" [(ngModel)]="SchemeObj.DisID" (keydown.enter)="getScheme($event.target.value)">
+
+            </div> -->
+            <div class="col-sm-3half">
+                <label style="width:100%;margin-left: 16px;">Scheme Name </label>
+            </div>
+            <div class="col-sm-6">
+                <input class="voucherclass" type="text" style="width:100%;padding:0px;  " [(ngModel)]="SchemeObj.SchemeName">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="col-sm-3half">
+                    <label>Schedule :</label>
+                </div>
+                <div class="col-md-2" style="margin-left:10px">
+                    <select style="width:155px; margin-left: 63px;" [(ngModel)]="SchemeObj.ScheduleID">
+                        <option Value="0">None!</option>
+                        <option *ngFor="let s of getScheduleList" class="voucherclass" style="width:100%"
+                            [ngValue]="s.DisID">{{s.DiscountName}}</option>
+
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="col-sm-3half">
+                    <label>Scheme Type :</label>
+                </div>
+                <div class="col-sm-6">
+                    <select class="voucherclass" style="width:200px" [(ngModel)]="selectedSchemeType"
+                        (ngModelChange)="ChangeSchemeType(selectedSchemeType)">
+                        <option value="bydiscount">By Discount</option>
+                        <option value="bybulk">By Bulk</option>
+                        <option value="bytotalamount">By Total Amount</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- <div class="col-sm-2">
+                <label style="width: 170px;font-size: 13px;height: 20px">
+                    <input type="checkbox" style="vertical-align: middle" [(ngModel)]="SchemeObj.Priority"
+                        value=1>Scheme Priority</label>
+            </div>
+            <div class="col-sm-3">
+                <label style="width: 170px;font-size: 13px;height: 20px">
+                    <input type="checkbox" style="vertical-align: middle" [(ngModel)]="SchemeObj.CardPriority"
+                        value=1>Scheme Card Priority</label>
+            </div> -->
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="row" *ngIf="enableTable==true"
+    style="margin-left:0px; margin-right:0px;background:white; color: #666666;  background-color: #ffffff; border: 0; border-radius: 5px; position: relative;   box-shadow:0 5px 5px 0 rgba(0, 0, 0, 0.25);">
+    <!-- <div class="col-md-12"> -->
+    <div class="col-md-8" style="margin-left: -40px;">
+        <div class="row" style="margin-left:20px;padding-top:10px;">
+
+            <div *ngIf="flag=='Bulk'" class="row" style="margin-left:20px;padding-top:10px;">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Bulk Mode :</label>
+                        <label style="width:120px"><input type="radio" value="cash" value="F"
+                                [(ngModel)]="bulkObj.RangeType">Fixed Quantity</label>
+                        <label style="width:120px"><input type="radio" value="credit" style="height:13px" value="R"
+                                [(ngModel)]="bulkObj.RangeType">Range
+                            Quantiy</label>
+
+
+                    </div>
+                </div>
+
+
+
+
+            </div>
+            <div *ngIf="flag!='Bulk'&&flag!='TotalAmount'" class="row" style="margin-left:15px;padding-top:10px">
+                <div class="col-sm-3half">
+                    <label>Discount Type :</label>
+                </div>
+                <div class="col-sm-6">
+                    <select class="voucherclass" style="width:40%; margin-left:30px" [(ngModel)]="flag"
+                        (ngModelChange)="DiscountTypeChangeEvent(flag)">
+                        <!-- <option value="discountbysupplier">By Supplier</option>
+                    <option value="discountbybrand">By Brand</option> -->
+                        <option value="Category">By Category</option>
+                        <option value="MGroup">By MGroup</option>
+                        <option value="Parent">By Parent</option>
+                        <option value="Mcode">By Item</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row" style="text-align: center;">{{TableHeader}}</div>
+            <table style="margin:10px;width:100%">
+                <div style="height:30px;width:100%;margin-left:10px">
+
+                    <tr>
+                        <th style="width:40px">SNo</th>
+                        <th *ngIf="flag=='Category'" style="padding-left:10px;width:200px">Category Name</th>
+                        <th *ngIf="flag!='TotalAmount'" style="padding-left:10px;width:150px">Item Code</th>
+                        <th *ngIf="flag!='TotalAmount'" style="width:300px;padding-left: 20px">Particulars</th>
+                        <!-- <th *ngIf="flag!='TotalAmount' && flag !='Mgroup'&& flag !='Parent'" style="width:100px">BatchNo
+                        </th> -->
+                        <th [hidden]="bulkObj.RangeType=='R'" *ngIf="flag=='Bulk' || flag=='TotalAmount'"
+                            style="width:80px;padding-left: 20px">Quantity</th>
+                        <th [hidden]="bulkObj.RangeType=='R'" style="width:150px;padding-left: 20px">Discount</th>
+                        <th [hidden]="bulkObj.RangeType=='R'" style="width:80px">Type</th>
+
+                    </tr>
+                </div>
+                <div
+                    style="height:270px;width:100%;overflow:auto;scrollbar-3dlight-color:#FFFFFF;scrollbar-arrow-color:#000000;margin-left:10px;scrollbar-base-color:#FF9999;scrollbar-darkshadow-color:#000000;scrollbar-face-color:#000000;scrollbar-highlight-color:#000000;scrollbar-shadow-color:#0033CC;">
+                    <tr *ngFor="let sObj of ItemList;let i=index" style="height:28px"
+                        (dblclick)="ComboRowDoubleClickEvent(t,i)" (click)="TableRowclick(i)">
+
+                        <td id="sno{{i}}" style="width:40px">
+                            {{i+1}}</td>
+
+                        <td *ngIf="flag=='Category' && sObj.inputMode==true" contenteditable="true" style="padding-left:10px;width:200px"
+                             class="TableRowSize" (keydown.Tab)="CatkeyEvent(i)"
+                            (keydown.enter)="CatkeyEvent(i)" [textContent]="sObj.MCategory" 
+                            (input)="sObj.MCategory=$event.target.textContent" (click)="clickCategory(i)">
+                            {{sObj.MCategory}}
+                            <span contenteditable="false" class="CellComment">Enter Code or press ENTER or TAB to Select
+                                Item</span>
+                        </td>
+                        <td *ngIf="flag=='Category' && sObj.inputMode==false" class="TableRowSize" style="background-color:  #e6e6e6;">{{sObj.MCategory}}</td>
+
+                        <td *ngIf="flag=='TotalAmount'" contenteditable="true" style="padding-left:10px;width:150px"
+                            class="TableRowSize" [textContent]="sObj.RangeQty" (click)="clickMcode(i)"
+                            (input)="sObj.RangeQty=$event.target.textContent">
+                            {{sObj.RangeQty}}
+                        </td>
+
+                        <td *ngIf="flag!='TotalAmount' && sObj.inputMode==true" contenteditable="true" style="padding-left:10px;width:150px"
+                            (keydown.Tab)="ItemkeyEvent(i)" (keydown.enter)="ItemkeyEvent(i)" id="menucode{{i}}"
+                            class="TableRowSize" [textContent]="sObj.MENUCODE
+                            " (input)="sObj.MENUCODE=$event.target.textContent" (click)="clickMcode(i)">
+                            {{sObj.MENUCODE}}
+                            <span contenteditable="false" class="CellComment">Enter Code or press ENTER or TAB to Select
+                                Item</span>
+                        </td>
+                        <td *ngIf="flag!='TotalAmount' && sObj.inputMode==false" class="TableRowSize" style="background-color:  #e6e6e6;">{{sObj.MENUCODE}}</td>
+
+                        <td *ngIf="flag!='TotalAmount' && sObj.inputMode==true"  style="width:300px"
+                            (keydown.Tab)="ItemkeyEvent(i)" (keydown.enter)="ItemkeyEvent(i)" id="batch{{i}}"
+                            class="TableRowSize">
+                            {{sObj.DESCA}}
+                            <span contenteditable="false" class="CellComment">Enter Code or press ENTER or TAB to Select
+                                Item</span>
+                        </td>
+                        <td *ngIf="flag!='TotalAmount' && sObj.inputMode==false" class="TableRowSize" style="background-color:  #e6e6e6;">{{sObj.DESCA}}</td>
+                        <!-- <td *ngIf="flag!='TotalAmount' && flag !='Mgroup'&& flag !='Parent'" contenteditable="true"
+                            style="width:100px" (keydown.Tab)="BatchTabClick(i)" (keydown.enter)="BatchEnter(i)"
+                            id="batch{{i}}" class="TableRowSize" [textContent]="sObj.Batches"
+                            (input)="sObj.Batches=$event.target.textContent">
+                            {{sObj.Batches}}
+                            <span contenteditable="false" class="CellComment">Enter Code or press ENTER or TAB to Select
+                                Batch</span>
+                        </td> -->
+
+                        <td [hidden]="bulkObj.RangeType=='R'" *ngIf="flag=='Bulk'" contenteditable="true"
+                            id="quantity{{i}}" style="width:150px" class="TableRowSize" [textContent]="sObj.RangeQty"
+                            (input)="sObj.RangeQty=$event.target.textContent" (keydown.Tab)="RangeQtyEvent(i)"
+                            (keydown.enter)="RangeQtyEvent(i)">
+                            {{sObj.RangeQty}}
+                        </td>
+
+                        <td [hidden]="bulkObj.RangeType=='R'" contenteditable="true" style="width:80px"
+                            class="TableRowSize" [textContent]="sObj.DisRate" id="discount{{i}}"
+                            (input)="sObj.DisRate=$event.target.textContent">
+                            {{sObj.DisRate}}
+                        </td>
+
+                        <td [hidden]="bulkObj.RangeType=='R'" (keydown.Tab)="TypeTab(i,sObj)"
+                            (keydown.enter)="TypeTab(i)" style="width:80px" class="TableRowSize"><select
+                                style="width:100px" [(ngModel)]="sObj.DiscountRateType" (ngModelChange)="ChangeType(sObj)">
+                                <option value=0>Rate</option>
+                                <option value=1>Amount</option>
+                                <option *ngIf="flag!='TotalAmount'" value=2>Quantity</option>
+                            </select>
+                        </td>
+                    </tr>
+                </div>
+            </table>
+        </div>
+
+    </div>
+    <div *ngIf="bulkObj.RangeType=='R'" class="col-md-4" style="margin-top:20px">
+
+        <div style="height:330px;width:90%; border:1px solid #b8bbbc">
+            <div class="row" style="text-align: center;font-size:15px">Range Quantity List</div>
+
+            <div class="row" style="margin-left:10px">
+                <label>ItemCode :</label><input type="text" style="width:150px" disabled>
+            </div>
+            <table style=" margin:10px;width:90%">
+                <tr>
+                    <th style="width:40px">Quantity</th>
+                    <th style="width:40px">Discount</th>
+                    <th style="width:40px">Type</th>
+                </tr>
+
+                <!-- <tr *ngFor="let rObj of RangeList">
+                    <td class="TableRowSize">{{rObj.RangeQty}}</td>
+                    <td class="TableRowSize">{{rObj.DisRate}}</td>
+                    <td class="TableRowSize">{{rObj.DiscountRateType}}</td>
+                </tr> -->
+            </table>
+        </div>
+
+    </div>
+
+</div>
+<div class="row">
+    <button class="btn btn-success btn-add-focus" (click)="onSaveClicked(value)">Save</button>
+</div>
+<div #showList class="PList">
+    <PItemList (dbClickEvent)="dblClickPopupItem($event)" [title]="PlistTitle" (itemCloseClick)="model1Closed()">
+    </PItemList>
+</div>
+
+<!-- <div #showBatch class="PList">
+    <PBatchList (dbClickEvent)="dblClickPopupBatch($event)" [AlternateUnits]="AlternateUnits"
+        [activerowIndex]="activerowIndex" [title]="PlistTitle" [BList]="batchlist" (BatchClosedClick)="model1Closed()"
+        (returnBatchValue)="returnBatch($event)"></PBatchList>
+</div> -->
+
+<div #showCat class="PList">
+    <PCategoryList (dbClickEvent)="dblClickCategoryItem($event)" [title]="PlistTitle"
+        (CategoryClosedClick)="model1Closed()">
+    </PCategoryList>
+</div>
+
+<div #showQtyRange class="PList">
+    <PopQtyRange (LoadRangeQty)="LoadRangeQty($event)" (RangeQtyClosedClick)="RangeQtyClose()" [RangeObj]="RangeObj">
+    </PopQtyRange>
+</div>
+
+<div class="modal fade" bsModal #childModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog"
+    aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" aria-label="Close" (click)="childModal.hide()">
+                    <span aria-hidden="true">&times;</span>
+
+                </button>
+                <h4 class="modal-title">Information</h4>
+            </div>
+            <div class="modal-body">
+                {{DialogMessage}}
+            </div>
+
+
+        </div>
+    </div>
+</div>

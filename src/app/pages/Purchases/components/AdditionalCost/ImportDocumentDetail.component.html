@@ -1,0 +1,145 @@
+<!-- <div class="col-md-12">
+<div class="col-md-12">
+    <label style="width: 17% !important">Import Document No :</label>
+    <input type="text" class="form-control" [(ngModel)]="masterService.importDocumentDetailsObj.PPNO">
+</div>
+<div class="col-md-12">
+    <label style="width: 17% !important">L/C No. :</label>
+    <input type="text" class="form-control" [(ngModel)]="masterService.importDocumentDetailsObj.LCNO">
+</div>
+<div class="col-md-12">
+    <label style="width: 17% !important;font-weight: bold;
+    border-bottom: 1px solid #e2e2e2;">Import Declared Value </label>
+    </div>
+<div class="col-md-12">
+    <label style="width: 17% !important" >Tax Value :</label>
+    <input type="text" class="form-control" [(ngModel)]="masterService.importDocumentDetailsObj.TAXABLEVALUE">
+</div>
+<div class="col-md-12">
+    <label style="width: 17% !important">Non Taxable value:</label>
+    <input type="text" class="form-control" [(ngModel)]="masterService.importDocumentDetailsObj.NTAXABLEVALUE">
+</div>
+<div class="col-md-12">
+    <label style="width: 17% !important">VAT Amount :</label>
+    <input type="text" class="form-control" [(ngModel)]="masterService.importDocumentDetailsObj.VATVALUE">
+</div>
+<div class="col-md-12">
+    <label style="width: 17% !important">Net Value :</label>
+    <input type="text" class="form-control" [(ngModel)]="masterService.importDocumentDetailsObj.NETVALUE">
+</div>
+
+
+</div> -->
+<style>
+    label {
+        width: 150px;
+        text-align: right;
+    }
+
+    input {
+        height: 26px;
+        font-size: 13px;
+    }
+</style>
+
+
+<div class="row">
+    <div class="form-group row">
+        <div class="col-md-2">
+            <label class="form-control-label">Import Document No:</label>
+        </div>
+        <div class="col-md-4">
+            <input type="text" class="form-control" [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'"
+                [(ngModel)]="_addionalcostService.IMPORTDETAILS.DOCUMENTNO" (change)="ChangeDocumentNo()">
+        </div>
+        <div class="col-md-2">
+            <label class="form-control-label">L/C No.:</label>
+        </div>
+        <div class="col-md-4">
+            <input type="text" class="form-control" [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'"
+            [(ngModel)]="_addionalcostService.IMPORTDETAILS.LCNUM" (change)="ChangeLCNo()">
+
+        </div>
+    </div>
+
+
+    
+    <div class="row">
+        <div class="col-md-12 pd0" style="height: 40vh; margin-bottom: 1rem; overflow-y: scroll;overflow-x: hidden;    margin-left: 2%;
+        margin-top: -1%;
+        width: 98.5%;">
+            <table class="table">
+                <thead>
+                    <tr style="border-bottom: 2px solid #e6e6e6; height: 25px; background: #9ccae4 ;">
+                        <th scope="col" style="width: 1%;">Sn.</th>
+                        <th scope="col" style="width: 10%;">Item Name</th>
+                        <th scope="col" style="width: 5%;">Qty</th>
+                        <th scope="col" style="width: 5%;">Taxable</th>
+                        <th scope="col" style="width: 5%;">Non-Taxable</th>
+                        <th scope="col" style="width: 5%;">VAT</th>
+                        <th scope="col" style="width: 5%;">Net amount</th>
+
+                    </tr>
+                </thead>
+                <tbody style="background-color: aliceblue;">
+                    <tr *ngFor = "let item of _addionalcostService.IMPORTDETAILS.prodList; let i=index" style="height: 28px;" (click)="ClickTableRow(i)">
+                        <td style="width: 1%;">{{i+1}}</td>
+                        <td style="width: 10%;">
+                            <input id="importItemname{{i}}" type="text" list="product" [(ngModel)]="item.ITEMNAME"
+                                (keydown.Enter)="masterservice.focusAnyControl('importQty'+i)" (focus)="rowClick(i)"
+                               autocomplete="off" [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'">
+                            <datalist id="product">
+                                <option *ngFor="let i of _additionalCostService.addtionalCostList" [value]="i.desca">
+                            </datalist>
+                        </td>
+                        <td style="width: 5%;" id="importQty{{i}}"  ><input (keydown.Enter)="masterService.focusAnyControl('importQty'+i)" 
+                             [(ngModel)]="item.QUANTITY" (change)="onChange()" type="number" [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'"></td>
+                        <td style="width: 5%;" id="importTaxable{{i}}" ><input (keydown.Enter)="masterService.focusAnyControl('importTaxable'+i)"  
+                            type="number" (change)="onChangeTaxable()" [(ngModel)]="item.TAXABLE" [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'"></td>
+                        <td style="width: 5%;" id="importNonTaxable{{i}}" ><input (keydown.Enter)="masterService.focusAnyControl('importNonTaxable'+i)"  
+                            type="number" (change)="onChangeNonTaxable()" [(ngModel)]="item.NONTAXABLE" [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'"></td>
+                        <td style="width: 5%;" id="importVAT{{i}}" ><input (keydown.Enter)="masterService.focusAnyControl('importVAT'+i)"  type="number" 
+                            (change)="onChangeVAT()" [(ngModel)]="item.VAT" [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'"></td>
+                        <td style="width: 5%;" id="importNetmant{{i}}"><input type="number" (keydown.Enter)="nextRow()" 
+                             (keydown.Tab)="nextRow()"(change)="nextRow()" [(ngModel)]="item.NETAMOUNT" [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'"></td>
+
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+    <div class="row" style="margin-left: 2%;
+    width: 98.5%;">
+        <table class="table">
+          <tr style="line-height: 1.2rem;">
+            <th style="background: rgb(172 172 172); border: 2px white solid;" width="11%" style="width: 6.5%;">TOTAL</th>
+    <th style="background: rgb(172 172 172); border: 2px white solid;" width="5%">
+      {{ _addionalcostService.IMPORTDETAILS.TOTALQTY}} </th>
+      <th style="background: rgb(172 172 172); border: 2px white solid;" width="5%">
+        {{ _addionalcostService.IMPORTDETAILS.TOTALTAXABLE}} </th>
+    <th style="background: rgb(172 172 172); border: 2px white solid;" width="5%">
+      {{ _addionalcostService.IMPORTDETAILS.TOTALNONTAXABLE}}</th>
+    <th style="background: rgb(172 172 172); border: 2px white solid;" width="5%">
+      {{ _addionalcostService.IMPORTDETAILS.TOTALVAT}}</th>
+    <th style="background: rgb(172 172 172); border: 2px white solid;" width="5%">
+      {{ _addionalcostService.IMPORTDETAILS.NETAMOUNT}}</th>
+          </tr>
+        </table>
+        <!-- <div class="col-md-2">
+          <h6>TOTAL QTY: {{_trnMainService.TrnMainObj.IMPORTDETAILS.TOTALQTY}} </h6>
+        </div>
+        <div class="col-md-2">
+          <h6>TAXABLE: {{_trnMainService.TrnMainObj.IMPORTDETAILS.TOTALTAXABLE}} </h6>
+        </div>
+        <div class="col-md-3">
+          <h6>NON-TAXABLE: {{_trnMainService.TrnMainObj.IMPORTDETAILS.TOTALNONTAXABLE}} </h6>
+        </div>
+        <div class="col-md-2">
+          <h6>VAT: {{_trnMainService.TrnMainObj.IMPORTDETAILS.TOTALVAT}} </h6>
+        </div>
+        <div class="col-md-2">
+          <h6>NET AMNT: {{_trnMainService.TrnMainObj.IMPORTDETAILS.NETAMOUNT}} </h6>
+        </div> -->
+      </div>
+</div>

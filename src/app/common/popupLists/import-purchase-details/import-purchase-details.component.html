@@ -1,0 +1,96 @@
+<div class="importdetail_container" *ngIf="isActive">
+  <div class="card">
+    <div class="card-header" style="background: #cbcbcb;">
+      <h5 class="page-title">IMPORT DOCUMENT DETAILS</h5>
+      <div class="button-group">
+        <button title="Save" type="submit" class="btn btn-info" (keydown.F6)="ok()" (click)="ok()"
+          style="margin-right:2px">OK</button>
+        <button type="button" title="Cancel" class="btn btn-info" (click)="closeDialog()">CANCEL</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row" class="form-horizontal" style="margin-top: 15px;">
+
+        <div class="row">
+          <div class="col-md-4 pd0">
+            <div class="form-group row">
+              <label class="col-sm-3 form-control-label" style="margin-left: 0px;">PP No:</label>
+              <div class="col-sm-7">
+                <input #DocumentNo id="documentno" type="text" class="form-control"
+                  [(ngModel)]="_trnMainService.TrnMainObj.IMPORTDETAILS.DOCUMENTNO" disabled>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group row">
+              <label class="col-sm-3 form-control-label" style="margin-left: 0px;">L/C No.:</label>
+              <div class="col-sm-7">
+                <input type="text" class="form-control" [(ngModel)]="_trnMainService.TrnMainObj.IMPORTDETAILS.LCNUM"
+                disabled>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12 pd0" style="height: 40vh; margin-bottom: 1rem; overflow-y: scroll;overflow-x: hidden;">
+            <table class="table">
+              <thead>
+                <tr style="border-bottom: 2px solid #e6e6e6; height: 25px; background: #9ccae4 ;">
+                  <th scope="col" style="width: 1%;">Sn.</th>
+                  <th scope="col" style="width: 10%;">Item Name</th>
+                  <th scope="col" style="width: 5%;">Qty</th>
+                  <th scope="col" style="width: 5%;">Taxable</th>
+                  <th scope="col" style="width: 5%;">Non-Taxable</th>
+                  <th scope="col" style="width: 5%;">VAT</th>
+                  <th scope="col" style="width: 5%;">Net Amount</th>
+
+                </tr>
+              </thead>
+              <tbody style="background-color: aliceblue;">
+                <tr *ngFor="let item of _trnMainService.TrnMainObj.IMPORTDETAILS.prodList;let i = index"
+                  style="height: 28px;" (click)="rowClick(i)">
+                  <td style="width: 1%;">{{i+1}}</td>
+                  <td style="width: 10%;"><input type="text" id="importItem{{i}}" [(ngModel)]="item.ITEMNAME" disabled>
+                  </td>
+                  <td style="width: 5%;"><input type="number" id="importQty{{i}}" [(ngModel)]="item.QUANTITY" disabled>
+                  </td>
+                  <td style="width: 5%;"><input type="number" id="importTaxable{{i}}" [(ngModel)]="item.TAXABLE"
+                      disabled></td>
+                  <td style="width: 5%;"><input type="number" id="importNonTaxable{{i}}" [(ngModel)]="item.NONTAXABLE"
+                      disabled></td>
+                  <td style="width: 5%;"><input type="number" id="importVAT{{i}}" [(ngModel)]="item.VAT" disabled></td>
+                  <td style="width: 5%;"><input type="number" id="importNetmant{{i}}" [(ngModel)]="item.NETAMOUNT"
+                      disabled></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
+
+        <div class="row">
+          <table class="table">
+            <tr style="line-height: 1.2rem;">
+              <th style="background: rgb(172 172 172); border: 2px white solid;" width="11%">TOTAL</th>
+              <th style="background: rgb(172 172 172); border: 2px white solid;" width="5%">
+                {{_trnMainService.TrnMainObj.IMPORTDETAILS.TOTALQTY}} </th>
+              <th style="background: rgb(172 172 172); border: 2px white solid;" width="5%">
+                {{_trnMainService.TrnMainObj.IMPORTDETAILS.TOTALTAXABLE}} </th>
+              <th style="background: rgb(172 172 172); border: 2px white solid;" width="5%">
+                {{_trnMainService.TrnMainObj.IMPORTDETAILS.TOTALNONTAXABLE}}</th>
+              <th style="background: rgb(172 172 172); border: 2px white solid;" width="5%">
+                {{_trnMainService.TrnMainObj.IMPORTDETAILS.TOTALVAT}}</th>
+              <th style="background: rgb(172 172 172); border: 2px white solid;" width="5%">
+                {{_trnMainService.TrnMainObj.IMPORTDETAILS.NETAMOUNT}}</th>
+            </tr>
+          </table>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,143 @@
+<div class="sticky-top">
+    <div class="row clearfix">
+        <div class="col-md-2">
+            <voucher-master-toggler></voucher-master-toggler>
+        </div>
+        <div class="col-md-2">
+            <h2 style="color: black;">E-Way</h2>
+        </div>
+
+        <div class="col-md-8">
+            <button style="margin: 0px 4px;" class="btn btn-info pull-right" (click)="update()">
+                Update Eway
+            </button>
+            <button style="margin: 0px 4px;" class="btn btn-info pull-right" download="download.json"
+                (click)="download_eway()">
+                Download E-Way JSON
+            </button>
+        </div>
+    </div>
+
+</div>
+<div  class="main-container">
+    <div ! class="row clearfix" style="margin: 10px;overflow-y: scroll; overflow-x: hidden">
+        <div class="form-group row ">
+            <div class="col-sm-1">
+                <table>
+                    <tr>
+                        <td><label>Type </label></td>
+                    </tr>
+                    <tr>
+
+                    </tr>
+                </table>
+            </div>
+            <div class="col-sm-3">
+                <select [(ngModel)]="EwayObj.Type" style="width:80%;height:30px">
+                    <option value="Sale">Sale</option>
+                </select>
+            </div>
+            <div class="col-sm-1">
+                <table>
+                    <tr>
+                        <td><label>Location </label></td>
+                    </tr>
+                    <tr>
+
+                    </tr>
+                </table>
+            </div>
+            <div class="col-sm-3">
+                <input type="text" [(ngModel)]="EwayObj.Location" readonly=true>
+            </div>
+        </div>
+        <div class="form-group row ">
+            <div class="col-sm-1">
+                <table>
+                    <tr>
+                        <td><label>From </label></td>
+                    </tr>
+                    <tr>
+                        <td>{{From | date:'MM/dd/yyyy'}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-sm-3">
+                <p-calendar (onSelect)="setDate()" [(ngModel)]="EwayObj.from" [inline]="true" value="a"></p-calendar>
+            </div>
+            <div class="col-sm-1">
+                <table>
+                    <tr>
+                        <td><label>To </label></td>
+                    </tr>
+                    <tr>
+                        <td>{{To | date:'MM/dd/yyyy'}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-sm-4">
+                <p-calendar (onSelect)="endDate()" [(ngModel)]="EwayObj.to" [inline]="true" value="b"></p-calendar>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="masterService.ShowMore" class="row" style="margin-top: 5px">
+        <div class="col-md-12">
+            <div class="col-md-12">
+                <button class="btn btn-info" (click)="ApplyEway()">Apply E-Way</button>
+            </div>
+
+        </div>
+    </div>
+    <div  class="row">
+        <div class="col-md-12">
+            <div class="tab-content">
+                <div class="tab-pane active" id="general-info"></div>
+
+
+                <div style="background-color: #FFFFFF;height:390px;overflow-x: scroll;">
+                    <table class="table" style="margin-bottom: 5px; font-size: 12.5px;overflow: scroll">
+                        <tr style="border-bottom: 2px solid #E6E6E6; border-top: 2px solid #E6E6E6;    height: 30px;
+                        background: silver;
+                        color: black;">
+                            <!-- <th style="width:20px;">S.No</th> -->
+                            <th>S.no</th>
+                            <th>Bill No</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Transporter</th>
+                            <th>Counter</th>
+                            <th>Amount</th>
+                            <th></th>
+                        </tr>
+                        <tbody *ngFor="let x of service.ewayList;let i=index" style="border: 1px"
+                        [class.highlighted]="i==activerowIndex">
+
+                            <tr>
+                                <!-- <td style="width:20px;">{{i+1}}</td> -->
+                                <td>{{i+1}}</td>
+                                <td>{{x.VCHRNO}}</td>
+                                <td>{{x.Customer}}</td>
+                                <td>{{x.Date}}</td>
+                                <td (click)="RowTransporterClick(x)" style="color: #2dacd1;
+                                text-decoration: underline;">{{x.TRANSPORTER}}</td>
+                                <td>{{x.Counter}}</td>
+                                <td>{{x.Amount}}</td>
+                                <td><input type="checkbox" [(ngModel)]="x.EWAYCHECK" [name]="x.EWAYCHECK"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+<!-- <div  class="main-container" style="padding-top : 10px; margin-bottom: 0px">
+    
+</div> -->
+<div class="sticky-bottom">
+
+</div>
+<eway-popup #ewaypopup></eway-popup>
+<eway-popup-row-data #rowdatapopup></eway-popup-row-data>

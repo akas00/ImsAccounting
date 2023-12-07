@@ -1,0 +1,105 @@
+<style>
+    .uiInputLabel {
+        position: relative;
+    }
+
+    .clearfix {
+        zoom: 1;
+    }
+
+    .uiInputLabelRadio {
+        margin-top: 1px;
+    }
+
+    .uiInputLabelInput {
+        margin: 0;
+        padding: 0;
+        position: absolute;
+    }
+
+    .uiInputLabel .uiInputLabelLabel {
+        display: inline-block;
+        margin-left: 17px;
+        vertical-align: baseline;
+    }
+
+    .uiInputLabelLegacy label {
+        color: #333;
+        font-weight: normal;
+    }
+
+    .mlm {
+        margin-left: 10px;
+    }
+
+    .clearfix {
+        zoom: 1;
+    }
+
+    .sp_11oBBn1TWmd.sx_c373a6 {
+        background-position: 0 -34px;
+    }
+
+    ._42ef {
+        overflow: hidden;
+    }
+    
+  a:hover {
+    color: #f7d559 !important;
+    cursor: pointer;
+  }
+
+</style>
+<form (ngSubmit)="onSubmit(form.value)" class="form-horizontal" style=" padding-top:200px">
+    <div class="mvl ptm uiInterstitial uiInterstitialLarge uiBoxWhite" style="margin: auto;width: 50%;padding: 20px;background-color: white; height:auto;" checked>
+        <div class="uiHeader uiHeaderBottomBorder mhl mts uiHeaderPage interstitialHeader">
+            <div class="clearfix uiHeaderTop">
+                <div class="rfloat _ohf">
+                    <div class="uiHeaderActions"></div>
+                </div>
+                <div style="padding:5px; border-bottom: solid 1px #dcdcdc; margin-bottom: 10px;">
+                    <h2 class="uiHeaderTitle" aria-hidden="true">Get Six-Digit Code to Log In</h2>
+                </div>
+            </div>
+        </div>
+        <div class="phl ptm uiInterstitialContent">
+            <div class="identify_yourself_block">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div>we want to send your code so you can log in.</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="uiInputLabel clearfix uiInputLabelLegacy"><input type="radio" class="uiInputLabelInput uiInputLabelRadio" style="margin-top:10px;" checked>
+                                    <label class="uiInputLabelLabel">
+                                    <div class="_8u _42ef">
+                                    <div><strong>Send code via email</strong><br>
+                                    <div>{{loginService.UsersObj.EMAIL}}</div>
+                </div>
+            
+        </div>
+        </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div style="padding:20px;border-top: solid 1px #f4ecec; margin-bottom: 10px;">
+            <a style="color: #365899;cursor: pointer;" (click)="Nolonger()">No longer have access to these?</a>
+            <button class="rfloat _ohf" type="button" title="Save" style="background-color: white;color: black;border: 2px solid #dcdcdc;" (click)="Cancel()">Cancel</button>
+            <button class="rfloat _ohf" type="button" title="Save" style="background-color: white;color: black;border: 2px solid  #4CAF50; margin-right:5px;"
+                (click)="sendmail()">Continue</button>
+            </div>
+        </div>
+</form>

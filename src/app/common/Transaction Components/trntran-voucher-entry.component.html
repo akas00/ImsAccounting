@@ -1,0 +1,935 @@
+<style>
+  td {
+    border: 1px solid #e6e6e6;
+  }
+
+  input {
+    padding: 8px;
+  }
+
+  th {
+    font-weight: bold;
+    font-family: Roboto, Arial, sans-serif;
+  }
+  ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  opacity: 1 !important;
+    color: rgba(0, 0, 0, 0.5) !important;
+}
+</style>
+<div class="clearfix">
+  <div [ngClass]="showWholeSubledger ? 'col-md-7' : 'col-md-12'"
+    style="padding-right: 0px !important; padding-left: 0px !important;">
+    <div>
+      <!-- overflow-y: scroll -->
+      <table style="margin-bottom: 5px;font-size: 13px;width: 100%;" (click)="hideDetail()" *ngIf="_transactionService">
+        <thead>
+          <tr style=" border-bottom: 2px solid #E6E6E6;
+                            border-top: 2px solid #E6E6E6;
+                            height: 30px;
+                            background: silver;
+                            color: black;position: sticky; top: -1px;">
+            <th style="width:2%">SNo.</th>
+            <!-- <th style="width:20%">{{ _transactionService.TableAcHeader }}</th> -->
+            <th style="width:19%">Ledger A/C</th>
+            <th *ngIf="_transactionService.userSetting.ENABLESUBLEDGER==1" style="width: 15%;">
+              Sub Ledger A/C
+            </th>
+            <th *ngIf="
+                voucherType == 12  ||  voucherType == 62 ||  voucherType == 22 || voucherType == 23 || voucherType == 64
+              " style="width:7%">
+              Dr Amount
+            </th>
+
+            <th *ngIf="
+                voucherType == 17 ||voucherType == 65 ||voucherType == 75 || voucherType == 16 || voucherType == 15 || voucherType == 72  || voucherType == 41
+              " style="width:7%">
+              Amount
+            </th>
+            <th *ngIf="
+                  voucherType == 12 || voucherType == 62 || voucherType == 22 || voucherType == 23
+              " style="width:7%">
+              Cr Amount
+            </th>
+
+            <th *ngIf="voucherType == 18 " style="width:7%">
+              Amount
+            </th>
+
+            <th *ngIf="
+                voucherType == 18 || voucherType == 17 || voucherType == 72 || voucherType == 15 || voucherType == 16
+              " style="width:7%">
+              TDS Adjustment
+            </th>
+
+            <th *ngIf="_transactionService.userSetting.enableCostCenter==2" style="width:10.5%">Cost Center</th>
+            <th
+              *ngIf="_transactionService.userSetting.enableSalesman==1  && (_transactionService.TrnMainObj.VoucherType == 12 || _transactionService.TrnMainObj.VoucherType == 18 )"
+              style="width:10.5%">SalesMan</th>
+            <th style="width: 9%;">Narration</th>
+            <th *ngIf=" voucherType==64 " style="width: 15%;">Is Taxable</th>
+            <th *ngIf=" voucherType==64 " style="width: 15%;">Purchase-Type</th>
+            <th *ngIf=" voucherType==65">Trn Type</th>
+            <th *ngIf=" voucherType==62" style="width:7%">Trn Mode</th>
+            <th *ngIf=" voucherType==18 " style="width:7%">Receipt Mode</th>
+            <th *ngIf=" voucherType==17 " style="width:7%">Pay Mode</th>
+
+            <th style="width:9%"
+              *ngIf="voucherType==17 || voucherType==18 || voucherType==62 || voucherType==65 || voucherType==75">
+              Number</th>
+
+            <th style="width:9%" *ngIf="voucherType==72">Cheque Number</th>
+            <th style="width:9%" *ngIf="voucherType==75">
+              Bank Name</th>
+            <th style="width:9%"
+              *ngIf="voucherType==17 || voucherType==18 || voucherType==62|| voucherType==65 || voucherType==72">Date(IN A.D)
+            </th>
+            <th style="width:9%"
+            *ngIf="voucherType==72">Date(IN B.S)
+          </th>
+            <th style="width:21%"
+              *ngIf="(voucherType==72 || ((voucherType==17 || voucherType==18) && masterService.postdatedvoucher==true))">
+              Bank Name
+            </th>
+            <!-- <th style="width:10%"
+              *ngIf="voucherType==17 || voucherType==18 || voucherType==62 || voucherType==65 ||voucherType==12 || voucherType==16 || voucherType==15">
+              Main ledger</th> -->
+
+            <!-- <th *ngIf="viewMode==false"></th> -->
+          </tr>
+        </thead>
+        <tbody *ngFor="let t of _transactionService.TrnMainObj.TrntranList; let i = index" (click)="rowClick(i)">
+          <tr style="border: 1px solid #e6e6e6;max-height:25px;" (click)="setSelectedRow(i,t)">
+            <td style="line-height:21px; text-align:center">
+              <!-- <div
+                *ngIf="t.AccountItem && t.AccountItem.HASSUBLEDGER == 1"
+                style="display:inline-block"
+              >
+                *
+              </div> -->
+              {{ i + 1 }}.
+            </td>
+            <td class="cell-with-comment">
+              <div *ngIf="t.ROWMODE == 'new' || t.ROWMODE == 'edit'">
+                <input #ACCODEInput id="ACCODEInput_{{i}}" autocomplete="off" [focus]="addFocus"
+                  style="height:23px;width: 100%;" (keydown.Enter)="showAcList(i); ACCODEInput.blur();"
+                  (keydown.Shift.Delete)="clearRow($event, i,t);"
+                  (keydown.Tab)="focusNextValidation(1, i, $event,'Ledger',t)" (keydown)="preventInput($event)"
+                  (focus)="onAcRowFocus(i)" (focusout)="onAcRowFocusOut(i)" (click)="onAcRowFocusOut(i)"
+                  placeholder="press ENTER to select" value="{{ t.acitem != null ? t.acitem.ACNAME : '' }}"
+                  (ngModelChange)="TrnTranAccNameChange($event)" [disabled]="t.disableCellPayRow == true " />
+
+                <!-- <span class="cell-comment">
+                  press ENTER or TAB to Select
+                  {{ _transactionService.TableAcHeader }}
+                </span> -->
+              </div>
+              <div style="line-height:21px;" *ngIf="t.ROWMODE != 'new' && t.ROWMODE != 'edit'">
+                {{ t.AccountItem?.ACNAME }}
+              </div>
+            </td>
+            <!-- //Subledger -->
+            <td *ngIf="_transactionService.userSetting.ENABLESUBLEDGER==1" class="cell-with-comment">
+
+
+
+              <div *ngIf="(t.ROWMODE == 'new' || t.ROWMODE == 'edit')" style="width: 100%;">
+                <input #SubLedgerInput id="SubLedgerInput_{{i}}" autocomplete="off" [(ngModel)]="t.SL_ACNAME"
+                  style="height:23px;width: 100%;" (keyup.Enter)="onsubLedgerTab(i); SubLedgerInput.blur()"
+                  (keydown.Tab)="focusNextValidation(1, i, $event,'SubLedger',t)"
+                  (keydown.Shift.Delete)="clearRow($event, i,t);" (keydown)="preventInput($event)"
+                  (click)="changedSubLedger($event,t)" placeholder="press ENTER to Select"
+                  [disabled]="t.disableSubLedger == true " />
+                <!-- <span class="cell-comment">
+        press ENTER or TAB to Select Sub-Ledger
+      </span> -->
+              </div>
+
+              <div *ngIf="t.ROWMODE != 'new' && t.ROWMODE != 'edit'" style="width: 100%;">
+                <div style="width:100%;line-height:21px;">
+                  {{ t.SL_ACNAME }}
+                </div>
+              </div>
+            </td>
+            <!-- //SubledgerClose -->
+
+            <!-- DR -->
+            <td *ngIf=" 
+                voucherType == 17 || voucherType == 15 || voucherType == 65 ||voucherType == 75|| voucherType == 12 || voucherType == 62 || voucherType == 22 || voucherType == 23 || voucherType == 64 || voucherType == 41 ||
+                 (voucherType == 72 && (_transactionService.TrnMainObj.TRNMODE== 'Mixed Payment'||
+                 _transactionService.TrnMainObj.TRNMODE== 'Party Payment' || _transactionService.TrnMainObj.TRNMODE== 'Expenses Voucher'))
+              ">
+              <div *ngIf="t.ROWMODE == 'new' || t.ROWMODE == 'edit'">
+                <input #DrAmtInput id="DrAmtInput_{{i}}" class="text-right" [disabled]="
+                    t.acitem == null || t.acitem.ACID == null || (t.CRAMNT != null && t.CRAMNT != 0) || t.disableCellPayRow==true
+                  " style="width:100%;padding-left:4px" type="number" [(ngModel)]="t.DRAMNT"
+                  (keydown.control.c)="copyText(t.DRAMNT)" (keydown.control.v)="onPaste($event)"
+                  (change)="TrnTranDrAmtChange($event,i)" (keydown.Enter)="enterDabitAmount(i,$event)"
+                  (keydown.Tab)="debitTab(2, i, $event)" (keyup)="partyOpeningPopup('drAmt',$event,i)"
+                  (focusout)="focusOutDRAmount($event,i)" (keydown.Shift.Delete)="clearRow($event, i,t);"
+                  (input)="getCellPayFee()" />
+              </div>
+              <div *ngIf="t.ROWMODE != 'new' && t.ROWMODE != 'edit'">
+                <input disabled class="text-right" style="width:100%;padding-left:4px"
+                  type="number" (change)="_transactionService.budgetCalculation()" [(ngModel)]="t.DRAMNT" />
+              </div>
+            </td>
+            <!-- CR -->
+            <td *ngIf=" voucherType == 15 ||
+                 voucherType == 17  || voucherType == 12 || voucherType == 62 || voucherType == 22 || voucherType == 23 ||
+                (voucherType == 72 && (_transactionService.TrnMainObj.TRNMODE== 'Mixed Payment'||
+                _transactionService.TrnMainObj.TRNMODE== 'Party Payment' || _transactionService.TrnMainObj.TRNMODE== 'Expenses Voucher'))
+              ">
+              <div *ngIf="t.ROWMODE == 'new' || t.ROWMODE == 'edit'">
+                <input #CrAmtInput id="CrAmtInput_{{i}}" class="text-right" 
+                  (keydown.Enter)="partyOpeningPopup('crAmt',$event,i)" (keydown.Tab)="partyOpeningPopup('crAmt',$event,i)"
+                  
+                  [disabled]="
+                    t.acitem == null ||
+                    t.acitem.ACID == null ||
+                    (t.DRAMNT != null && t.DRAMNT != 0)
+                  " style="width:100%;padding-left:4px" type="number" [(ngModel)]="t.CRAMNT"
+                  (keydown.control.c)="copyText(t.CRAMNT)" (keydown.control.v)="onPaste($event)"
+                  (change)="TrnTranCrAmtChange($event)" (focus)="setSelectedRow(i)" 
+                  (focusout)="focusOutCRAmount($event,i)" (keydown.Shift.Delete)="clearRow($event, i,t);" />
+              </div>
+
+
+
+              <div *ngIf="t.ROWMODE != 'new' && t.ROWMODE != 'edit'">
+                <input disabled class="text-right" style="width:100%;padding-left:4px"
+                  type="number" [(ngModel)]="t.CRAMNT" />
+              </div>
+            </td>
+
+            <!-- --Start [Below 2 <td> is for Receive Voucher only]  -->
+
+            <!-- Receive Voucher CR and DN-->
+            <td
+              *ngIf="voucherType == 16 || voucherType == 18 || (voucherType == 72 && (_transactionService.TrnMainObj.TRNMODE== 'Party Receipt'||_transactionService.TrnMainObj.TRNMODE== 'Mixed Receipt'))">
+              <div *ngIf="t.ROWMODE == 'new' || t.ROWMODE == 'edit'">
+                <input #CrAmtInput id="CrAmtInput_{{i}}" class="text-right" 
+                  (keydown.Enter)="focusNext(2, i, $event)" (keydown.Tab)="focusNext(2, i, $event)"
+                  (keydown.f9)="showPartyOpeningDetails(i, 'crAmt')" (keydown.Shift.Delete)="clearRow($event, i,t);"
+                  [disabled]="
+        t.acitem == null ||
+        t.acitem.ACID == null ||
+        (t.DRAMNT != null && t.DRAMNT != 0)
+      " style="width:100%;padding-left:4px" type="number" [(ngModel)]="t.CRAMNT" (change)="TrnTranCrAmtChange($event)"
+                  (focus)="setSelectedRow(i)" (focusout)="focusOutCRAmount($event,i)" />
+              </div>
+              <div *ngIf="t.ROWMODE != 'new' && t.ROWMODE != 'edit'">
+                <input disabled class="text-right" style="width:100%;padding-left:4px"
+                  type="number" [(ngModel)]="t.CRAMNT" />
+              </div>
+            </td>
+            <!-- Receive Voucher DR and DN-->
+            <td
+              *ngIf="voucherType == 16 ||voucherType == 18 || (voucherType == 72 && (_transactionService.TrnMainObj.TRNMODE== 'Party Receipt'||_transactionService.TrnMainObj.TRNMODE== 'Mixed Receipt'))">
+              <div *ngIf="t.ROWMODE == 'new' || t.ROWMODE == 'edit'">
+                <input #DrAmtInput id="DrAmtInput_{{i}}" class="text-right" [disabled]="
+        t.acitem == null || t.acitem.ACID == null || (t.CRAMNT != null && t.CRAMNT != 0)
+      " style="width:100%;padding-left:4px" type="number" [(ngModel)]="t.DRAMNT"
+                  (change)="TrnTranDrAmtChange($event,i)" (keydown.Enter)="enterDabitAmount(i,$event)"
+                  (keydown.Tab)="focusNext(3, i, $event)" (keydown.f9)="showPartyOpeningDetails(i, 'drAmt')"
+                  (focusout)="focusOutDRAmount($event,i)" 
+                  (keydown.Shift.Delete)="clearRow($event, i,t);" />
+              </div>
+              <div *ngIf="t.ROWMODE != 'new' && t.ROWMODE != 'edit'">
+                <input disabled class="text-right" style="width:100%;padding-left:4px"
+                  type="number" [(ngModel)]="t.DRAMNT" />
+              </div>
+            </td>
+            <!-- End [Receive Voucher DR/CR column] -->
+
+            <td *ngIf="_transactionService.userSetting.enableCostCenter==2" class="cell-with-comment">
+              <div *ngIf="t.ROWMODE == 'new' || t.ROWMODE == 'edit'" style="width: 100%;">
+                <input #CostCenterInput id="CostCenterInput_{{i}}" autocomplete="off" [(ngModel)]="t.CostCenter"
+                  style="height:23px;width: 100%;" (keyup.Enter)="showCostCenterList(i); CostCenterInput.blur()"
+                  (keydown.Tab)="focusNext(4, i, $event)" (keydown.Shift.Delete)="clearRow($event, i,t);"
+                  (keydown)="preventInput($event)" placeholder="press ENTER to Select"
+                  [disabled]="t.disableCellPayRow == true" />
+                <!-- <span class="cell-comment">
+                  press ENTER or TAB to Select Cost Center
+                </span> -->
+              </div>
+
+              <div *ngIf="t.ROWMODE != 'new' && t.ROWMODE != 'edit'" style="width: 100%;">
+                <div style="width:100%;line-height:21px;">
+                  {{ t.CostCenter }}
+                </div>
+              </div>
+            </td>
+            <!-- Below colum is for SalesMan**> -->
+            <td
+              *ngIf="_transactionService.userSetting.enableSalesman==1 && (_transactionService.TrnMainObj.VoucherType == 12 || _transactionService.TrnMainObj.VoucherType == 18 )"
+              class="cell-with-comment">
+              <div *ngIf="t.ROWMODE == 'new' || t.ROWMODE == 'edit'" style="width: 100%;">
+                <input #SalesmanInput_ id="SalesmanInput_{{i}}" autocomplete="off" [(ngModel)]="t.SALESMAN"
+                  style="height:23px;width: 100%;" (keyup.Enter)="showSalesmanList(i); SalesmanInput_.blur()"
+                  (keydown.Tab)="focusNext(4, i, $event)" (keydown.Shift.Delete)="clearRow($event, i,t);"
+                  (keydown)="preventInput($event)" placeholder="press ENTER to Select" />
+
+              </div>
+
+              <div *ngIf="t.ROWMODE != 'new' && t.ROWMODE != 'edit'" style="width: 100%;">
+                <div style="width:100%;line-height:21px;">
+                  {{ t.SALESMAN }}
+                </div>
+              </div>
+            </td>
+
+            <td>
+              <div *ngIf="t.ROWMODE == 'new' || t.ROWMODE == 'edit'" style="width: 100%">
+                <input #narration
+                  *ngIf="(this.voucherType != 22 && this.voucherType != 23 && this.voucherType != 16 && this.voucherType != 15)"
+                  id="narration_{{i}}" placeholder="Narration" style="width:100%; padding-left:4px;" type="text"
+                  [(ngModel)]="t.NARATION" (keydown.Enter)=" TrnTranRowOk($event, i,t); FocusOn($event, i);"
+                  (keydown.Tab)="TrnTranRowOk($event, i,t);" (keydown.Shift.Delete)="clearRow($event, i,t);"
+                  autocomplete="off" [disabled]="t.disableCellPayRow == true" />
+                <input #narration1
+                  *ngIf="(this.voucherType == 22 || this.voucherType == 23 || this.voucherType == 16 || this.voucherType == 15)"
+                  id="narration_{{i}}" placeholder="Narration" style="width:100%; padding-left:4px;" type="text"
+                  [(ngModel)]="t.NARATION" (keydown.Tab)="TrnTranRowOk($event, i,t); narration1.blur();"
+                  (keydown.Enter)="TrnTranRowOk($event, i,t); narration1.blur();"
+                  (keydown.Shift.Delete)="clearRow($event, i,t);" autocomplete="off" />
+              </div>
+              <div *ngIf="t.ROWMODE != 'new' && t.ROWMODE != 'edit'">
+                <div style="width:100%;line-height:21px;">{{ t.NARATION }}</div>
+              </div>
+            </td>
+
+            <td *ngIf="voucherType==17 || voucherType==18 || voucherType==62 || voucherType==65">
+              <select id="transactionType_{{i}}" [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'"
+                name="transactionType" [(ngModel)]="t.NARATION1" class="form-control"
+                (keydown.Tab)="focusNext(5, i, $event)" (keydown.Enter)="focusNext(5, i, $event)"
+                (change)="onTrnTypeChange($event.target.value,i)" (keydown.Shift.Delete)="clearRow($event, i,t);">
+                <option value="none" selected>None</option>
+                <option value="cheque">Cheque</option>
+                <option value="DemandDraft">Demand Draft</option>
+                <option value="e-transfer">E-Transfer</option>
+                <option value="others">Others</option>
+              </select>
+
+            </td>
+            <td *ngIf=" voucherType==64">
+              <div style="width: 100%">
+                <input type="checkbox" id="ISTAXABLE{{i}}" [(ngModel)]="t.ISTAXABLE"
+                  style="width: 10%; margin-left:60px; margin-top:7px;"
+                  (change)="IsTaxableChange($event.target.checked,i)"
+                  [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'">
+              </div>
+            </td>
+            <td *ngIf=" voucherType==64">
+              <div style="width: 100%">
+                <select style="width: 101%;" id="CPTYPE{{i}}" [(ngModel)]="t.CPTYPE"
+                  (keydown.Enter)="TrnTranRowOk($event, i,t);" (keydown.Tab)="TrnTranRowOk($event, i,t);"
+                  [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'">
+                  <option value=0 selected>CAPITALIZE</option>
+                  <option value=1>NON-CAPITALIZE</option>
+                </select>
+              </div>
+            </td>
+            <td
+              *ngIf="(voucherType==17 || voucherType==18 || voucherType==62 || voucherType==65 || voucherType==75  || voucherType==72)">
+              <div *ngIf="(t.ROWMODE == 'new' || t.ROWMODE == 'edit')" style="width: 100%">
+                <input #chequeNo id="ChequeNo_{{i}}" style="width:100%; padding-left:4px;" type="text"
+                  [(ngModel)]="t.ChequeNo" (keyup.Enter)="onTabClickNumber(6, i, $event)"
+                  (keydown.Tab)="onTabClickNumber(6, i, $event)" (keydown.Delete)="clearRow($event, i,t);"
+                  (keydown.Shift.Delete)="clearRow($event, i,t);"
+                  [disabled]="t.disableBank == true || t.disableCellPayRow == true || t.hasAdditionalBank == true"
+                  autocomplete="off" />
+              </div>
+              <div *ngIf="t.ROWMODE != 'new' && t.ROWMODE != 'edit'">
+                <div style="width:100%;line-height:21px;">{{ t.ChequeNo }}</div>
+              </div>
+            </td>
+            <td *ngIf="voucherType==75">
+              <div *ngIf="(t.ROWMODE == 'new' || t.ROWMODE == 'edit') && t.hasAdditionalBank!=true" style="width: 100%">
+                <input #BankName id="BankName_{{i}}" style="width:100%; padding-left:4px;" type="text"
+                  [(ngModel)]="t.BANKNAME" (keyup.Enter)="onTabBankNameClick(6, i, $event)"
+                  (keydown.Tab)="onTabBankNameClick(6, i, $event)" (keydown.Delete)="clearRow($event, i,t);"
+                  (keydown.Shift.Delete)="clearRow($event, i,t);"
+                  [disabled]="t.disableBank == true || t.disableCellPayRow == true" autocomplete="off" />
+              </div>
+              <div *ngIf="(t.ROWMODE == 'new' || t.ROWMODE == 'edit') && t.hasAdditionalBank == true"
+                style="width: 100%">
+                <input #BankName id="BankName_{{i}}" style="width:100%; padding-left:4px;" type="text"
+                  [(ngModel)]="t.BANKNAME" (keyup.Enter)="showBankPopup()" placeholder="Please Select Bank"
+                  (keydown.Tab)="showBankPopup()" (keydown.Delete)="clearRow($event, i,t);"
+                  (keydown.Shift.Delete)="clearRow($event, i,t);"
+                  [disabled]="t.disableBank == true || t.disableCellPayRow == true" autocomplete="off" />
+              </div>
+              <div *ngIf="t.ROWMODE != 'new' && t.ROWMODE != 'edit'">
+                <div style="width:100%;line-height:21px;">{{ t.ChequeNo }}</div>
+              </div>
+            </td>
+            <td *ngIf="voucherType==17 || voucherType==18 || voucherType==62 || voucherType==65 || voucherType==72">
+              <div *ngIf="t.ROWMODE == 'new' || t.ROWMODE == 'edit'" style="width: 100%" id="ChequeDate_{{i}}"
+                class="trndatepicker chequeDate">
+                <!-- <input #chequeDate id="ChequeDate_{{i}}" style="width:100%; padding-left:4px;" type="date"
+                  [(ngModel)]="t.ChequeDate" (keydown.Tab)="onChequeDateEnter($event, i); chequeDate.blur();"
+                  (keydown.Enter)="onChequeDateEnter($event, i); chequeDate.blur();"
+                  (keydown.Delete)="clearRow($event, i);" /> -->
+
+
+                <ims-date-picker (onDateChange)="setChequeDate($event,i)" [index]="'chequeDate_'+i"
+                  [date]="getChequeDate(i)" [ID]="i" ></ims-date-picker>
+
+
+
+              </div>
+
+
+
+
+
+
+
+              <div *ngIf="t.ROWMODE != 'new' && t.ROWMODE != 'edit'">
+                <input #chequeDate style="width:100%; padding-left:4px;" type="date" [(ngModel)]="t.ChequeDate"
+                  disabled />
+                <!-- <div style="width:100%;line-height:21px;">{{ t.ChequeDate | date:'dd-mm-yyyy' }}</div> -->
+              </div>
+            </td>
+            <td *ngIf="voucherType==72">
+              <nepali-date-picker name="nepaliDateTo" [id]="'nepaliDateTo'"
+             [(ngModel)]="t.ChequeDateBS" (change)="chequeDate(t.ChequeDateBS,i)"
+              [label]="'dd/mm/yyyy'"  [max]="false"
+             >
+              </nepali-date-picker>
+              </td>
+            <!-- Bank Name -->
+            <td
+              *ngIf="(voucherType==72 || ((voucherType==17 || voucherType==18) && masterService.postdatedvoucher==true))">
+              <div *ngIf="(t.ROWMODE == 'new' || t.ROWMODE == 'edit')" style="width: 100%">
+                <input #chequeNo id="oppremarks_{{i}}" style="width:100%; padding-left:4px;" type="text"
+                  [(ngModel)]="t.OPPREMARKS" (keyup.Enter)="onEnterOppRemarks(6, i, $event)"
+                  (keydown.Tab)="onTabOppRemarks(6, i, $event)" (keydown.Delete)="clearRow($event, i,t);"
+                  (keydown.Shift.Delete)="clearRow($event, i,t);" autocomplete="off" />
+              </div>
+              <div *ngIf="t.ROWMODE != 'new' && t.ROWMODE != 'edit'">
+                <div style="width:100%;line-height:21px;">{{ t.OPPREMARKS }}</div>
+              </div>
+            </td>
+
+            <!-- 
+            <td>
+              {{t?.rootparentname}}
+
+           
+            </td> -->
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div *ngIf="showWholeSubLedger">
+    <div *ngIf="hideSubledger == false" class="col-md-5" style="padding-left: 0px;padding-left: 5px;">
+      <label style="text-align:center; display: block; font-size: 18px;">Sub-Ledger Entry</label>
+
+      <div style="background-color: #FFFFFF;height:450px;overflow-x: scroll;">
+        <table class="table" style="margin-bottom: 5px; font-size: 12.5px; overflow: scroll">
+          <thead>
+            <tr style="border-bottom: 2px solid #E6E6E6; border-top: 2px solid #E6E6E6;    height: 30px;
+                            background: silver;
+                            color: black;">
+              <th>SNo.</th>
+              <th>Subledger Name</th>
+              <th *ngIf="voucherType == 16 || voucherType == 18">Dr Amount</th>
+              <th *ngIf="voucherType == 17 || voucherType == 15">Cr Amount</th>
+              <th *ngIf="viewMode == false"></th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let sl of subledgers; let i = index" style="border-top:0px">
+            <tr style="border: 1px solid #e6e6e6;max-height:25px;">
+              <td style="line-height:21px;">{{ i + 1 }}.</td>
+              <td>
+                <div *ngIf="sl.ROWMODE == 'new' || sl.ROWMODE == 'edit'">
+                  <select [(ngModel)]="sl.SubledgerItem" style="width: 235px;">
+                    <option *ngFor="let sublist of subledgerDropDownList" [ngValue]="sublist">{{ sublist.ACNAME }}
+                    </option>
+                  </select>
+                </div>
+                <div *ngIf="sl.ROWMODE == 'save'" style="line-height:21px;">
+                  {{ sl.SubledgerItem.ACNAME }}
+                </div>
+              </td>
+
+              <td>
+                <div *ngIf="sl.ROWMODE == 'new' || sl.ROWMODE == 'edit'">
+                  <div *ngIf="voucherType == 16 || voucherType == 18" style="width: 90px">
+                    <input [disabled]="
+                        sl.SubledgerItem == null ||
+                        sl.SubledgerItem.ACNAME == null
+                      " style="width:90px;" type="number" [(ngModel)]="sl.DRAMNT" (keyup)="subLedgerDrAmtChanges()" />
+                  </div>
+                  <div *ngIf="voucherType == 17 || voucherType == 15">
+                    <input [disabled]="
+                        sl.SubledgerItem == null ||
+                        sl.SubledgerItem.ACNAME == null
+                      " style="width:90px;" type="number" [(ngModel)]="sl.CRAMNT" (keyup)="subLedgerCrAmtChanges()" />
+                  </div>
+                </div>
+                <div *ngIf="sl.ROWMODE == 'save'">
+                  <div *ngIf="voucherType == 16 || voucherType == 18" style="width:90px;line-height:21px;">
+                    {{ sl.DRAMNT }}
+                  </div>
+                  <div *ngIf="voucherType == 17 || voucherType == 15" style="width:90px;line-height:21px;">
+                    {{ sl.CRAMNT }}
+                  </div>
+                </div>
+              </td>
+              <td style="display:flex;" *ngIf="viewMode == false">
+                <!--<button style="margin-top:4.5px;" [disabled]="sl.SubledgerItem==null ||sl.SubledgerItem.ACNAME==null||((voucherType==17 || voucherType==15) && sl.CRAMNT==null)||((voucherType==17 || voucherType==15) && sl.CRAMNT<=0) ||((voucherType==16 || voucherType==18) && sl.DRAMNT==null)||((voucherType==16 || voucherType==18) && sl.DRAMNT<=0)" *ngIf="sl.ROWMODE!='save'"  (click)="SubLedgerRowOk(i)"  class="glyphicon glyphicon-ok"></button>                                         -->
+                <button *ngIf="sl.ROWMODE == 'save'" (click)="editSubledgerRow(i)"
+                  class="glyphicon glyphicon-edit"></button>
+                <button *ngIf="sl.ROWMODE == 'save'" style="margin-left:3px" (click)="clearSubLedgerRow(i)"
+                  class="glyphicon glyphicon-remove"></button>
+                <!--<button *ngIf="sl.ROWMODE!='save'" style="margin-top:4.5px; margin-left:3px;" (click)="clearSubLedgerRow(i)" class="glyphicon glyphicon-remove"></button>-->
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td colspan="3" style="line-height: 22px;">
+                <div *ngIf="sl.ROWMODE == 'new' || sl.ROWMODE == 'edit'" style="display:inline-block">
+                  <!--<div *ngIf="sl.ROWMODE=='new' || sl.ROWMODE=='edit'">-->
+                  <input id="NarrationId" placeholder="Narration" style="width:281px;padding-left:4px; margin-bottom:4px;" type="text"
+                    [(ngModel)]="sl.NARATION" />
+                </div>
+                <div *ngIf="
+                    sl.ROWMODE == 'save' &&
+                    sl.NARATION != null &&
+                    sl.NARATION != ''
+                  ">
+                  <div style="width:281px; line-height:21px;">
+                    ( {{ sl.NARATION }} )
+                  </div>
+                </div>
+                <div style="display:inline-block;" *ngIf="viewMode == false && sl.ROWMODE != 'save'">
+                  <button style="margin-top:1.5px; margin-left:3px;" [disabled]="
+                      sl.SubledgerItem == null ||
+                      sl.SubledgerItem.ACNAME == null ||
+                      ((voucherType == 17 || voucherType == 15) &&
+                        sl.CRAMNT == null) ||
+                      ((voucherType == 17 || voucherType == 15) &&
+                        sl.CRAMNT <= 0) ||
+                      ((voucherType == 16 || voucherType == 18) &&
+                        sl.DRAMNT == null) ||
+                      ((voucherType == 16 || voucherType == 18) &&
+                        sl.DRAMNT <= 0)
+                    " *ngIf="sl.ROWMODE != 'save'" (click)="SubLedgerRowOk(i)" class="glyphicon glyphicon-ok"></button>
+                  <button *ngIf="sl.ROWMODE != 'save'" style="margin-top:1.5px;" (click)="clearSubLedgerRow(i)"
+                    class="glyphicon glyphicon-remove"></button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="form-inline" style="margin-top:5px">
+        <label style="text-align: right;width: 270px">SubLedger Total:</label>
+        <input disabled type="text" value="{{ subLedgerTotal }}" style="padding-left:4px;width: 100px" />
+      </div>
+    </div>
+
+    <div *ngIf="hideSubledgerList == false" class="col-md-5" style="padding-left: 5px;padding-right: 0px;"
+      id="sub-ledger">
+      <label style="text-align:center; display: block; font-size: 18px;">Sub-Ledger List</label>
+      <div style="display: block; height:325px;overflow: scroll">
+        <table class="table" style="margin-bottom: 5px; font-size: 12.5px;">
+          <thead>
+            <tr style="border-bottom: 2px solid #E6E6E6; border-top: 2px solid #E6E6E6">
+              <th>SNo.</th>
+              <th>Subledger Name</th>
+              <th *ngIf="voucherType == 16 || voucherType == 18">Dr Amount</th>
+              <th *ngIf="voucherType == 17 || voucherType == 15">Cr Amount</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let tList of TrnTranList; let i = index" style="border: 0px;">
+            <tr *ngIf="tList.AccountItem && tList.AccountItem?.HASSUBLEDGER == 1">
+              <td *ngIf="
+                  tList.AccountItem?.ACCODE != null ||
+                  tList.AccountItem?.ACNAME != null
+                ">
+                <strong></strong>
+              </td>
+              <td style="border-bottom: 2px solid #E6E6E6;line-height:21px;" *ngIf="
+                  tList.AccountItem?.ACCODE != null ||
+                  tList.AccountItem?.ACNAME != null
+                ">
+                <strong>{{ tList.AccountItem?.ACNAME }}:</strong>
+              </td>
+              <td style="border-bottom: 2px solid #E6E6E6;line-height:21px;"></td>
+            </tr>
+
+            <tr *ngFor="
+                let sList of TrnTranList[i].SubledgerTranList;
+                let j = index
+              ">
+              <td *ngIf="
+                  sList.SubledgerItem != null &&
+                  sList.SubledgerItem.ACNAME != null
+                " style="line-height:21px">
+                {{ j + 1 }}.
+              </td>
+              <td style="line-height:21px;" *ngIf="sList.SubledgerItem != null">
+                {{ sList.SubledgerItem.ACNAME }}
+              </td>
+              <td *ngIf="
+                  (voucherType == 16 || voucherType == 18) &&
+                  sList.SubledgerItem != null
+                " style="line-height:21px">
+                {{ sList.DRAMNT }}
+              </td>
+              <td *ngIf="
+                  (voucherType == 17 || voucherType == 15) &&
+                  sList.SubledgerItem != null
+                " style="line-height:21px">
+                {{ sList.CRAMNT }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="form-inline" style="margin-top:5px">
+        <label style="text-align: right;width: 270px">SubLedger Total:</label>
+        <input disabled type="text" value="{{ subLedgerTotal }}" style="padding-left:4px;width: 100px" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<generic-popup-grid #genericGridACList [popupsettings]="gridACListPopupSettings"
+  (onItemDoubleClick)="onAcSelect($event)"></generic-popup-grid>
+
+<generic-popup-grid #genericGridCostCenterList [popupsettings]="gridCostCenterListPopupSettings"
+  (onItemDoubleClick)="onCostCenterSelect($event)"></generic-popup-grid>
+  <generic-popup-grid #genericGridCostCenterGroupList [popupsettings]="gridCostCenterGroupListPopupSettings"
+  (onItemDoubleClick)="onCostCenterGroupSelect($event)"></generic-popup-grid>
+<voucherTracking #voucherTrack [ACBalanceType]="ACBalanceType"></voucherTracking>
+<party-opening-details-popup  #partyOpeningDetailsPopup (emitEvent)="emitevent($event)">
+</party-opening-details-popup>
+<openingBalanceTracking (openingbalancelist)="saveopeningbilllist($event)" #openingbalancetracking>
+</openingBalanceTracking>
+<generic-popup-grid #gridSubLedgerSettingList [popupsettings]="gridSubLedgerSetting"
+  (onItemDoubleClick)="onSubLedgerSelect($event)"></generic-popup-grid>
+
+<generic-popup-grid #genericGridBankList [popupsettings]="gridBankPopupSettings"
+  (onItemDoubleClick)="onBankSelect($event)"></generic-popup-grid>
+
+
+  <!-- Account Master Popup -->
+<div class="modal-sticky" *ngIf="showAccountMasterPopup" style="overflow: auto;right: 30%;width: 60%;z-index: 9999999">
+  <div class="modal-content modal-content-main-area">
+    <div style="height: 60px; margin-top: 5px; ">
+      <div class="col-md-7">
+        <label class="modal-title" id="myModalLabel"
+          style="float: right; font-weight: bold; font-size: 18px;margin-top: 10px;">ACCOUNT MASTER</label>
+      </div>
+      <div class="col-md-5">
+        <button type="button " class="btn btn-info pull-right" (click)="resetAccountMaster()"
+          style="margin-right : 10px;width:80px; margin-top: 15px;">
+          Reset
+        </button>
+        <button type="button" (click)="saveAccountMaster()" title="onSave" class="btn btn-info pull-right"
+          style="margin-right : 10px;width:80px; margin-top: 15px;">
+          Save
+        </button>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="form-group row" style="margin-left: 90px;">
+        <label class="col-md-3 label" style="text-align: right; font-weight: bold; margin-top: 69px;">A/C MAIN
+          GROUP:</label>
+        <div class="col-md-5" style="width: 55%;margin-top: 65px;">
+          <select id="acname" class="form-control" (change)="OnSelectMainGroup($event)" [(ngModel)]="formObj.ACTYPE">
+            <option *ngFor="let i of MainGroupAccountMaster" value={{i.ACID}}>{{i.ACNAME}}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group row" style="margin-left: 90px;">
+        <label class="col-md-3 label" style="margin-top: 4px;text-align: right; font-weight: bold;">A/C SUB
+          GROUP:</label>
+        <div class="col-md-5" style="width: 55%;">
+          <select class="form-control form-control-sm" (change)="OnSelectSubGroup($event)" [(ngModel)]="formObj.ACID">
+            <option *ngFor="let i of SubGroupAccountMaster" value={{i.ACID}}>{{i.ACNAME}}
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group row" style="margin-left: 90px;">
+        <label class="col-md-3 label" style="margin-top: 4px;text-align: right; font-weight: bold;">A/C NAME:</label>
+        <div class="col-md-5" style="width: 55%;">
+          <input type="text" class="form-control" style="color: black;" [(ngModel)]="formObj.ACNAME">
+        </div>
+      </div>
+      <div *ngIf="_transactionService.userSetting.ENABLESUBLEDGER==1" class="form-group row"
+        style="margin-left: 90px;margin-bottom: 130px;">
+        <label class="col-md-3 label" style="margin-top: 4px;text-align: right; font-weight: bold;">Has
+          SubLedger:</label>
+        <div class="col-md-5" style="width: 8%;">
+          <input type="checkbox" class="form-control" style="color: black;" [(ngModel)]="formObj.HASSUBLEDGER">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-info pull-right" style="width:80px;"
+        (click)="cancelAccountPopup()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
+    <!-- Create Customer -->
+<div class="modal-sticky" *ngIf="showPartyMasterPopup"
+  style="overflow: auto;right: 20%;width: 70%;z-index: 9999999; top:18%">
+  <div class="modal-content modal-content-main-area">
+    <div style="height: 60px; margin-top: 5px; ">
+      <div class="col-md-7">
+        <label class="modal-title" id="myModalLabel"
+          style="float: right; font-weight: bold; font-size: 18px;margin-top: 10px;">PARTY MASTER</label>
+      </div>
+      <div class="col-md-5">
+        <button type="button " class="btn btn-info pull-right" (click)="resetPartyAccount()"
+          style="margin-right : 10px;width:80px; margin-top: 15px;">
+          Reset
+        </button>
+        <button type="button" (click)="savePartyMaster()" title="onSave" class="btn btn-info pull-right"
+          style="margin-right : 10px;width:80px; margin-top: 15px;">
+          Save
+        </button>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="col-md-8">
+        <div>
+          <div class="form-group row" style="margin-left: 5px;">
+            <label class="col-md-4 label" style="text-align: right; font-weight: bold; margin-top: 24px;">PARTY
+              GROUP:</label>
+            <div class="col-md-8" style="width: 65%;margin-top: 20px;">
+              <select id="partygroup" class="form-control" [(ngModel)]="partymasterObj.ACID">
+                <option *ngFor="let i of PartyGroupPartyMaster" value="{{i.ACID}}">{{i.ACNAME}}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group row" style="margin-left: 5px;">
+            <label class="col-md-4 label" style="margin-top: 4px;text-align: right; font-weight: bold;">PARTY
+              NAME:</label>
+            <div class="col-md-8" style="width: 65%;">
+              <input type="text" class="form-control" style="color: black;" [(ngModel)]="partymasterObj.ACNAME">
+            </div>
+          </div>
+
+          <div class="form-group row" style="margin-left: 5px;">
+            <label class="col-md-4 label" style="margin-top: 4px;text-align: right; font-weight: bold;">ADDRESS:</label>
+            <div class="col-md-8">
+              <textarea class="form-control" rows="2" cols="50" style="width: 97%; height: 37px;"
+                [(ngModel)]="partymasterObj.ADDRESS"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="col-md-9">
+            <div class="form-group row">
+              <label class="col-md-5 label"
+                style="margin-top: 4px;text-align: right; font-weight: bold; margin-left: 15px;">VAT
+                NO:</label>
+              <div class="col-md-7" style="width: 54%;">
+                <input type="text" (keypress)="keyPress($event)" class="form-control" style="color: black;"
+                  [(ngModel)]="partymasterObj.VATNO" maxlength="9" maxlength="9">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-5 label"
+                style="margin-top: 4px;text-align: right; font-weight: bold; margin-left: 15px;">PARTY
+                CATEGORY:</label>
+              <div class="col-md-7" style="width: 54%;">
+                <select class="form-control form-control-sm" [(ngModel)]="partymasterObj.GEO">
+                  <option *ngFor="let i of GeoList" value="{{i.OrgTypeCode}}">{{i.OrgTypeName}}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-md-5 label"
+                style="margin-top: 4px;text-align: right; font-weight: bold; margin-left: 15px;">AREA:</label>
+              <div class="col-md-7" style="width: 54%;">
+                <input type="text" name="product" list="productName" (change)="onChangeArea($event)"
+                  class="form-control" [(ngModel)]="partymasterObj.CITY" />
+                <datalist id="productName">
+                  <option *ngFor="let i of areaList" value="{{i.AREANAME}}">{{i.AREANAME}}</option>
+                </datalist>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-md-5 label"
+                style="margin-top: 4px;text-align: right; font-weight: bold; margin-left: 15px;">CREDIT
+                LIMIT:</label>
+              <div class="col-md-7" style="width: 54%;">
+                <input type="text" class="form-control" style="color: black;" [(ngModel)]="partymasterObj.CRLIMIT">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-md-5 label"
+                style="margin-top: 4px;text-align: right; font-weight: bold; margin-left: 15px;">CREDIT
+                DAYS:</label>
+              <div class="col-md-7" style="width: 54%;">
+                <input type="text" class="form-control" style="color: black;" [(ngModel)]="partymasterObj.CRPERIOD">
+              </div>
+            </div>
+          </div>
+
+
+
+          <div class="col-md-3">
+            <fieldset style="width: 125px; height: 75px;">
+              <legend style="font-size: 13px; font-weight: bold;">Party Type:</legend>
+              <input type="radio" style="padding-right:15px; height:13px;" [(ngModel)]="partymasterObj.PType"
+                value="C"><label>&nbsp;Customer</label><br>
+              <input type="radio" style="padding-right:15px; height:13px;" [(ngModel)]="partymasterObj.PType"
+                value="V"><label>&nbsp;Supplier</label>
+            </fieldset>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-md-4">
+        <label class="label" style="margin-top: 20px; font-weight: bold;">PARTY CODE:</label><br>
+        <input type="text" class="form-control" style="color: black; width: 60%" [(ngModel)]="partymasterObj.ACCODE">
+      </div>
+      <div class="col-md-4">
+        <label class="label" style="margin-top: 20px; font-weight: bold;">MOBILE No.:</label><br>
+        <input type="text" class="form-control" style="color: black; width: 60%" [(ngModel)]="partymasterObj.MOBILE"
+          (keypress)="keyPress($event)" maxlength="10" maxlength="10">
+      </div>
+    </div>
+
+    <div class="form-group row" *ngIf="userSetting.CREATE_CPROFILE_AS_MEMBER == 1 && partymasterObj.PType == 'C'">
+      <div class="col-md-3" style="padding: 0px;">
+      </div>
+      <div class="col-md-1" style="padding: 0px;">
+        <input type="checkbox" class="form-control" id="createMember" style="height: 14px;" [(ngModel)]="createMember"
+          [disabled]="partymasterObj.PType == 'V'">
+      </div>
+      <div class="col-md-8" style="margin-top: 4px;">
+        <label class="form-control-label" style="width: 100%; margin-top: -12%; margin-left: -5%;">Create Profile as
+          Member Also</label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-info pull-right" style="width:80px;"
+        (click)="cancelPartyPopup()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<generic-popup-grid #genericeSalesManList [popupsettings]="gridSalesmanListPopupSettings"
+  (onItemDoubleClick)="onSalesManSelect($event)"></generic-popup-grid>
+
+  <!-- For TDS Popup -->
+<div *ngIf="showTDSDetailPopup" style="display : block; padding: 0px;  margin-bottom: 25px;height: auto;
+  position: relative;left: 26%;bottom: 70px;width: 44%;z-index: 9999999">
+  <div class="modal-content modal-content-main-area">
+    <div class="modal-header">
+      <h4 class="modal-title" id="myModalLabel">TDS DETAILS ENTRY</h4>
+    </div>
+    <div class="modal-body">
+      <div class="main-container" style="padding-top : 10px; margin-bottom: 0px; margin-top: 0px !important;">
+        <div class="row">
+          <div class="col-md-12">
+            <table>
+              <tr>
+
+                <th style="border-bottom: 1px solid;width: 10%;">Sno</th>
+                <th style="width: 50%;border-bottom: 1px solid;">Ledger A/C</th>
+                <th style="width: 15%;border-bottom: 1px solid;">Base Amnt</th>
+                <th style="width: 15%;border-bottom: 1px solid;">TDS</th>
+
+              </tr>
+
+              <tbody *ngFor="let x of this.masterService.tdsList;let i=index" (click)="PopupRowClick(i)">
+                <tr (click)="PopupRowClick(i)" style="height: 38px;">
+
+                  <td>{{i+1}}</td>
+                  <td><input type="text" list="product" [(ngModel)]="x.DESCA" (change)="ChangeDesca($event)" id="desca" (keydown.Enter)="onEnterLedger(i)"
+                      style="width: 90%;" autocomplete="off" readonly>
+                    <!-- <datalist id="product">
+                      <option *ngFor="let t of FilterList" [value]="t.acitem.ACNAME">
+                    </datalist> -->
+                  </td>
+
+                  <td><input type="number" [(ngModel)]="x.AMNT" style="width: 90%;" (change)="BaseAmntChange()" id="amount"(keydown.Enter)="focuOnOK(i)"></td>
+                  <td>{{x.TDS}}</td>
+                  
+                  
+
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>
+                    <span>
+                    <input type="checkbox" style="height: 13px;" (change)="$event.target.value?(generalLedgerAc=1):(generalLedgerAc=0)" [(ngModel)]="generalLedgerAc"(click)="onValueChnage($event.target.checked)">
+                    General Ledger A/C</span>
+                    <span style="margin-left: 16px;">
+                  <input type="checkbox" style="height: 13px;"[(ngModel)]="subLedgerAc"(change)="$event.target.value?(subLedgerAc=1):(subLedgerAc=0)" (click)="onSubChnage($event.target.checked)">Sub-Ledger A/C</span></td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal"
+        (click)="cancelTDSDetailPopup()">Cancel</button>
+
+      <button type="button" class="btn btn-primary" [disabled]="disableOK()" (click)="TdsPopupOK()" id="button">Ok</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-sticky" *ngIf="showSubLedgerMasterPopup" style="overflow: auto;right: 30%;width: 60%;z-index: 9999999">
+  <div class="modal-content modal-content-main-area">
+    <div style="height: 60px; margin-top: 5px; ">
+      <div class="col-md-7">
+        <label class="modal-title" id="myModalLabel"
+          style="float: right; font-weight: bold; font-size: 18px;margin-top: 10px;">SUB LEDGER MASTER</label>
+      </div>
+      <div class="col-md-5">
+        <button type="button " class="btn btn-info pull-right" (click)="resetSubLedgerMaster()"
+          style="margin-right : 10px;width:80px; margin-top: 15px;">
+          Reset
+        </button>
+        <button type="button" (click)="saveSubLedgerMaster()" title="onSave" class="btn btn-info pull-right"
+          style="margin-right : 10px;width:80px; margin-top: 15px;">
+          Save
+        </button>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div class="form-group row" style="margin-left: 90px;margin-bottom: 130px;margin-top: 2%;">
+        <label class="col-md-3 label" style="margin-top: 4px;text-align: right; font-weight: bold;">Sub Ledger Name:</label>
+        <div class="col-md-5" style="width: 55%;">
+          <input id="SL_ACNAME" type="text" class="form-control" style="color: black;" [(ngModel)]="SubLedgerObj.SL_ACNAME">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-info pull-right"  style="width:80px;" (click)="cancelSubLedgerPopup()">Cancel</button>
+    </div>
+  </div>
+</div>

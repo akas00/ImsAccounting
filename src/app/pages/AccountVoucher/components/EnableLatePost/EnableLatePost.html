@@ -1,0 +1,121 @@
+<style>
+    .tablesize {
+        width: 70%;
+        margin-top: 30px;
+        margin-left: 2%;
+    }
+
+    .table-scroll {
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+
+    tbody>tr:hover {
+        background-color: #f3f5f4;
+        cursor: pointer;
+    }
+
+    tr {
+        font-size: 11px;
+        height:30px
+    }
+
+    .selected-row {
+        background-color: #ced6d3 !important;
+    }
+
+    td {
+        padding: 2px;
+        border: 1px solid black;
+    }
+
+    th {
+        padding: 2px;
+        border: 1px solid black;
+    }
+</style>
+<div class="sticky-top">
+    <div class="row clearfix" style=" padding: 0px 20px;">
+        <div class="col-md-6">
+            <h3 class="page-title">Enable-Late Post</h3>
+        </div>
+        <div class="col-md-6" style="float: right;">
+            <button type="button " class="btn btn-info pull-right" (click)="cancel()" style="margin-right : 10px;">
+                Back
+            </button>
+            <button (click)="onSave()" class="btn btn-info pull-right" style="margin-right : 10px;">
+                Save
+            </button>
+        </div>
+    </div>
+</div>
+<div class="main-container" style="padding-top : 10px; margin-bottom: 0px">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tabbable" id="warehouse-tabs">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#general-info" data-toggle="tab">General Info</a>
+                    </li>
+
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="general-info">
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-sm-3 form-control-label">Account Name:</label>
+                                <div class="col-sm-9">
+                                    <select [(ngModel)]="LatePostObj" class="form-control"
+                                        style="width:70%">
+                                        <option value="{'VoucherPrefix':'JV','VoucherName':'Journal Voucher'}">Journal Voucher</option>
+                                        <option value="{'VoucherPrefix':'CE','VoucherName':'Contra'}">Contra</option>
+                                        <option value="{'VoucherPrefix':'PV','VoucherName':'Expenses Voucher'}">Expenses Voucher</option>
+                                        <option value="{'VoucherPrefix':'RV','VoucherName':'Income Voucher'}">Income Voucher</option>
+                                        <option value="{'VoucherPrefix':'DN','VoucherName':'Debit Voucher'}">Debit Note</option>
+                                        <option value="{'VoucherPrefix':'CN','VoucherName':'Credit Voucher'}">Credit Note</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-sm-3">Status:</label>
+                                <div class="col-sm-9">
+                                    <select [(ngModel)]="LatePostObj.Status"  class="form-control">
+                                        <option value=1>Active</option>
+                                        <option value=0>inActive</option>
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6" style="margin-top: 30px">
+                            <Label style="font-weight: bold;">Information Table</Label>
+                            <div class="form-group row">
+                                <table class="tablesize">
+                                    <tr style="border-bottom: 2px solid #E6E6E6;border-top: 2px solid #E6E6E6;height: 30px;background: silver;">
+                                        <th>Sno</th>
+                                        <th>Account Name</th>
+                                        <th>Status</th>
+                                    </tr>
+                                    <tbody *ngFor="let i of VoucherLatePostList;let index=index"
+                                        style="height: 300px; overflow:scroll">
+                                        <tr>
+                                            <td>{{index+1}}</td>
+                                            <td>{{i.VoucherName}}</td>
+                                            <td>{{i.Status}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+                    
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

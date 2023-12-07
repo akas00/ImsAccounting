@@ -1,0 +1,88 @@
+
+ <div id="cashBookReportId" style="background-color : #ffffff; height : auto; padding:1%; width : 60%;" >
+      <div class="row">
+            <div class="modal-header"  style="width : 97%; margin : 0px auto;">
+               <button type="button" class="close" data-dismiss="modal" (click)="closeReportBox()">&times;</button>
+               <h4 class="modal-title">Cash Book Report</h4>
+             </div>
+ 
+      <div class="col-md-12">
+
+            <fieldset style="width : 99%;">
+                  <legend>Date Range Selection :</legend>
+                  <div class="_date_range">
+                     <a (click)="changeDateByRange('1')" value="week" style="color : white;" class="btn btn-info">This Week</a>
+                     <a (click)="changeDateByRange('2')" value="month" style="color : white;" class="btn btn-info">This Month</a>
+                     <a (click)="changeDateByRange('3')" value="year" style="color : white;" class="btn btn-info">This Year</a>
+                  </div>
+                  <table>
+                     <tr>
+                        <td><label class="smallBoldLabel">From(AD):</label></td>
+                        <td><label class="smallBoldLabel">To(AD):</label></td>
+                     </tr>
+                     <tr>
+                        <td>                                                 
+                              <label class="smallBoldLabel"><input  type="date"  style="width:152px; min-width:50%;"  placeholder="Year Start Date" [(ngModel)]="ReportParameters.DATE1"  (change)="changestartDate($event.target.value,'AD')"  ></label>
+                        </td>
+                        <td>                                                 
+                              <label class="smallBoldLabel"><input  type="date" style="width:152px; min-width:50%;"  placeholder="Year Start Date" [(ngModel)]="ReportParameters.DATE2"  (change)="changeEndDate($event.target.value,'AD')"   ></label>
+                        </td>
+                     </tr>
+                     <tr>
+                        <td>
+                              <label class="smallBoldLabel"><input id="nepaliDate" style="width:152px;height:25px;text-align:center" class="nepali-calendar ndp-nepali-calendar" [(ngModel)]="ReportParameters.BSDATE1"
+                           type="text" (change)="changestartDate($event.target.value,'BS')"
+                           placeholder="yyyy-mm-dd" /> </label>
+                        </td>
+                        <td>
+                              <label class="smallBoldLabel"><input id="nepaliDate" style="width:152px;height:25px;text-align:center" class="nepali-calendar ndp-nepali-calendar" [(ngModel)]="ReportParameters.BSDATE2"
+                           type="text" (change)="changeEndDate($event.target.value,'BS')"
+                           placeholder="yyyy-mm-dd" /> </label>
+                        </td>
+                     </tr>
+                  </table>
+            </fieldset>
+
+
+            <fieldset>
+                  <legend>Cash Account Selection:</legend>
+                  <select [(ngModel)]="ReportParameters.CASH_ACID" style="width : 100%;">
+                    <option value="%">ALL</option>
+                     <option *ngFor="let cashAc of cashAccount" value="{{ cashAc.ACID }}">
+                        {{ cashAc.ACNAME  }}
+                     </option>
+                  </select>
+                  <br>
+                  <label class="smallBoldLabel" style="width : 100%; margin: 0;"><input type="checkbox" name="showConCashBook"  style="margin-left : 1%;">&nbsp;Show Consolidated Cash Book </label>       
+               </fieldset>
+               <label class="smallBoldLabel"><input type="checkbox" name="mergeVat" (change)="$event.target.checked?(ReportParameters.MergeVatAc=1):(ReportParameters.MergeVatAc=0)" [checked]="ReportParameters.MergeVatAc == 1">&nbsp;Merge Vat a/c In Abb. Sale/Sales Return</label>       
+               <br>
+               <fieldset>
+                  <legend>Division Selection:</legend>
+                  <select [(ngModel)]="ReportParameters.DIVISION" style="width : 100%;">
+                     <option value="%" *ngIf="masterService.userSetting.userwisedivision==0">ALL</option>
+                     <option *ngFor="let div of division" value="{{ div.INITIAL }}">
+                        {{ div.NAME }}
+                     </option>
+                  </select>
+               </fieldset>
+           
+               <div class="btn">
+                    <!-- <button type="button"  title="onSave" class="btn btn-info">Run</button>    -->
+                    <button class="btn btn-info confirm-btn" type="button"  (click)=onload()>RUN</button>
+                    <button type="button"  title="Cancel" class="btn btn-info">Close</button>  
+                 </div>
+
+      </div>
+   </div>
+</div>
+
+
+
+
+
+ 
+
+
+
+

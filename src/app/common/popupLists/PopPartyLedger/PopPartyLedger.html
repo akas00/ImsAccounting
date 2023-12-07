@@ -1,0 +1,147 @@
+<div>
+
+    <!-- Modal content -->
+    <div class="modal-content" style="padding:2px !important;    box-shadow: -10px 0px 10px 1px #aaaaaa;margin-left: 30pc !important;
+     width: 80% !important; height: 350px !important;margin-top: 16pc !important">
+        <div class="modal-header" style="padding: 0px;    background: #8cccfb;">
+            <button class="close" aria-label="Close" (click)="itemBatchClosed()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" style="text-align: center;">{{title}}</h4>
+
+        </div>
+        <div *ngIf="voucherType==3">
+        <div class="col-md-12" style="padding: 1px;" >
+            New Batch :
+        </div>
+        <div class="col-md-12">
+            <table style="padding: 0px;margin-top: 2px;width: 100%;" class="Table1">
+                <tr style="background: #8cccfb;">
+                    <th>Batch No.</th>
+                    <th>MFG</th>
+                    <th>Expiry</th>
+                     <th>Unit</th>
+                     <th>Cost Price</th>
+                    <th>Sell Price</th>
+                    <th></th>
+                </tr>
+
+
+                <tr style="border: 1px solid #e6e6e6;">
+
+                        <td class="CellWithComment"
+                             #BatchEntry >
+                            <input type="text" [(ngModel)]="BatchObj.BCODE" style="height:23px;border: 1px solid #e6e6e6;width:100px" >
+                            <!-- <span contenteditable="false" class="CellComment">Enter Code or press ENTER or TAB to Select Item</span> -->
+                        </td>
+                        <td class="CellWithComment"
+                            >
+                            <input type="date" [(ngModel)]="BatchObj.MFGDATE" style="height:33px;border: 1px solid #e6e6e6;width:130px">
+                            <!-- <span contenteditable="false" class="CellComment">Enter Code or press ENTER or TAB to Select Item</span> -->
+                        </td>
+                        <td class="CellWithComment">
+                            <input type="date" [(ngModel)]="BatchObj.EXPDATE"  style="height:33px;border: 1px solid #e6e6e6;width:130px">
+                            <!-- <span contenteditable="false" class="CellComment">Enter Code or press ENTER or TAB to Select Item</span> -->
+                        </td>
+
+                        <td class="CellWithComment">
+                            <select (change)="SelectUnit()" [(ngModel)]="BatchObj.ALTUNITObj" style="height:33px;border: 1px solid #e6e6e6;width:80px">
+                                <option *ngFor="let u of AlternateUnits" [ngValue]="u">{{u.ALTUNIT}}</option>
+
+                              </select>
+                            <!-- <span contenteditable="false" class="CellComment">Enter Code or press ENTER or TAB to Select Item</span> -->
+                        </td>
+                        <td class="CellWithComment"
+                        style="height:33px;border: 1px solid #e6e6e6;width:100px">
+                        {{BatchObj.PRATE | twoDigitNumber}}
+                        <!-- <span contenteditable="false" class="CellComment">Enter Code or press ENTER or TAB to Select Item</span> -->
+                    </td>
+                        <td class="CellWithComment"
+                            style="height:33px;border: 1px solid #e6e6e6;width:100px">
+                            {{BatchObj.SRATE | twoDigitNumber}}
+                            <!-- <span contenteditable="false" class="CellComment">Enter Code or press ENTER or TAB to Select Item</span> -->
+
+                        </td>
+
+                        <td >
+                            <button (click)="clickButtonClick()" class="glyphicon glyphicon-chevron-right"></button>
+                        </td>
+
+
+                    </tr>
+
+
+                <!-- <tbody *ngFor="let itemObj of masterService.getProductItemList$ | async ;let i=index"> -->
+                <!-- *ngFor="let itemObj of AllItemList -->
+
+                <!-- (click)="setClickedRow(i)" (dblclick)="dblClickItemList(itemObj)" [class.active]="i == selectedRow"  | paginate: {id:tabindex, itemsPerPage: 10,
+                    currentPage: p[tabindex] }  -->
+                <tr>
+                    <td>
+                        <div class="col-md-12" style="padding: 1px;margin-top:15px">
+                            <!-- <select name="Parent" id="parent" class="form-control" style="height: 23px;padding: 0px;">
+                                <option>New Batch</option>
+                                <option>Existing Batch</option>
+                            </select> -->
+                            Existing Batch :
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td colspan="6">
+
+                    </td>
+                </tr>
+                </table>
+            </div>
+                </div>
+                <!-- <div class="col-md-12">
+
+                        <input  type="text"
+                            style="width: 105%;;/* padding: 1px; */padding-left: 0px;margin-left: -13px;"
+                            (keyup)="TotalQtyChangeForQtyDisScheme($event.target.value);" placeholder="Enter Quantity">
+                    </div> -->
+                <table style="padding: 0px;margin-top: 2px;width: 100%;" class="Table1">
+                        <tr style="background: #8cccfb;">
+                            <th>Batch No.</th>
+                            <th>Expiry</th>
+                            <th>Mfr</th>
+                            <th>Sell Price</th>
+                            <th>Stock</th>
+                            <th>MRP</th>
+                            <!-- <th *ngIf="voucherType==14 || voucherType==1">Scheme Name</th>
+                            <th *ngIf="voucherType==14 || voucherType==1">Discount</th>
+                            <th *ngIf="voucherType==14 || voucherType==1">Dis.Type</th> -->
+
+                        </tr>
+                <tbody aria-disabled="true" *ngFor="let BObject of BList;let i=index" (dblclick)="dblClickBatchObj(BObject)">
+                    <tr class="highlight">
+
+                        <td style="padding-top:2px;border-bottom: 1px solid #ddd;height: 23px;width:150px">
+                            {{BObject.BCODE}}</td>
+                        <td style="border-bottom: 1px solid #ddd;height: 23px;width:100px">{{BObject.EXPIRY | date}}</td>
+                        <td style="border-bottom: 1px solid #ddd;height: 23px;width:100px">{{BObject.MFGDATE |date}}</td>
+                        <td style="padding-top:2px;border-bottom: 1px solid #ddd;height: 23px;width:100px">
+                            {{BObject.SRATE  |twoDigitNumber}}</td>
+                        <td style="border-bottom: 1px solid #ddd;height: 23px;width:50px">{{BObject.STOCK}}</td>
+                        <td style="border-bottom: 1px solid #ddd;height: 23px;width:100px">{{BObject.MRP}}</td>
+                        <!-- <td *ngIf="voucherType==14 || voucherType==1" style="border-bottom: 1px solid #ddd;height: 23px;width:100px">{{BObject.SCHEMENAME}}</td>
+                        <td *ngIf="voucherType==14 || voucherType==1" style="border-bottom: 1px solid #ddd;height: 23px;width:100px">{{ BObject.SchemeRateType==2?'Buy '+BObject.SCHEME.minQty + 'Get '+BObject.SCHEMERATE +' free': BObject.SCHEMERATE}}</td>
+                        <td *ngIf="voucherType==14 || voucherType==1" style="border-bottom: 1px solid #ddd;height: 23px;width:100px">{{BObject.SchemeRateType==0?'%':BObject.SchemeRateType==1?'Amount':BObject.SchemeRateType==2?'Quantity':'Type Not Found'}}</td> -->
+                        <!-- <td *ngIf="(voucherType==14 || voucherType==1) && BObject.SchemeRateType==2" style="border-bottom: 1px solid #ddd;height: 23px;
+
+                        "><input style="width:50px" type="number" [(ngModel)]="BObject.tQuantity"/></td> -->
+                    </tr>
+                </tbody>
+
+            </table>
+            <!-- <div class="col-md-12">
+
+                <button style="margin:5px" *ngIf="voucherType==14 || voucherType==1" style="margin-right: 4px;" (click)="MultiBatchEntryClicked()"  class="btn btn-info" >MultiBatchEntry</button>
+            </div> -->
+
+
+    </div>
+
+</div>

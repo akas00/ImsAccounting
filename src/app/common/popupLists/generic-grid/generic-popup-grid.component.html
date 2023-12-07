@@ -1,0 +1,186 @@
+<style>
+  .modal-content {
+    padding: 1px;
+    margin: 0px;
+    float: right;
+  }
+
+  tbody > tr:hover {
+    background-color: #f3f5f4;
+    cursor: pointer;
+  }
+  tr {
+    font-size: 11px;
+  
+  }
+  .selected-row {
+    background-color: #ced6d3 !important;
+  }
+
+  .table > tbody > tr > td {
+    line-height: 30px !important;
+    
+  }
+  .table > thead > tr > th {
+    line-height: 5px !important;
+  }
+  .table > tbody > tr > td:first-child {
+    text-align: left !important;
+    padding: 0px 0px 0px 11px !important;
+  }
+  .table > tbody > tr :nth-child(){
+    text-align: right !important;   
+  }
+  .modal-content {
+    box-shadow: -10px 0px 10px 1px #aaaaaa;
+  }
+
+  .modal-content-main-area {
+    max-height: 94%;
+    height: 100%;
+    overflow: auto;
+    overflow-x: hidden;
+  }
+
+  .modal-content-summary-area {
+    max-height: 20%;
+    height: 20%;
+    overflow: auto;
+    overflow-x: hidden;
+  }
+
+  .ellipsis {
+    /* width: 220px;
+    text-overflow: ellipsis;
+    overflow: hidden; */
+    white-space: nowrap;
+  }
+  /* .status[data-status="AMOUNT"]:after{
+    text-align: center !important;   
+  } */
+  /* .format{
+    text-align: center !important;
+  } */
+
+  @media screen and (max-width:991px) {
+
+    .modal-sticky{
+    
+    left: 0 !important;
+    width: 90% !important;
+   
+    }
+  }
+
+</style>
+<div
+  class="modal-sticky"
+  [class.modal-sticky-hide]="!isActive"
+  style="display : block; padding: 0px;  margin-bottom: 10px;"
+>
+  <!-- Modal content -->
+  <div class="modal-content modal-content-main-area">
+    <div *ngIf="popupsettings">
+      <div>
+        <div class="modal-header" style="padding: 0px;background: #8cccfb;">
+          <button class="close" aria-label="Close" (click)="hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" style="text-align: center;">
+            {{ popupsettings.title }}
+          </h4>
+        </div>
+        <div class="row clearfix">
+          <div class="col-md-12">
+            <div class="col-md-6" style="margin: 2px 0px;">
+              <select
+                style="width: 100%;"
+                [(ngModel)]="filterOption"
+                (ngModelChange)="triggerSearch($event)"
+              >
+                <option value="" selected>Select Filter Option</option>
+                <ng-container *ngFor="let item of popupsettings.columns">
+                  <option *ngIf="!item.noSearch" [value]="item.key">{{
+                    item.title
+                  }}</option>
+                </ng-container>
+              </select>
+            </div>
+            <div class="col-md-6" style="margin: 2px 0px;">
+              <input
+                #inputBox
+                type="text"
+                style="width: 100%;"
+                placeholder="Enter keyword to search"
+                [(ngModel)]="filterValue"
+                (ngModelChange)="triggerSearch($event)"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12 table-scroll">
+          <table class="table">
+            <thead>
+              <tr style="background: #8cccfb;">
+                <ng-container *ngFor="let item of popupsettings.columns">
+                  <th *ngIf="!item.hidden" [ngStyle]="{'text-align':item.alignment}" >{{ item.title }}</th>
+                </ng-container>
+              </tr>
+            </thead>
+            <tbody *ngIf="itemList.length">
+              <tr
+                class="highlight"
+                [class.selected-row]="selectedRowIndex == i"
+                *ngFor="
+                  let itemObj of itemList
+                    | paginate
+                      : {
+                          id: tabindex,
+                          itemsPerPage: pageSize,
+                          currentPage: pageNumber,
+                          totalItems: totalItems
+                        };
+                  let i = index
+                "
+                (dblclick)="doubleClick(itemObj)"
+                (keydown.enter)="doubleClick(itemObj)"
+                (click)="singleClick(i)"
+                title="double click for detail view"
+              >
+                <ng-container *ngFor="let item of popupsettings.columns">
+                  <td *ngIf="!item.hidden"  >
+                    <div  title="{{ itemObj[item.key] }}" [ngStyle]="{'text-align':item.alignment}" >
+                      {{ itemObj[item.key] }}
+                    </div>
+                  </td>
+                </ng-container>
+              </tr>
+            </tbody>
+          </table>
+          <div class="row clearfix" style="float: center; margin : 4px 0px;">
+            <div class="col-md-12" style="width:100%" *ngIf="itemList.length">
+              <pagination-controls
+                [id]="tabindex"
+                (pageChange)="onPageChange($event)"
+                maxSize="9"
+                directionLinks="true"
+                autoHide="true"
+                responsive="true"
+                previousLabel="Previous"
+                nextLabel="Next"
+                screenReaderPaginationLabel="Pagination"
+                screenReaderPageLabel="page"
+                screenReaderCurrentLabel="You're on page"
+              ></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        style="margin-left: 25px "
+        *ngIf="summary"
+        [innerHTML]="summary"
+      ></div>
+    </div>
+  </div>
+</div>

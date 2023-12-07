@@ -1,0 +1,98 @@
+<style>
+._zfi input {
+    font-size: 26px;
+    max-width: 100%;
+}
+.inputtext, .inputpassword {
+    padding-bottom: 4px;
+}
+.textarea, .inputtext, .inputpassword {
+    border: 1px solid #bdc7d8;
+    margin: 0;
+    padding: 3px;
+    -webkit-appearance: none;
+    /*-webkit-border-radius: 0;*/
+}
+a {
+    color: #4caf50;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 12px;
+}
+ p:hover {
+    color: #f7d559 !important;
+    cursor: pointer;
+  }
+</style>
+<form [formGroup]="form" (ngSubmit)="onSubmit(form.value)" class="form-horizontal" style=" padding-top:200px">
+    <div class="mvl ptm uiInterstitial uiInterstitialLarge uiBoxWhite" style="margin: auto;width: 50%;padding: 20px;background-color: white; height:auto;" checked>
+        <div class="uiHeader uiHeaderBottomBorder mhl mts uiHeaderPage interstitialHeader">
+            <div class="clearfix uiHeaderTop">
+                <div class="rfloat _ohf">
+                    <div class="uiHeaderActions"></div>
+                </div>
+                <div style="padding:5px; border-bottom: solid 1px #dcdcdc; margin-bottom: 10px;">
+                    <h2 class="uiHeaderTitle" aria-hidden="true">Enter Security Code</h2>
+                </div>
+            </div>
+        </div>
+        <div class="phl ptm uiInterstitialContent">
+            <div class="identify_yourself_block">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div>Please check your email for a message with your code. Your code is 6 numbers long.</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                               <div class="clearfix" style="display: -webkit-inline-box;">
+                                   <div class="_zfi"><input type="text" class="inputtext" name="n" id="recovery_code_entry" placeholder="Enter code" formControlName="Security" aria-label="Enter code">
+                                   </div>
+                                   <div class="_zfj" style="margin-left:15px;"><strong>We sent your code to:</strong><br>
+                                   <div>
+                                       <div class="_2pic">
+                                           <a>
+                                           {{loginService.UsersObj.EMAIL}}</a>
+                                        </div></div>
+                                       </div>
+                                       </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div style="padding:20px;border-top: solid 1px #f4ecec; margin-bottom: 10px;">
+             <p style="color: #365899;cursor: pointer;" (click)="ResendCode()">Didn't get a code?</p>
+            
+            <button class="rfloat _ohf" type="button" title="Save" style="background-color: white;color: black;border: 2px solid #dcdcdc;" (click)="Cancel()">Cancel</button>
+            <button class="rfloat _ohf" type="button" title="Save" style="background-color: white;color: black;border: 2px solid  #4CAF50; margin-right:5px;"
+                (click)="enterSecurity()" [disabled]="!form.valid">Continue</button>
+            </div>
+        </div>
+</form>
+<div class="modal fade" bsModal #childModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" aria-label="Close" (click)="hideChildModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+                        <h4 class="modal-title" style="border-bottom: solid 1px #dcdcdc;">Information</h4>
+                    </div>
+                    <div class="modal-body">
+                        {{DialogMessage}}
+                    </div>
+                    
+                </div>
+            </div>
+        </div>

@@ -1,0 +1,560 @@
+<div class="sticky-top">
+    <div class="row clearfix" style=" padding: 0px 20px;">
+        <div class="col-md-10">
+            <h3 class="page-title">{{modeTitile}}</h3>
+        </div>
+        <div class="col-md-2" style="float: right;">
+            <button type="submit" class="btn btn-info" style="margin-bottom: 10px;" (click)="onSubmit()">Save</button>
+            <button type="button" class="btn btn-info" style="margin-bottom: 10px;" (click)="back()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<div style="margin-top: 35px;height: 500px;overflow-y: scroll;">
+
+    <!-- <div class="widgets"> -->
+    <ba-card baCardClass="with-scroll">
+
+
+        <ng-container *ngIf="mode=='user' || mode=='edit'">
+            <!-- <div class="card">
+                <div class="card-header">
+                  <h5 class="page-title">New User</h5>
+                </div>
+                <div class="card-body"> -->
+            <form class="form-group" class="form-horizontal" [formGroup]="userForm">
+                <div class="tabbable" id="warehouse-tabs">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#user" data-toggle="tab">UserInfo</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#userWiseRights" data-toggle="tab" role="tab">User Rights</a>
+                        </li>
+                        <li *ngIf='masterService.userSetting.userwisedivision==1' class="nav-item">
+                            <a class="nav-link" href="#Roleprivilege" data-toggle="tab">User-right privilege</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="user">
+                            <div class="form-group row">
+                                <label for="inputUsername" class="col-sm-3 form-control-label">User Name:</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control" formControlName="username"
+                                        id="inputUsername" placeholder="User Name">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="inputPassword3" class="col-sm-3 form-control-label">Password:</label>
+                                <div class="col-sm-7">
+                                    <input type="password" class="form-control" formControlName="password"
+                                        id="inputPassword3" placeholder="Password">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="inputEmail3" class="col-sm-3 form-control-label">Email:</label>
+                                <div class="col-sm-7">
+                                    <input type="email" class="form-control" formControlName="email" id="inputEmail3"
+                                        placeholder="Email">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-3 form-control-label">Role:</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control" formControlName="role">
+                                        <option *ngFor="let role of roleList;let i=index" value="{{role.rolename}}">
+                                            {{role?.rolename}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- <div class="form-group row">
+                                <label class="col-sm-3 form-control-label">Warehouse:</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control" formControlName="warehouse" (change)="changeWarehouse()">
+                                        <option *ngFor="let warehouseName of warehouseList;let i=index"
+                                            value="{{warehouseName.NAME}}">
+                                            {{warehouseName?.NAME}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div> -->
+
+                            <div class="form-group row">
+                                <label class="col-sm-3 form-control-label">Division:</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control" formControlName="division"
+                                        (change)="selectDivision($event)">
+                                        <option *ngFor="let division of divisionList;let i=index"
+                                            value="{{division.INITIAL}}">
+                                            {{division?.NAME}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-3 form-control-label">Status:</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control" formControlName="ISACTIVE"
+                                        style="height:30px;padding-bottom: 0px;">
+                                        <option value=1>Active</option>
+                                        <option value=0>Inactive</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane" id="userWiseRights">
+                            <div class="row col-md-12" style="margin-top: 1rem;">
+                                <div class="col-md-6 ">
+                                    <div class="row">
+                                        <input type="checkbox" [(ngModel)]="latepostedit" [ngModelOptions]="{standalone: true}" (change)="$event.target.checked?(latepostedit = 1):(latepostedit = 0)" ><span> L_EDIT</span>
+                                    </div>
+                                    <div class="row">
+                                        <input type="checkbox" [(ngModel)]="latepostdelete" [ngModelOptions]="{standalone: true}" (change)="$event.target.checked?(latepostdelete = 1):(latepostdelete = 0)" ><span> L_DELETE</span>
+                                    </div>
+                                    <div class="row">
+                                        <input type="checkbox" [(ngModel)]="AllowReverseEntry" [ngModelOptions]="{standalone: true}" (change)="$event.target.checked?(AllowReverseEntry = 1):(AllowReverseEntry = 0)" ><span> Allow Reverse Entry</span>
+                                    </div>
+
+                                    <div class="row">
+                                        <input type="checkbox" style="width: 17px; height: 32px;" [ngModelOptions]="{standalone: true}" (change)="$event.target.checked?(ShowDashboard = 1):(ShowDashboard = 0)" [(ngModel)]="ShowDashboard"/><span>Show Graph Dashboard </span>
+                                       
+                                        
+                                    </div>
+                                    <div class="row" >
+                                        <label > User Wise Ageing Limit</label>
+                                        <input type="number" style="width: 6rem; height: 26px;"  [(ngModel)]="StockAgeingLimit"[ngModelOptions]="{standalone: true}" >
+                                      </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane" id="Roleprivilege">
+                            <form [formGroup]="roleForm">
+                                <div formArrayName="menuRights" class="horizontal-scroll">
+                                    <!-- Report Division Privilege -->
+                                    <div class="col-sm-3">
+                                        <table style="height:300px;border:1px solid #e2eaea;">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 26px;background: #e2eaea;"></th>
+                                                    <th style="background: #e2eaea;">Report Division Privilege</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody style="height: 23px;">
+                                                <tr style="height: 23px;">
+                                                    <td style="width: 26px;"><input type="checkbox"
+                                                            [ngModelOptions]="{standalone: true}"
+                                                            [(ngModel)]="SelectAll" (change)=ChangeAll()></td>
+                                                    <td>Select All</td>
+                                                </tr>
+                                            </tbody>
+                                            <tbody style="height: 23px;"
+                                                *ngFor="let div of userdivisionList;let i=index">
+
+                                                <tr style="height: 23px;">
+                                                    <td style="width: 26px;"><input type="checkbox"
+                                                            [ngModelOptions]="{standalone: true}"
+                                                            [(ngModel)]="div.isCheck" (change)=ChangeDiv()></td>
+                                                    <td>{{div?.NAME}}</td>
+
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+                                    <!-- Transaction Division Privilege -->
+                                    <div class="col-sm-3">
+                                        <table style="height:300px;border:1px solid #e2eaea;">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 26px;background: #e2eaea;"></th>
+                                                    <th style="background: #e2eaea;">Transaction Division Privilege</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody style="height: 23px;">
+                                                <tr style="height: 23px;">
+                                                    <td style="width: 26px;"><input type="checkbox"
+                                                            [ngModelOptions]="{standalone: true}"
+                                                            [(ngModel)]="SelectAll_trn" (change)=ChangeAll_trn()></td>
+                                                    <td>Select All</td>
+                                                </tr>
+                                            </tbody>
+                                            <tbody style="height: 23px;"
+                                                *ngFor="let div of userdivisionList;let i=index">
+
+                                                <tr style="height: 23px;">
+                                                    <td style="width: 26px;"><input type="checkbox"
+                                                            [ngModelOptions]="{standalone: true}"
+                                                            [(ngModel)]="div.isCheck_trn" (change)=ChangeDiv_trn()></td>
+                                                    <td>{{div?.NAME}}</td>
+
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+            <!-- </div>
+              </div> -->
+            <!-- <form [formGroup]="userForm">
+                <div class="form-group row">
+                    <label for="inputUsername" class="col-sm-1 form-control-label">User Name</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" formControlName="username" id="inputUsername"
+                            placeholder="User Name">
+                    </div>
+                    <label for="inputPassword3" class="col-sm-1 form-control-label">Password</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" formControlName="password" id="inputPassword3"
+                            placeholder="Password">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputEmail3" class="col-sm-1 form-control-label">Email</label>
+                    <div class="col-sm-5">
+                        <input type="email" class="form-control" formControlName="email" id="inputEmail3"
+                            placeholder="Email">
+                    </div>
+                    <label for="inputmobile" class="col-sm-1 form-control-label">Role</label>
+                    <div class="col-sm-5">
+                        <select class="form-control" formControlName="role">
+                            <option *ngFor="let role of roleList;let i=index" value="{{role.rolename}}">
+                                {{role?.rolename}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputEmail3" class="col-sm-1 form-control-label">Warehouse</label>
+                    <div class="col-sm-5">
+                        <select class="form-control" formControlName="warehouse">
+                            <option *ngFor="let warehouse of warehouseList;let i=index" value="{{warehouse.NAME}}">
+                                {{warehouse?.NAME}}
+                            </option>
+                        </select>
+                    </div>
+                    <label for="inputmobile" class="col-sm-1 form-control-label">Division</label>
+                    <div class="col-sm-5">
+                        <select class="form-control" formControlName="division">
+                            <option *ngFor="let warehouse of divisionList;let i=index" value="{{warehouse.INITIAL}}">
+                                {{warehouse?.NAME}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputEmail3" class="col-sm-1 form-control-label">User Type</label>
+                    <div class="col-sm-5">
+                        <select class="form-control" formControlName="LoginProfile"
+                          style="height:30px;padding-bottom: 0px;">
+                          <option *ngIf ="userProfile.CompanyInfo.LoginProfile!='company_login'" value='user_login'>User Login</option>
+                          <option *ngIf ="userProfile.CompanyInfo.LoginProfile!='company_login'" value='product_login'>Product Approval</option>
+                          <option *ngIf ="userProfile.CompanyInfo.LoginProfile!='company_login'" value='price_approval_login'>Price Approval</option>
+                          <option *ngIf ="userProfile.CompanyInfo.LoginProfile!='company_login'" value='scheme_approval_login'>Scheme Approval</option>
+                          <option *ngIf ="userProfile.CompanyInfo.LoginProfile!='company_login'" value='customer_approval_login'>Customer Approval</option>
+                          <option *ngIf ="userProfile.CompanyInfo.LoginProfile=='company_login'" value='company_login'>Company Login</option>
+                         <option *ngIf ="userProfile.CompanyInfo.LoginProfile!='company_login'" value='non_nestle_login'>Non Nestle Login</option> 
+                          
+                          
+                        </select>
+                    </div>
+
+                    <label for="inputEmail3" class="col-sm-1 form-control-label">Status</label>
+                    <div class="col-sm-5">
+                        <select class="form-control" formControlName="ISACTIVE"
+                          style="height:30px;padding-bottom: 0px;">
+                          <option value=1>Active</option>
+                          <option value=0>Inactive</option>
+                        </select>
+                    </div>
+                   
+                </div>
+                <div class="form-group row">
+                    <label for="inputEmail3" class="col-sm-1 form-control-label">PCL</label>
+                    <div class="col-sm-5">
+                        <select 
+                        class="form-control" 
+                        formControlName="PCL"
+                        style="height:30px;padding-bottom: 0px;"
+                          >
+                          <option *ngFor = "let i of productCategoryList "  value= "{{i.PCL}}" >{{ i.SHORTNAME }}</option>
+                        </select>
+                    </div>
+                   
+                </div>
+            </form> -->
+        </ng-container>
+
+
+        <ng-container *ngIf="mode=='role'|| mode =='editRole'">
+            <form [formGroup]="roleForm">
+                <div class="form-group row">
+                    <label for="inputUsername" class="col-sm-1 form-control-label">Role Name</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" style="width: 27rem; height: 1.5rem;"
+                            formControlName="roleName">
+                    </div>
+                    <label for="inputPassword3" class="col-sm-1 form-control-label">Role</label>
+                    <div class="col-sm-5">
+                        <select name="" id="" class="form-control" style="width: 27rem; height: 1.5rem;"
+                            formControlName="role">
+                            <option value="1">Administrator</option>
+                            <option value="2">Supervisor</option>
+                            <option value="3">Operator</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="main-container" style="margin-top:0px !important;margin-bottom: 0px">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="tabbable" id="warehouse-tabs">
+                                <ul class="nav nav-tabs">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" href="#menuRights" data-toggle="tab">Menu Rights</a>
+                                    </li>
+                                    <!-- <li class="nav-item">
+                                        <a class="nav-link" href="#userRights" data-toggle="tab">User Rights</a>
+                                    </li> -->
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="menuRights">
+
+                                        <div formArrayName="menuRights" class="horizontal-scroll">
+                                            <table class="table table-striped" style="width: 100%;">
+                                                <thead>
+                                                    <tr style="position: sticky; top:0;line-height: 1.5rem;">
+                                                        <th scope="col" style="width:14%">Menu Rights</th>
+                                                        <!-- <th scope="col" style="width:5%"><input type="checkbox"
+                                                                (change)="TickAllValue('view',$event,'view')"><span>&nbsp;Select
+                                                                all</span></th>
+                                                        <th scope="col" style="width:5%"><input type="checkbox"
+                                                                (change)="TickAllValue('add',$event,'add')"><span>Select
+                                                                all</span></th>
+                                                        <th scope="col" style="width:5%"><input type="checkbox"
+                                                                (change)="TickAllValue('edit',$event)"><span>Select
+                                                                all</span>
+                                                        </th>
+                                                        <th scope="col" style="width:5%"><input type="checkbox"
+                                                                (change)="TickAllValue('delete',$event)"><span>Select
+                                                                all</span>
+                                                        </th>
+                                                        <th scope="col" style="width:5%"><input type="checkbox"
+                                                                (change)="TickAllValue('print',$event)"><span>Select
+                                                                all</span>
+                                                        </th>
+                                                        <th scope="col" style="width:5%"><input
+                                                                type="checkbox"><span>Select
+                                                                all</span></th>
+                                                        <th scope="col" style="width:5%"><input
+                                                                type="checkbox"><span>Select
+                                                                all</span></th> -->
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let item of roleForm.controls.menuRights.controls;let i=index"
+                                                        style="margin-left: 10px;" [formGroupName]="i"
+                                                        class="row show-grid">
+                                                        <td style="width: 37%;"><input type="text"
+                                                                style="border:0;background-color: #d9e5e7 !important; height: 3vh"
+                                                                size="40" formControlName="title"></td>
+                                                        <ng-container *ngIf="path!=''">
+                                                            <td style="width: 13%;"><input type="checkbox"
+                                                                    formControlName="view"><span> View</span></td>
+                                                            <td style="width: 13%;"><input type="checkbox"
+                                                                    formControlName="add"><span> Add</span></td>
+                                                            <td style="width: 13%;"><input type="checkbox"
+                                                                    formControlName="edit"><span> Edit</span></td>
+                                                            <td style="width: 13%;"><input type="checkbox"
+                                                                    formControlName="delete"><span> Delete</span></td>
+                                                            <td style="width: 13%;"><input type="checkbox"
+                                                                    formControlName="print"><span> Print</span></td>
+                                                            <td style="width: 13%;"><input type="checkbox"
+                                                                    formControlName="L_edit"><span> L_Edit</span></td>
+                                                            <td style="width: 13%;"><input type="checkbox"
+                                                                    formControlName="L_delete"><span> L_Delete</span>
+                                                            </td>
+                                                        </ng-container>
+
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+
+                                            <!-- <div *ngFor="let item of roleForm.controls.menuRights.controls;let i=index">
+                        <div [formGroupName]="i" class="row show-grid">
+                            <div class="col-md-4">
+                                <input type="text" style="border:0;background-color: transparent;width:100%;"
+                                    formControlName="title">
+                            </div>
+                            <ng-container *ngIf="path!=''">
+                                <div class="col-md-1">
+                                    <input type="checkbox" formControlName="view"><span>View</span>
+                                </div>
+                                <div class="col-md-1">
+                                    <input type="checkbox" formControlName="add"><span>Add</span>
+                                </div>
+                                <div class="col-md-1">
+                                    <input type="checkbox" formControlName="edit"><span>Edit</span>
+                                </div>
+                                <div class="col-md-1">
+                                    <input type="checkbox" formControlName="delete"><span>Delete</span>
+                                </div>
+                                <div class="col-md-1">
+                                    <input type="checkbox" formControlName="print"><span>Print</span>
+                                </div> -->
+                                            <!-- <div class="col-md-1">
+                                    <input type="checkbox" formControlName="post"><span>Post</span>
+                                </div> -->
+                                            <!-- <div class="col-md-1">
+                                    <input type="checkbox" formControlName="import"><span>Import</span>
+                                </div>
+                                <div class="col-md-1">
+                                    <input type="checkbox" formControlName="export"><span>Export</span>
+                                </div> -->
+                                            <!-- </ng-container>
+
+                        </div>
+                    </div> -->
+                                        </div>
+                                    </div>
+                                    <!-- <div class="tab-pane" id="userRights">
+                                        <div class="user-rights" *ngIf="roleForm.controls.userRights.controls.length">
+                                            <ba-card title="User Rights Setting" class="vertical-scroll">
+
+                                                <div formArrayName="userRights">
+                                                    <div class="col-sm-3"
+                                                        *ngFor="let item of roleForm.controls.userRights.controls;let i=index">
+                                                        <ng-container
+                                                            *ngIf="item.value.right != 'DIVISION' && item.value.right != 'WAREHOUSE'">
+                                                            <div [formGroupName]="i">
+                                                                <div *ngIf="item.value.valueType=='tinyint'">
+                                                                    <Label
+                                                                        *ngIf='mode != "editRole"'>{{item.value.right}}</Label>
+                                                                    <input type="checkbox" formControlName="value">
+                                                                    <span><input
+                                                                            style="margin-top: 3px; margin-bottom: 3px;"
+                                                                            type="text"
+                                                                            style="border:0;background-color: transparent; margin-top: 3px; margin-bottom: 3px;"
+                                                                            formControlName="path">
+                                                                    </span>
+                                                                </div>
+                                                                <div
+                                                                    *ngIf="(item.value.valueType=='varchar' || item.value.valueType=='char') && item.value.right != 'DIVISION'">
+                                                                    <Label>{{item.value.right}}</Label>
+                                                                    <input *ngIf="item.value.right != 'WAREHOUSE'"
+                                                                        type="text"
+                                                                        style="border:0;background-color: transparent; margin-top: 3px; margin-bottom: 3px;"
+                                                                        formControlName="path">
+                                                                    <span *ngIf="item.value.right != 'WAREHOUSE'">
+                                                                        <input type="text"
+                                                                            style="margin-top: 3px; margin-bottom: 3px;"
+                                                                            formControlName="value" />
+                                                                    </span>
+                                                                </div>
+                                                                <div
+                                                                    *ngIf="(item.value.valueType=='varchar' || item.value.valueType=='char') && item.value.right == 'DIVISION'">
+                                                                    <Label>{{item.value.right}}</Label>
+                                                                    <input type="text"
+                                                                        style="border:0;background-color: transparent; margin-top: 3px; margin-bottom: 3px;"
+                                                                        formControlName="path">
+                                                                    <span>
+                                                                        <select formControlName="value"
+                                                                            style="margin-top: 3px; margin-bottom: 3px; min-width: 200px;"
+                                                                            (change)="changeDivision($event.target.value)">
+                                                                            <option
+                                                                                *ngFor="let d of masterService.allDivisionList$ | async"
+                                                                                value="{{d.INITIAL}}">{{d.NAME}}
+                                                                            </option>
+                                                                        </select>
+                                                                    </span>
+                                                                </div>
+                                                                <div
+                                                                    *ngIf="(item.value.valueType=='varchar' || item.value.valueType=='char') && item.value.right == 'WAREHOUSE'">
+                                                                    <Label>{{item.value.right}}</Label>
+                                                                    <input type="text"
+                                                                        style="border:0;background-color: transparent"
+                                                                        formControlName="path">
+                                                                    <span>
+                                                                        <select formControlName="value"
+                                                                            style="margin-top: 3px; margin-bottom: 3px; min-width: 200px;">
+                                                                            <option
+                                                                                *ngFor="let w of divisionWarehouseList"
+                                                                                [ngValue]="w.NAME">
+                                                                                {{w.NAME}}
+                                                                            </option>
+                                                                        </select>
+                                                                    </span>
+                                                                </div>
+                                                                <div
+                                                                    *ngIf="item.value.valueType=='numeric' || item.value.valueType=='decimal' || item.value.valueType=='float'">
+                                                                    <Label>{{item.value.right}}</Label>
+                                                                   
+                                                                    <span><input type="text" formControlName="value"
+                                                                            style="width: 84px;"></span>
+                                                                </div>
+                                                            </div>
+                                                        </ng-container>
+                                                    </div>
+                                                </div>
+
+                                            </ba-card>
+                                        </div>
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </ng-container>
+
+
+
+    </ba-card>
+    <!-- </div> -->
+
+
+</div>
+
+
+
+<div class="modal fade" bsModal #childModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog"
+    aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" aria-label="Close" (click)="hideChildModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Information</h4>
+            </div>
+            <div class="modal-body">
+                {{DialogMessage}}
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" bsModal #loginModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog"
+    aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <login (signedIn)="hideloginModal()" toUrl="test"></login>
+        </div>
+    </div>
+</div>

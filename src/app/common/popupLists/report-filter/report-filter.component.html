@@ -1,0 +1,971 @@
+<style>
+  .modal-content {
+    padding: 1px;
+    margin: 0px;
+    float: right;
+  }
+
+  tbody>tr:hover {
+    background-color: #f3f5f4;
+    cursor: pointer;
+  }
+
+  tr {
+    font-size: 11px;
+  }
+
+  .selected-row {
+    background-color: #ced6d3 !important;
+  }
+
+  .table>tbody>tr>td {
+    line-height: 30px !important;
+  }
+
+  .table>thead>tr>th {
+    line-height: 5px !important;
+  }
+
+  .table>tbody>tr>td:first-child {
+    text-align: left !important;
+    padding: 0px 0px 0px 11px !important;
+  }
+
+
+
+  .modal-content-main-area {
+    max-height: 100%;
+    height: 100%;
+    overflow: auto;
+    overflow-x: hidden;
+  }
+
+  .modal-content-summary-area {
+    max-height: 20%;
+    height: 20%;
+    overflow: auto;
+    overflow-x: hidden;
+  }
+
+  .ellipsis {
+    /* width: 220px;
+    text-overflow: ellipsis;
+    overflow: hidden; */
+    white-space: nowrap;
+  }
+
+  .checkbox label,
+  .radio label {
+    cursor: pointer;
+  }
+
+
+  .form-control[disabled],
+  .form-control[readonly],
+  fieldset[disabled] .form-control {
+    color: black;
+  }
+
+  .smallBoldLabel {
+    font-size: 11px;
+    font-weight: bold;
+    margin: 0px;
+    margin-left: 10px;
+  }
+  .input-text{
+        width : 100%; 
+        /* height: 30px !important; */
+        font-weight: bold;
+    }
+    .td-class{
+        border: none !important;
+    }
+    .date-input{
+        width: 93%;
+        font-size: 12px !important;
+        height: 30px !important;
+    }
+</style>
+<!-- <div [class.modal-sticky-hide]="!isActive" style="display : block; padding: 0px;position: absolute;
+                            top: 60px ;
+                            right: 55.5%;
+                            width: 100%;
+                            height: auto;
+                            z-index: 9999999;
+                            max-height: 500px;
+                            overflow-y: auto;"> -->
+<!-- Modal content -->
+<!-- <div class="modal-content modal-content-main-area" style="width: 42% !important">
+    <div>
+      <div class="modal-header" style="padding: 0px;background: #8cccfb;">
+
+        <h4 class="modal-title" style="text-align: center;">
+          Select Filters
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div class="clearfix">
+          <div class="col-md-12" *ngIf="reportType=='Ledger Voucher'">
+            <div class="col-md-6 form-group">
+              <label>Ledger Type</label>
+              <select class="form-control" (change)="onLedgerTypeChange();" [(ngModel)]="_reportFilterService.ReportFilterObj.ledgerType">
+                <option value="account" selected>Account Ledger</option>
+                <option value="group">Group Ledger</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="col-md-8 form-group">
+              <div class="report-filter" *ngIf="reportType!='OpeningBalance'"> -->
+<!-- <label>Date Selection</label>
+                <input class="form-control" type="text" ngxDaterangepickerMd [(ngModel)]="selectedDate"
+                  [showDropdowns]="true" [showCustomRangeLabel]="true" [alwaysShowCalendars]="true" [locale]="locale"
+                  [ranges]="ranges" [showCancel]="true" placeholder="Date Range..."
+                  (ngModelChange)="dateChanged($event)" /> -->
+
+<!-- <date-filters (startDateResponse)="startDateResponse($event)"
+                  (endDateResponse)="endDateResponse($event)"></date-filters> -->
+
+<!-- <fieldset style="width: 256px;">
+                    <legend style="font-size:11px;font-weight: bold; width:auto">Date Range Selection :</legend>
+                    <table>
+                        <tr>
+                            <td><label class="smallBoldLabel">From:(AD)</label></td>
+                            <td><label class="smallBoldLabel">To:(AD)</label></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="smallBoldLabel"><input type="date"
+                                        style="min-width:50%;width: 120px;" placeholder="Year Start Date"
+                                        [(ngModel)]="_reportFilterService.ReportFilterObj.DATE1"
+                                        (change)="changeEntryDate($event.target.value,'AD')"></label>
+                            </td>
+                            <td>
+                                <label class="smallBoldLabel"><input type="date"
+                                        style="min-width:50%;width: 120px;" placeholder="Year Start Date"
+                                        [(ngModel)]="_reportFilterService.ReportFilterObj.DATE2"
+                                        (change)="changeEndDate($event.target.value,'AD')"></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="smallBoldLabel"> <input id="nepaliDate"
+                                        style="height:25px;text-align:center;min-width:50%;width: 120px;"
+                                        class="nepali-calendar ndp-nepali-calendar"
+                                        [(ngModel)]="_reportFilterService.ReportFilterObj.BSDATE1" type="text"
+                                        (change)="changeEntryDate($event.target.value,'BS')"
+                                        placeholder="yyyy-mm-dd" />
+                                </label>
+                
+                            </td>
+                            <td>
+                                <label class="smallBoldLabel">
+                                    <input id="nepaliDate" style="height:25px;text-align:center;min-width:50%;width: 120px;"
+                                        class="nepali-calendar ndp-nepali-calendar"
+                                        [(ngModel)]="_reportFilterService.ReportFilterObj.BSDATE2" type="text"
+                                        (change)="changeEndDate($event.target.value,'BS')"
+                                        placeholder="yyyy-mm-dd" />
+                                </label>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset> -->
+
+<!-- 
+              </div>
+            </div>
+            <div class="col-md-4 form-group" style="padding-left: 0;padding-right: 0;"
+            *ngIf="reportType!='OpeningBalance' && reportType!='Cash Book' && reportType!='Bank Book'">
+            <label>Division Selection</label>
+            <select class="form-control" [(ngModel)]="_reportFilterService.ReportFilterObj.DIV" #division
+              (change)="divisionChanged()">
+              <option value="%" selected>ALL</option>
+              <option *ngFor="let divs of divisionList;let i=index" value="{{divs.INITIAL}}">{{divs.NAME}}</option>
+            </select>
+            </div>
+          </div>
+          <div class="col-md-12" >
+            <fieldset *ngIf="(reportType=='Ledger Voucher' && _reportFilterService.ReportFilterObj.ledgerType=='account') || reportType=='Cash Book'||reportType=='Bank Book'">
+              <legend style="width: 28%"> Account</legend>
+              <table>
+                <tr>
+                  <td><label class="smallBoldLabel">ACCODE</label></td>
+                  <td><label class="smallBoldLabel">ACNAME</label></td>
+                </tr>
+                <tr>
+                  <td>
+                    <label class="smallBoldLabel">
+                      <input class="form-control" tabindex="2" type="text" style="height:26px;width: 85px !important;"
+                        (keydown.enter)="accodeChanged($event.target.value)"
+                        [(ngModel)]="_reportFilterService.ReportFilterObj.ACCODE">
+                    </label>
+                  </td>
+                  <td>
+                    <div>
+                      <label class="smallBoldLabel">
+                        <input autocomplete="off" class="form-control" tabindex="2" ngui-auto-complete [source]="dropListItem.bind(this)"
+                          max-num-list="25" [(ngModel)]="_reportFilterService.ReportFilterObj.ACCNAME"
+                          list-formatter="ACNAME" style="height:26px; width: 300px !important"
+                          (ngModelChange)="itemChanged($event)" name="AcName" display-property-name="ACNAME">
+                      </label>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </fieldset> -->
+
+<!-- <fieldset *ngIf="(reportType=='Ledger Voucher' && _reportFilterService.ReportFilterObj.ledgerType=='group')">
+                <legend style="width: 15%"> Group</legend>
+                <table>
+                  <tr>
+                    <td><label class="smallBoldLabel">ACCODE</label></td>
+                    <td><label class="smallBoldLabel">ACNAME</label></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label class="smallBoldLabel">
+                        <input class="form-control" readonly autocomplete="off" type="text" name="accode" [(ngModel)]="_reportFilterService.ReportFilterObj.ACCODE">
+                      </label>
+                    </td>
+                    <td>
+                      <div>
+                        <label class="smallBoldLabel">
+                          <input (keydown)="preventInput($event)" class="form-control" autocomplete="off" (keydown.enter)="onGroupEntered()"  [(ngModel)]="_reportFilterService.ReportFilterObj.ACCNAME" name="AcName">
+                        </label>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+            </fieldset> -->
+<!-- </div>
+          <div *ngIf="reportType=='Ledger Voucher'" class="col-md-12">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" name="tc" [(ngModel)]="_reportFilterService.ReportFilterObj.summaryreport">
+                Is Summary?
+              </label>
+            </div>
+          </div> -->
+<!-- <div class="col-md-12" *ngIf="reportType=='Voucher Register' || reportType=='Day Book'">
+            <div class="col-md-6">
+              <label>VoucherType Selection</label>
+              <select class="form-control" #voucherType (change)="voucherTypeChanged()">
+                <option value="%" selected>ALL</option>
+                <option *ngFor="let vch of vouchertypeList;let i=index" value="{{vch.VOUCHER_ID}}">{{vch.vOUCHER_NAME}}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label>Show Narration</label>
+              <select #showNarration class="form-control" #voucherType (change)="showNarrationChanged()">
+                <option value=1 selected>Yes</option>
+                <option value=0>No</option>
+              </select>
+            </div>
+          </div>
+          <div *ngIf="reportType=='TBL'" class="col-md-12">
+            <div class="col-md-7" style="padding-right:0px;padding-left:0px">
+              <div class="col-md-12 checkbox" style="padding-top:5px">
+                <label>
+                  <input type="checkbox" [(ngModel)]="_reportFilterService.ReportFilterObj.showClosingBalance">Show
+                  Closing Balance
+                </label>
+              </div>
+              <div class="col-md-12 checkbox" style="padding-top:5px">
+                <label>
+                  <input type="checkbox" [(ngModel)]="_reportFilterService.ReportFilterObj.showOpeningBalance">Show
+                  Opening Balance
+                </label>
+              </div>
+              <div class="col-md-12 checkbox" style="padding-top:5px">
+                <label>
+                  <input type="checkbox" [(ngModel)]="_reportFilterService.ReportFilterObj.showTransaction">Show
+                  Transaction
+                </label>
+              </div>
+
+              <fieldset>
+                <legend style="font-size:11px;font-weight: bold; width:auto" >Report Option </legend>
+                <div class="col-md-12 checkbox" style="padding-top:5px">
+                  <label>
+                    <input type="checkbox" [(ngModel)]="_reportFilterService.ReportFilterObj.showPartylistInTrialBalance">Show Party List In Trial Balance 
+                    
+                  </label>
+                </div>       
+                <div class="col-md-12 checkbox" style="padding-top:5px">
+                  <label>
+                    <input type="checkbox" [(ngModel)]="_reportFilterService.ReportFilterObj.showSubLedgerInTrialBalance">Show Sub Ledger In Trail Balance
+                    
+                  </label>
+                </div>       
+                  <div class="col-md-12 checkbox"  style="padding-top:5px">
+                    <label>
+                      <input type="checkbox" [(ngModel)]="_reportFilterService.ReportFilterObj.showClosingStockValueInTrialBalance">Show Closing Stock Value On Trail B/L                  
+                    </label>
+                  </div>
+                  <div class="col-md-12 checkbox"  style="padding-top:5px">
+                    <label>
+                      <input type="checkbox" [(ngModel)]="_reportFilterService.ReportFilterObj.showOpeningTrialBalanceOnly">Show Opening Trail Balance Only                  
+                    </label>
+                  </div>
+  
+              </fieldset>
+        
+                <div class="col-md-12 checkbox" *ngIf="reportType=='TBL'" style="padding-top:5px">
+                  <label>
+                    <input type="checkbox" [(ngModel)]="_reportFilterService.ReportFilterObj.isZeroBalance">Show
+                    Zero B/L A/C in Trial
+                  </label>
+                </div>
+              
+            </div>
+            <div class="col-md-5" style="padding-right:0px;padding-left:0px">
+              <div class="col-md-12" style="padding-top:5px;padding-left:0px">
+                <fieldset>
+                  <div class="radio">
+                    <label><input type="radio" name="summary" [value]=true
+                        [(ngModel)]="_reportFilterService.ReportFilterObj.isSummary"
+                        [disabled]="_reportFilterService.ReportFilterObj.isLedgerWise"
+                        (change)="_reportFilterService.ReportFilterObj.showAllLevel=false;queryAndLoadData(_reportFilterService.ReportFilterObj.tblDataStore)">
+                      Summary
+                      Report &nbsp;[F2]</label>
+                  </div>
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="summary" [value]=false
+                        [(ngModel)]="_reportFilterService.ReportFilterObj.isSummary"
+                        [disabled]="_reportFilterService.ReportFilterObj.isLedgerWise"
+                        (change)="queryAndLoadData(_reportFilterService.ReportFilterObj.tblDataStore)">
+                      Detail Report &nbsp; [F3]
+                    </label>
+
+
+                  </div>
+
+                  <div class="checkbox">
+                    <label>
+                      <input
+                        [disabled]="_reportFilterService.ReportFilterObj.isLedgerWise || _reportFilterService.ReportFilterObj.isSummary"
+                        type="checkbox" [(ngModel)]="_reportFilterService.ReportFilterObj.showAllLevel "
+                        (change)="queryAndLoadData(_reportFilterService.ReportFilterObj.tblDataStore)">Show all Level
+                    </label>
+                  </div>
+
+                </fieldset>
+              </div>
+
+              <div class="col-md-12" style="padding-top:5px;padding-left:0px">
+                <fieldset>
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="groupWise" [value]=false
+                        [(ngModel)]="_reportFilterService.ReportFilterObj.isLedgerWise"
+                        (change)="queryAndLoadData(_reportFilterService.ReportFilterObj.tblDataStore)">
+                      Groupwise &nbsp; [F6]
+                    </label>
+                  </div>
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="groupWise" [value]=true
+                        [(ngModel)]="_reportFilterService.ReportFilterObj.isLedgerWise"
+                        (change)="queryAndLoadData(_reportFilterService.ReportFilterObj.tblDataStore)">
+                      LedgerWise &nbsp; [F7]
+
+                    </label>
+                  </div>
+                </fieldset>
+              </div>
+
+            </div>
+          </div>
+
+          <div *ngIf="reportType=='BS' || reportType=='PL'" class="col-md-12">
+            <div class="col-md-12">
+              <fieldset>
+                <legend style="font-size: 14px !important;width:30% !important;margin-bottom:10px !important">Stock
+                  Evaluation</legend>
+                <div class="col-md-12" style="margin-top:10px; ">
+                  <div class="opening">
+                    <div class="col-md-3" style="padding: 0px;">
+                      <label style="padding-top:5px">Opening :</label>
+                    </div>
+                    <div class="col-md-9" style="padding: 0px;">
+                      <input type="text" OnlyNumber=true class="form-control"
+                        [readonly]="_reportFilterService.ReportFilterObj.stockCalcAuto"
+                        [(ngModel)]=_reportFilterService.ReportFilterObj.openingStock>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12" style="margin-top:10px; ">
+                  <div class="closing">
+                    <div class="col-md-3" style="padding: 0px;">
+                      <label style="padding-top:5px">Closing :</label>
+                    </div>
+                    <div class="col-md-9" style="padding: 0px;">
+                      <input type="text" OnlyNumber=true class="form-control"
+                        [readonly]="_reportFilterService.ReportFilterObj.stockCalcAuto"
+                        [(ngModel)]=_reportFilterService.ReportFilterObj.closingStock>
+                    </div>
+                  </div>
+                </div>
+                [disabled]="!_reportFilterService.ReportFilterObj.stockCalcAuto"
+                <!-- <div class="col-md-12" style="margin-top:10px; ">
+                  <div class="pl-action">
+                    <div class="cal-btn col-md-4" style="padding: 0px;">
+                      <button  class="btn btn-info"
+                        (click)="calcStock()">Calculate</button>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+          </div> -->
+
+<!-- <div *ngIf="reportType=='BS'" class="col-md-12">
+            <div class="col-md-12">
+            <fieldset style="margin-top: 20px;">
+              <legend style="font-size: 14px !important;width:30% !important;margin-bottom:10px !important" >Report Option </legend>
+              <div class="col-md-12 checkbox" style="padding-top:5px">
+                <label>
+                  <input type="checkbox" [(ngModel)]="_reportFilterService.ReportFilterObj.ShowSubLedgerBS" (change)="
+                  $event.target.checked
+                    ? (_reportFilterService.ReportFilterObj.ShowSubLedgerBS = 1)
+                    : (_reportFilterService.ReportFilterObj.ShowSubLedgerBS = 0)">&nbsp;&nbsp;Show Sub Ledger 
+                </label>
+              </div>       
+              <div class="col-md-12 checkbox" style="padding-top:5px">
+                <label>
+                  <input type="checkbox" [(ngModel)]="_reportFilterService.ReportFilterObj.SHOWDEBTORSCREDITORSBS" (change)="
+                  $event.target.checked
+                    ? (_reportFilterService.ReportFilterObj.SHOWDEBTORSCREDITORSBS = 1)
+                    : (_reportFilterService.ReportFilterObj.SHOWDEBTORSCREDITORSBS = 0)">&nbsp;&nbsp;Show Debtors / Credtors List
+                </label>
+              </div>     
+            </fieldset>
+          </div>
+          </div>
+
+          <div *ngIf="reportType=='PL'" class="col-md-12">
+            <div class="col-md-12">
+            <fieldset style="margin-top: 20px;">
+              <legend style="font-size: 14px !important;width:30% !important;margin-bottom:10px !important" >Report Option </legend>
+              <div class="col-md-12 checkbox" style="padding-top:5px">
+                <label>
+                  <input type="checkbox" [(ngModel)]="_reportFilterService.ReportFilterObj.ShowSubLedgerPL" (change)="
+                  $event.target.checked
+                    ? (_reportFilterService.ReportFilterObj.ShowSubLedgerPL = 1)
+                    : (_reportFilterService.ReportFilterObj.ShowSubLedgerPL = 0)">&nbsp;&nbsp;Show Sub Ledger 
+                </label>
+              </div>          
+            </fieldset>
+          </div>
+          </div> -->
+<!-- </div>
+      </div>  -->
+
+<!-- <hr style="margin-bottom: 0px !important;margin-top: 5px !important">
+      <div class="clearfix" style="padding: 10px;">
+        <button class="btn btn-info pull-right" style="margin-left: 10px;" (click)="popupClose()">Cancel</button>
+        <button class="btn btn-info pull-right" (click)="applyClicked()">Apply</button>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<div *ngIf="reportType=='TBL'" [class.modal-sticky-hide]="!isActive" style="display : block; padding: 0px;position: absolute;
+                            top: 20% ;
+                            right: 15%;
+                            height: auto;
+                            z-index: 9999999;
+                            max-height: 500px;
+                            overflow-y: auto;
+                            width: 62%;">
+  <!-- Modal content -->
+  <div class="modal-content modal-content-main-area">
+    <div style="background-color : #ffffff; padding :1%; height : auto;  ">
+      <div class="row">
+        <div class="modal-header" style="width : 97%; margin : 0px auto;">
+          <button type="button" class="close" data-dismiss="modal" (click)="popupClose()">&times;</button>
+          <h4 class="modal-title">Trial Balance Report</h4>
+        </div>
+        <div class="col-md-12" style="padding-top: 2%;">
+          <!-- Left Column -->
+          <div class="col-md-6">
+
+            <fieldset>
+              <legend style="font-size:11px;font-weight: bold; width:auto">Date Range Selection :</legend>
+              <table>
+                <tr>
+                  <td class="td-class"><label class="smallBoldLabel">From:(AD)</label></td>
+                  <td class="td-class"><label class="smallBoldLabel">To:(AD)</label></td>
+                </tr>
+                <tr>
+                  <td class="td-class">
+                      <input type="date" class="date-input form-control" placeholder="Year Start Date"
+                        [(ngModel)]="_reportFilterService.ReportFilterObj.DATE1"
+                        (change)="changeEntryDate($event.target.value,'AD')" max="{{_masterRepo.date1 | date:'yyyy-MM-dd'}}" min="{{_masterRepo.date2 | date:'yyyy-MM-dd'}}">
+                  </td>
+                  <td class="td-class">
+                      <input type="date" class="date-input form-control" placeholder="Year Start Date"
+                        [(ngModel)]="_reportFilterService.ReportFilterObj.DATE2"
+                        (change)="changeEndDate($event.target.value,'AD')" max="{{_masterRepo.date1 | date:'yyyy-MM-dd'}}" min="{{_masterRepo.date2 | date:'yyyy-MM-dd'}}">
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                       <input id="nepaliDate"
+                       style="text-align:center;"
+                       class="nepali-calendar ndp-nepali-calendar date-input form-control"
+                        type="text" [(ngModel)]="_reportFilterService.ReportFilterObj.BSDATE1"
+                        (change)="changeEntryDate($event.target.value,'BS')" placeholder="yyyy-mm-dd" />
+
+                  </td>
+                  <td>
+                      <input id="nepaliDate" style="text-align:center;"
+                      class="nepali-calendar ndp-nepali-calendar date-input form-control" type="text"
+                        [(ngModel)]="_reportFilterService.ReportFilterObj.BSDATE2"
+                        (change)="changeEndDate($event.target.value,'BS')" placeholder="yyyy-mm-dd" />
+                  </td>
+                </tr>
+              </table>
+            </fieldset>
+
+            <fieldset>
+              <legend style="font-size:11px;font-weight: bold; width:auto">Division Selection :</legend>
+              <select  [(ngModel)]="_reportFilterService.ReportFilterObj.DIV" style="height: 30px !important;" 
+              class="form-control input-text">
+              <option value="%" *ngIf="_masterRepo.userSetting.userwisedivision==0 ||  _masterRepo.showAll">ALL</option>
+                <option *ngFor="let div of divisionList" value="{{ div.INITIAL }}">
+                  {{ div.NAME }}
+                </option>
+              </select>
+            </fieldset>
+
+            <fieldset>
+              <legend style="font-size:11px;font-weight: bold; width:auto">Cost Center :</legend>
+              <select [(ngModel)]="_reportFilterService.ReportFilterObj.TBL_CostCenter"
+              style="height: 30px !important;" 
+              class="form-control input-text">
+                  <option value="%"> </option>
+                  <option *ngFor="let i of CostcenterList" value={{i.CCID}}>{{i.COSTCENTERNAME}}
+                  </option>
+              </select>
+          </fieldset>
+
+
+          </div>
+          <!-- Right Column -->
+          <div class="col-md-6">
+            <div class="col-md-12">
+              <div class="col-md-5">
+                <fieldset style="padding-bottom: 5px; width: 150%; margin-left: -40px;">
+                  <legend style="font-size:11px;font-weight: bold; width:auto">Report Mode :</legend>
+                  <label class="smallBoldLabel"><input type="radio" name="summary" [value]=true
+                      [(ngModel)]="_reportFilterService.ReportFilterObj.isSummary"
+                      [disabled]="_reportFilterService.ReportFilterObj.isLedgerWise"
+                      (change)="_reportFilterService.ReportFilterObj.showAllLevel=false;  ">&nbsp;Summary
+                    Report
+                    [F2]</label>
+                  <label class="smallBoldLabel"><input type="radio" name="summary" [value]=false
+                      [(ngModel)]="_reportFilterService.ReportFilterObj.isSummary"
+                      [disabled]="_reportFilterService.ReportFilterObj.isLedgerWise"
+                      >&nbsp;Detail Report
+                    [F3]
+                  </label>
+                  <label class="smallBoldLabel" style="padding-left: 15px;"><input
+                      [disabled]="_reportFilterService.ReportFilterObj.isLedgerWise || _reportFilterService.ReportFilterObj.isSummary"
+                      type="checkbox" [(ngModel)]="_reportFilterService.ReportFilterObj.showAllLevel "
+                      >&nbsp;Show
+                    All Level [F4]
+                  </label>
+
+                </fieldset>
+              </div>
+
+              <div class="col-md-7">
+                <fieldset style="padding-bottom: 5px; margin-left: 17px; width: 100%; padding-bottom: 28px;">
+                  <legend style="font-size:11px;font-weight: bold; width:auto">Report Format :</legend>
+                  <label class="smallBoldLabel"><input type="radio" name="groupWise" [value]=false
+                      [(ngModel)]="_reportFilterService.ReportFilterObj.isLedgerWise"
+                      >&nbsp;Group Wise
+                    Format
+                    [F6]</label>
+                  <label class="smallBoldLabel" style="clear : both;"><input type="radio" name="groupWise" [value]=true
+                      [(ngModel)]="_reportFilterService.ReportFilterObj.isLedgerWise"
+                      >&nbsp;Ledger Wise
+                    Format [F7]
+                  </label>
+
+                </fieldset>
+              </div>
+
+            </div>
+
+            <div class="col-md-12">
+              <fieldset style="padding-bottom: 5px; width: 107%; margin-left: -26px;margin-bottom: 10px;">
+                <legend style="font-size:11px;font-weight: bold; width:auto">Report Options :</legend>
+                <label class="smallBoldLabel"><input type="checkbox"
+                    [(ngModel)]="_reportFilterService.ReportFilterObj.SHOWOPENINGTRIALONLY"   >&nbsp;Show Opening Trial
+                  Balance Report
+                  Only</label>
+                <label class="smallBoldLabel"><input type="checkbox"
+                    [(ngModel)]="_reportFilterService.ReportFilterObj.showPartylistInTrialBalance"   >&nbsp;Show
+                  Debtors/Creditors Party List
+                </label>
+                <label class="smallBoldLabel"><input type="checkbox"
+                    [(ngModel)]="_reportFilterService.ReportFilterObj.showSubLedgerInTrialBalance"   >&nbsp;Show Sub Ledger
+                  In Trial Balance
+                </label>
+                <label class="smallBoldLabel"><input type="checkbox"
+                    [(ngModel)]="_reportFilterService.ReportFilterObj.showClosingStockValueInTrialBalance"   >&nbsp;Show
+                  Closing Stock Value In Trial
+                  Balance
+                </label>
+                <label class="smallBoldLabel"><input type="checkbox"
+                    [(ngModel)]="_reportFilterService.ReportFilterObj.isZeroBalance"   >&nbsp;Show Zero B/L A/C In Report
+                </label>
+
+              </fieldset>
+            </div>
+
+        
+
+          </div>
+        </div>
+
+        <div class="modal-footer" style="width : 97%; margin : 0px auto;">
+          <button class="btn btn-info confirm-btn" type="button" (click)=applyClicked()>RUN</button>
+          <button type="button" (click)="popupClose()" title="Cancel" class="btn btn-info">Close</button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div *ngIf="reportType=='PL'" [class.modal-sticky-hide]="!isActive" style="display : block; padding: 0px;position: absolute;
+                            top: 20% ;
+                            right: 20%;
+                            height: auto;
+                            z-index: 5;
+                            max-height: 500px;
+                            overflow-y: auto;
+                            width: 58%;">
+  <!-- Modal content -->
+  <div class="modal-content modal-content-main-area">
+    <div style="background-color : #ffffff; padding :1%; height : auto;  ">
+      <div class="row">
+        <div class="modal-header" style="width : 97%; margin : 0px auto;">
+          <button type="button" class="close" data-dismiss="modal" (click)="popupClose()">&times;</button>
+          <h4 class="modal-title">Profit & Loss A/C</h4>
+        </div>
+        <div class="col-md-12" style="padding-top: 2%;">
+          <!-- Left Column -->
+          <div class="col-md-6">
+
+            <fieldset>
+              <legend style="font-size:11px;font-weight: bold; width:auto">Date Range Selection :</legend>
+              <table>
+                <tr>
+                  <td class="td-class"><label class="smallBoldLabel">From:(AD)</label></td>
+                  <td class="td-class"><label class="smallBoldLabel">To:(AD)</label></td>
+                </tr>
+                <tr>
+                  <td class="td-class">
+                      <input type="date" class="date-input form-control"
+                        placeholder="Year Start Date" [(ngModel)]="_reportFilterService.ReportFilterObj.DATE1"
+                        (change)="changeEntryDate($event.target.value,'AD')"  max="{{_masterRepo.date1 | date:'yyyy-MM-dd'}}" min="{{_masterRepo.date2 | date:'yyyy-MM-dd'}}">
+                  </td>
+                  <td class="td-class">
+                      <input type="date" class="date-input form-control"
+                        placeholder="Year Start Date" [(ngModel)]="_reportFilterService.ReportFilterObj.DATE2"
+                        (change)="changeEndDate($event.target.value,'AD')"  max="{{_masterRepo.date1 | date:'yyyy-MM-dd'}}" min="{{_masterRepo.date2 | date:'yyyy-MM-dd'}}">
+                  </td>
+                </tr>
+                <tr>
+                  <td class="td-class">
+                    <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDatefrom'"
+                    (change)="changeEntryDate($event.detail.value,'BS')"
+                    [label]="'From'"
+                    [(ngModel)]="_reportFilterService.ReportFilterObj.BSDATE1">
+                    </nepali-date-picker>
+                      <!-- <input id="nepaliDate"
+                      style="text-align:center;"
+                      class="nepali-calendar ndp-nepali-calendar date-input form-control" type="text"
+                        [(ngModel)]="_reportFilterService.ReportFilterObj.BSDATE1"
+                        (change)="changeEntryDate($event.target.value,'BS')" placeholder="yyyy-mm-dd" /> -->
+                  </td>
+                  <td class="td-class">
+                    <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDateTo'"
+                      (change)="changeEndDate($event.detail.value,'BS')"
+                      [label]="'To'"
+                      [(ngModel)]="_reportFilterService.ReportFilterObj.BSDATE2">
+                      </nepali-date-picker>
+                      <!-- <input id="nepaliDate" style="text-align:center;"
+                      class="nepali-calendar ndp-nepali-calendar date-input form-control" type="text"
+                        [(ngModel)]="_reportFilterService.ReportFilterObj.BSDATE2"
+                        (change)="changeEndDate($event.target.value,'BS')" placeholder="yyyy-mm-dd" /> -->
+                  </td>
+                </tr>
+              </table>
+            </fieldset>
+
+            <fieldset style="margin-top: 10px;">
+              <legend style="font-size:11px;font-weight: bold; width:auto">Stock
+                Evaluation :</legend>
+              <div class="col-md-12" style="margin-top:5px;">
+                <div class="opening">
+                  <div class="col-md-4" style="padding: 0px;">
+                    <label class="smallBoldLabel" style="margin-left: 0px;padding-top:5px;margin-top: -10px;">Opening Stock:</label>
+                  </div>
+                  <div class="col-md-8" style="padding: 0px;">
+                    <input type="text" OnlyNumber=true class="form-control" style="height: 25px;margin-top: -10px;"
+                      [readonly]="_reportFilterService.ReportFilterObj.stockCalcAuto"
+                      [(ngModel)]=_reportFilterService.ReportFilterObj.openingStock>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12" style="margin-top:5px;">
+                <div class="closing">
+                  <div class="col-md-4" style="padding: 0px;">
+                    <label class="smallBoldLabel" style="margin-left: 0px; padding-top:5px;">Closing Stock:</label>
+                  </div>
+                  <div class="col-md-8" style="padding: 0px;">
+                    <input type="text" OnlyNumber=true class="form-control" style="height: 25px;"
+                      [readonly]="_reportFilterService.ReportFilterObj.stockCalcAuto"
+                      [(ngModel)]=_reportFilterService.ReportFilterObj.closingStock>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12" style="margin-top:10px; ">
+                <div class="pl-action">
+                  <div class="cal-btn col-md-4" style="padding: 0px; float:right;">
+                    <button class="btn btn-info" style=" float:right;" (click)="calcStock()">Calculate</button>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+
+
+          </div>
+          <!-- Right Column -->
+          <div class="col-md-6">
+
+            <fieldset *ngIf="userSetting.IS_NESTLE == 1">
+              <legend style="font-size:11px;font-weight: bold; width:auto">Company Selection :</legend>
+              <select [(ngModel)]="_reportFilterService.ReportFilterObj.COMPANYTYPE"
+              style="height: 30px !important;" 
+              class="form-control input-text">
+                <option value="DMS">DMS</option>
+                <option value="NONDMS">NON DMS</option>
+              </select>
+            </fieldset>
+
+            <fieldset>
+              <legend style="font-size:11px;font-weight: bold; width:auto">Division Selection :</legend>
+              <select [(ngModel)]="_reportFilterService.ReportFilterObj.DIV"
+              style="height: 30px !important;" 
+              class="form-control input-text">
+              <option value="%" *ngIf="_masterRepo.userSetting.userwisedivision==0 ||  _masterRepo.showAll">ALL</option>
+                <option *ngFor="let div of divisionList" value="{{ div.INITIAL }}">
+                  {{ div.NAME }}
+                </option>
+              </select>
+            </fieldset>
+
+            <div class="checkbox" style="padding-top:10px">
+              <label class="smallBoldLabel" style="margin-left: 0px;">
+                <input type="checkbox" [(ngModel)]="_reportFilterService.ReportFilterObj.ShowSubLedgerPL" (change)="
+                $event.target.checked
+                  ? (_reportFilterService.ReportFilterObj.ShowSubLedgerPL = 1)
+                  : (_reportFilterService.ReportFilterObj.ShowSubLedgerPL = 0)">&nbsp;&nbsp;Show Sub Ledger In Profit &
+                Loss A/C
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer" style="width : 97%; margin : 0px auto;">
+          <button class="btn btn-info confirm-btn" type="button" (click)=applyClicked()>RUN</button>
+          <button type="button" (click)="popupClose()" title="Cancel" class="btn btn-info">Close</button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div *ngIf="reportType=='BS'" [class.modal-sticky-hide]="!isActive" style="display : block; padding: 0px;position: absolute;
+                            top: 20% ;
+                            right: 20%;
+                            height: auto;
+                            z-index: 5;
+                            max-height: 500px;
+                            overflow-y: auto;
+                            width: 58%;">
+  <!-- Modal content -->
+  <div class="modal-content modal-content-main-area">
+    <div style="background-color : #ffffff; padding :1%; height : auto;  ">
+      <div class="row">
+        <div class="modal-header" style="width : 97%; margin : 0px auto;">
+          <button type="button" class="close" data-dismiss="modal" (click)="popupClose()">&times;</button>
+          <h4 class="modal-title">Balance Sheet</h4>
+        </div>
+        <div class="col-md-12" style="padding-top: 2%;">
+          <!-- Left Column -->
+          <div class="col-md-6">
+
+            <fieldset>
+              <legend style="font-size:11px;font-weight: bold; width:auto">Date Range Selection :</legend>
+              <table>
+                <tr>
+                  <td class="td-class"><label class="smallBoldLabel">From:(AD)</label></td>
+                  <td class="td-class"><label class="smallBoldLabel">To:(AD)</label></td>
+                </tr>
+                <tr>
+                  <td class="td-class">
+                      <input type="date" class="date-input form-control"
+                        placeholder="Year Start Date" [(ngModel)]="_reportFilterService.ReportFilterObj.DATE1"
+                        (change)="changeEntryDate($event.target.value,'AD')" max="{{_masterRepo.date1 | date:'yyyy-MM-dd'}}" min="{{_masterRepo.date2 | date:'yyyy-MM-dd'}}">
+                  </td>
+                  <td class="td-class">
+                      <input type="date" class="date-input form-control"
+                        placeholder="Year Start Date" [(ngModel)]="_reportFilterService.ReportFilterObj.DATE2"
+                        (change)="changeEndDate($event.target.value,'AD')" max="{{_masterRepo.date1 | date:'yyyy-MM-dd'}}" min="{{_masterRepo.date2 | date:'yyyy-MM-dd'}}">
+                  </td>
+                </tr>
+                <tr>
+                  <td class="td-class">
+                    <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDatefrom'"
+                    (change)="changeEntryDate($event.detail.value,'BS')"
+                    [label]="'From'"
+                    [(ngModel)]="_reportFilterService.ReportFilterObj.BSDATE1">
+                    </nepali-date-picker>
+                       <!-- <input id="nepaliDate"
+                       style="text-align:center;"
+                       class="nepali-calendar ndp-nepali-calendar date-input form-control" type="text"
+                        [(ngModel)]="_reportFilterService.ReportFilterObj.BSDATE1"
+                        (change)="changeEntryDate($event.target.value,'BS')" placeholder="yyyy-mm-dd" /> -->
+                  </td>
+                  <td class="td-class">
+                    <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDateTo'"
+                    (change)="changeEndDate($event.detail.value,'BS')"
+                    [label]="'To'"
+                    [(ngModel)]="_reportFilterService.ReportFilterObj.BSDATE2">
+                    </nepali-date-picker>
+                      <!-- <input id="nepaliDate" style="text-align:center;"
+                      class="nepali-calendar ndp-nepali-calendar date-input form-control" type="text"
+                        [(ngModel)]="_reportFilterService.ReportFilterObj.BSDATE2"
+                        (change)="changeEndDate($event.target.value,'BS')" placeholder="yyyy-mm-dd" /> -->
+                  </td>
+                </tr>
+              </table>
+            </fieldset>
+
+
+
+            <fieldset style="margin-top: 10px;">
+              <legend style="font-size:11px;font-weight: bold; width:auto">Stock
+                Evaluation :</legend>
+              <div class="col-md-12" style="margin-top:5px;">
+                <div class="opening">
+                  <div class="col-md-4" style="padding: 0px;">
+                    <label class="smallBoldLabel" style="margin-left: 0px;padding-top:5px;margin-top: -10px;">Opening Stock:</label>
+                  </div>
+                  <div class="col-md-8" style="padding: 0px;">
+                    <input type="text" OnlyNumber=true class="form-control" style="height: 25px;margin-top: -10px;"
+                      [readonly]="_reportFilterService.ReportFilterObj.stockCalcAuto"
+                      [(ngModel)]=_reportFilterService.ReportFilterObj.openingStock>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12" style="margin-top:5px;">
+                <div class="closing">
+                  <div class="col-md-4" style="padding: 0px;">
+                    <label class="smallBoldLabel" style="margin-left: 0px; padding-top:5px;">Closing Stock:</label>
+                  </div>
+                  <div class="col-md-8" style="padding: 0px;">
+                    <input type="text" OnlyNumber=true class="form-control" style="height: 25px;"
+                      [readonly]="_reportFilterService.ReportFilterObj.stockCalcAuto"
+                      [(ngModel)]=_reportFilterService.ReportFilterObj.closingStock>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12" style="margin-top:10px; ">
+                <div class="pl-action">
+                  <div class="cal-btn col-md-4" style="padding: 0px; float:right;">
+                    <button class="btn btn-info" style=" float:right;" (click)="calcStock()">Calculate</button>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+
+
+          </div>
+          <!-- Right Column -->
+          <div class="col-md-6">
+
+            <fieldset *ngIf="userSetting.IS_NESTLE == 1">
+              <legend style="font-size:11px;font-weight: bold; width:auto">Company Selection :</legend>
+              <select [(ngModel)]="_reportFilterService.ReportFilterObj.COMPANYTYPE"
+              style="height: 30px !important;" 
+              class="form-control input-text">
+                <option value="DMS">DMS</option>
+                <option value="NONDMS">NON DMS</option>
+              </select>
+            </fieldset>
+            
+            <fieldset>
+              <legend style="font-size:11px;font-weight: bold; width:auto">Division Selection :</legend>
+              <select [(ngModel)]="_reportFilterService.ReportFilterObj.DIV"
+              style="height: 30px !important;" 
+              class="form-control input-text">
+              <option value="%" *ngIf="_masterRepo.userSetting.userwisedivision==0 ||  _masterRepo.showAll">ALL</option>
+                <option *ngFor="let div of divisionList" value="{{ div.INITIAL }}">
+                  {{ div.NAME }}
+                </option>
+              </select>
+            </fieldset>
+
+            <fieldset style="margin-top: 10px;">
+              <legend style="font-size:11px;font-weight: bold; width:auto">Report
+                Options :</legend>
+              <div class="col-md-12 checkbox" style="padding-top:5px">
+                <label class="smallBoldLabel" style="margin-left: 0px;">
+                  <input type="checkbox" [(ngModel)]="_reportFilterService.ReportFilterObj.ShowSubLedgerBS" (change)="
+                  $event.target.checked
+                    ? (_reportFilterService.ReportFilterObj.ShowSubLedgerBS = 1)
+                    : (_reportFilterService.ReportFilterObj.ShowSubLedgerBS = 0)">&nbsp;&nbsp;Show Sub Ledger In
+                  Balance Sheet
+                </label>
+              </div>
+              <div class="col-md-12 checkbox" style="padding-top:5px">
+                <label class="smallBoldLabel" style="margin-left: 0px;">
+                  <input type="checkbox" [(ngModel)]="_reportFilterService.ReportFilterObj.SHOWDEBTORSCREDITORSBS"
+                    (change)="
+                  $event.target.checked
+                    ? (_reportFilterService.ReportFilterObj.SHOWDEBTORSCREDITORSBS = 1)
+                    : (_reportFilterService.ReportFilterObj.SHOWDEBTORSCREDITORSBS = 0)">&nbsp;&nbsp;Show Debtors /
+                  Creditors Party List
+                </label>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+
+        <div class="modal-footer" style="width : 97%; margin : 0px auto;">
+          <button class="btn btn-info confirm-btn" type="button" (click)=applyClicked()>RUN</button>
+          <button type="button" (click)="popupClose()" title="Cancel" class="btn btn-info">Close</button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<generic-popup-grid #genericGrid [popupsettings]="gridPopupSettings" (onItemDoubleClick)="onItemSelected($event)">
+</generic-popup-grid>

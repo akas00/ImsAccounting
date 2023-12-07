@@ -1,0 +1,35 @@
+<div class="sticky-top">
+        <div class="row clearfix">
+                <div class="col-md-2">
+                        <voucher-master-toggler></voucher-master-toggler>
+                </div>
+                <div class="col-md-2">
+                        <h2 style="color: black; font-size: 16px;">{{_trnMainService.pageHeading}}</h2>
+                </div>
+                <div class="col-md-8">
+                        <voucher-master-action
+                        (onLoadFromStockSettlementApproval) = "showLoadFromStockSettlement($event)"
+                        (onApproveStockSettlementList) = "saveChangeStockSettlement($event)"
+                        ></voucher-master-action>
+                        <generic-popup-grid
+                        #genericGridSO
+                        [popupsettings]="gridPopupSettings"
+                        (onItemDoubleClick)="onItemDoubleClick($event)"
+                      ></generic-popup-grid>
+                </div>    
+        </div>
+    </div>
+    <div class="main-container">
+        <div *ngIf="masterService.ShowMore" class="row clearfix" >
+            <inv-params></inv-params>
+        </div>
+        <div class="row" style="margin-top: 5px">  
+            <div class="col-md-12">
+    
+                <productentry ></productentry>
+            </div>
+            </div>
+            </div>
+            <div class="sticky-bottom">
+                    <voucher-total-area></voucher-total-area>
+ </div>

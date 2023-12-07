@@ -1,0 +1,198 @@
+<style>
+    .modal-content {
+      padding: 1px;
+      margin: 0px;
+      float: right;
+    }
+  
+    .table-scroll {
+      overflow-y: scroll;
+      overflow-x: hidden;
+    }
+  
+    tbody>tr:hover {
+      background-color: #f3f5f4;
+      cursor: pointer;
+    }
+  
+    tr {
+      font-size: 11px;
+    }
+  
+    .selected-row {
+      background-color: #ced6d3 !important;
+    }
+  
+    td {
+      padding: 2px
+    }
+  
+    .modal-sticky {
+      position: fixed;
+      bottom: 45px;
+      right: 25%;
+      width: 80%;
+      height: 78%;
+      z-index: 2;
+    }
+  
+    .input {
+      width: 80%
+    }
+  
+    td {
+      line-height: 0px !important
+    }
+  
+    .table>tbody>tr>td {
+      border-top: 0px solid gainsboro !important;
+    }
+  
+    .TopMargin {
+      Margin-Top: 10px
+    }
+  
+    .table>tbody>tr>td:first-child {
+      text-align: left !important;
+    }
+  
+    label {
+      height: 21px;
+      font-weight: normal;
+      width: 100px;
+      margin: 2px;
+      vertical-align: middle;
+      font-size: 13px;
+      padding-top: 6px;
+    }
+  </style>
+  <div class="modal-sticky" [class.modal-sticky-hide]="!isActive" style="display : block; padding: 0px;">
+    <!-- Modal content -->
+    <div class="modal-content" style="background-color: #f1f1f1; width:60% !important">
+      <div class="modal-header" style="padding: 0px;background: #f1f1f1;;">
+  
+        <h4 class="modal-title" style="text-align: center;">
+          New Customer
+        </h4>
+      </div>
+     <div style="    margin: 10px;">
+         <div class="row">
+             <div class="col-md-3">
+               <label>Name</label>
+             </div>
+             <div class="col-md-5">
+                 <input type="text" style="width:100%" [(ngModel)]="CustObj.ACNAME"/>
+                </div>
+     </div>
+     <div class="row">
+            <div class="col-md-3">
+              <label>Address</label>
+            </div>
+            <div class="col-md-5">
+                <input type="text" style="width:100%" [(ngModel)]="CustObj.ADDRESS"/>
+               </div>
+    </div>
+    <div class="row">
+            <div class="col-md-3">
+              <label>LandMark</label>
+            </div>
+            <div class="col-md-5">
+                <input type="text" style="width:100%" [(ngModel)]="CustObj.LANDMARK"/>
+               </div>
+    </div>
+    <div class="row">
+            <div class="col-md-3">
+              <label>Area</label>
+            </div>
+            <div class="col-md-5">
+                <input type="text" style="width:100%" [(ngModel)]="CustObj.AREA"/>
+               </div>
+    </div>
+    <div class="row">
+            <div class="col-md-3">
+              <label>City</label>
+            </div>
+            <div class="col-md-5">
+                <input type="text" style="width:100%" [(ngModel)]="CustObj.CITY"/>
+               </div>
+    </div>
+   
+    <div class="row">
+            <div class="col-md-3">
+              <label>Mobile</label>
+            </div>
+            <div class="col-md-5">
+                <input type="text" style="width:100%" [(ngModel)]="CustObj.MOBILE"/>
+               </div>
+    </div>
+    <div class="row">
+            <div class="col-md-3">
+              <label>Email Id</label>
+            </div>
+            <div class="col-md-5">
+                <input type="text" style="width:100%" [(ngModel)]="CustObj.EMAIL"/>
+               </div>
+    </div>
+    <div class="row">
+            <div class="col-md-3">
+              <label>CustomerType</label>
+            </div>
+            <div class="col-md-5">
+                <input type="text" style="width:100%" [(ngModel)]="CustObj.GEO" readonly/>
+               </div>
+    </div>
+    <div class="row">
+            <div class="col-md-3">
+              <label>State</label>
+            </div>
+            <div class="col-md-5">
+                    <select style="color:black" name="STATE" style="width:100%"
+                    id="STATE" [(ngModel)]="CustObj.STATE" [disabled]="true">
+                  <option *ngFor="let i of StateList"  [ngValue]="i.StateCode">{{i.StateName}}</option>
+                  </select>
+                
+               </div>
+    </div>
+    <div class="row">
+            <div class="col-md-3">
+              <label>InvoiceType</label>
+            </div>
+            <div class="col-md-5">
+                    <select
+               
+                    [(ngModel)]="CustObj.CTYPE"
+                   
+                    style="height:30px;padding-bottom: 0px;width:100%"
+                 [disabled]="true" >
+                    <option value="RETAIL INVOICE">RETAIL INVOICE</option>
+                    <option value="E-COMMERCE">E-COMMERCE</option>
+                    <option value="EXEMPTED">EXEMPTED</option>
+                    <option value="TAX INVOICE">TAX INVOICE</option>
+                  </select>
+                
+               </div>
+    </div>
+    <div class="row">
+            <div class="col-md-3">
+              <label>GST No</label>
+            </div>
+            <div class="col-md-5">
+                <input type="text" style="width:100%" [(ngModel)]="CustObj.GSTNO"/>
+               </div>
+    </div>
+    <div class="row">
+            <div class="col-md-3">
+              <label>Pan No</label>
+            </div>
+            <div class="col-md-5">
+                <input type="text" style="width:100%" [(ngModel)]="CustObj.VATNO"/>
+               </div>
+    </div>
+      <div class="Col-md-12">
+        <button type="button" class="btn btn-info TopMargin" style="width:80px" (click)="OK()">OK</button>
+        <button type="button" class="btn btn-warning TopMargin" style="margin-right:10px;"
+          (click)="hide()">Cancel</button>
+  
+      </div>
+    </div>
+    </div>

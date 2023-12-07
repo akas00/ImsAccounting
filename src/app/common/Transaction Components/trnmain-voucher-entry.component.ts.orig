@@ -1,0 +1,657 @@
+import { Router, ActivatedRoute } from '@angular/router';
+import { Component, ViewChild } from "@angular/core";
+import { TSubLedger } from "./../interfaces/TrnMain";
+import { SettingService } from "./../services/setting.service";
+import { PREFIX } from "./../interfaces/Prefix.interface";
+import { TAcList } from "./../interfaces/Account.interface";
+import { Trntran, VoucherTypeEnum } from "./../interfaces/TrnMain";
+import { FormBuilder } from "@angular/forms";
+import { MasterRepo } from "./../repositories/masterRepo.service";
+import { IDivision } from "./../interfaces";
+import { Subscription } from "rxjs/Subscription";
+import { BehaviorSubject } from "rxjs/BehaviorSubject";
+import { Observable } from "rxjs/Observable";
+import { TransactionService } from "./transaction.service";
+import {
+  GenericPopUpComponent,
+  GenericPopUpSettings
+} from "../popupLists/generic-grid/generic-popup-grid.component";
+
+import { AlertService } from "../services/alert/alert.service";
+import { AuthService } from '../services/permission/authService.service';
+
+@Component({
+  selector: "trnmain-voucher-entry",
+  templateUrl: "./trnmain-voucher-entry.component.html",
+  styleUrls: ["../../pages/Style.css"]
+})
+export class TrnMainVoucherEntryComponent {
+  @ViewChild("genericGridACListParty")
+  genericGridACListParty: GenericPopUpComponent;
+  gridACListPartyPopupSettings: GenericPopUpSettings = new GenericPopUpSettings();
+
+  TrnTranList: Trntran[] = [];
+  divisionList: IDivision[] = [];
+  voucherType: VoucherTypeEnum = VoucherTypeEnum.PaymentVoucher;
+  accountList: TAcList[] = [];
+  cashAndBankList: TAcList[] = [];
+  Suppliers: TAcList[] = [];
+  Customers: TAcList[] = [];
+  cashList: TAcList[] = [];
+  bankList: TAcList[] = [];
+  acList: TAcList[] = [];
+  trnaccountList: TAcList[] = [];
+  subledgerDropDownList: TSubLedger[] = [];
+  VoucherEntry: any = <any>{};
+  EntryDate: any = <any>{};
+  date1: any;
+  prefix: PREFIX = <PREFIX>{};
+  // TrnMainForm: FormGroup;
+  viewMode = false;
+  private subcriptions: Array<Subscription> = [];
+  cashAccountSubject: BehaviorSubject<TAcList[]> = new BehaviorSubject<
+    TAcList[]
+  >([]);
+  cashAccountObserver$: Observable<
+    TAcList[]
+  > = this.cashAccountSubject.asObservable();
+  accountListSubject: BehaviorSubject<TAcList[]> = new BehaviorSubject<
+    TAcList[]
+  >([]);
+  accountListObersver$: Observable<
+    TAcList[]
+  > = this.accountListSubject.asObservable();
+
+  noteType: string;
+  isNote = false;
+  isShowingDate = false;
+  serverDate: any;
+  chalanSeries: any;
+  costlists = [];
+  userProfile: any;
+  userSetting: any;
+  constructor(
+    public masterService: MasterRepo,
+    public router: Router,
+    public alertService: AlertService,
+    private _transactionService: TransactionService,
+    private _authService: AuthService
+  ) {
+
+    ////console.log("showmorevalue",this.masterService.ShowMore);
+
+    this.userProfile = this._authService.getUserProfile();
+    this.userSetting = _authService.getSetting()
+    ////console.log("setting", this.userSetting)
+    this.date1 = new Date();
+    const r = this.router.url;
+    if (r === '/pages/account/acvouchers/debit-note') {
+      this.noteType = 'CreditNote';
+      this.isNote = true;
+    } else if (r === '/pages/account/acvouchers/credit-note') {
+      this.noteType = 'DebitNote';
+      this.isNote = true;
+    } else if (r === '/pages/account/account-opening-balance' || r === '/pages/account/party-opening-balance') {
+      this.isShowingDate = true;
+      this.getCurrentServerDate();
+    }
+
+    try {
+      this.voucherType = this._transactionService.TrnMainObj.VoucherType;
+      if (this.TrnTranList.length == 0) {
+        var nulltt = <Trntran>{};
+        nulltt.AccountItem = <TAcList>{};
+        nulltt.ROWMODE = "new";
+        this.TrnTranList.push(nulltt);
+      }
+
+      this.masterService.getAllNEWCostCenter().subscribe(res => {
+        if (res) {
+          ////console.log("result", res)
+          this.costlists.push(res);
+          this.costlists = res.result;
+          // _transactionService.TrnMainObj.COSTCENTER ='';
+
+        }
+      }, error => {
+        this.costlists = [];
+      });
+
+      // this._transactionService.getCostCenterList();
+      // this.costlists = this._transactionService.costlists;
+
+      //this.hasCostCenter = this.settingService.appSetting.enableCostCenter;
+      //this.hasCheque = this.settingService.appSetting.enableChequeInEntry;
+      //this.enableACCodeFocus = this.settingService.appSetting.enableACCodeFocus;
+      //this.enableACNameFocus = this.settingService.appSetting.enableACNameFocus;
+      //this.masterService.refreshAccountList('Journal-constructor');
+
+      this.masterService
+        .getAccount("IncomeVoucher")
+        .map(data => {
+          var fil = data.filter(ac => ac.MAPID == "C" || ac.MAPID == "B");
+          return fil;
+        })
+        .subscribe((res: Array<TAcList>) => {
+          this.cashAccountSubject.next(res);
+        });
+    } catch (ex) {
+      alert(ex);
+    }
+  }
+
+
+
+
+  ngOnInit() {
+    this._transactionService.TrnMainObj.CHALANNO = '';
+    this.initDate();
+
+    ////console.log("trnMode",this._transactionService.TrnMainObj.TRNMODE);
+    this._transactionService.viewDate.subscribe( 
+      (data) =>{
+        this.initDate();
+      }
+    )
+
+
+    try {
+
+      ////console.log("Trncostlist", this.costlists)
+      if (this._transactionService.TrnMainObj.Mode == "VIEW") {
+        this.viewMode = true;
+
+      }
+
+
+      if (this._transactionService.TrnMainObj.Mode == "EDIT" || this._transactionService.TrnMainObj.Mode == "VIEW") {
+        this._transactionService.loadDataObservable.subscribe(data => {
+          try {
+            this.VoucherTypeChangeEvent(data.TRNMODE);
+          } catch (e) {
+            alert(e);
+          }
+        });
+      } else {
+        if (this._transactionService.TrnMainObj.TRNMODE == "" || this._transactionService.TrnMainObj.TRNMODE == null) {
+          if (this.voucherType == VoucherTypeEnum.ReceiveVoucher) {
+            this._transactionService.TrnMainObj.TRNMODE = "Party Receipt";
+            this.VoucherTypeChangeEvent("Party Receipt");
+          } else if (this.voucherType == VoucherTypeEnum.PaymentVoucher) {
+            this._transactionService.TrnMainObj.TRNMODE = "Party Payment";
+            this.VoucherTypeChangeEvent("Party Payment");
+          }
+          else if (this.voucherType == VoucherTypeEnum.SinglePayment) {
+            this._transactionService.TrnMainObj.TRNMODE = "Single Payment";
+            this.VoucherTypeChangeEvent("Single Payment");
+          }
+          else {
+            this.VoucherTypeChangeEvent("");
+          }
+        }
+
+      }
+
+      this.getChalanSeries();
+    } catch (ex) {
+      alert(ex);
+    }
+  }
+
+
+  setChalanNumber() {
+
+  }
+
+  getChalanSeries() {
+    this._transactionService.TrnMainObj.CHALANNOPREFIX = '';
+
+    const vType = this._transactionService.TrnMainObj.VoucherPrefix ? this._transactionService.TrnMainObj.VoucherPrefix : '';
+    this.masterService.getAllChalanSeries(vType).subscribe((response: any) => {
+      const res = response.json();
+      if (res && res.status === 'ok' && res.result) {
+        this.chalanSeries = res.result ? res.result : [];
+
+      } else {
+        this.chalanSeries = [];
+      }
+    }, error => {
+      this.chalanSeries = [];
+    });
+  }
+  getCurrentServerDate() {
+    this.masterService.getCurrentDate().subscribe((res: any) => {
+      this.serverDate = res && res.Date ? res.Date : new Date();
+    }, err => { });
+  }
+
+  initDate() {
+  
+    if(this._transactionService.TrnMainObj.Mode == 'NEW'){
+      this._transactionService.TrnMainObj.TRNDATE = this.VoucherEntry.DATE1 = this.serverDate ? this.serverDate : new Date().toJSON().split('T')[0];    
+      this._transactionService.TrnMainObj.TRN_DATE = this.EntryDate.DATE3 = new Date().toJSON().split('T')[0];
+   
+    }else{    
+      let trnDateForView = new Date(this._transactionService.TrnMainObj.TRNDATE).toJSON().split('T')[0];
+      this.VoucherEntry.DATE1 = trnDateForView;
+
+     
+      let trn_DateForView = new Date(this._transactionService.TrnMainObj.TRN_DATE).toJSON().split('T')[0];
+      this.EntryDate.DATE3 = trn_DateForView;
+
+      //console.log('receive trn_date',this.VoucherEntry.DATE3 )
+    }
+
+     
+    this.changeEntryDate(this.VoucherEntry.DATE1, "AD");
+    this._transactionService.TrnMainObj.TRN_DATE = this.VoucherEntry.DATE = new Date().toJSON().split('T')[0];
+    this.changeEndDate(this.VoucherEntry.DATE, "AD");
+<<<<<<< HEAD
+    this._transactionService.TrnMainObj.TRNDATE = this.EntryDate.DATE3 = new Date().toJSON().split('T')[0];
+=======
+
+  
+   
+>>>>>>> 515302c842517dee11191935dbec6d1ce5a74c75
+    this.changeEntryDate1(this.EntryDate.DATE3, "AD");
+    this.EntryDate.DATE2 = new Date().toJSON().split('T')[0];
+    this.changeEndDate1(this.EntryDate.DATE2, "AD");
+
+    this._transactionService.TrnMainObj.TRNDATE = this.EntryDate.PhiscalADDate = this.masterService.PhiscalObj.BeginDate.split('T')[0];
+    this.changePhiscalDate(this.EntryDate.PhiscalADDate, "AD");
+  }
+
+  changeEntryDate(value, format: string) {
+    this.ValidatePhiscalYear(value,"TRN_DATE","DATE1");
+    this._transactionService.TrnMainObj.TRN_DATE = value;
+    var adbs = require("ad-bs-converter");
+    if (format == "AD") {
+      var adDate = (value.replace("-", "/")).replace("-", "/");
+      var bsDate = adbs.ad2bs(adDate);
+      this._transactionService.TrnMainObj.BS_DATE = this.VoucherEntry.BSDATE1 = bsDate.en.year + '-' + bsDate.en.month + '-' + (bsDate.en.day == '1' || bsDate.en.day == '2' || bsDate.en.day == '3' || bsDate.en.day == '4' || bsDate.en.day == '5' || bsDate.en.day == '6' || bsDate.en.day == '7' || bsDate.en.day == '8' || bsDate.en.day == '9' ? '0' + bsDate.en.day : bsDate.en.day);
+
+    }
+    else if (format == "BS") {
+      var bsDate = (value.replace("-", "/")).replace("-", "/");
+      var adDate = adbs.bs2ad(bsDate);
+     this.VoucherEntry.DATE1 = (adDate.year + '-' + ((adDate.month).toString().length == 1 ? '0' + adDate.month : adDate.month) + '-' + ((adDate.day).toString().length == 1 ? '0' + adDate.day : adDate.day));
+
+    }
+
+  }
+
+  changeEntryDate1(value, format: string) {
+    this.ValidatePhiscalYear(value,"TRNDATE",'DATE3');
+   this._transactionService.TrnMainObj.TRNDATE = value;
+    var adbs = require("ad-bs-converter");
+    if (format == "AD") {
+      var adDate = (value.replace("-", "/")).replace("-", "/");
+      var bsDate = adbs.ad2bs(adDate);
+      this._transactionService.TrnMainObj.BSDATE = this.EntryDate.BSDATE1 = bsDate.en.year + '-' + bsDate.en.month + '-' + (bsDate.en.day == '1' || bsDate.en.day == '2' || bsDate.en.day == '3' || bsDate.en.day == '4' || bsDate.en.day == '5' || bsDate.en.day == '6' || bsDate.en.day == '7' || bsDate.en.day == '8' || bsDate.en.day == '9' ? '0' + bsDate.en.day : bsDate.en.day);
+
+    }
+    else if (format == "BS") {
+      var bsDate = (value.replace("-", "/")).replace("-", "/");
+      var adDate = adbs.bs2ad(bsDate);
+     this.EntryDate.DATE3 = (adDate.year + '-' + ((adDate.month).toString().length == 1 ? '0' + adDate.month : adDate.month) + '-' + ((adDate.day).toString().length == 1 ? '0' + adDate.day : adDate.day));
+
+    }
+    // //console.log('CheckDate',this._transactionService.TrnMainObj.TRN_DATE,this._transactionService.TrnMainObj.BS_DATE)
+
+  }
+
+
+  changeEndDate(value, format: string) {
+    this.ValidatePhiscalYear(value,"TRNDATE",'DATE');
+    this._transactionService.TrnMainObj.TRNDATE = value;
+    var adbs = require("ad-bs-converter");
+    if (format == "AD") {
+      var adDate = (value.replace("-", "/")).replace("-", "/");
+      var bsDate = adbs.ad2bs(adDate);
+      this._transactionService.TrnMainObj.BSDATE = this.VoucherEntry.BSDATE2 = bsDate.en.year + '-' + bsDate.en.month + '-' + (bsDate.en.day == '1' || bsDate.en.day == '2' || bsDate.en.day == '3' || bsDate.en.day == '4' || bsDate.en.day == '5' || bsDate.en.day == '6' || bsDate.en.day == '7' || bsDate.en.day == '8' || bsDate.en.day == '9' ? '0' + bsDate.en.day : bsDate.en.day);
+    }
+    else if (format == "BS") {
+      var bsDate = (value.replace("-", "/")).replace("-", "/");
+      var adDate = adbs.bs2ad(bsDate);
+      this.VoucherEntry.DATE = (adDate.year + '-' + ((adDate.month).toString().length == 1 ? '0' + adDate.month : adDate.month) + '-' + ((adDate.day).toString().length == 1 ? '0' + adDate.day : adDate.day));
+
+    }
+
+  }
+
+  changeEndDate1(value, format: string) {
+    this.ValidatePhiscalYear(value,"TRNDATE",'DATE');
+    this._transactionService.TrnMainObj.TRNDATE = value;
+    var adbs = require("ad-bs-converter");
+    if (format == "AD") {
+      var adDate = (value.replace("-", "/")).replace("-", "/");
+      var bsDate = adbs.ad2bs(adDate);
+      this._transactionService.TrnMainObj.BSDATE = this.EntryDate.BSDATE2 = bsDate.en.year + '-' + bsDate.en.month + '-' + (bsDate.en.day == '1' || bsDate.en.day == '2' || bsDate.en.day == '3' || bsDate.en.day == '4' || bsDate.en.day == '5' || bsDate.en.day == '6' || bsDate.en.day == '7' || bsDate.en.day == '8' || bsDate.en.day == '9' ? '0' + bsDate.en.day : bsDate.en.day);
+    }
+    else if (format == "BS") {
+      var bsDate = (value.replace("-", "/")).replace("-", "/");
+      var adDate = adbs.bs2ad(bsDate);
+      this.EntryDate.DATE = (adDate.year + '-' + ((adDate.month).toString().length == 1 ? '0' + adDate.month : adDate.month) + '-' + ((adDate.day).toString().length == 1 ? '0' + adDate.day : adDate.day));
+
+    }
+
+  }
+
+  ValidatePhiscalYear(value,DateType,DATE){
+    ////console.log("CheckDATE",value,DateType,DATE)
+    if(value<this.masterService.PhiscalObj.BeginDate){
+      this.alertService.info("Date Exceed to Current Phiscal Year!")
+      // var adbs = require("ad-bs-converter");
+      // if(DateType=="TRN_DATE"){
+      //   this._transactionService.TrnMainObj.TRN_DATE = this.serverDate ? this.serverDate : new Date().toJSON().split('T')[0];
+      //   var adDate = (value.replace("-", "/")).replace("-", "/");
+      //   var bsDate = adbs.ad2bs(adDate);
+      //   this._transactionService.TrnMainObj.BS_DATE = this.VoucherEntry.BSDATE1 = bsDate.en.year + '-' + bsDate.en.month + '-' + (bsDate.en.day == '1' || bsDate.en.day == '2' || bsDate.en.day == '3' || bsDate.en.day == '4' || bsDate.en.day == '5' || bsDate.en.day == '6' || bsDate.en.day == '7' || bsDate.en.day == '8' || bsDate.en.day == '9' ? '0' + bsDate.en.day : bsDate.en.day);
+      // }
+      // else if(DateType =="TRNDATE"){
+      //   this._transactionService.TrnMainObj.TRNDATE = this.serverDate ? this.serverDate : new Date().toJSON().split('T')[0];
+      //   var adDate = (value.replace("-", "/")).replace("-", "/");
+      //   var bsDate = adbs.ad2bs(adDate);
+      //   this._transactionService.TrnMainObj.BSDATE = this.VoucherEntry.BSDATE1 = bsDate.en.year + '-' + bsDate.en.month + '-' + (bsDate.en.day == '1' || bsDate.en.day == '2' || bsDate.en.day == '3' || bsDate.en.day == '4' || bsDate.en.day == '5' || bsDate.en.day == '6' || bsDate.en.day == '7' || bsDate.en.day == '8' || bsDate.en.day == '9' ? '0' + bsDate.en.day : bsDate.en.day);
+      // }
+
+      if(DATE == 'DATE1')
+      this.VoucherEntry.DATE1 = this.serverDate ? this.serverDate : new Date().toJSON().split('T')[0];
+      this.changeEntryDate(this.VoucherEntry.DATE1, "AD");
+   
+     if(DATE == 'DATE2'){
+       this.VoucherEntry.DATE2 = this.serverDate ? this.serverDate : new Date().toJSON().split('T')[0];
+       this.EntryDate.DATE2 = new Date().toJSON().split('T')[0];
+     }
+     if(DATE == 'DATE3'){
+       this.EntryDate.DATE3 = this.serverDate ? this.serverDate : new Date().toJSON().split('T')[0];
+       this.changeEntryDate1(this.EntryDate.DATE3, "AD");
+     }
+    if(DATE =='DATE'){
+       this.VoucherEntry.DATE = this.serverDate ? this.serverDate : new Date().toJSON().split('T')[0];
+       this.changeEndDate(this.VoucherEntry.DATE, "AD");
+     }
+    }
+  
+    
+  }
+  changePhiscalDate(value, format: string) {
+    
+    var adbs = require("ad-bs-converter");
+    if (format == "AD") {
+      var adDate = (value.replace("-", "/")).replace("-", "/");
+      var bsDate = adbs.ad2bs(adDate);
+      this._transactionService.TrnMainObj.BSDATE = this.EntryDate.PhiscalBSDate = bsDate.en.year + '-' + bsDate.en.month + '-' + (bsDate.en.day == '1' || bsDate.en.day == '2' || bsDate.en.day == '3' || bsDate.en.day == '4' || bsDate.en.day == '5' || bsDate.en.day == '6' || bsDate.en.day == '7' || bsDate.en.day == '8' || bsDate.en.day == '9' ? '0' + bsDate.en.day : bsDate.en.day);
+    }
+  }
+
+  showAcPartyList() {
+
+    if (!this._transactionService.TrnMainObj.TRNMODE) {
+      alert("Selet Voucher Type or Party Type");
+      return;
+    }
+
+    var TRNMODE = `${this._transactionService.TrnMainObj.TRNMODE}`;
+    if (this._transactionService.TrnMainObj.VoucherType == 12) {
+      TRNMODE = "ALL"
+    }
+
+    if (this._transactionService.TrnMainObj.VoucherType == 17 || this._transactionService.TrnMainObj.VoucherType == 18) {
+      TRNMODE = "Cash Transfer"
+    }
+    if (this._transactionService.TrnMainObj.VoucherType == 65) {
+      if (this._transactionService.TrnMainObj.TRNMODE == 'Party Payment')
+        TRNMODE = "SinglePayment_Party"
+      if (this._transactionService.TrnMainObj.TRNMODE == 'Expenses Voucher')
+        TRNMODE = "SinglePayment_Expense"
+    }
+
+    this.gridACListPartyPopupSettings = {
+      title: "Accounts",
+      apiEndpoints: `/getAccountPagedListByMapId/Master/${TRNMODE}/`,
+      defaultFilterIndex: 1,
+      columns: [
+        
+        {
+          key: "ACNAME",
+          title: "A/C NAME",
+          hidden: false,
+          noSearch: false
+        }
+      ]
+    };
+    this.genericGridACListParty.show();
+  }
+
+  onAcPartySelect(acItem) {
+    try {
+
+      if (typeof acItem == "object") {
+        var ac = <TAcList>acItem;
+        this._transactionService.Party_or_Expense_Ac=ac;
+        this._transactionService.TrnMainObj.TRNAC = ac.ACID;
+        this._transactionService.TrnMainObj.TRNACName = ac.ACNAME;
+
+        // this.TrnMainForm.patchValue({
+        //   TRNAC : ac.ACID,
+        //   TRNACName : ac.ACNAME
+        // })
+
+      } else {
+        this._transactionService.TrnMainObj.TRNAC = "";
+        this._transactionService.TrnMainObj.TRNACName = "";
+      }
+    } catch (error) {
+      this._transactionService.TrnMainObj.TRNAC = "";
+      this._transactionService.TrnMainObj.TRNACName = "";
+    }
+  }
+
+  preventInput($event) {
+    $event.preventDefault();
+    return false;
+  }
+
+  getAccountList(voucherType: string) {
+    try {
+      if (voucherType == "Party Payment") {
+        this.masterService
+          .getAccount("IncomeVoucher-account")
+          .map(data => {
+            var fil = data.filter(
+              ac => ac.PType == "V" || ac.PType == "C" || ac.PType == "CC"
+            );
+            return fil;
+          })
+          .subscribe((res: Array<TAcList>) => {
+            this._transactionService.accountListSubject.next(res);
+          });
+      } else if (voucherType == "Expenses Voucher") {
+        this.masterService
+          .getAccount("IncomeVoucher-Expenses")
+          .map(data => {
+            var fil = data.filter(
+              ac => ac.PType != "C" && ac.PType != "V" && ac.PType != "CC"
+            );
+            return fil;
+          })
+          .subscribe(res => {
+            this._transactionService.accountListSubject.next(res);
+          });
+      } else if (voucherType == "Party Receipt") {
+        this.masterService
+          .getAccount("IncomeVoucher-account")
+          .map(data => {
+            var fil = data.filter(
+              ac => ac.PType == "V" || ac.PType == "CV" || ac.PType == "C"
+            );
+            return fil;
+          })
+          .subscribe((res: Array<TAcList>) => {
+            this._transactionService.accountListSubject.next(res);
+          });
+      } else if (voucherType == "Income Voucher") {
+        this.masterService
+          .getAccount("IncomeVoucher-Expenses")
+          .map(data => {
+            var fil = data.filter(
+              ac => ac.PType != "C" && ac.PType != "V" && ac.PType != "CC"
+            );
+            return fil;
+          })
+          .subscribe(res => {
+            this._transactionService.accountListSubject.next(res);
+          });
+      } else {
+        this.masterService
+          .getAccount("IncomeVoucher-default")
+          .subscribe(res => {
+            this._transactionService.accountListSubject.next(res);
+          });
+      }
+    } catch (ex) {
+      alert(ex);
+    }
+  }
+
+  acCodeChange() {
+    try {
+      // this.TrnMainForm.get("TRNAC").setValue(
+      //   this.TrnMainForm.get("TRNAC").value
+      // );
+    } catch (ex) {
+      alert(ex);
+    }
+  }
+
+  acNameChange() {
+    try {
+      // this.TrnMainForm.get("TRNAC").setValue(
+      //   this.TrnMainForm.get("TRNAC").value
+      // );
+    } catch (ex) {
+      alert(ex);
+    }
+  }
+  partyArray: number; //To seperate Vouchertype in single payment.
+  VoucherTypeChangeEvent(value) {
+    try {
+    
+      this._transactionService.TrnMainObj.TRNMODE = value;
+      // this._transactionService.TrnMainObj.TRNAC = "";
+      //  this._transactionService.TrnMainObj.TRNACName = "";
+
+      // this.getAccountList(value);
+      
+      if (value == "Income Voucher") {
+        this._transactionService.TableAcHeader = "Particulars";//"Income a/c";
+        this.accountList = this.acList;
+        this.trnaccountList = this.cashAndBankList;
+        this.getAccountList(value);
+      } else if (value == "Party Receipt") {
+        this._transactionService.TableAcHeader = "Particulars";//"Party/Income a/c";
+        this.accountList = this.Suppliers;
+        this.trnaccountList = this.cashAndBankList;
+      } else if (
+        value == "Bank Withdraw Voucher" ||
+        value == "Bank Deposit Voucher"
+      ) {
+        this._transactionService.TableAcHeader = "Particulars";//"Bank a/c";
+        this.accountList = this.bankList;
+        this.trnaccountList = this.cashList;
+      } else if (value == "Cheque Encash") {
+        this._transactionService.TableAcHeader = "Particulars";//"Cheque a/c";
+        this.accountList = this.acList;
+        this.trnaccountList = this.cashList;
+      } else if (value == "Expenses Voucher") {
+        if (this.voucherType == 65) this.partyArray = 1;
+        this._transactionService.TableAcHeader = "Particulars";//"Expenses a/c";
+        this.accountList = this.acList;
+        this.trnaccountList = this.cashAndBankList;
+      } else if (value == "Party Payment") {
+        if (this.voucherType == 65) this.partyArray = 0;
+        this._transactionService.TableAcHeader = "Particulars";//"Party Expenses a/c";
+        this.accountList = this.Suppliers;
+        this.trnaccountList = this.cashAndBankList;
+      }
+      else if (value == "Single Payment") {
+        this.partyArray = 0;
+        this._transactionService.TableAcHeader = "Particulars";//"Party Single Expenses a/c";
+        this.accountList = this.Suppliers;
+        this.trnaccountList = this.cashAndBankList;
+        this._transactionService.TrnMainObj.TRNMODE == 'Party Payment'
+      }
+      else if (value == "Cash Transfer") {
+        this._transactionService.TableAcHeader = "Particulars";//"Transfer To";
+        this.accountList = this.cashAndBankList;
+        this.trnaccountList = this.cashAndBankList;
+      } else if (value == "Customer") {
+        this._transactionService.TableAcHeader = "Particulars";//"Description";
+        this.accountList = this.acList;
+        this.trnaccountList = this.Customers;
+      } else if (value == "Supplier") {
+        this._transactionService.TableAcHeader = "Particulars";//"Description";
+        this.accountList = this.acList;
+        this.trnaccountList = this.Suppliers;
+      } else {
+        this._transactionService.TableAcHeader = "Particulars";//"Description";
+      }
+      // this.getAccountList(value);
+    } catch (ex) {
+      alert(ex);
+    }
+  }
+
+  ngOnDestroy() {
+    try {
+      this.subcriptions.forEach(subs => {
+        subs.unsubscribe();
+      });
+    } catch (ex) {
+      alert(ex);
+    }
+  }
+
+  setTrnDate(value, index) {
+    if (this.masterService.ValidateDate(value)) {
+      this._transactionService.TrnMainObj.TRN_DATE = this.masterService.changeIMsDateToDate(value);
+    } else {
+      this.alertService.error(`Invalid Transaction Date`);
+    }
+  }
+
+
+
+
+  getTrnDate() {
+    if (this._transactionService.TrnMainObj.TRN_DATE) {
+      return this.masterService.customDateFormate(this._transactionService.TrnMainObj.TRN_DATE.toString());
+    }
+  }
+  vatBillChange(){
+    ////console.log("CheckCheck",this._transactionService.TrnMainObj.IsVATBill)
+    this._transactionService.TrnMainObj.TOTAMNT = 0;
+          this._transactionService.TrnMainObj.TAXABLE = 0;
+          this._transactionService.TrnMainObj.VATAMNT = 0;
+          this._transactionService.TrnMainObj.NETAMNT = 0;
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

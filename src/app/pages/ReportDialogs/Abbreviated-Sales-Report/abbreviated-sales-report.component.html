@@ -1,0 +1,81 @@
+<div style="background-color : #ffffff; padding :1%; height : auto; width:50%; ">
+  <div class="row">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" (click)="hide()">&times;</button>
+      <h4 class="modal-title">Abbreviated Sales Report</h4>
+    </div>
+    <div class="_left_section col-md-12">
+      <fieldset style="width:352px">
+        <legend style="font-size:11px;font-weight: bold; width:auto">Date Range Selection :</legend>
+        <table>
+          <tr>
+            <td><label class="smallBoldLabel">From:(AD)</label></td>
+            <td><label class="smallBoldLabel">To:(AD)</label></td>
+          </tr>
+          <tr>
+            <td>
+              <label class="smallBoldLabel"><input type="date" style="width:152px; min-width:50%;"
+                  placeholder="Year Start Date" [(ngModel)]="AbbreviatedSalesReport.DATE1"
+                  (change)="changeEntryDate($event.target.value,'AD')"
+                  max="{{masterService.date1 | date:'yyyy-MM-dd'}}" min="{{masterService.date2 | date:'yyyy-MM-dd'}}"></label>
+            </td>
+            <td>
+              <label class="smallBoldLabel"><input type="date" style="width:152px; min-width:50%;"
+                  placeholder="Year Start Date" [(ngModel)]="AbbreviatedSalesReport.DATE"
+                  (change)="changeEndDate($event.target.value,'AD')"
+                  max="{{masterService.date1 | date:'yyyy-MM-dd'}}" min="{{masterService.date2 | date:'yyyy-MM-dd'}}"></label>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label class="smallBoldLabel"> <input id="nepaliDate" style="width:152px;height:25px;text-align:center"
+                  class="nepali-calendar ndp-nepali-calendar" [(ngModel)]="AbbreviatedSalesReport.BSDATE1" type="text"
+                  (change)="changeEntryDate($event.target.value,'BS')" placeholder="yyyy-mm-dd" />
+              </label>
+            </td>
+            <td>
+              <label class="smallBoldLabel">
+                <input id="nepaliDate" style="width:152px;height:25px;text-align:center"
+                  class="nepali-calendar ndp-nepali-calendar" [(ngModel)]="AbbreviatedSalesReport.BSDATE2" type="text"
+                  (change)="changeEndDate($event.target.value,'BS')" placeholder="yyyy-mm-dd" />
+              </label>
+            </td>
+          </tr>
+        </table>
+      </fieldset>
+
+      <!-- Division Selection Start -->
+      <fieldset style="width:352px;">
+        <legend>Division Selection:</legend>
+        <select class="form-control" [(ngModel)]="this.AbbreviatedSalesReport.DIV" #division
+          (change)="divisionChanged()">
+          <option value="%" selected *ngIf="masterService.userSetting.userwisedivision==0">ALL</option>
+          <option *ngFor="let divs of divisionList;let i=index" value="{{divs.INITIAL}}">{{divs.NAME}}</option>
+        </select>
+      </fieldset>
+      <!-- Division Selection End -->
+
+      <!-- Summary Report Start-->
+      <fieldset style="width:352px">
+        <legend style="font-size:11px;font-weight: bold; width:auto">Report Mode:</legend>
+        <div class="radio" style="width:152px">
+          <label class="smallBoldLabel">
+            <input type="radio" name="summary" [value]=1 [(ngModel)]="this.AbbreviatedSalesReport.SUMMARYREPORT">
+            Summary Report</label>
+        </div>
+        <div class="radio" style="width:152px">
+          <label class="smallBoldLabel">
+            <input type="radio" name="summary" [value]=0 [(ngModel)]="this.AbbreviatedSalesReport.SUMMARYREPORT">
+            Detail Report</label>
+        </div>
+      </fieldset>
+      <!-- Summary Report End -->
+
+      <div style='margin-top:20px;'>
+        <button class="btn btn-info confirm-btn" type="button" (click)=onload()>RUN</button>
+        <button type="button" (click)="cancel()" title="Cancel" class="btn btn-info">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>

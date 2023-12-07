@@ -1,0 +1,30 @@
+<div class="sticky-top">
+  <div class="clearfix">
+    <div class="col-md-1">
+      <voucher-master-toggler></voucher-master-toggler>
+    </div>
+    <div class="col-md-4">
+      <label style="font-family: Segoe UI Light;font-weight: bold;font-size: 20px;padding-left: 5%;padding-top: 1%;">{{
+        _trnMainService.pageHeading }}</label>
+      <label style="font-size: 14px;">&nbsp;>> {{ _trnMainService.TrnMainObj?.Mode | titlecase}} Voucher</label>
+    </div>
+    <div class="col-md-7">
+      <account-master-action></account-master-action>
+    </div>
+  </div>
+</div>
+<div class="main-container">
+  <div class="clearfix">
+    <trnmain-voucher-entry></trnmain-voucher-entry>
+  </div>
+  <div class="clearfix" style="margin-top: 5px">
+    <trntran-voucher-entry></trntran-voucher-entry>
+  </div>
+</div>
+<div class="sticky-bottom" *ngIf='_trnMainService.TrnMainObj.VATBILL == 1' style="background: gray;">
+  <account-voucher-summary></account-voucher-summary>
+</div>
+<div class="sticky-bottom" *ngIf='_trnMainService.TrnMainObj.VATBILL == 0' style="background: gray;">
+  <DrCrFooter_With_VAT></DrCrFooter_With_VAT>
+</div>
+<multiple-series [voucherType]="voucherType"></multiple-series>

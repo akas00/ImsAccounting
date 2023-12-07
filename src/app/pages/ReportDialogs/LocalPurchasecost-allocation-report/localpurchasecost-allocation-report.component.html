@@ -1,0 +1,91 @@
+<style>
+    .input-text {
+        width: 100%;
+        /* height: 30px !important; */
+        font-weight: bold;
+    }
+
+    .td-class {
+        border: none !important;
+    }
+
+    .date-input {
+        width: 93%;
+        font-size: 12px !important;
+        height: 30px !important;
+    }
+</style>
+<div class="container" style="background-color : #ffffff; padding :1%; height : auto;  ">
+    <div class="row">
+        <div class="modal-header" style="width : 97%; margin : 0px auto;">
+            <button type="button" class="close" data-dismiss="modal" (click)="closeReportBox()">&times;</button>
+            <h4 class="modal-title">Local Purchase Cost Allocation Report</h4>
+        </div>
+        <div class="col-md-12" style="margin-top:20px;">
+            <!-- Left Column -->
+            <div class="col-md-6">
+                <fieldset>
+                    <legend>Ref No: </legend>
+                    <input type="text" style="font-weight: bold;" class="form-control"
+                        [(ngModel)]="_reportFilterService.LocalPurchaseCostAllocationObj.LocalPurchaseCostAllocation_CAPITALPURCHASE_VCHRNO"
+                        placeholder="Press Enter or Tab for Ref Voucher No List" (keydown.Tab)="CPVoucherPopup($event)"
+                        (keydown.enter)="CPVoucherPopup($event)">
+                </fieldset>
+
+                <fieldset>
+                    <legend>Report Option</legend>
+                    <div class="row">
+                       <div class="col-sm-4">
+                          <label class="smallBoldLabel" style="white-space: nowrap;"><input type="radio" name="locaPurCostAlOp"
+                             [(ngModel)]="_reportFilterService.LocalPurchaseCostAllocationObj.LocalPurchaseCostAllocation_REPORTMODE" [checked]="true" value=0>&nbsp;Show all report</label>
+                       </div>
+                    
+                    </div>
+                    <label class="smallBoldLabel"><input type="radio" name="locaPurCostAlOp"
+                     [(ngModel)]="_reportFilterService.LocalPurchaseCostAllocationObj.LocalPurchaseCostAllocation_REPORTMODE"  value=1>&nbsp; Show only entries converted to Additional Cost</label>
+                    <label class="smallBoldLabel"><input type="radio" name="locaPurCostAlOp"
+                     [(ngModel)]="_reportFilterService.LocalPurchaseCostAllocationObj.LocalPurchaseCostAllocation_REPORTMODE"  value=2>&nbsp;Show only entries non-converted to Additional Cost</label>
+                    
+                 </fieldset>
+            </div>
+            <!-- Right Column -->
+            <div class="col-md-6">
+
+                <fieldset>
+                    <legend>Account Selection: </legend>
+                    <input type="text" style="font-weight: bold;" class="form-control"
+                        [(ngModel)]="_reportFilterService.LocalPurchaseCostAllocationObj.LocalPurchaseCostAllocation_ACCNAME"
+                        placeholder="Press Enter or Tab for Account List" (keydown.Tab)="AccountEnterClicked($event)"
+                        (keydown.enter)="AccountEnterClicked($event)">
+                </fieldset>
+
+                <!-- PI Voucher -->
+                <fieldset>
+                    <legend>PI Voucher: </legend>
+                    <input type="text" style="font-weight: bold;" class="form-control"
+                        [(ngModel)]="_reportFilterService.LocalPurchaseCostAllocationObj.LocalPurchaseCostAllocation_PI_VOUCHERNO"
+                        placeholder="Press Enter or Tab for PI Voucher List"
+                        (keydown.Tab)="PiVoucherEnterClicked($event)" (keydown.enter)="PiVoucherEnterClicked($event)">
+                </fieldset>
+
+            </div>
+        </div>
+
+        <div class="modal-footer" style="width : 97%; margin : 0px auto;">
+            <button class="btn btn-info confirm-btn" type="button" (click)=onload()>RUN</button>
+            <button type="button" (click)="closeReportBox()" title="Cancel" class="btn btn-info">Close</button>
+        </div>
+
+    </div>
+</div>
+
+<generic-popup-grid #genericGridLocalPurchaseCostAccount [popupsettings]="gridPopupSettingsForAccountList"
+    (onItemDoubleClick)="dblClickAccountSelect($event)">
+</generic-popup-grid>
+
+<generic-popup-grid #genericGridLocalPurchasePIVoucher [popupsettings]="gridPopupSettingsForLocalPurchasePIVoucher"
+    (onItemDoubleClick)="dblClickPurchasePIVoucherSelect($event)">
+</generic-popup-grid>
+
+<generic-popup-grid #genericGridCPVoucher [popupsettings]="gridCPVoucherPopupSettings"
+    (onItemDoubleClick)="DblClickCPVoucherSelect($event)"></generic-popup-grid>

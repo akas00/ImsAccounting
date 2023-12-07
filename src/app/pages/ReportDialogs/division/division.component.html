@@ -1,0 +1,17 @@
+<style>
+    .input-text{
+         width : 100%; 
+         /* height: 30px !important; */
+         font-weight: bold;
+     }
+ </style>
+<fieldset>
+    <legend>Division Selection:</legend>
+    <select [(ngModel)]="_reportFilterService.ReportFilterObject.DIV" style="height: 30px !important;" 
+    class="form-control input-text">
+        <option value="%" *ngIf="masterService.userSetting.userwisedivision==0">ALL</option>
+        <option *ngFor="let div of division" value="{{ div.INITIAL }}">
+            {{ div.NAME }}
+        </option>
+    </select>
+</fieldset>

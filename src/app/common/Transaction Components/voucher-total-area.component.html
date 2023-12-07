@@ -1,0 +1,46 @@
+﻿<style>
+  /* #wrap {
+    min-height: 100%;
+  } */
+
+  .footer {
+    /* position: relative; */
+    /* margin-top: -100px; */
+    margin-right: 1px;
+    height: 70px;
+    clear: both;
+    padding-top: 20px;
+    border: 1px solid #eaeaea;
+    background-color: #d1d6d8;
+  }
+</style>
+<div class="row clearfix footer">
+  <div class="col-md-12">
+    <div class="col-md-5" style="vertical-align:center;">
+      <div class="row">
+        <div class="col-md-7">
+           
+          <h6  *ngIf="_trnMainService.TrnMainObj.AdditionalObj.BILLUNITS == 'CASE'">Total Quantity: {{ _trnMainService.TrnMainObj.totalAlternateQuantity | twoDigitNumber }} Case</h6>
+           <h6 *ngIf="_trnMainService.TrnMainObj.AdditionalObj.BILLUNITS == 'EACH'">Total Quantity: {{ _trnMainService.TrnMainObj.totalBaseQuantity | twoDigitNumber }} Each</h6>
+        </div>
+        <div class="col-md-5">
+          <h6>Total Weight: {{ _trnMainService.TrnMainObj.TOTALWEIGHT | twoDigitNumber }} Kg</h6>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-7" style="vertical-align:center;">
+      <div class="row">
+        <div class="col-md-4">
+          <h6>Taxable Amount: {{ _trnMainService.TrnMainObj.TAXABLE | twoDigitNumber }}&nbsp;
+           </h6>
+        </div>
+        <div class="col-md-4">
+          <h6>Total VAT: {{ _trnMainService.TrnMainObj.VATAMNT | twoDigitNumber  }}</h6>
+        </div>
+        <div class="col-md-4">
+          <h6>Net Amt: {{ _trnMainService.TrnMainObj.NETWITHOUTROUNDOFF | twoDigitNumber }}</h6>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,80 @@
+<div class="row" style="margin-top: -15px; margin-bottom: 10px;">
+   
+        <div class="col-md-12 form-horizontal">
+            <ba-card title="Membership Scheme Setting">
+                <div class="form-group row margin">
+                    <label class="col-sm-2 form-control-label padding">Product Category: </label>
+                    <div class="col-sm-5">
+                        <select class="form-control" [(ngModel)]="productCategory" (change)="changeProductGroup()">
+                            <option *ngFor="let p of productCategoryList" [ngValue]="p">{{p.DESCA}}</option>
+                        </select>
+                    </div>
+                </div>
+                <table class="table">
+                    <tr>
+                        <th>Product Description</th>
+                        <th>MCode</th>
+                        <th>Scheme A</th>
+                        <th>Scheme B</th>
+                        <th>Scheme C</th>
+                        <th>Scheme D</th>
+                        <th>Scheme E</th>
+                    </tr>
+                    <tr *ngIf="productCategory != null && productCategory.DESCA != null"  style="background-color: white;">
+                        <td style="text-align: left;"><strong>{{productCategory.DESCA}}:</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tbody >
+                        <tr *ngFor="let p of schemeSubGroupList">
+                            <td>{{p.DESCA}}</td>
+                            <td>{{p.MCODE}}</td>
+                            <td>
+                                <input [(ngModel)]="p.SCHEME_A" class="form-control" type="number" min="1" placeholder="Discount A">
+                            </td>
+                            <td>
+                                <input [(ngModel)]="p.SCHEME_B" class="form-control" type="number" min="1" placeholder="Discount B">
+                            </td>
+                            <td>
+                                <input [(ngModel)]="p.SCHEME_C" class="form-control" type="number" min="1" placeholder="Discount C">
+                            </td>
+                            <td>
+                                <input [(ngModel)]="p.SCHEME_D" class="form-control" type="number" min="1" placeholder="Discount D">
+                            </td>
+                            <td>
+                                <input [(ngModel)]="p.SCHEME_E" class="form-control" type="number" min="1" placeholder="Discount E">
+                            </td>
+                        </tr>
+                        <!--<tr>
+                            <td style="text-align: left;">{{DESCA}}</td>
+                            <td>{{MCODE}}</td>
+                            <td>
+                                <input formControlName="SCHEMEA" class="form-control" type="number" min="1" placeholder="Discount A">
+                            </td>
+                            <td>
+                                <input formControlName="SCHEMEB" class="form-control" type="number" min="1" placeholder="Discount B">
+                            </td>
+                            <td>
+                                <input formControlName="SCHEMEC" class="form-control" type="number" min="1" placeholder="Discount C">
+                            </td>
+                            <td>
+                                <input formControlName="SCHEMED" class="form-control" type="number" min="1" placeholder="Discount D">
+                            </td>
+                            <td>
+                                <input formControlName="SCHEMEE" class="form-control" type="number" min="1" placeholder="Discount E">
+                            </td>
+                        </tr>-->
+                    </tbody>
+                </table>
+            </ba-card>
+            <div style="padding-bottom: 10px">
+                <button [disabled]="productCategory == null || productCategory.DESCA == null" (click)="save()"  title="Save" class="btn btn-info">Save</button>
+                <button style="margin-left: 6px;" (click)="back()" title="Cancel" class="btn btn-info">Cancel</button>
+            </div>
+        </div> 
+   
+</div>

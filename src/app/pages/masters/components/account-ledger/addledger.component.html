@@ -1,0 +1,155 @@
+<form [formGroup]="AddLedger">
+    <div class="row" class="form-horizontal">
+
+        <div style=" border:1px solid;border-color:#dcdcdc; padding:20px; margin-bottom: 10px;">
+            <div class="com-sm-12" style="padding:5px;border-bottom: solid 1px #dcdcdc; margin-bottom: 10px;">
+                <h5>{{modeTitle}}</h5>
+            </div>
+
+            <!-- <div *ngFor="let g of acGroups;let k = index" class="form-group row">
+                <label class="col-sm-2 form-control-label"> {{g.group}} </label>
+                 <div class="col-sm-6">
+                    <p-dropdown [style]="{'width':'350px'}" [options]="g.options" [(ngModel)]="g.value.SELECTEDGROUPAC" [ngModelOptions]="{standalone: true}"
+                        (onChange)="onGrpChange($event,k,g.value.SELECTEDGROUPAC)" placeholder="Select a group"></p-dropdown>
+                </div> 
+            </div> -->
+            <div class="form-group row">
+
+                    <label class="col-sm-2 form-control-label">Primary Group:</label>
+                    <div class="col-sm-6">
+                        <input type="text" placeholder="Group Name" formControlName="ACNAME" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group row">
+
+                        <label class="col-sm-2 form-control-label">Under:</label>
+                        <div class="col-sm-6">
+                            <input type="text" placeholder="Group Name" formControlName="ACNAME" class="form-control" />
+                        </div>
+                    </div>
+            <div class="form-group row">
+
+                <label class="col-sm-2 form-control-label">LedgerName:</label>
+                <div class="col-sm-6">
+                    <input type="text"placeholder="Ledger Name" formControlName="ACNAME" class="form-control" />
+                </div>
+            </div>
+             <div class="alert alert-danger" *ngIf="AddLedger.controls['ACCODE'].touched && !AddLedger.controls['ACCODE'].valid">LedgerName is Required.</div>
+            
+           
+            
+          
+            <div class="form-group row">
+                <label class="col-sm-2 form-control-label">Has Subledger:</label>
+                <div class="col-sm-2" style="margin-top:10px;">
+                    <!-- <input [value]=1 formControlName="hasSub" type="checkbox" (change)="changehassubEvent(1)"> -->
+                    <input type="checkbox"  (change)="check($event.target.checked==1?1:0)" formControlName="hasSub" name="hasSubLedger" >
+                </div>
+
+            </div>
+           
+            
+            <!-- <fieldset style="border:1px solid #dcdcdc; margin-top:30px;">
+                <label style="background-color:white; position: absolute; margin-top:-22px; margin-left: 20px; padding:5px;">ACType</label>
+
+                <table>
+                    <tr>
+                        <td>
+                            <p-radioButton class="radioMargin" name="Actype" value="AT" (onClick)="changeACtype('AT')" formControlName="ACType" label="Assets"
+                                disabled="disableActype==true"></p-radioButton>
+
+                        </td>
+                        <td>
+                            <p-radioButton class="radioMargin" name="Actype" value="LB" (onClick)="changeACtype('LB')" formControlName="ACType" label="Liabilities"
+                                disabled="disableActype==true"></p-radioButton>
+                        </td>
+                        <td>
+                            <p-radioButton class="radioMargin" name="Actype" value="DE" (onClick)="changePtype('DE')" formControlName="ACType" label="Direct Expenses"
+                                disabled="disableActype==true"></p-radioButton>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p-radioButton class="radioMargin" name="Actype" value="IE" (onClick)="changeACtype('IE')" formControlName="ACType" label="Indirect Expenses"
+                                disabled="disableActype==true"></p-radioButton>
+                        </td>
+                        <td>
+                            <p-radioButton class="radioMargin" name="Actype" value="DI" (onClick)="changeACtype('DI')" formControlName="ACType" label="Direct Income"
+                                disabled="disableActype==true"></p-radioButton>
+                        </td>
+                        <td>
+                            <p-radioButton class="radioMargin" name="Actype" value="II" (onClick)="changeACtype('II')" formControlName="ACType" label="Indirect Income"
+                                disabled="disableActype==true"></p-radioButton>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </fieldset> -->
+
+            <fieldset *ngIf="value==true" style="border:1px solid #dcdcdc; margin-top:30px;">
+                <label style="background-color:white; position: absolute; margin-top:-22px; margin-left: 20px; padding:5px;">ASSETS</label>
+
+                <!-- <table>
+                    <tr>
+                        <td>
+                            <p-radioButton class="radioMargin" name="Assets" formControlName="ASSETTYPE" label="Cash" disabled="disableActype==true"></p-radioButton>
+                        </td>
+                        <td>
+                            <p-radioButton class="radioMargin" name="Assets" formControlName="ASSETTYPE" label="Bank" disabled="disableActype==true"></p-radioButton>
+                        </td>
+                        <td>
+                            <p-radioButton class="radioMargin" name="Assets" formControlName="ASSETTYPE" label="Others" disabled="disableActype==true"></p-radioButton>
+                        </td>
+                    </tr>
+                </table> -->
+
+            </fieldset>
+        </div>
+    </div>
+
+
+
+    <button type="button" (click)="onSave()" title="onSave" class="btn btn-info" [disabled]="!parentGroup || !AddLedger.valid" >Save</button>
+
+    <button type="button" (click)="cancel()" title="Cancel" class="btn btn-info">Back</button>
+</form>
+
+<div class="modal fade" bsModal #childModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" aria-label="Close" (click)="hideChildModal()">
+          <span aria-hidden="true">&times;</span>
+          
+        </button>
+                <h4 class="modal-title">Information</h4>
+            </div>
+            <div class="modal-body">
+                {{DialogMessage}}
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .inputLenght {
+        width: 350px;
+        height: 30px;
+    }
+
+    .radioMargin {
+        margin-left: 100px;
+    }
+
+    .ui-dropdown .ui-dropdown-label {
+        display: block;
+        border: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        font-weight: normal;
+        width: 100%;
+        padding-right: 1.5em;
+        height: 20px;
+    }
+</style>

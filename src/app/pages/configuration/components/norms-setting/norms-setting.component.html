@@ -1,0 +1,154 @@
+<style>
+    .voucherclass {
+        margin-left: 10px;
+        height: 23px;
+        vertical-align: middle;
+        font-size: 13px;
+        border: 1px solid #cbcbcb;
+        border-radius: 3px;
+        color: black;
+        padding-left: 4px;
+    }
+</style>
+<div class="row" style="margin: 0px;    color: #666666;  background-color: #ffffff; border: 0; border-radius: 5px; position: relative;   margin-bottom: 24px;   box-shadow:0 5px 5px 0 rgba(0, 0, 0, 0.25);">
+    <!-- <ba-card style="margin-top:-15px;">  -->
+    <div style="margin-top:-10px;padding:10px" [formGroup]="form">
+        <div class="row">
+                <fieldset style=" border: none;padding: 0; margin: 0;" [disabled]="mode!='init'">
+            <div class="col-sm-3half">
+                <label style="width:100%;">Item Code :</label>
+            </div>
+            <div class="col-md-2">
+                <input class="voucherclass" type="text" style="width:100%" formControlName="MENUCODE1" (keydown.enter)="menucode1Changed($event.target.value)">
+            </div>
+            <div class="col-sm-3half">
+                <label>Item Name :</label>
+            </div>
+            <!-- <div class="col-sm-7">
+            <p-autoComplete  #onAddFocus formControlName="selectedProd" [suggestions]="results | async" (completeMethod)="search($event)"
+                field="DESCA" [dropdown]="true" (onDropdownClick)="handleDropdownClick($event)" (ngModelChange)="itemChanged($event)"
+                (onFocus)="onIFocus($event)"></p-autoComplete>
+        </div> -->
+            <div class="col-sm-6">
+                <p-autoComplete formControlName="selectedReceipeItem" [suggestions]=" ReceipeItemList_results | async" (completeMethod)=" ReceipeItemList_search($event)"
+                    field="DESCA" [dropdown]="true" (onDropdownClick)=" ReceipeItemList_handleDropdownClick($event)" (ngModelChange)="receipeItemChange($event)"
+                    (onFocus)=" ReceipeItemList_onIFocus($event)"></p-autoComplete>
+            </div>
+            </fieldset>
+        </div>
+        <div class="row">
+            <div class="col-sm-3half">
+                <label style="width:100%">Factor :</label>
+            </div>
+            <div class="col-md-2">
+                <input #onFactor type="text" class="voucherclass" formControlName="FACTOR" style="width:100%">
+            </div>
+
+            <button style="margin-left:30px" class="btn btn-info btn-add-focus" (click)="onNewClick()" [disabled]="form.value.selectedReceipeItem.MCODE==null ||form.value.selectedReceipeItem.MCODE=='' || mode!='init'">New</button>
+            <button class="btn btn-info btn-add-focus" (click)="onUndoClick()">Undo</button>
+
+        </div>
+    </div>
+    <fieldset [disabled]="mode=='init'" style="width: 98%; margin: 5px;">
+        <legend style="width: 150px;margin: 0px"> <label style="width: 150px;font-size: 13px;height: 20px;font-weight:bold">Receipe Item Selection</label></legend>
+        <!-- <ba-card style="margin-top:-15px;"> -->
+        <div style="margin-top:10px" [formGroup]="form" class="col-md-10">
+            <div class="row">
+                <div class="col-sm-3half">
+                    <label style="width:100%;">Item Code :</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" style="width:100%" formControlName="MENUCODE" (keydown.enter)="menucodeChanged($event.target.value)">
+                </div>
+                <div class="col-sm-3half">
+                    <label>Item Name :</label>
+                </div>
+                <div class="col-sm-7">
+                    <p-autoComplete #onAddFocus formControlName="selectedProd" [suggestions]="results | async" (completeMethod)="search($event)"
+                        field="DESCA" [dropdown]="true" (onDropdownClick)="handleDropdownClick($event)" (ngModelChange)="itemChanged($event)"
+                        (onFocus)="onIFocus($event)"></p-autoComplete>
+                </div>
+            </div>
+            <div class="row">
+                <label style="margin-left:10px;width:80px">Quantity :</label>
+
+                <input #onQuantity type="text" class="voucherclass" formControlName="QUANTITY" style="width:14%">
+                <button style="margin-left:30px" class="btn btn-success btn-add-focus" (click)="onAddClick()" [disabled]="form.value.selectedProd.MCODE==null || form.value.selectedProd.MCODE==''||form.value.QUANTITY==null ||form.value.QUANTITY==''||form.value.QUANTITY<=0">Add</button>
+            </div>
+
+
+        </div>
+
+    </fieldset>
+    <!-- </ba-card> -->
+</div>
+<div class="row">
+
+    <!--<div class="content ">
+            <div class="col col-md-9 left">-->
+
+    <div class="wrapper">
+        <div class="container" style="height:300px; margin-left:0px; margin-right:0px;background:white">
+            <!--<div class="col-md-9 plainBackGround " style="min-height: 300px;height:300px">-->
+
+            <div style="background-color: #FFFFFF;">
+                <table id="fix" class="table">
+                    <thead>
+                        <tr>
+                            <th style="width:5%">Sno
+                                <div class="c1">Sno</div>
+                            </th>
+                            <th style="width:20%">ItemCode
+                                <div class="c1">ItemCode</div>
+                            </th>
+                            <th style="width:55%">ItemName
+                                <div class="c1">ItemName</div>
+                            </th>
+                            <!-- <th style="width:10%">Unit
+                                <div class="c1">Unit</div>
+                            </th> -->
+                            <th style="width:10%">Quantity
+                                <div class="c1">Quantity</div>
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let tp of ReceipeAddedList;let tpindex=index" (dblclick)="TableRowDoubleClickEvent(tp,tpindex)">
+                            <td style="width:5%">{{tpindex+1}}</td>
+                            <td style="width:20%">{{tp.MENUCODE}}</td>
+                            <td style="width:55%">{{tp.DESCA}}</td>
+                            <!-- <td style="width:10%">{{tp.BASEUNIT}}</td> -->
+                            <td style="width:10%">{{tp.QTY}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <button class="btn btn-success btn-add-focus" (click)="onSaveClicked()">Save</button>
+    <!-- <button class="btn btn-success btn-add-focus" (click)="onAddClick()">Back</button> -->
+</div>
+<div class="modal fade" bsModal #newModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" aria-label="Close" (click)="newModel.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+                <h4 class="modal-title">Information</h4>
+            </div>
+            <div class="modal-body">
+                Item is already in the Receipelist. Do you want to edit the list?
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-info confirm-btn" (click)="onClickYes()">Yes</button>
+                <button class="btn btn-info confirm-btn" type="button" (click)=onClickNo()>No</button>
+            </div>
+
+        </div>
+    </div>
+</div>

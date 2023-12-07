@@ -1,0 +1,11 @@
+<fieldset>
+    <legend>Account Selection: </legend>
+    <input type="text" style="font-weight: bold;" class="form-control"
+        [disabled]="_reportFilterService.CashAndBankBookObj.CashBankBook_DETAILREPORT==0"
+        [(ngModel)]="_reportFilterService.CashAndBankBookObj.ACCNAME" placeholder="Press Enter or Tab for Account List"
+        (keydown.Tab)="AccountEnterClicked($event)" (keydown.enter)="AccountEnterClicked($event)">
+</fieldset>
+
+<generic-popup-grid #genericGridCashBankBook [popupsettings]="gridPopupSettingsForAccountList"
+    (onItemDoubleClick)="dblClickAccountSelect($event)">
+</generic-popup-grid>

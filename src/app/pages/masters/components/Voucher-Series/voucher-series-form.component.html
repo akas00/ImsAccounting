@@ -1,0 +1,56 @@
+<div class="sticky-top">
+    <div class="row clearfix" style=" padding: 0px 20px;">
+      <div class="col-md-6">
+        <h3 class="page-title">Add Voucher Series</h3>
+      </div>
+      <div class="col-md-6" style="float: right;">
+        <button type="button " class="btn btn-info pull-right" (click)="cancel()" style="margin-right : 10px;">
+          Back
+        </button>
+        <button  class="btn btn-info pull-right" style="margin-right : 10px;" (click)="save()">
+          Save
+        </button>
+        <!-- <button  *ngIf="mode == 'delete'" (click)="onDelete()" class="btn btn-info pull-right" style="margin-right : 10px;background-color: #f37070">
+          Delete
+        </button> -->
+        <button   (click)="onDelete()" class="btn btn-info pull-right" style="margin-right : 10px;background-color: #f37070">
+          Delete
+        </button>
+        
+      </div>
+    </div>
+  </div>
+
+<div class="main-container" style="padding-top : 10px; margin-bottom: 0px">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label class="col-md-3 form-control-label">Voucher Type:</label>
+                    <div class="col-md-9">
+                        <select class="form-control" [(ngModel)]="voucherObj.vType" >
+                            <option *ngFor="let voucher of voucherTypeList" value="{{voucher.VOUCHER_ID}}">{{voucher.VOUCHER_NAME}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-3 from-control-label">Series Name:</label>
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" [(ngModel)]="voucherObj.seriesName">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-3 from-control-label">Series Prefix:</label>
+                    <div class="col-md-9">
+                        <input type="text" class="form-control" [(ngModel)]="voucherObj.seriesPrefix" [disabled]="this.mode=='edit'">
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+      </div>
+    </div>

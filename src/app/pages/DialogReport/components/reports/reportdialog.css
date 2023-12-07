@@ -1,0 +1,46 @@
+ .borderdiv{
+    border:1px solid rgba(119,119,119,0.15)
+}
+ .rowdiv{
+    border:1px solid rgba(119,119,119,0.15);
+    text-align:center;
+}
+.smalllabeldiv{
+height: 16px;
+}
+.smallHeader{
+    font-size:11px;
+    font-weight:bold;
+    margin: 0px;
+
+}
+.scrolldiv{
+    max-height:75px;
+    padding-right: 30px;
+    overflow:auto;
+    scrollbar-3dlight-color:#FFFFFF;
+    scrollbar-arrow-color:#000000;
+    scrollbar-base-color:#FF9999;
+    scrollbar-darkshadow-color:#000000;
+    scrollbar-face-color:#000000;
+    scrollbar-highlight-color:#000000;
+    scrollbar-shadow-color:#0033CC;
+}
+.multiboxspan{
+    font-size: 11px;
+    font-weight: bold; 
+    position:relative;
+    float:left;
+    display:block;
+    margin:2px;
+     border: 1px solid silver;
+     border-radius: 5px;
+     background-color: lavenderblush;
+}
+.smallBoldLabel{
+    font-size:11px;
+    font-weight:bold;
+    margin:0px;
+    float:left;
+    margin-left: 10px;
+}

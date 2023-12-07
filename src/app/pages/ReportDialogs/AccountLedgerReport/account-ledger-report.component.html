@@ -1,0 +1,409 @@
+<style>
+    .action-btn {
+        width: 80%;
+        height: 80%;
+        display: block;
+        margin: 0 auto;
+        background-color: inherit;
+        border: none;
+    }
+    .input-text{
+        width : 100%;
+        /* height: 30px !important; */
+        font-weight: bold;
+    }
+    .td-class{
+        border: none !important;
+    }
+    .date-input{
+        width: 93%;
+        font-size: 12px !important;
+        height: 30px !important;
+    }
+      @media screen and (max-width:991px) {
+         .report-container{
+           width: 100% !important;
+    }
+    .report-height{
+        height:52vh !important; 
+        overflow:auto;
+    }
+    }
+    @media screen and (max-width:767px) {
+        .smallBoldLabel{
+            width: auto !important;
+        }
+          .report-container{
+           width: 85% !important;
+    }
+        
+    }
+</style>
+<div class="container report-container">
+    <div class="row">
+        <!-- Filter Starts -->
+        <div class="col-12 col-md-12">
+            <div style="background-color : #ffffff; width: 100%;">
+                <div class="row">
+                    <div class="modal-header" style="border:0px;">
+                        <button type="button" class="close" data-dismiss="modal"
+                            (click)="closeReportBox()">&times;</button>
+                        <h4 class="modal-title" style="padding-left: 3%;">{{this.reportNameFormatWise}}</h4>
+                    </div>
+                    <div class="col-md-12 report-height" style="padding-top: 2%; height:71vh; overflow:auto; ">
+                        <div class="col-md-6">
+                            <fieldset>
+                                <legend style="font-size:11px;font-weight: bold; width:auto;margin-bottom: -4px;">Date Range Selection :</legend>
+                                <table>
+                                    <tr>
+                                        <td class="td-class"><label class="smallBoldLabel">From:(AD)</label></td>
+                                        <td class="td-class"><label class="smallBoldLabel">To:(AD)</label></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td-class">
+                                                <input type="date" class="date-input form-control"
+                                                    placeholder="Year Start Date"
+                                                    [(ngModel)]="_reportFilterService.AccoutLedgerObj.AccLedger_DATE1"
+                                                    (change)="changeEntryDate($event.target.value,'AD')" max="{{masterService.date1 | date:'yyyy-MM-dd'}}" min="{{masterService.date2 | date:'yyyy-MM-dd'}}">
+                                        </td>
+                                        <td class="td-class">
+                                                <input type="date" class="date-input form-control"
+                                                    placeholder="Year Start Date"
+                                                    [(ngModel)]="_reportFilterService.AccoutLedgerObj.AccLedger_DATE2"
+                                                    (change)="changeEndDate($event.target.value,'AD')" max="{{masterService.date1 | date:'yyyy-MM-dd'}}" min="{{masterService.date2 | date:'yyyy-MM-dd'}}">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td-class">
+                                          <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDatefrom'"
+                                            (change)="changeEntryDate($event.detail.value,'BS')"
+                                            [label]="'From'"
+                                            [(ngModel)]="_reportFilterService.AccoutLedgerObj.AccLedger_BSDATE1">
+                                          </nepali-date-picker>
+                                                <!-- <input id="nepaliDate"
+                                                    style="text-align:center;"
+                                                    class="nepali-calendar ndp-nepali-calendar date-input form-control"
+                                                    [(ngModel)]="_reportFilterService.AccoutLedgerObj.AccLedger_BSDATE1" type="text"
+                                                    (change)="changeEntryDate($event.target.value,'BS')"
+                                                    placeholder="yyyy-mm-dd" />                             -->
+                                        </td>
+                                        <td class="td-class">
+                                          <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDateTo'"
+                                            (change)="changeEndDate($event.detail.value,'BS')"
+                                            [label]="'To'"
+                                            [(ngModel)]="_reportFilterService.AccoutLedgerObj.AccLedger_BSDATE2">
+                                          </nepali-date-picker>
+                                                <!-- <input id="nepaliDate"
+                                                style="text-align:center;"
+                                                    class="nepali-calendar ndp-nepali-calendar date-input form-control"
+                                                    [(ngModel)]="_reportFilterService.AccoutLedgerObj.AccLedger_BSDATE2" type="text"
+                                                    (change)="changeEndDate($event.target.value,'BS')"
+                                                    placeholder="yyyy-mm-dd" /> -->
+                                        </td>
+                                    </tr>
+                                </table>
+                            </fieldset>
+
+                            <fieldset>
+                                <legend>Division Selection:</legend>
+                                <select [(ngModel)]="_reportFilterService.AccoutLedgerObj.AccLedger_DIV" style="height: 30px !important;"
+                                class="form-control input-text" >
+                                    <option value="%"  *ngIf="masterService.userSetting.userwisedivision==0 || masterService.showAll">ALL</option>
+                                    <option *ngFor="let div of division" value="{{ div.INITIAL }}">
+                                        {{ div.NAME }}
+                                    </option>
+                                </select>
+                            </fieldset>
+                            <fieldset *ngIf="_reportFilterService.AccoutLedgerObj.AccLedger_HIDECOSTCENTER == 0" >
+                                <legend>Cost Center:</legend>
+                                <select [(ngModel)]="_reportFilterService.AccoutLedgerObj.AccLedger_CostCenter"
+                                style="height: 30px !important;" class="form-control input-text">
+                                    <option value="%"> </option>
+                                    <option *ngFor="let i of CostcenterList" value={{i.CCID}}>{{i.COSTCENTERNAME}}
+                                    </option>
+                                </select>
+                            </fieldset>
+
+                            <fieldset>
+                                <legend>Report Type:</legend>
+                                <label class="smallBoldLabel" style="padding-right:15px;"><input type="radio" name="BalViewOpt"
+                                      [(ngModel)]="_reportFilterService.AccoutLedgerObj.AccLedger_SUMMARYREPORT" value=0 >&nbsp;Detail Ledger
+                                      Report</label>
+                                <label class="smallBoldLabel"><input type="radio" name="BalViewOpt"
+                                      [(ngModel)]="_reportFilterService.AccoutLedgerObj.AccLedger_SUMMARYREPORT" value=1 >&nbsp;Summary Ledger Report</label>
+                             </fieldset>
+
+                            <!-- <div class="checkbox" style="padding-top:5px;width:200px;">
+                                <label class="smallBoldLabel">
+                                    <input type="checkbox" [(ngModel)]="_reportFilterService.AccoutLedgerObj.SHOWNDATE">
+                                    Show BS Date In Report
+                                </label>
+                            </div> -->
+
+                            <!-- <div class="checkbox" style="padding-top:5px;width:200px;">
+                                <label class="smallBoldLabel">
+                                    <input type="checkbox" [(ngModel)]="_reportFilterService.AccoutLedgerObj.IGNOREOPPOSITAC">
+                                    Show Ledger Report in Summary
+                                </label>
+                            </div> -->
+                           <div style="display: flex; flex-wrap:wrap">
+                                <div class="checkbox" style="padding-top:5px;width:200px;" *ngIf="_reportFilterService.AccoutLedgerObj.AccLedger_SUMMARYREPORT== 0">
+                                    <label class="smallBoldLabel" style="width: 203px; margin-left: 4px;">
+                                        <input type="checkbox" [(ngModel)]="_reportFilterService.AccoutLedgerObj.IGNOREOPPOSITAC">
+                                        Hide Opposite A/C in Ledger Report
+                                    </label>
+                                </div>
+
+                                <div class="checkbox" style="padding-top:5px;width:200px;" *ngIf="_reportFilterService.AccoutLedgerObj.AccLedger_SUMMARYREPORT==0">
+                                    <label class="smallBoldLabel" style="width: 210px;">
+                                        <input type="checkbox" [(ngModel)]="_reportFilterService.AccoutLedgerObj.AccLedger_HIDENARATION" style="margin-left: 5px;"
+                                        (change)="$event.target.checked?(_reportFilterService.AccoutLedgerObj.AccLedger_HIDENARATION=1):(_reportFilterService.AccoutLedgerObj.AccLedger_HIDENARATION=0)"
+                                        [checked]="_reportFilterService.AccoutLedgerObj.AccLedger_HIDENARATION == 1">
+                                        Hide Narration In Ledger Report
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; flex-wrap:wrap">
+                                <div class="checkbox" style="padding-top:5px;width:200px;" *ngIf="_reportFilterService.AccoutLedgerObj.AccLedger_SUMMARYREPORT== 1">
+                                    <label class="smallBoldLabel" style="width: 210px;">
+                                        <input type="checkbox" [(ngModel)]="_reportFilterService.AccoutLedgerObj.AccLedger_HIDEVOUCHERTYPE" style="margin-left: 5px"
+                                        (change)="$event.target.checked?(_reportFilterService.AccoutLedgerObj.AccLedger_HIDEVOUCHERTYPE=1):(_reportFilterService.AccoutLedgerObj.AccLedger_HIDEVOUCHERTYPE=0)"
+                                [checked]="_reportFilterService.AccoutLedgerObj.AccLedger_HIDEVOUCHERTYPE == 1">
+                                        Hide Voucher Type in Ledger Report
+                                    </label>
+                                </div>
+
+                                <div class="checkbox" style="padding-top:5px;width:200px;">
+                                    <label class="smallBoldLabel" style="width:203px; margin-left: 4px;" *ngIf="_reportFilterService.AccoutLedgerObj.AccLedger_SUMMARYREPORT==0">
+                                        <input type="checkbox" [(ngModel)]="_reportFilterService.AccoutLedgerObj.AccLedger_SHOWITEMDETAIL"
+                                        (change)="$event.target.checked?(_reportFilterService.AccoutLedgerObj.AccLedger_SHOWITEMDETAIL=1):(_reportFilterService.AccoutLedgerObj.AccLedger_SHOWITEMDETAIL=0)"
+                                [checked]="_reportFilterService.AccoutLedgerObj.AccLedger_SHOWITEMDETAIL == 1" >
+                                        Show Item Detail Also
+                                    </label>
+                                </div>
+
+                                <div class="checkbox" style="padding-top:5px;width:200px;">
+                                    <label class="smallBoldLabel" style="width:225px;">
+                                        <input type="checkbox" [(ngModel)]="_reportFilterService.AccoutLedgerObj.AccLedger_INCLUDEPOSTDATE" style="margin-left: 5px;"
+                                        (change)="$event.target.checked?(_reportFilterService.AccoutLedgerObj.AccLedger_INCLUDEPOSTDATE=1):(_reportFilterService.AccoutLedgerObj.AccLedger_INCLUDEPOSTDATE=0)"
+                                [checked]="_reportFilterService.AccoutLedgerObj.AccLedger_INCLUDEPOSTDATE == 1" >
+                                        Include Post Dated Transaction Also
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="checkbox" style="padding-top:5px;width:200px;">
+                                    <label class="smallBoldLabel" style="width:225px; margin-left:4px;">
+                                        <input type="checkbox" [(ngModel)]="_reportFilterService.AccoutLedgerObj.AccLedger_HIDECOSTCENTER"
+                                        (change)="$event.target.checked?(_reportFilterService.AccoutLedgerObj.AccLedger_HIDECOSTCENTER=1):(_reportFilterService.AccoutLedgerObj.AccLedger_HIDECOSTCENTER=0)"
+                                [checked]="_reportFilterService.AccoutLedgerObj.AccLedger_HIDECOSTCENTER == 1" >
+                                      Hide Cost Center
+                                    </label>
+                                </div>
+                            </div>
+
+                            
+                        
+
+
+                        </div>
+                        <!-- The One With Tree Part-->
+                        <div class="col-md-6 filter-part">
+                            <fieldset>
+                                <legend>Account Selection :</legend>
+                                <input type="text" style="font-weight: bold;" class="form-control" [(ngModel)]="_reportFilterService.AccoutLedgerObj.AccLedger_ACCNAME"
+                                    placeholder="Press Enter or Tab for Account List" (keydown.Tab)="AccountEnterClicked($event)"
+                                    (keydown.enter)="AccountEnterClicked($event)">
+                            </fieldset>
+
+                            <fieldset>
+                                <legend><label class="smallBoldLabel">
+                                        <input type="checkbox" [(ngModel)]="_reportFilterService.AccoutLedgerObj.EnableCombineLedger"
+                                            (change)="checkValueForCombine()">
+                                        Show Combined Ledger</label></legend>
+                                <select [(ngModel)]="_reportFilterService.AccoutLedgerObj.AccLedger_ReportType"
+                                    style="height: 30px !important;" (change)="checkValue()" class="form-control input-text" [disabled]="_reportFilterService.AccoutLedgerObj.EnableCombineLedger == false || _reportFilterService.AccoutLedgerObj.EnableCombineLedger === undefined">
+                                    <option value=6>ALL</option>
+                                    <option value=2>Multi Ledger Wise</option>
+                                    <!-- <option value=1>Area Wise</option> -->
+                                    <option value=4>Cost Center Wise</option>
+                                    <option value=5>Account Group Wise</option>
+                                </select>
+                            </fieldset>
+
+                            <div *ngIf="showLedgerTable">
+                                <fieldset>
+                                    <legend><label class="smallBoldLabel">&nbsp;Ledger Wise</label></legend>
+                                    <div>
+                                        <div class="col-md-10">
+                                            <input type="text" style="font-weight: bold;" class="form-control" [disabled]="_reportFilterService.AccoutLedgerObj.EnableCombineLedger == false || _reportFilterService.AccoutLedgerObj.EnableCombineLedger ===undefined" [(ngModel)]="_reportFilterService.AccoutLedgerObj.multipleACNAME"
+                                        placeholder="Press Enter or Tab for Account List" (keydown.Tab)="MultipleAccountEnterClicked($event)"
+                                        (keydown.enter)="MultipleAccountEnterClicked($event)">
+
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-info"
+                                                (click)="addAccountToList()" [disabled]="_reportFilterService.AccoutLedgerObj.EnableCombineLedger == false || _reportFilterService.AccoutLedgerObj.EnableCombineLedger ===undefined">Add</button>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <table style="height:175px;">
+                                                <tr class="smallBoldLabel">
+                                                    <th style="width:3px;font-weight: bold;">S.No.</th>
+                                                    <th style="width:10px;font-weight: bold;">Account</th>
+                                                    <th style="width:4px;font-weight: bold;">Action</th>
+                                                </tr>
+                                                <tr *ngFor="let data of _reportFilterService.AccoutLedgerObj.AccLedger_multipleAccounts;let i = index"
+                                                    class="smallBoldLabel">
+                                                    <td style="width:3px;">{{ i + 1 }}</td>
+                                                    <td style="width:10px;">{{data.ACNAME}}</td>
+                                                    <td style="width:4px;">
+                                                        <button type="button" class="action-btn"
+                                                            (click)="deleteAccount(i)">Delete</button>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <div class="checkbox" style="padding-top:5px;width:200px;">
+                                        <label class="smallBoldLabel">
+                                            <input type="checkbox" [(ngModel)]="_reportFilterService.AccoutLedgerObj.MERGEREPORT" [disabled]="_reportFilterService.AccoutLedgerObj.EnableCombineLedger == false || _reportFilterService.AccoutLedgerObj.EnableCombineLedger ===undefined">
+                                            Merge Combined Ledger
+                                        </label>
+                                    </div>
+                                </fieldset>
+                            </div>
+
+                            <div *ngIf="showAreaTable && showCombineLedgerList">
+                                <area-list></area-list>
+                            </div>
+
+                            <div *ngIf="showCCtable">
+                                <fieldset>
+                                    <legend><label class="smallBoldLabel">&nbsp;Cost Center Wise</label></legend>
+                                    <div>
+                                        <div class="col-md-10">
+                                            <select [(ngModel)]="_reportFilterService.AccoutLedgerObj.CCENTER"
+                                                style="height: 30px !important;" class="form-control input-text" [disabled]="_reportFilterService.AccoutLedgerObj.EnableCombineLedger == false || _reportFilterService.AccoutLedgerObj.EnableCombineLedger ===undefined">
+                                                <option *ngFor="let i of CostcenterList" [ngValue]="i">
+                                                    {{i.COSTCENTERNAME}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-info" *ngIf="showMultipleCC"
+                                                (click)="addCostcenterToList()" [disabled]="_reportFilterService.AccoutLedgerObj.EnableCombineLedger == false || _reportFilterService.AccoutLedgerObj.EnableCombineLedger ===undefined">Add</button>
+                                        </div>
+                                        <div class="col-md-12" *ngIf="showMultipleCC">
+                                            <table style="height:150px;">
+                                                <tr class="smallBoldLabel">
+                                                    <th style="width:3px;font-weight: bold;">S.No.</th>
+                                                    <th style="width:10px;font-weight: bold;">Cost Center</th>
+                                                    <th style="width:4px;font-weight: bold;">Action</th>
+                                                </tr>
+                                                <tr *ngFor="let data of _reportFilterService.AccoutLedgerObj.AccLedger_multipleCostcenter;let i = index"
+                                                    class="smallBoldLabel">
+                                                    <td style="width:3px;">{{ i + 1 }}</td>
+                                                    <td style="width:10px;">{{data.COSTCENTERNAME}}</td>
+                                                    <td style="width:4px;">
+                                                        <button type="button" class="action-btn"
+                                                            (click)="deleteCostcenter(i)">Delete</button>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="_reportFilterService.showAllcontactsInCC" class="checkbox" style="padding-top:5px;width:200px;">
+                                        <label class="smallBoldLabel">
+                                            <input type="checkbox"
+                                                [(ngModel)]="_reportFilterService.AccoutLedgerObj.AccLedger_showAllContacts"
+                                                (change)="checkCostCenterValue()" [disabled]="_reportFilterService.AccoutLedgerObj.EnableCombineLedger == false || _reportFilterService.AccoutLedgerObj.EnableCombineLedger ===undefined">
+                                            Show All Cost Center
+                                        </label>
+                                    </div>
+
+                                    <div class="checkbox" style="padding-top:5px;width:200px;">
+                                        <label class="smallBoldLabel">
+                                            <input type="checkbox" [(ngModel)]="_reportFilterService.AccoutLedgerObj.MERGEREPORT" [disabled]="_reportFilterService.AccoutLedgerObj.EnableCombineLedger == false || _reportFilterService.AccoutLedgerObj.EnableCombineLedger ===undefined">
+                                            Merge Combined Ledger
+                                        </label>
+                                    </div>
+                                </fieldset>
+                            </div>
+
+                            <div *ngIf="showAccGrpTable">
+                                <fieldset>
+                                    <legend><label class="smallBoldLabel">&nbsp;Group Wise</label></legend>
+                                    <div>
+                                        <div class="col-md-10">
+                                            <input type="text" style="font-weight: bold;" class="form-control" [disabled]="_reportFilterService.AccoutLedgerObj.EnableCombineLedger == false || _reportFilterService.AccoutLedgerObj.EnableCombineLedger ===undefined"
+                                             [(ngModel)]="_reportFilterService.AccoutLedgerObj.Multiple_GROUP_ACNAME"
+                                        placeholder="Press Enter or Tab for Account List" (keydown.Tab)="GroupAccountclick($event)"
+                                        (keydown.enter)="GroupAccountclick($event)">
+
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-info"
+                                                (click)="addGroupAccountToList()" [disabled]="_reportFilterService.AccoutLedgerObj.EnableCombineLedger == false || _reportFilterService.AccoutLedgerObj.EnableCombineLedger ===undefined">Add</button>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <table style="height:175px;">
+                                                <tr class="smallBoldLabel">
+                                                    <th style="width:3px;font-weight: bold;">S.No.</th>
+                                                    <th style="width:10px;font-weight: bold;">Account</th>
+                                                    <th style="width:4px;font-weight: bold;">Action</th>
+                                                </tr>
+                                                <tr *ngFor="let data of _reportFilterService.AccoutLedgerObj.AccLedger_multipleGroupAccounts;let i = index"
+                                                    class="smallBoldLabel">
+                                                    <td style="width:3px;">{{ i + 1 }}</td>
+                                                    <td style="width:10px;">{{data.ACNAME}}</td>
+                                                    <td style="width:4px;">
+                                                        <button type="button" class="action-btn"
+                                                            (click)="deleteGroupAccount(i)">Delete</button>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <div class="checkbox" style="padding-top:5px;width:200px;">
+                                        <label class="smallBoldLabel">
+                                            <input type="checkbox" [(ngModel)]="_reportFilterService.AccoutLedgerObj.MERGEREPORT" [disabled]="_reportFilterService.AccoutLedgerObj.EnableCombineLedger == false || _reportFilterService.AccoutLedgerObj.EnableCombineLedger ===undefined">
+                                            Merge Combined Ledger
+                                        </label>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="width : 97%; margin : 0px auto;">
+                        <button class="btn btn-info confirm-btn" type="button" (click)=onload()>RUN</button>
+                        <button type="button" (click)="closeReportBox()" title="Cancel"
+                            class="btn btn-info">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Filter Ends -->
+    </div>
+</div>
+
+<div style="width:90%" class="reportpopup">
+    <generic-popup-grid #genericGridAccountLedger [popupsettings]="gridPopupSettingsForAccountLedgerList"
+    (onItemDoubleClick)="dblClickAccountSelect($event)">
+</generic-popup-grid>
+</div>
+
+
+<div style="width:90%" class="reportpopup">
+    <generic-popup-grid #genericGridMultipleAccountLedger [popupsettings]="gridPopupSettingsForMultipleAccountLedgerList"
+    (onItemDoubleClick)="dblClickMultipleAccountSelect($event)">
+</generic-popup-grid>
+</div>
+
+<div style="width:90%" class="reportpopup">
+    <generic-popup-grid #genericGridMultipleGroupAccount [popupsettings]="gridPopupSettingsForMultipleGroupAccountList"
+    (onItemDoubleClick)="dblClickGroupAccountSelect($event)">
+</generic-popup-grid>
+</div>

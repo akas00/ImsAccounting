@@ -1,0 +1,28 @@
+﻿<div class="sticky-top">
+        <div class="row clearfix">
+                <div class="col-md-2">
+                        <voucher-master-toggler></voucher-master-toggler>
+                </div>
+                <div class="col-md-2">
+                        <h2 style="color: black;">{{_trnMainService.pageHeading}}</h2>
+                </div>
+                <div class="col-md-8">
+                        <voucher-master-action></voucher-master-action>
+                </div>    
+        </div>
+    </div>
+    <div class="main-container">
+        <div *ngIf="masterService.ShowMore" class="row clearfix" >
+            <trnmain-purchase-entry></trnmain-purchase-entry>
+        </div>
+        <div class="row" style="margin-top: 5px">
+    
+            <div class="col-md-12">
+    
+                <productentry ></productentry>
+            </div>
+            </div>
+            </div>
+            <div class="sticky-bottom">
+                    <voucher-total-area></voucher-total-area>
+                  </div>

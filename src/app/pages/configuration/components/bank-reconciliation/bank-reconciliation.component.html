@@ -1,0 +1,198 @@
+<style>
+    .table tr th {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    tr {
+        border: 1px solid #e6e6e6;
+        max-height: 25px;
+    }
+
+    td {
+        height: 23px;
+        border: 1px solid #e6e6e6;
+
+    }
+    .bottom {
+  position: fixed;
+  bottom: 20px;
+  left: 0px;
+  width: 100%;
+  height: 100px;
+  z-index: 999997;
+  background: #e2eaea !important;
+  }
+</style>
+
+
+<div class="sticky-top">
+    <div class="clearfix">
+        <div class="col-md-2">
+            <voucher-master-toggler></voucher-master-toggler>
+        </div>
+        <div class="col-md-3">
+            <h2 style="color: black;">Bank Reconciliation </h2>
+        </div>
+        <div class="col-md-7">
+            <!-- <button (click)="onSaveExcelClick()" style="margin: 0px 4px;" class="btn btn-info pull-right">
+                Save TO Excle
+            </button> -->
+            <button (click)="onLoadClick()" style="margin: 0px 4px;" class="btn btn-info pull-right">
+                LOAD
+            </button>
+            <button (click)="onSaveClick()" style="margin: 0px 4px;" class="btn btn-info pull-right">
+                SAVE
+            </button>
+
+        </div>
+    </div>
+</div>
+
+<div class="main-container">
+    <div [hidden]="!masterService.ShowMore" class="clearfix">
+
+        <div class="col-md-12" style="margin: 8px 15px ; border: 1px solid #e6e6e6; ">
+            <div class="col-md-5">
+                <div class="row">
+                    <label style="width:30%">Bank Account </label>
+                    <input type="text" style="width:60%" id="BankAccount" name="Bank_Acccount"
+                        (keydown.tab)="onBankReconciliationPopUPTab()" (keydown.enter)="onBankReconciliationPopUPTab()"
+                        [(ngModel)]="bankReconciliationObj.ACNAME" placeholder="Press ENTER or TAB to Account Name" />
+                </div>
+                <div class="row">
+                    <label style="width:30%">Date </label>
+                    <input style="width:60%" type="text" ngxDaterangepickerMd [(ngModel)]="selectedDate"
+                        [showDropdowns]="true" [showCustomRangeLabel]="true" [alwaysShowCalendars]="true"
+                        [locale]="locale" [ranges]="ranges" [linkedCalendars]="true" [showCancel]="true"
+                        placeholder="Date Range..." (ngModelChange)="dateChanged($event)" />
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="checkbox">
+                    <label style="width:95%"><input type="checkbox" [(ngModel)]="bankReconciliationObj.SHOWRECONSILLED"
+                            name="ReconciledRecord" value="">Show Reconciled Record Also </label>
+                    </div>                             
+            </div>
+        </div>
+    </div>
+    <div class="clearfix" style="margin-top: 5px">
+        <div class="col-md-12">
+            <table class="table" style="margin-bottom: 5px; font-size: 12.5px;">
+                <thead>
+                    <tr style="border-bottom: 2px solid #E6E6E6; border-top: 2px solid #E6E6E6;    height: 30px;
+                        background: silver;
+                        color: black;">
+                        <th><span class="texttitle" style="color: black">S NO </span></th>
+                        <th><span class="texttitle" style="color: black">Date </span></th>
+                        <th><span class="texttitle" style="color: black">Miti </span></th>
+                        <th><span class="texttitle" style="color: black">Particular </span></th>
+                        <th><span class="texttitle" style="color: black">Voucher Type </span></th>
+                        <th><span class="texttitle" style="color: black">Cheque No </span></th>
+                        <th><span class="texttitle" style="color: black">Cheque Date </span></th>
+                        <th><span class="texttitle" style="color: black">Bank Date </span></th>
+                        <th><span class="texttitle" style="color: black">Debit</span></th>
+                        <th><span class="texttitle" style="color: black">Credit </span></th>
+                    </tr>
+                </thead>
+                <tbody style="border: 1px;">
+                    <tr *ngFor="let item of reconcileList; let in=index">
+                        <td style="width: 80px;">
+                            <input type="checkbox" (click)="itemChecked($event,in)" [(ngModel)]="item.isChecked">
+                        </td>
+
+                        <td style="width: 140px;">
+                            {{item.TRNDATE}}
+                        </td>
+
+                        <td style="width: 140px;">
+                            {{item.BSDATE }}
+                        </td>
+
+                        <td style="width: 180px;">
+                            {{item.PARTICULARS }}
+                        </td>
+
+                        <td style="width: 135px;">
+                            {{item.VCHRTYPE }}
+                        </td>
+
+                        <td style="width:135px;">
+                            {{item.CHEQUENO  }}
+                        </td>
+
+                        <td style="width:135px;">
+                            {{item.CHEQUEDATE }}
+                        </td>
+
+                        <td style="width:135px;">
+                            <input type="date" id="bankDate{{in}}" name="Bank_Date" 
+                                [(ngModel)]="item.BANKDATE" />
+                        </td>
+                        <!-- <td *ngIf="(item.CHEQUENO !=null || item.CHEQUENO != '') && ( item.CHEQUEDATE != null && item.CHEQUEDATE != null ) "
+                            style="width:135px;">
+
+                        </td> -->
+
+                        <td style="width:135px;">
+                            {{item.DRAMNT }}
+                        </td>
+
+                        <td style="width:130px;">
+                            {{item.CRAMNT  }}
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+</div>
+<div class="bottom" style="background: gray; ">
+    <div class="col-md-12">
+
+            <table class="table" style="height: 100px; text-align:right;" >
+                    <thead>
+                        <tr style="border-bottom: 2px solid #E6E6E6; ">
+                            <th style="padding: 0px; text-align: right; font-size: 11px;">Balance As per Company Book </th>
+                            <th style="padding: 0px; text-align: right;"></th>
+                            <th style="padding: 0px; text-align: right;"></th>
+                        </tr>
+                    </thead>
+                    <tbody style="border: 1px;" >
+                       
+                            <tr style="font-size: 11px;" >
+                                    <td style="line-height: 15px;text-align: right; font-size:11x;font-weight: bold; ">Amount Not Reflected on Bank(opening) </td>
+                                    <td style="line-height: 15px;text-align: right;font-size:11x;font-weight: bold; "></td>
+                                    <td style="line-height: 15px;text-align: right;font-size:11x;font-weight: bold; "></td>
+                                </tr>
+                                <tr style="font-size: 11px;">
+                                    <td style="line-height: 15px;text-align: right;font-size:11x;font-weight: bold; ">Amount Not Reflected on Bank (Periodic) </td>
+                                    <td style="line-height: 15px;text-align: right;font-size:11x;font-weight: bold; "></td>
+                                    <td style="line-height: 15px;text-align: right;font-size:11x;font-weight: bold; "></td>
+                                </tr>
+                        
+                                <tr style="font-size: 11px;" >
+                                    <td style="line-height: 15px;text-align: right;font-size:11x;font-weight: bold; ">Balance As Per Bank Book </td>
+                                    <td style="line-height: 15px;text-align: right;font-size:11x;font-weight: bold; "></td>
+                                    <td style="line-height: 15px;text-align: right;font-size:11x;font-weight: bold; "></td>
+                                </tr>
+                        
+                                <tr style="font-size: 11px;">
+                                    <td style="line-height: 15px;text-align: right;font-size:11x;font-weight: bold; ">Difference</td>
+                                    <td style="line-height: 15px;text-align: right;font-size:11x;font-weight: bold; "></td>
+                                    <td style="line-height: 15px;text-align: right;font-size:11x;font-weight: bold; "></td>
+                                </tr>
+                           
+                    </tbody>
+                             
+                </table>
+    </div>
+   
+</div>
+
+<generic-popup-grid #bankReconciliationGeneric [popupsettings]="gridbankReconciliationPopupSettings"
+    (onItemDoubleClick)="onItemDoubleClick($event)">
+</generic-popup-grid>

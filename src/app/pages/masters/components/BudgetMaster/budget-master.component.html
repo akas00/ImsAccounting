@@ -1,0 +1,115 @@
+<style>
+  .table-striped>tbody>tr:nth-of-type(odd) {
+    background-color: #CFD5EA;
+  }
+
+  .table-striped>tbody>tr:nth-of-type(even) {
+    background-color: #E9EBF5;
+  }
+
+  .table button {
+    padding: 2px 10px !important;
+    margin-top: 2px;
+  }
+
+  .table td {
+    line-height: 29px;
+  }
+  .table thead th{
+    background-color: #fff;
+  }
+</style>
+
+<div class="sticky-top">
+  <div class="row clearfix" style=" padding: 3px 20px;">
+    <div class="col-md-6">
+      <h3 class="page-title">Budget Master</h3>
+    </div>
+    <div class="col-md-6" style="float: right;">
+      <button class="btn btn-info pull-right" style="margin-right : 10px; background-color: #4472C4;"
+        routerLink="/pages/dashboard/dashboard">
+        Back
+      </button>
+      <!-- <button type="button " class="btn btn-info pull-right" data-toggle="modal" data-target="#importBudget" style="margin-right : 10px;" (click)="uploadBudget()">
+          Import Budget
+        </button>
+         -->
+      <button *ngIf="userSetting.enableMaster_AddEdit==1" type="button " class="btn btn-info pull-right" style="margin-right : 10px;background-color: #4472C4;"
+        (click)="addBudget()">
+        Add Budget
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+<div class="row" style="align-items: center;">
+  <div class="col-md-12 col-sm-8" style="margin-top:4.5rem">
+
+    <div class="card" style="margin: auto; width: 63rem;">
+      <div class="card-header" style="    background: #4472C4;
+        color: #ffff;">
+
+        <span class="col-md-6">Budget Lists</span>
+        <div style="margin-left: 45rem; margin-top: -6px;">
+          <input type="text" name="search" class="form-control" [(ngModel)]="filter" #searchFilter="ngModel"
+            placeholder="Search..." style="width: 15rem; height: 1.7rem; padding: 0px 6px;">
+        </div>
+
+
+      </div>
+
+      <div class="card-body" style="padding: 0;    max-height: 440px !important;
+      overflow: scroll;">
+        <table class="table table-striped">
+          <thead style="    background: #FFF;
+            box-shadow: 2px 4px 4px 2px rgba(0, 0, 0, 0.25);">
+            <tr style="position: sticky; top:0;line-height: 0.5rem;">
+              <th scope="col" style=" font-weight: bold;">S.N</th>
+              <!-- <th scope="col" style="font-weight: bold;">Budget No</th> -->
+              <th scope="col" style=" font-weight: bold">Budget Name </th>
+              <th scope="col" style=" font-weight: bold">Period</th>
+              <th scope="col" style=" font-weight: bold">Created On</th>
+              <th scope="col" style=" font-weight: bold">Updated On</th>
+              <th scope="col" style=" font-weight: bold">Status</th>
+              <th scope="col" style="text-align:center;width:18%; font-weight: bold ">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container>
+              <tr *ngFor="let list of BudgetList|searchData:filter; let i=index">
+                <td >{{i+1}}</td>
+                <!-- <td >{{list.BUDGET_NUMBER}}</td> -->
+                <td >{{list.BUDGET_NAME}}</td>
+                <td >{{list.FROM_DATE}}-{{list.TO_DATE}}</td>
+                <td >{{list.CREATED_ON}}</td>
+                <td >{{list.UPDATED_ON}}</td>
+                <td >{{list.STATUS}}</td>
+                <td style="width:18%;text-align: center; display:flex">
+                  <button style="width: 60px; margin-right: 10px; background-color: #4472C4;" type="button"
+                    class="btn btn-sm btn-info mr-1 btn-sm" data-toggle="modal"
+                    (click)="onViewClick(list)">View</button>
+                  <button *ngIf="userSetting.enableMaster_AddEdit==1" style="width: 60px; margin-right: 10px; background-color: #4472C4;" type="button"
+                    class="btn btn-sm btn-info mr-1 btn-sm" data-toggle="modal"
+                    (click)="onEditClick(list)">Edit</button>
+                  <button style="width: 60px; background-color: #4472C4;" type="button"
+                    class="btn btn-sm btn-info mr-1 btn-sm" data-toggle="modal"
+                    (click)="onDeleteClick(list)">Delete</button>
+
+                </td>
+              </tr>
+
+            </ng-container>
+
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>

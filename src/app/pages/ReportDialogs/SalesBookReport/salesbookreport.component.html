@@ -1,0 +1,141 @@
+
+
+       <div id="salesBookReportId" style="background-color : #ffffff; padding :1%; height : auto; ">
+            <div class="row">
+               <div class="modal-header"  style="width : 97%; margin : 0px auto;">
+                  <button type="button" class="close" data-dismiss="modal" (click)="closeReportBox()">&times;</button>
+                  <h4 class="modal-title">Sales Book Report</h4>
+               </div>
+               <!-- Left Column -->
+               <div class="col-md-6">
+                  <fieldset>
+                     <legend>Report Option : </legend>                                
+                     <label class="smallBoldLabel"><input type="radio" value=1 name="optReportType" [(ngModel)]="ReportParameters.OPT_REPORT_TYPE">&nbsp;Voucher Wise</label>
+                     <label class="smallBoldLabel"><input type="radio" value=2 name="optReportType" [(ngModel)]="ReportParameters.OPT_REPORT_TYPE">&nbsp;Day Wise</label>
+                     <label class="smallBoldLabel"><input type="radio" value=3 name="optReportType" [(ngModel)]="ReportParameters.OPT_REPORT_TYPE">&nbsp;Month Wise</label>
+                  
+                  </fieldset>
+
+                  <fieldset style="width : 99%;">
+                     <legend>Date Range Selection :</legend>
+                     <div class="_date_range">
+                        <a (click)="changeDateByRange('1')" value="week" style="color : white;" class="btn btn-info">This Week</a>
+                        <a (click)="changeDateByRange('2')" value="month" style="color : white;" class="btn btn-info">This Month</a>
+                        <a (click)="changeDateByRange('3')" value="year" style="color : white;" class="btn btn-info">This Year</a>
+                     </div>
+                     <table>
+                        <tr>
+                           <td><label class="smallBoldLabel">From(AD):</label></td>
+                           <td><label class="smallBoldLabel">To(AD):</label></td>
+                        </tr>
+                        <tr>
+                           <td>                                                 
+                                 <label class="smallBoldLabel"><input  type="date"  style="width:152px; min-width:50%;"  placeholder="Year Start Date" [(ngModel)]="ReportParameters.DATE1"  (change)="changestartDate($event.target.value,'AD')"  ></label>
+                           </td>
+                           <td>                                                 
+                                 <label class="smallBoldLabel"><input  type="date" style="width:152px; min-width:50%;"  placeholder="Year Start Date" [(ngModel)]="ReportParameters.DATE2"  (change)="changeEndDate($event.target.value,'AD')"   ></label>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td>
+                                 <label class="smallBoldLabel"><input id="nepaliDate" style="width:152px;height:25px;text-align:center" class="nepali-calendar ndp-nepali-calendar" [(ngModel)]="ReportParameters.BSDATE1"
+                              type="text" (change)="changestartDate($event.target.value,'BS')"
+                              placeholder="yyyy-mm-dd" /> </label>
+                           </td>
+                           <td>
+                                 <label class="smallBoldLabel"><input id="nepaliDate" style="width:152px;height:25px;text-align:center" class="nepali-calendar ndp-nepali-calendar" [(ngModel)]="ReportParameters.BSDATE2"
+                              type="text" (change)="changeEndDate($event.target.value,'BS')"
+                              placeholder="yyyy-mm-dd" /> </label>
+                           </td>
+                        </tr>
+                     </table>
+                  </fieldset>
+
+                  <fieldset>
+                     <label class="smallBoldLabel"><input type="radio" value=0 name="showDetReport" [(ngModel)]="ReportParameters.OPT_SHOWDETAL_REPORT">&nbsp;Summary Report</label>
+                     <label class="smallBoldLabel"><input type="radio" value=1 name="showDetReport" [(ngModel)]="ReportParameters.OPT_SHOWDETAL_REPORT">&nbsp;Detail Report</label>
+                  </fieldset>
+
+                  <fieldset>
+                     <legend>Customer Account : </legend>
+                        <table>
+                              <tr>
+                                 <td><label class="smallBoldLabel">ACCODE</label></td>
+                                 <td><label class="smallBoldLabel">ACNAME</label></td>
+                                 
+                              </tr>
+                              <tr>
+                                 <td>
+                                    <label class="smallBoldLabel"><input tabindex="2" type="text" class="form-control input-sm" style="height: 26px;" (keydown.enter)="accodeChanged($event.target.value)" [(ngModel)]="ACCODE" ></label>
+                                 </td>
+                                 <td>
+                                    <div style="position: absolute; top: 297px; width: 150px;">
+                                       <label class="smallBoldLabel"><input tabindex="2" ngui-auto-complete class="form-control input-sm" [source]="dropListItem.bind(this)" max-num-list="25" [(ngModel)]="ACCNAME" list-formatter="ACNAME" style="height: 26px;" (ngModelChange)="itemChanged($event)" name="AcName" display-property-name="ACNAME"></label>
+                                    </div>      
+                                 </td>
+                              </tr>
+                           </table>
+                  </fieldset>
+                     
+                 
+                  <fieldset>
+                        <legend>Division Selection:</legend>
+                        <select [(ngModel)]="ReportParameters.DIVISION" style="width : 100%;">
+                           <option value="%" *ngIf="masterService.userSetting.userwisedivision==0">ALL</option>
+                           <option *ngFor="let div of division" value="{{ div.INITIAL }}">
+                              {{ div.NAME }}
+                           </option>
+                        </select>
+                     </fieldset>
+               
+                  <label class="smallBoldLabel"><input type="checkbox" style="vertical-align: middle;" (change)="$event.target.checked?(ReportParameters.CHK_SALESMANWISESUMMARY=1):(ReportParameters.CHK_SALESMANWISESUMMARY=0)" [checked]="ReportParameters.CHK_SALESMANWISESUMMARY == 1"  name="showSalesSum" >Show salesman wise Sales summary report</label>
+
+
+               </div>
+               <!-- Another column -->
+               <div class="col-md-6">
+                <label class="smallBoldLabel"><input type="checkbox" style="vertical-align: middle;" (change)="$event.target.checked?(ReportParameters.CHK_INCLUDE_RETURN=1):(ReportParameters.CHK_INCLUDE_RETURN=0)" name="showSalesSum" [checked]="ReportParameters.CHK_INCLUDE_RETURN == 1" >Show salesman wise Sales summary report</label>
+                
+                <br>
+                  <fieldset>                   
+                        <legend><input type="checkbox" name="showDiscountSalesOnlyCheck" value="showDiscountSalesOnlyCheck">Show Discount Sales only</legend>
+                        <label class="smallBoldLabel"><input type="radio" name="showDiscountSalesOnly" [(ngModel)]="ReportParameters.OPT_DISCOUNTEDSALES" value="0">Show All Discount Sales</label><br>
+                        <label class="smallBoldLabel"><input type="radio" name="showDiscountSalesOnly" [(ngModel)]="ReportParameters.OPT_DISCOUNTEDSALES" value="1" >Show All Discount Sales </label>
+                        <label class="smallBoldLabel">Greater than Discount Rate (%)>= <input type="text" name="disPer" [(ngModel)]="ReportParameters.DISRATE" style="width : 16%;"></label>
+                        <label class="smallBoldLabel"><input type="radio" name="showDiscountSalesOnly" [(ngModel)]="ReportParameters.OPT_DISCOUNTEDSALES" value="2" >Show Credit Card Discount Sales only</label>
+                        <label class="smallBoldLabel"><input type="radio" name="showDiscountSalesOnly"  [(ngModel)]="ReportParameters.OPT_DISCOUNTEDSALES" value="3" >Show Complimentary Sales only</label>
+                  </fieldset>
+
+                  <fieldset>
+                     <legend>Salesman Selection</legend>
+                     <select style="width : 275px;">
+                        <option value="%">All</option>
+                     </select>
+                  </fieldset>
+
+                  <label class="smallBoldLabel"><input type="checkbox" style="vertical-align: middle;" name="showBLOnly" >Show Opening B/L Only</label><br>
+
+                  <fieldset>
+                     <legend>Sales Mode Selection</legend>
+                     <label class="smallBoldLabel"><input type="radio" name="counterSales"  [(ngModel)]="ReportParameters.OPT_COUNTERSALES" value="0">&nbsp; Both</label>
+                     <label class="smallBoldLabel"><input type="radio" name="counterSales" [(ngModel)]="ReportParameters.OPT_COUNTERSALES" value="1">&nbsp; Counter Sales Only</label>
+                     <label class="smallBoldLabel"><input type="radio" name="counterSales" [(ngModel)]="ReportParameters.OPT_COUNTERSALES" value="2">&nbsp; Table Sales Only</label>
+                  </fieldset>
+
+                  <fieldset>
+                     <legend>Sales Mode Selection</legend>
+                     <label class="smallBoldLabel"><input type="radio" name="optInad"  [(ngModel)]="ReportParameters.OPT_INAD" value=0>&nbsp; As Per AD Date</label>
+                     <label class="smallBoldLabel"><input type="radio" name="optInad" [(ngModel)]="ReportParameters.OPT_INAD" value=1>&nbsp; As Per BS Date</label>
+                  </fieldset>
+                  <div class="btn">
+                     <!-- <button type="button"  title="onSave" class="btn btn-info">Run</button>    -->
+                     <button class="btn btn-info confirm-btn" type="button"  (click)=onload()>RUN</button>
+                     <button type="button"  title="Cancel" class="btn btn-info">Close</button>  
+                  </div>
+               </div>
+            </div>
+            <!-- <div class="modal-footer">
+               <button class="btn btn-info confirm-btn" type="button"  (click)=onload()>RUN</button>
+               </div> -->
+         
+       </div>

@@ -1,0 +1,39 @@
+<form [formGroup]="TrnMainForm">
+  <div class="row">
+    <div class="col-md-12" style="padding:5px">
+      <div style="margin:5px; margin-bottom:0px">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="col-md-6">
+              <div class="col-md-12">
+                  <div class="col-md-4">
+                      <label style="width:auto">Difference Amount: </label>
+                    </div>
+                    <div class="col-md-8">
+                      <input
+                        formControlName="DIFFERENCE"
+                        style="width:100%"
+                        value="{{ _trnMainService.differenceAmount }}"
+                      />
+                    </div>
+              </div>
+              <div class="col-md-12">
+                  <div class="col-md-4">
+                      <label>Narration: </label>
+                    </div>
+                    <div class="col-md-8">
+                      <textarea
+                        formControlName="REMARKS"
+                        rows="2"
+                        style="padding-left:4px; vertical-align: top;width: 100%"
+                      ></textarea>
+                    </div>
+              </div> 
+            </div>
+            <div class="col-md-6"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

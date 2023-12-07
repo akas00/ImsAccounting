@@ -1,0 +1,175 @@
+<style>
+    .table tr th {
+      text-align: center;
+      vertical-align: middle;
+      line-height: 15px;
+    }
+  
+    tr {
+      /* border: 1px solid #e6e6e6; */
+      max-height: 25px;
+    }
+  
+    td {
+      height: 20px;
+      /* border: 1px solid #e6e6e6; */
+     
+  
+    }
+  
+    .bottom {
+      position: fixed;
+      bottom: 20px;
+      left: 0px;
+      width: 100%;
+      height: 120px;
+      z-index: 1;
+      /* background: #e2eaea !important; */
+    }
+
+  .colorLabel{
+    width: 120px !important;
+    font-size: 21px !important;
+    font-weight: bold;
+    color: #2dacd1;
+  }
+
+  .diffAmountItemForAccount{
+    font-size: 21px;
+    width: 160px;
+    color: #2dacd1;
+    text-align: right;
+    border: 1px solid #cbcbcb;
+    font-weight: bold;
+  }
+  
+  </style>
+
+<div class="bottom" style="text-align:right; background:#C0C0C0;">
+    
+    <div class="col-md-4" >
+        <div class="row" style="margin-top: 70px;    float: left;">
+          
+                    <!-- <label class="account-balance-title colorLabel">A/C B/L :
+                    </label><label class="diffAmountItemForAccount colorLabel" style="    border: 1px solid #cbcbcb;">{{ _transactionService.diffAmountItemForAccount | number }}</label>&nbsp; -->
+                    <!-- <label class="colorLabel" style="width:30px !important;font-size:18px;color: #2dacd1;" *ngIf="_transactionService.diffAmountDrCrType == 'Dr'">Dr.</label>
+                    <label class="colorLabel" style="width:30px !important;font-size:18px;color: #2dacd1;" *ngIf="_transactionService.diffAmountDrCrType == 'Cr'">Cr.</label> -->
+           
+           
+        </div>
+    </div>
+    <div class="col-md-4" style="margin-top: 75px;" >     
+            <label class="colorLabel">A/C B/L :
+            </label><label class="diffAmountItemForAccount">{{ this.differenceAmount | number }}</label>&nbsp;
+            <label style="width:30px !important;font-size:18px;color: #2dacd1;font-weight: bold;" *ngIf="diffAmountDrCrType == 'Dr'">Dr.</label>
+            <label style="width:30px !important;font-size:18px;color: #2dacd1;font-weight: bold;" *ngIf="diffAmountDrCrType == 'Cr'">Cr.</label>    
+    </div>
+
+    <div class="col-md-4" style="margin-top: 10px;">
+      
+
+        <table class="table" style="height: 100px; ">
+           <tbody>
+               <tr>
+                   <td style="line-height: 12px;text-align:left;font-size: 12px; font-weight: bold;">Gross Amount </td>
+                   <td style="line-height: 12px;">
+                       <input
+                      
+                       id="Gross Amount"
+                       type="number"
+
+                       style="width:100%; height: 19px;text-align:right; "
+                       [ngModel]="_transactionService.TrnMainObj.TOTAMNT | twoDigitNumber "
+                       (ngModelChange)="_transactionService.TrnMainObj.TOTAMNT = $event" 
+                       disabled
+                       />
+
+                        
+                   </td>
+               </tr>
+          
+              
+               
+                <tr>
+                    <td style="line-height: 12px;text-align:left; font-size: 12px; font-weight: bold; " >Taxable Amount </td>
+                    <td style="line-height: 12px;text-align:right;" >
+                        <input                           
+                        id="TaxableAmount"
+                        type="number"
+                   
+                        style="width:100%; height: 19px;text-align:right;"                 
+                        [ngModel]="applyPipeinTaxable? (_transactionService.TrnMainObj.TAXABLE |twoDigitNumber ) :_transactionService.TrnMainObj.TAXABLE "                        
+                        (ngModelChange)="_transactionService.TrnMainObj.TAXABLE =$event"
+                        (focusout)="focusOutTaxableAmountChange($event)"
+                        (keyup)="taxableAmountChange($event)"
+                        />
+                    
+                        <!-- <input
+                           
+                        id="Discount"
+                        type="number"
+                        style="width:100%;height: 19px;text-align:right;"
+                        [(ngModel)]="_transactionService.TrnMainObj.DCAMNT "
+                        [disabled]="_transactionService.TrnMainObj.Mode =='VIEW'"
+                        (keyup)="discountChange($event)"
+                        (focusout)="discountFocusOut($event)"
+                        /> -->
+
+
+                    </td>
+                </tr>
+                <tr>
+                    <td style="line-height: 12px;text-align:left;font-size: 12px; font-weight: bold; " >Non Taxable Amount </td>
+                    <td style="line-height: 12px;text-align:right;" >
+                        <input
+                      
+                        id="NonTaxableAmount"
+                        type="number"
+                        style="width:100%; height: 19px;text-align:right;"
+                      
+                        [ngModel]="applyPipeinNonTaxable?(_transactionService.TrnMainObj.NONTAXABLE |twoDigitNumber):_transactionService.TrnMainObj.NONTAXABLE"
+                        (ngModelChange)= "_transactionService.TrnMainObj.NONTAXABLE = $event"        
+                        (keyup)="nonTaxableAmountChange($event)"
+                        (focusout)="focusOutNonTaxableAmountChange($event)"
+                        [disabled]="_transactionService.TrnMainObj.TAXABLE !=0"
+                        />
+                  
+                    </td>
+               </tr>
+               <tr>
+                    <td style="line-height: 12px;text-align:left;font-size: 12px; font-weight: bold; " >VAT Amount </td>
+                    <td style="line-height: 12px;text-align:right;" >
+                        <input
+                       
+                        id="VATAmount"
+                        type="number"
+                        style="width:100%; height: 19px;text-align:right;"
+                        [ngModel]="_transactionService.TrnMainObj.VATAMNT | twoDigitNumber"   
+                        (ngModelChange)="_transactionService.TrnMainObj.VATAMNT=$event"
+                        (keyup) = "VATAmountChange($event)"                       
+                        (change)="VATAmountChange($event)"
+                        disabled
+                        />
+                       
+                    </td>
+                </tr>
+                <tr>
+                    <td style="line-height: 12px;text-align:left;font-size: 12px; font-weight: bold; " >Net Amount </td>
+                    <td style="line-height: 12px;text-align:right;" >
+                        <input
+                     
+                        id="NetAmount"
+                        type="number"
+                        style="width:100%; height: 19px;text-align:right;"
+                        [ngModel]="_transactionService.TrnMainObj.NETAMNT | twoDigitNumber"
+                        (ngModelChange) = "_transactionService.TrnMainObj.NETAMNT = $event "
+                        disabled
+                        />
+                  
+                    </td>
+                </tr>
+                
+           </tbody>
+        </table>
+    </div>
+</div>    

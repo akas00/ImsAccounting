@@ -1,0 +1,12 @@
+<div class="widgets">
+        <div class="row">
+          <button class="btn btn-info" style="margin-bottom: 10px;margin-left:18px" (click)="addNewAccount()" >New Vehicle-Registration</button>
+        </div>
+        <div class="row">
+          <ba-card title="Account List" baCardClass="with-scroll">
+            <ng2-smart-table [settings]="settings" [source]="source" (edit)="onEditClick($event)" (deleteConfirm)="onDeleteConfirm($event)" (view)="onViewClick($event)"></ng2-smart-table>
+          </ba-card>
+        </div>
+      </div>
+      
+      

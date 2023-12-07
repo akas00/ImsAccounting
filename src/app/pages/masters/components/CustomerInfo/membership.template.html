@@ -1,0 +1,292 @@
+
+
+<div class="row" style="margin-top: -15px; margin-bottom: 10px;">
+    <form id=formId [formGroup]="form">
+        <div class="col-md-12 form-horizontal">
+            <ba-card baCardClass="with-scroll" [title]="modeTitle">
+                <div class="form-group row margin">
+                    <label class="col-sm-1 form-control-label padding">*Member ID: </label>
+                    <div class="col-sm-5">
+                        <input [style.background-color]="disabled()" [style.background-color]="editDisabled()" style="color:black" class="form-control" type="text" placeholder="Member ID" formControlName="MEMID" [readonly]="mode!='add'">
+                        <div class="alert alert-danger" *ngIf="!form.controls['MEMID'].valid && mode=='add' ">Member ID is required.</div>
+                    </div>
+                    <!--<button *ngIf="viewMode==false" title="Generate Member ID" class="btn btn-success" style="margin-top: 3px;" [disabled]="mode=='edit'?true:false" (click)="generateID()">Auto Generate</button>-->
+                </div>
+                <div class="form-group row margin">
+                    <label class="col-sm-1 form-control-label padding">Barcode: </label>
+                    <div class="col-sm-5">
+                        <input [style.background-color]="disabled()" style="color:black" class="form-control" type="text" formControlName="BARCODE" placeholder="Barcode">
+                    </div>
+                </div>
+            </ba-card>
+        </div>
+
+        <div class="col-md-6 form-horizontal">
+            <ba-card title="Membership Information" baCardClass="with-scroll">
+                <div class="form-group row margin">
+                    <label class="col-sm-3 form-control-label padding">*Member Name: </label>
+                    <div class="col-sm-9">
+                        <input [style.background-color]="disabled()" style="color:black" class="form-control" type="text" formControlName="FNAME" placeholder="Member Name">
+                        <div class="alert alert-danger" *ngIf="form.controls['FNAME'].touched && !form.controls['FNAME'].valid">Member's name is required.</div>
+                    </div>
+                </div>
+                <div class="form-group row margin">
+                    <label class="col-sm-3 form-control-label padding">*Date of Birth: </label>
+                    <div class="col-sm-4" style="padding-right: 3px;">
+                        <input [style.background-color]="disabled()" style="color:black" class="form-control" type="date" formControlName="DOB" value="{{tMember.DOB}}" (change)="changeDOB($event.target.value,'AD')">
+                    </div>
+                    <div class="col-sm-1" style="padding-left: 0px;">
+                        <p style="font-size: 18px; margin-top: 12px;">AD</p>
+                    </div>
+                    <div class="col-sm-3" style="padding-right: 3px; padding-left: 0px;">
+                        <input [style.background-color]="disabled()" onclick="showNdpCalendarBox('nepaliDate')" formControlName="bsDOB" class="form-control nepali-calendar ndp-nepali-calendar" id="nepaliDate" (change)="changeDOB($event.target.value,'BS');" (click)="clickDOB($event.target.value)" type="text" style="height: 40px;color:black" placeholder="yyyy-mm-dd">
+                    </div>
+                    <div class="col-sm-1" style="padding-left: 0px;">
+                        <p style="font-size: 18px; margin-top: 12px;">BS</p>
+                    </div>
+                    <div class="col-sm-3 padding"></div>
+                    <div class="col-sm-9">
+                        <div class="alert alert-danger" *ngIf="form.controls['DOB'].touched && !form.controls['DOB'].valid">Member's date of birth is required.</div>
+                    </div>
+                </div>
+                <div class="form-group row margin" style="height: 64px;">        
+                    <label class="col-sm-3 form-control-label padding">Wedding-Anniversary: </label>
+                    <div class="col-sm-4" style="padding-right: 3px;">
+                        <input [style.background-color]="disabled()" style="color:black" class="form-control" type="date" formControlName="WAD" value="{{tMember.WAD}}" (change)="changeWAD($event.target.value,'AD')">
+                    </div>
+                    <div class="col-sm-1" style="padding-left: 0px;">
+                        <p style="font-size: 18px; margin-top: 12px;">AD</p>
+                    </div>
+                    <div class="col-sm-3" style="padding-right: 3px; padding-left: 0px;">
+                        <input [style.background-color]="disabled()" onclick="showNdpCalendarBox('nepaliDate1')" formControlName="bsWAD" class="form-control nepali-calendar ndp-nepali-calendar" id="nepaliDate1" (change)="changeWAD($event.target.value,'BS');" (click)="clickWAD($event.target.value)" type="text" style="height: 40px;color:black" placeholder="yyyy-mm-dd">
+                    </div>
+                    <div class="col-sm-1" style="padding-left: 0px;">
+                        <p style="font-size: 18px; margin-top: 12px;">BS</p>
+                    </div>
+                    <div class="checkbox col-sm-9" style="margin-top: 6px; height: 18px">
+                        <ba-checkbox [(ngModel)]="isRemember" [ngModelOptions]="{standalone: true}" [label]="'Ignore Wedding-Anniversary'"></ba-checkbox>
+                    </div>
+                </div>
+                <div class="form-group row margin">        
+                    <label class="col-sm-3 form-control-label padding">*Occupation:</label>
+                    <div class="col-sm-9">
+                        <select [style.background-color]="disabled()" style="color:black" class="form-control" formControlName="OCP">
+                            <option *ngFor="let occupation of occupationList" [ngValue]="occupation.DESCRIPTION">{{occupation.DESCRIPTION}}</option>
+                        </select>
+                        <!-- <div class="alert alert-danger" *ngIf="fogetSupplierListFromApirm.controls['OCP'].touched && !form.controls['OCP'].valid">Member's occupation is required.</div> -->
+                    </div>
+                </div>
+                <div class="form-group row margin">        
+                    <label class="col-sm-3 form-control-label padding">Office Name:</label>
+                    <div class="col-sm-9">
+                        <input [style.background-color]="disabled()" style="color:black" class="form-control" type="text" formControlName="OFFICE" placeholder="Office Name">
+                    </div>
+                </div>
+                <div class="form-group row margin">        
+                    <label class="col-sm-3 form-control-label padding">PAN Number:</label>
+                    <div class="col-sm-9">
+                        <input [style.background-color]="disabled()" style="color:black" class="form-control" type="text" formControlName="PANNo" placeholder="PAN Number">
+                    </div>
+                </div>
+                <div class="form-group row margin">        
+                    <label class="col-sm-3 form-control-label padding">Designation:</label>
+                    <div class="col-sm-9">
+                        <select [style.background-color]="disabled()" style="color:black" class="form-control" formControlName="DEG">
+                            <option *ngFor="let designation of designationList" [ngValue]="designation.DESCRIPTION">{{designation.DESCRIPTION}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row margin">        
+                    <label class="col-sm-3 form-control-label padding">*Address:</label>
+                    <div class="col-sm-9">
+                        <input [style.background-color]="disabled()" style="color:black" class="form-control" type="text" formControlName="T_STREET" placeholder="Address">
+                        <div class="alert alert-danger" *ngIf="form.controls['T_STREET'].touched && !form.controls['T_STREET'].valid">Member's address is required.</div>
+                    </div>
+                </div>
+            </ba-card>
+
+            <ba-card title="Membership Registration" baCardClass="with-scroll">
+                <div class="form-group row margin">
+                    <label class="col-sm-4 form-control-label padding">*Registration Date: </label>
+                    <div class="col-sm-8">
+                        <input [style.background-color]="disabled()" style="color:black" class="form-control" type="date" formControlName="REG_DATE" (change)="registrationDate($event.target.value)">
+                        <div class="alert alert-danger" *ngIf="form.controls['REG_DATE'].touched && !form.controls['REG_DATE'].valid">Membership registration date is required.</div>
+                    </div>
+                </div>
+                <div class="form-group row margin">
+                    <label class="col-sm-4 form-control-label padding">Duration(Years): </label>
+                    <div class="col-sm-8">
+                        <input [style.background-color]="disabled()" style="color:black" class="form-control" type="number" min="1" formControlName="DURATION" placeholder="Years" (change)="duration($event.target.value)" (keyup)="duration($event.target.value)">
+                    </div>
+                </div>
+                <div class="form-group row margin">
+                    <label class="col-sm-4 form-control-label padding">*Validity Date: </label>
+                    <div class="col-sm-8">
+                        <input [style.background-color]="disabled()" style="color:black" class="form-control" type="date" formControlName="VALIDITY"  value="{{validDate}}">
+                        <!--<input type="text" value="NaN-{{month}}-{{day}}">-->
+                        <div class="alert alert-danger" *ngIf="(form.controls['VALIDITY'].touched && !form.controls['VALIDITY'].valid) || (form.controls['VALIDITY'].touched && form.controls['VALIDITY'].value=='NaN-undefined-undefined')">Membership validity date is required.</div>
+                    </div>
+                </div>
+                <div class="form-group row margin">
+                    <label class="col-sm-4 form-control-label padding">Membership Scheme:</label>
+                    <div class="col-sm-8">
+                        <select [style.background-color]="disabled()" style="color:black" class="form-control" formControlName="SCHEMEID">
+                            <option *ngFor="let scheme of schemeList" [ngValue]="scheme.SCHEMEID">{{scheme.NAME}}</option>
+                        </select>
+                    </div>
+                </div>
+               
+            </ba-card>
+
+            <ba-card title="Member Address Map Location" baCardClass="with-scroll">
+                <div class="form-group row margin">
+                    <label class="col-sm-3 form-control-label padding">Google Map: </label>
+                    <div class="col-sm-9">
+                        <button [disabled]="viewMode==true" class="btn btn-success">Get Co-ordinates</button>
+                    </div>
+                </div>
+                <div class="form-group row margin">
+                    <label class="col-sm-3 form-control-label padding">Latitude: </label>
+                    <div class="col-sm-9">
+                        <input [style.background-color]="disabled()" style="color:black" class="form-control" type="text" placeholder="Latitude">
+                    </div>
+                </div>
+                <div class="form-group row margin">
+                    <label class="col-sm-3 form-control-label padding">Longitude: </label>
+                    <div class="col-sm-9">
+                        <input [style.background-color]="disabled()" style="color:black" class="form-control" type="text" placeholder="Longitude">
+                    </div>
+                </div>
+            </ba-card>
+
+            <div style="padding-bottom: 10px; margin-top: -8px;">
+                <button style="margin-right: 4px;" *ngIf="viewMode == false" [disabled]="saveDisable==true || !form.valid" (click)="onSave()"  title="Save" class="btn btn-info">Save</button>
+                <button (click)="back()" title="Back" class="btn btn-info">Back</button>
+            </div>
+        </div>
+
+
+        
+        <div class="col-md-6 form-horizontal">
+            <ba-card title="Member Photo" style="min-height: 450px" baCardClass="with-scroll">
+                <div *ngIf="url == null" class="member-photo"></div>
+                <img *ngIf="url != null" [src]="url" alt="Member Photo" class="member-photo"/>
+                <input [style.background-color]="disabled()" style="color:black" class="form-control" type="file" accept="image/*" formControlName="PHOTO" (change)="changeImage($event)">
+            </ba-card>
+
+            <ba-card title="Correspondance Information" baCardClass="with-scroll">
+                <div class="form-group row margin">
+                    <label class="col-sm-4 form-control-label padding">Telephone No(res): </label>
+                    <div class="col-sm-8">
+                        <input [style.background-color]="disabled()" style="color:black" class="form-control" type="text" formControlName="TEL_R" placeholder="Telephone No(res)">
+                    </div>
+                </div>
+                <div class="form-group row margin">
+                    <label class="col-sm-4 form-control-label padding">Telephone No(office): </label>
+                    <div class="col-sm-8">
+                        <input [style.background-color]="disabled()" style="color:black" class="form-control" type="text" formControlName="TEL_O" placeholder="Telephone No(office)">
+                    </div>
+                </div>
+                <div class="form-group row margin">
+                    <label class="col-sm-4 form-control-label padding">*Mobile No: </label>
+                    <div class="col-sm-8">
+                        <input [style.background-color]="disabled()" style="color:black" class="form-control" type="text" formControlName="MOBILE" placeholder="Mobile No">
+                        <div class="alert alert-danger" *ngIf="form.controls['MOBILE'].touched && !form.controls['MOBILE'].valid">Member's mobile number is required.</div>
+                    </div>
+                </div>
+                <div class="form-group row margin">
+                    <label class="col-sm-4 form-control-label padding">Fax No:</label>
+                    <div class="col-sm-8">
+                        <input [style.background-color]="disabled()" style="color:black" class="form-control" type="text" formControlName="FAX" placeholder="Fax No">
+                    </div>
+                </div>
+                <div class="form-group row margin">
+                    <label class="col-sm-4 form-control-label padding">PO Box:</label>
+                    <div class="col-sm-8">
+                        <input [style.background-color]="disabled()" style="color:black" class="form-control" type="text" formControlName="POBOX" placeholder="PO Box">
+                    </div>
+                </div>
+                <div class="form-group row margin">
+                    <label class="col-sm-4 form-control-label padding">Email:</label>
+                    <div class="col-sm-8">
+                        <input [style.background-color]="disabled()" style="color:black" class="form-control" type="text" formControlName="EMAIL" placeholder="Email">
+                    </div>
+                </div>
+               
+            </ba-card>
+
+            <ba-card title="Membership References" baCardClass="with-scroll">
+                <div class="form-group row margin">
+                    <label class="col-sm-3 form-control-label padding">Refered By: </label>
+                    <div class="col-sm-9">
+                        <input [style.background-color]="disabled()" style="color:black" class="form-control" type="text" formControlName="REFERENCEBY" placeholder="Refered By">
+                    </div>
+                </div>
+                <div class="form-group row margin" style="margin-bottom: 81.2px;">
+                    <label class="col-sm-3 form-control-label padding">Sales-person: </label>
+                    <div class="col-sm-9">
+                        <select [style.background-color]="disabled()" style="color:black" class="form-control" formControlName="SALESMANID">
+                            <option *ngFor="let salesPerson of salesPersonList" [ngValue]="salesPerson.SALESMANID">{{salesPerson.NAME}}</option>
+                        </select>
+                    </div>
+                </div>
+            </ba-card>
+        </div>
+    </form>
+
+
+    <div class="modal fade" bsModal #childModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" aria-label="Close" (click)="hideChildModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+                        <h4 class="modal-title">Information</h4>
+                    </div>
+                    <div class="modal-body">
+                        {{DialogMessage}}
+                    </div>
+                    <!--<div class="modal-footer">
+                        <button class="btn btn-info confirm-btn" (click)="hideChildModal()">Save changes</button>
+                        <button class="btn btn-info confirm-btn" type="button" (click)=onsubmit()>Save</button>
+                    </div>!-->
+                    
+                </div>
+            </div>
+        </div>
+
+
+        <!--<div class="col-md-12 form-inline">
+            <ba-card title="Number of Family Members" baCardClass="with-scroll">
+                <div class="form-group col-sm-2">
+                    <label class="form-control-label">Male: </label>
+                    <input class="form-control" type="number" min="1" placeholder="No. of Male" (change)="male($event.target.value)" (keyup)="male($event.target.value)">
+                </div>
+                <div class="form-group col-sm-2">
+                    <label class="form-control-label">Female: </label>
+                    <input class="form-control" type="number" min="1" placeholder="No. of Female" (change)="female($event.target.value)" (keyup)="female($event.target.value)">
+                </div>
+                <div class="form-group col-sm-2">
+                    <label class="form-control-label">Boy: </label>
+                    <input class="form-control" type="number" min="1" placeholder="No. of Boys" (change)="boy($event.target.value)" (keyup)="boy($event.target.value)">
+                </div>
+                <div class="form-group col-sm-2">
+                    <label class="form-control-label">Girl: </label>
+                    <input class="form-control" type="number" min="1" placeholder="No. of girls" (change)="girl($event.target.value)" (keyup)="girl($event.target.value)">
+                </div>
+                <div class="form-group col-sm-2" style="border-right: 1px solid #d9d9d9;">
+                    <label class="form-control-label">Baby: </label>
+                    <input class="form-control" type="number" min="1" placeholder="No. of Babies" (change)="baby($event.target.value)" (keyup)="baby($event.target.value)">
+                </div>
+                <div class="form-group col-sm-2">
+                    <label class="form-control-label">Total: </label>
+                    <input class="form-control" type="text" placeholder="Total members" style="color: grey; background-color: #F0F3F4;" disabled value="{{totalNo}}">
+                </div>
+            </ba-card>
+        </div>-->
+                      
+        
+        
+    </div>

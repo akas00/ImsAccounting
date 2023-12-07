@@ -1,0 +1,42 @@
+.customer_container {
+    position: fixed !important;
+    transform: translate(-50px, -50px);
+    /* min-height: calc(100vh - 60px); */
+    background: #ffffff;
+    z-index: 99999;
+    width: 57%;
+    top: 29.5%;
+    left: 26%;
+  }
+
+  input,select{
+    border: 1px solid #cbcbcb;
+    border-radius: 3px;
+    height: 4vh;
+    color: black;
+  }
+
+  .page-title {
+    text-align: center;
+  }
+  
+  .form-control {
+    font-size: 12px;
+  }
+  
+  .button-group {
+    position: absolute;
+    right: 3%;
+    top: 3%;
+  }
+  
+  .card-body {
+    line-height: 0.4rem;
+  }
+
+
+  label{
+    font-size: 13px;
+    font-weight: 500;
+  }
+  

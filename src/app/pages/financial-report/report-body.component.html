@@ -1,0 +1,199 @@
+<style>
+  .table tr th {
+    text-align: center !important;
+    vertical-align: middle;
+
+  }
+
+  tr {
+    font-size: 12px;
+  }
+
+  .page-header-space {
+    height: 100px;
+  }
+
+  .text-justify {
+    text-align: justify;
+  }
+
+  table {
+    width: 100%;
+  }
+
+
+  th {
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .custom-td {
+    border: 1px solid #e6e6e6;
+    width: 20px;
+    text-align: center !important;
+  }
+
+  .row-even {
+    background-color: #E6E6E6
+  }
+
+  .row-odd {
+    background-color: rgb(197, 197, 196)
+  }
+
+  .thead-padding {
+    padding: 10px;
+  }
+
+  .selected-row {
+    background-color: #787878 !important;
+    color: white;
+    font-size: 14px;
+  }
+
+  td {
+    padding: 5px !important;
+  }
+
+  .border {
+    border-top: 1px solid #e6e6e6 !important;
+  }
+
+  .header{
+    min-height: 62px !important
+  }
+
+</style>
+<ng-container *ngIf="dataList.length">
+  <div id="reportTable" #dataTable *ngIf="listSetting" class="row"
+    style="height: 470px !important;overflow-y:scroll;overflow-x: hidden;width: 100%;background:#ffffff;margin: 0">
+    <div class="header" style="padding: 0px;position: sticky;top: 0">
+      <table id="report-header">
+        <thead>
+          <tr style="border-bottom: 1px solid;height: 30px;
+            background: #c5e3ed; 
+            color: black;">
+            <ng-container *ngIf="reportType=='Ledger Voucher'">
+              <td class="thead-padding"><b>Ledger</b></td>
+              <td class="thead-padding">{{ACNAME}}</td>
+            </ng-container>
+            <ng-container *ngIf="reportType=='Voucher Register'">
+              <td colspan="2" class="thead-padding"><b>List of All {{voucherName}}</b></td>
+            </ng-container>
+            <ng-container *ngIf="reportType=='Day Book'">
+              <td colspan="2" class="thead-padding"><b>Day Book of {{voucherName}}</b></td>
+            </ng-container>
+            <td class="thead-padding"></td>
+            <td class="thead-padding"></td>
+            <td class="thead-padding text-right" colspan="3"> <strong>{{DATE1 |date}} to {{DATE2 |date}}</strong></td>
+          </tr>
+          <tr style="border-bottom: 1px solid;height: 30px;
+            background: #c5e3ed; 
+            color: black;">
+            <ng-container *ngFor="let col of listSetting.columns;let i=index">
+              <th *ngIf="col.key=='GROUP NAME'" style="width: 7% !important" class="text-left">{{col.title}}</th>
+              <th *ngIf="col.key=='MAIN GROUP NAME'" style="width: 7% !important" class="text-left">{{col.title}}</th>
+              <th *ngIf="col.key=='LEDGER NAME'" style="width: 7% !important" class="text-left">{{col.title}}</th>
+              <th *ngIf="col.key=='TRNDATE'" style="width: 7% !important" class="text-left">{{col.title}}</th>
+              <th *ngIf="col.key=='DATE'" style="width: 7% !important" class="text-left">{{col.title}}</th>
+              <th *ngIf="col.key=='PARTICULARS'" style="width: 30% !important" class="text-left">{{col.title}}</th>
+              <th *ngIf="col.key=='VCH TYPE'" style="width: 10% !important" class="text-left">{{col.title}}</th>
+              <th *ngIf="col.key=='VCH NO'" style="width: 10% !important" class="text-left">{{col.title}}</th>
+              <th *ngIf="col.key=='DEBIT' || col.key=='DRAMNT'" style="width: 7% !important" class="text-right">
+                {{col.title}}</th>
+              <th *ngIf="col.key=='CREDIT' || col.key=='CRAMNT'" style="width: 7% !important" class="text-right">
+                {{col.title}}</th>
+              <th *ngIf="col.key=='BALANCE'" style="width: 10% !important" class="text-right">
+                {{col.title}}</th>
+            </ng-container>
+          </tr>
+
+        </thead>
+      </table>
+    </div>
+
+    <table id="report-body">
+      <tbody>
+        <ng-container *ngFor="let itm of dataList;let i = index;">
+          <tr class="highlight" [class.selected-row]="selectedRowIndex == i" (dblclick)="doubleClicked(i)"
+            style="max-height:25px;" [class.border]="itm['DATE']!=null && itm['FLG']!='B'">
+
+            <ng-container *ngFor="let col of listSetting.columns">
+              <td *ngIf="col.key=='DATE'" class="text-left" style="width:7% !important">
+                {{itm[col.key] | date:'shortDate'}}
+              </td>
+              <td *ngIf="col.key=='PARTICULARS'" class="text-left" style="width:30% !important;white-space: pre"
+                [innerHtml]="itm[col.key]">
+              </td>
+              <td *ngIf="col.key=='VCH TYPE'" class="text-left" style="width:10% !important">
+                {{itm[col.key]}}
+              </td>
+              <td *ngIf="col.key=='VCH NO'" class="text-left" style="width:10% !important">
+                {{itm[col.key]}}
+              </td>
+              <td *ngIf="col.key=='GROUP NAME'" class="text-left" style="width:10% !important">
+                {{itm[col.key]}}
+              </td>
+              <td *ngIf="col.key=='MAIN GROUP NAME'" class="text-left" style="width:10% !important">
+                {{itm[col.key]}}
+              </td>
+              <td *ngIf="col.key=='LEDGER NAME'" class="text-left" style="width:10% !important">
+                {{itm[col.key]}}
+              </td>
+              <td *ngIf="col.key=='TRNDATE'" class="text-left" style="width:10% !important">
+                {{itm[col.key]}}
+              </td>
+
+              <td *ngIf="col.key=='DEBIT' || col.key=='DRAMNT'" style="width:7% !important" class="text-right">
+                {{itm[col.key] | number:'1.2-2'}}
+              </td>
+              <td *ngIf="col.key== 'CREDIT' || col.key=='CRAMNT'" style="width:7% !important" class="text-right">
+                {{itm[col.key] | number:'1.2-2'}}
+              </td>
+              <td *ngIf="col.key== 'BALANCE'" style="width:10% !important" class="text-right">
+                {{itm[col.key] | number:'1.2-2'}}
+              </td>
+            </ng-container>
+
+          </tr>
+          <tr *ngIf="selectedRowIndex == i">
+            <td [attr.colspan]="listSetting.columns.length+1">
+              <div id="row{{i}}"></div>
+            </td>
+          </tr>
+        </ng-container>
+
+      </tbody>
+    </table>
+
+  </div>
+</ng-container>
+
+
+
+<div class="clearfix" *ngIf="dataList.length" style="width: 100% !important">
+  <div class="col-md-12" style="position: sticky;bottom:0;padding: 0px;background: #c5e3ed; 
+  color: black;">
+    <table id="report-footer" style="table-layout:fixed;">
+      <tfoot>
+        <ng-container>
+          <tr *ngFor="let total of dataListTotal">
+            <td  style="width:7%" >
+              &nbsp;
+            </td>
+            <td  style="width:30%"></td>
+            <td style="width:10%"></td>
+            <td class="text-left"  style="width:10%"><b>{{total.PARTICULARS}}</b></td>
+            <td style="width: 7% !important" class="text-right">
+              <b>{{total.DRAMNT |number:'1.2-2' }}</b></td>
+            <td style="width: 7% !important" class="text-right">
+              <b>{{total.CRAMNT |number:'1.2-2' }}</b>
+            </td>
+            <td style="width:10%"></td>
+          </tr>
+        </ng-container>
+
+      </tfoot>
+    </table>
+  </div>
+</div>

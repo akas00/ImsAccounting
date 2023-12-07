@@ -1,0 +1,227 @@
+<style>
+   .action-btn {
+      width: 80%;
+      height: 80%;
+      display: block;
+      margin: 0 auto;
+      background-color: inherit;
+      border: none;
+   }
+     .input-text{
+        width : 100%;
+        /* height: 30px !important; */
+        font-weight: bold;
+    }
+    .td-class{
+        border: none !important;
+    }
+    .date-input{
+        width: 93%;
+        font-size: 12px !important;
+        height: 30px !important;
+    }
+      @media screen and (max-width:991px) {
+         .report-container{
+           width: 100% !important;
+    }
+    .report-height{
+        height:52vh; 
+        overflow:auto;
+    }
+    }
+         @media screen and (max-width:767px) {
+            .smallBoldLabel{
+                  width: auto !important;
+            }
+            
+        
+    }
+</style>
+
+<div class="container report-container" style="background-color : #ffffff; padding :1%; height : auto;  ">
+   <div class="row report-height">
+      <div class="modal-header" style="width : 97%; margin : 0px auto;">
+         <button type="button" class="close" data-dismiss="modal" (click)="closeReportBox()">&times;</button>
+         <h4 class="modal-title">Creditors OutStanding Report</h4>
+      </div>
+      <div class="col-md-12">
+         <!-- Left Column -->
+         <div class="col-md-6">
+            <fieldset style="width : 99%;">
+               <legend>As on Date :</legend>
+               <table>
+                  <tr>
+                  </tr>
+                  <tr>
+                     <td class="td-class">
+                           <input type="date" class="date-input form-control"
+                              placeholder="Year Start Date" [(ngModel)]="_reportFilterService.CreditorsOutstandingObj.CreditorsOutstanding_DATE1"
+                              (change)="changestartDate($event.target.value,'AD')" max="{{masterService.date1 | date:'yyyy-MM-dd'}}" min="{{masterService.date2 | date:'yyyy-MM-dd'}}">
+                     </td>
+                     <td class="td-class">
+                      <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDatefrom'"
+                      (change)="changestartDate($event.detail.value,'BS')"
+                      [label]="'From'"
+                      [(ngModel)]="_reportFilterService.CreditorsOutstandingObj.CreditorsOutstanding_BSDATE1">
+                      </nepali-date-picker>
+                           <!-- <input id="nepaliDate"
+                           style="text-align:center;"
+                           class="nepali-calendar ndp-nepali-calendar date-input form-control" [(ngModel)]="_reportFilterService.CreditorsOutstandingObj.CreditorsOutstanding_BSDATE1"
+                              type="text" (change)="changestartDate($event.target.value,'BS')"
+                              placeholder="yyyy-mm-dd" /> -->
+                     </td>
+                  </tr>
+               </table>
+            </fieldset>
+
+            <!-- <division-list></division-list> -->
+            <fieldset>
+               <legend>Division Selection:</legend>
+               <select [(ngModel)]="_reportFilterService.CreditorsOutstandingObj.CreditorsOutstanding_DIV" style="height: 30px !important;"
+               class="form-control input-text">
+               <option value="%" *ngIf="masterService.userSetting.userwisedivision==0 ||  masterService.showAll">ALL</option>
+                   <option *ngFor="let div of division" value="{{ div.INITIAL }}">
+                       {{ div.NAME }}
+                   </option>
+               </select>
+           </fieldset>
+
+           <fieldset>
+            <legend>Cost Center:</legend>
+            <select [(ngModel)]="_reportFilterService.CreditorsOutstandingObj.CreditorsOutstanding_CostCenter"
+            style="height: 30px !important;"
+            class="form-control input-text">
+                <option value="%"> </option>
+                <option *ngFor="let i of CostcenterList" value={{i.CCID}}>{{i.COSTCENTERNAME}}
+                </option>
+            </select>
+        </fieldset>
+
+            <fieldset>
+               <legend>Report Style:</legend>
+               <label class="smallBoldLabel" style="padding-right:15px;"><input type="radio" name="BalViewOpt"
+                     [(ngModel)]="_reportFilterService.CreditorsOutstandingObj.ISSUMMARY" value=1>&nbsp;Summary
+                  Report</label>
+               <label class="smallBoldLabel"><input type="radio" name="BalViewOpt"
+                     [(ngModel)]="_reportFilterService.CreditorsOutstandingObj.ISSUMMARY" value=0>&nbsp;Detail Report</label>
+            </fieldset>
+         </div>
+         <!-- Right Column -->
+         <div class="col-md-6">
+            <fieldset *ngIf="_reportFilterService.CreditorsOutstandingObj.ISSUMMARY == 1">
+               <legend>Report Grouping Options :</legend>
+               <select [(ngModel)]="_reportFilterService.CreditorsOutstandingObj.GROUPBY" style="height: 30px !important;"
+               class="form-control input-text">
+                  <option value=0></option>
+                  <option value=1>Area Wise</option>
+                  <option value=2>Party Group Wise</option>
+                  <option value=3>Party Group Wise in Tree Format</option>
+               </select>
+               <label class="smallBoldLabel" style="padding-top:10px;">
+                  <input type="checkbox" name="showCred"
+                  (change)="$event.target.checked?(_reportFilterService.CreditorsOutstandingObj.DOAGEINGOFOPENINGBL=1):(_reportFilterService.CreditorsOutstandingObj.DOAGEINGOFOPENINGBL=0)"
+                     [(ngModel)]="_reportFilterService.CreditorsOutstandingObj.DOAGEINGOFOPENINGBL">&nbsp;Ignore
+                  Aging of Opening B/L </label><br>
+
+                  
+               <fieldset>
+                  <legend>Report Filter Option:</legend>
+                  <div class="row">
+                     <div class="col-sm-5"><label class="smallBoldLabel">Area:</label></div>
+                     <div class="col-sm-7">
+                        <select [(ngModel)]="_reportFilterService.CreditorsOutstandingObj.CreditorsOutstanding_AreaWiseInSummary"
+                        style="height: 30px !important;" class="form-control">
+                            <option value=0></option>
+                            <option *ngFor="let i of AreaList" value={{i.AREA_ID}}>{{i.AREA_NAME}}</option>
+                        </select>
+                     </div>
+                  </div>
+
+                  <div class="row" style="margin-top: 10px;">
+                     <div class="col-sm-5"><label class="smallBoldLabel">Party Group:</label></div>
+                     <div class="col-sm-7">
+                        <select [(ngModel)]="_reportFilterService.CreditorsOutstandingObj.CreditorsOutstanding_PartyGroup"
+                        style="height: 30px !important;" class="form-control">
+                            <option value='%'></option>
+                            <option *ngFor="let i of PartyGroupList" value={{i.ACID}}>{{i.ACNAME}}</option>
+                        </select>
+                     </div>
+                  </div>
+                     
+                  </fieldset>
+            </fieldset>
+
+            <fieldset *ngIf="_reportFilterService.CreditorsOutstandingObj.ISSUMMARY == 0">
+               <legend>Report Options :</legend>
+               <select [(ngModel)]="_reportFilterService.CreditorsOutstandingObj.ReportType" style="height: 30px !important;"
+               class="form-control input-text" (change)="checkValue()">
+                  <option value=1>Supplier Wise</option>
+                  <option value=2>Area Wise</option>
+               </select>
+            </fieldset>
+
+            <div *ngIf="showCustomer && _reportFilterService.CreditorsOutstandingObj.ISSUMMARY=='0'">
+               <fieldset>
+                  <legend><label class="smallBoldLabel">&nbsp;Ledger Wise</label></legend>
+                  <div>
+                      <div class="col-md-10">
+                          <input type="text" style="font-weight: bold;" class="form-control" [(ngModel)]="_reportFilterService.CreditorsOutstandingObj.multipleACNAME"
+                      placeholder="Press Enter or Tab for Account List" (keydown.Tab)="MultipleAccountEnterClicked($event)"
+                      (keydown.enter)="MultipleAccountEnterClicked($event)">
+
+                      </div>
+                      <div class="col-md-2">
+                          <button type="button" class="btn btn-info"
+                              (click)="addAccountToList()">Add</button>
+                      </div>
+                      <div class="col-md-12">
+                          <table style="height:175px;">
+                              <tr class="smallBoldLabel">
+                                  <th style="width:3px;font-weight: bold;">S.No.</th>
+                                  <th style="width:10px;font-weight: bold;">Account</th>
+                                  <th style="width:4px;font-weight: bold;">Action</th>
+                              </tr>
+                              <tr *ngFor="let data of _reportFilterService.CreditorsOutstandingObj.CreditorsOutstanding_multipleAccounts;let i = index"
+                                  class="smallBoldLabel">
+                                  <td style="width:3px;">{{ i + 1 }}</td>
+                                  <td style="width:10px;">{{data.ACNAME}}</td>
+                                  <td style="width:4px;">
+                                      <button type="button" class="action-btn"
+                                          (click)="deleteAccount(i)">Delete</button>
+                                  </td>
+                              </tr>
+                          </table>
+                      </div>
+                    </div>
+              </fieldset>
+            </div>
+
+            <div *ngIf="showArea && _reportFilterService.CreditorsOutstandingObj.ISSUMMARY==0">
+               <fieldset>
+                  <legend>Area:</legend>
+                  <select [(ngModel)]="_reportFilterService.CreditorsOutstandingObj.CreditorsOutstanding_AreaWise"
+                  style="height: 30px !important;" class="form-control input-text">
+                      <option value=0></option>
+                      <option *ngFor="let i of AreaList" value={{i.AREA_ID}}>{{i.AREA_NAME}}</option>
+                  </select>
+              </fieldset>
+            </div>
+
+            <label class="smallBoldLabel"><input type="checkbox" name="incpostdate"
+               (change)="$event.target.checked?(_reportFilterService.CreditorsOutstandingObj.CreditorsOutstanding_INCLUDEPOSTEDTRANSACTION=1):(_reportFilterService.CreditorsOutstandingObj.CreditorsOutstanding_INCLUDEPOSTEDTRANSACTION=0)"
+               [checked]="_reportFilterService.CreditorsOutstandingObj.CreditorsOutstanding_INCLUDEPOSTEDTRANSACTION == 1">&nbsp;Include Post Dated
+            Transaction</label><br>
+
+         </div>
+      </div>
+
+      <div class="modal-footer" style="width : 97%; margin : 0px auto;">
+         <button class="btn btn-info confirm-btn" type="button" (click)=onload()>RUN</button>
+         <button type="button" title="Cancel" class="btn btn-info" (click)="closeReportBox()">Close</button>
+      </div>
+
+   </div>
+
+   <generic-popup-grid #genericGridMultipleAccountLedger [popupsettings]="gridPopupSettingsForMultipleAccountLedgerList"
+   (onItemDoubleClick)="dblClickMultipleAccountSelect($event)">
+</generic-popup-grid>

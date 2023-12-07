@@ -1,0 +1,102 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "fix-table-header",
+        "scope": null,
+        "escapedName": "fix-table-header",
+        "name": "fix-table-header",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "E:\\Sag Ba\\Codes\\WebApp\\ERP\\Codes\\Client\\ERPClient"
+    ]
+  ],
+  "_from": "fix-table-header@latest",
+  "_id": "fix-table-header@1.0.3",
+  "_inCache": true,
+  "_location": "/fix-table-header",
+  "_nodeVersion": "6.9.1",
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/fix-table-header-1.0.3.tgz_1481525599087_0.7808412115555257"
+  },
+  "_npmUser": {
+    "name": "jo-geek",
+    "email": "jonesvinothjoseph@hotmail.com"
+  },
+  "_npmVersion": "3.10.8",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "fix-table-header",
+    "scope": null,
+    "escapedName": "fix-table-header",
+    "name": "fix-table-header",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/fix-table-header/-/fix-table-header-1.0.3.tgz",
+  "_shasum": "52f692bb137c89b5384acab44497315f71caa972",
+  "_shrinkwrap": null,
+  "_spec": "fix-table-header",
+  "_where": "E:\\Sag Ba\\Codes\\WebApp\\ERP\\Codes\\Client\\ERPClient",
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/Jo-Geek/jQuery-FixTableHeader/issues"
+  },
+  "demo": "https://jo-geek.github.io/jQuery-FixTableHeader/demo/",
+  "dependencies": {},
+  "description": "A jQuery plugin to fix header or footer row in a table on scroll",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "52f692bb137c89b5384acab44497315f71caa972",
+    "tarball": "https://registry.npmjs.org/fix-table-header/-/fix-table-header-1.0.3.tgz"
+  },
+  "gitHead": "87a2a8ccf61c215e7b501697a296d8719634b62d",
+  "homepage": "https://github.com/Jo-Geek/jQuery-FixTableHeader/",
+  "keywords": [
+    "jquery-plugin",
+    "ecosystem:jquery",
+    "jquery",
+    "table",
+    "header",
+    "footer",
+    "fixed",
+    "scroll",
+    "thead",
+    "tfoot"
+  ],
+  "license": "MIT",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  ],
+  "main": "jQuery.fixTableHeader.js",
+  "maintainers": [
+    {
+      "name": "jo-geek",
+      "email": "jonesvinothjoseph@hotmail.com"
+    }
+  ],
+  "name": "fix-table-header",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jo-Geek/jQuery-FixTableHeader.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "title": "jQuery - Fix Header or Footer in a Table",
+  "version": "1.0.3"
+}

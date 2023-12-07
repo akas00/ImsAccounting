@@ -1,0 +1,91 @@
+<div id="partyLedgerReportId" style="background-color : #ffffff; padding :1%; height : auto; width : 60%; ">
+        <div class="row">
+           <div class="modal-header" style="width : 97%; margin : 0px auto;">
+              <button type="button" class="close" data-dismiss="modal" (click)="closeReportBox()">&times;</button>
+              <h4 class="modal-title">Party Ledger Report</h4>
+           </div>
+           <!-- Left Column -->
+           <div class="col-md-12">
+              <fieldset>
+                 <legend>Report Type:</legend>
+                 <label class="smallBoldLabel"><input type="radio" value="1" name="showDetReport" [(ngModel)]="ReportParameters.OPT_SHOWSUMMARY_REPORT">&nbsp;Summary Report</label>
+                 <label class="smallBoldLabel"><input type="radio" value="0" name="showDetReport" [(ngModel)]="ReportParameters.OPT_SHOWSUMMARY_REPORT">&nbsp;Detail Report</label>
+              </fieldset>
+              <fieldset style="width : 99%;">
+                 <legend>Date Range Selection :</legend>
+                 <div class="_date_range">
+                    <a (click)="changeDateByRange('1')" value="week" style="color : white;" class="btn btn-info">This Week</a>
+                    <a (click)="changeDateByRange('2')" value="month" style="color : white;" class="btn btn-info">This Month</a>
+                    <a (click)="changeDateByRange('3')" value="year" style="color : white;" class="btn btn-info">This Year</a>
+                 </div>
+                 <table>
+                    <tr>
+                       <td><label class="smallBoldLabel">From(AD):</label></td>
+                       <td><label class="smallBoldLabel">To(AD):</label></td>
+                    </tr>
+                    <tr>
+                       <td>                                                 
+                          <label class="smallBoldLabel"><input  type="date"  style="width:152px; min-width:50%;"  placeholder="Year Start Date" [(ngModel)]="ReportParameters.DATE1"  (change)="changestartDate($event.target.value,'AD')" max="{{masterService.date1 | date:'yyyy-MM-dd'}}" min="{{masterService.date2 | date:'yyyy-MM-dd'}}"></label>
+                       </td>
+                       <td>                                                 
+                          <label class="smallBoldLabel"><input  type="date" style="width:152px; min-width:50%;"  placeholder="Year Start Date" [(ngModel)]="ReportParameters.DATE2"  (change)="changeEndDate($event.target.value,'AD')"  max="{{masterService.date1 | date:'yyyy-MM-dd'}}" min="{{masterService.date2 | date:'yyyy-MM-dd'}}" ></label>
+                       </td>
+                    </tr>
+                    <tr>
+                       <td>
+                          <label class="smallBoldLabel"><input id="nepaliDate" style="width:152px;height:25px;text-align:center" class="nepali-calendar ndp-nepali-calendar" [(ngModel)]="ReportParameters.BSDATE1"
+                          type="text" (change)="changestartDate($event.target.value,'BS')"
+                          placeholder="yyyy-mm-dd" /> </label>
+                       </td>
+                       <td>
+                          <label class="smallBoldLabel"><input id="nepaliDate" style="width:152px;height:25px;text-align:center" class="nepali-calendar ndp-nepali-calendar" [(ngModel)]="ReportParameters.BSDATE2"
+                          type="text" (change)="changeEndDate($event.target.value,'BS')"
+                          placeholder="yyyy-mm-dd" /> </label>
+                       </td>
+                    </tr>
+                 </table>
+              </fieldset>
+              <fieldset>
+                 <legend> Account : </legend>
+                 <table>
+                    <tr>
+                       <td><label class="smallBoldLabel">ACCODE</label></td>
+                       <td><label class="smallBoldLabel">ACNAME</label></td>
+                    </tr>
+                    <tr>
+                       <td>
+                          <label class="smallBoldLabel"><input tabindex="2" type="text" style="height:26px;" (keydown.enter)="accodeChanged($event.target.value)" [(ngModel)]="ACCODE"></label>
+                       </td>
+                       <td>
+                          <div style="position: absolute; top: 260px; width: 150px;">
+                             <label class="smallBoldLabel"><input tabindex="2" ngui-auto-complete [source]="dropListItem.bind(this)" max-num-list="25" [(ngModel)]="ACCNAME" list-formatter="ACNAME" style="height:26px;" (ngModelChange)="itemChanged($event)" name="AcName" display-property-name="ACNAME"></label>
+                          </div>
+                       </td>
+                    </tr>
+                 </table>
+              </fieldset>
+              <fieldset>
+                  <legend>Division Selection:</legend>
+                  <select [(ngModel)]="ReportParameters.DIVISION" style="width : 100%;">
+                     <option value="%" *ngIf="masterService.userSetting.userwisedivision==0 || masterService.showAll">ALL</option>
+                     <option *ngFor="let div of division" value="{{ div.INITIAL }}">
+                        {{ div.NAME }}
+                     </option>
+                  </select>
+               </fieldset>
+              <label class="smallBoldLabel"> <input type="checkbox" (change)="$event.target.checked?(ReportParameters.REPORTBYCOSTCENTER=1):(ReportParameters.REPORTBYCOSTCENTER=0)" name="costCentersel" [checked]="ReportParameters.REPORTBYCOSTCENTER == 1" >&nbsp;Cost Center Selection</label><br>
+              <label class="smallBoldLabel"> <input type="checkbox" (change)="$event.target.checked?(ReportParameters.SHOWPRODUCTDETAIL=1):(ReportParameters.SHOWPRODUCTDETAIL=0)" name="prodDet" [checked]="ReportParameters.SHOWPRODUCTDETAIL == 1" >&nbsp;Show Item Details Also</label><br>
+              <label class="smallBoldLabel"> <input type="checkbox" (change)="$event.target.checked?(ReportParameters.showNdate=1):(ReportParameters.showNdate=0)" name="showDate" [checked]="ReportParameters.showNdate == 1" >&nbsp;Show BS Date in Report</label><br>
+              <label class="smallBoldLabel"> <input type="checkbox" (change)="$event.target.checked?(ReportParameters.FCURRENCY=1):(ReportParameters.FCURRENCY=0)" name="fCurr" [checked]="ReportParameters.FCURRENCY == 1">&nbsp;Show Ledger in Foreign Currency</label><br>
+              <div class="btn">
+                 <!-- <button type="button"  title="onSave" class="btn btn-info">Run</button>    -->
+                 <button class="btn btn-info confirm-btn" type="button"  (click)=onload()>RUN</button>
+                 <button type="button"  title="Cancel" class="btn btn-info" (click)="closeReportBox()">Close</button>  
+              </div>
+           </div>
+           <!-- <div class="modal-footer">
+              <button class="btn btn-info confirm-btn" type="button"  (click)=onload()>RUN</button>
+              </div> -->
+</div>
+</div>
+

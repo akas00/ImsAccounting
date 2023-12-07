@@ -1,0 +1,241 @@
+ 
+<div class=row style="margin: 5px 0px">
+    <form [ngClass]="showWholeSubledger ? 'col-md-8' : 'col-md-12'" style="padding-left: 0px;padding-right: 5px;">
+        <!-- <label style="text-align:center; display: block; font-size: 18px; float:none; margin-left:auto; margin-right:auto;">Journal Entry</label> -->
+        <div style="display: block; max-height: 320px; min-height: 250px; overflow-y: auto" class="scroll">
+            <table class="table" style="margin-bottom: 5px; font-size: 12.5px;" (click)="hideDetail()">
+                <thead>
+                    <tr style="border-bottom: 2px solid #E6E6E6; border-top: 2px solid #E6E6E6">
+                        <th>S.No.</th>
+                        <th>A/C Code</th>
+                        <th>A/C Name</th>
+                        <th>Debit Amount</th>
+                        <th>Credit Amount</th>
+                        <th [hidden]="hasCheque == false">Cheque No.</th>
+                        <th [hidden]="hasCheque == false">Cheque Date</th>
+                        <th [hidden]="hasCostCenter == false">Cost Center</th>
+                        <th>Narration</th>
+                    </tr>
+                </thead>
+                <tbody *ngFor="let tList of trnMain.TrntranList;let i=index" style="border: 0px">
+                    <tr (click)="clickRow(i)">
+                        <td>{{i+1}}.</td>
+                        <td class="cell-with-comment">
+                            <input  
+                                #ACCODEInput
+                                type="text" 
+                                autocomplete="false" 
+                                [focus]="acNameFocused" 
+                                style="height:23px;width: 100%;"  
+                                (keyup.Enter)="showAcList(i);ACCODEInput.blur()" 
+                                (keydown.Tab)="showAcList(i); $event.preventDefault();ACCODEInput.blur()" 
+                                (keydown)="preventInput($event);"
+                                name="acCode{{i}}" 
+                                value="{{(tList.acitem!=null) ? tList.acitem.ACCODE : ''}}" /> 
+                                <span class="cell-comment">
+                                    press ENTER or TAB to Select Account
+                                </span>
+                        </td>
+                        <td>
+                            <input  
+                            style="height:23px;width: 100%" list-formatter="ACNAME" value="{{(tList.acitem!=null) ? tList.acitem.ACNAME : ''}}" 
+                            name="acName{{i}}" disabled /> 
+                        </td>
+                        <td>
+                            <input decimalPlacesRestriction="2" [disabled]="tList.hasDebit == false" [style.background-color]="tList.drBGColor" [style.color]="tList.drColor" type="number"
+                                style="width: 100%; height:23px" name="debit{{i}}" id="debit{{i}}" [(ngModel)]="tList.DRAMNT"
+                                (keyup)="changeDebit($event.target.value,i)">
+                        </td>
+                        <td>
+                            <input decimalPlacesRestriction="2"  [disabled]="tList.hasCredit == false" [style.background-color]="tList.crBGColor" [style.color]="tList.crColor" type="number"
+                                style="width: 100%; height:23px" name="credit{{i}}" id="credit{{i}}" [(ngModel)]="tList.CRAMNT"
+                                (keyup)="changeCredit($event.target.value, i)">
+                        </td>
+                        <td [hidden]="hasCheque == false"><input type="text" name="chequeNo{{i}}" [(ngModel)]="tList.ChequeNo" style="width: 100%; height:23px"></td>
+                        <td [hidden]="hasCheque == false"><input type="date" style="width: 100%; height:23px" name="chequeDate{{i}}" [(ngModel)]="tList.ChequeDate"></td>
+                        <td [hidden]="hasCostCenter == false">
+                            <select name="costCenter{{i}}" [(ngModel)]="tList.CostCenter" style="width: 100%;height: 23px;">
+                                <option hidden></option>
+                                <option *ngFor="let c of masterService.costCenterList$ | async">{{c.CostCenterName}}</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input  
+                            (keydown.Tab)="addRow(i)"
+                            (keydown.Enter)="addRow(i)"
+                            (keydown.Delete)="removeRow(i)"
+                            style="width: 100%"
+                            type="text" name="narration{{i}}" [(ngModel)]="tList.NARATION" placeholder="Narration">
+                        </td>
+                    </tr>
+                    <!-- <tr *ngIf="tList.inputMode == true" (click)="clickRow(i)">
+                        <td></td>
+                        <td colspan="8"> 
+                            <button *ngIf="tList.inputMode == true && tList.editMode == false" (click)="addRow(i)" style="margin-left:3px" [disabled]="hasAddBtn == false"
+                                class="glyphicon glyphicon-plus"></button>
+                            <button *ngIf="tList.editMode == true && tList.inputMode == true" (click)="saveRow(i)" style="margin-left:3px" class="glyphicon glyphicon-floppy-disk"></button>
+                            <button *ngIf="tList.inputMode == true" (click)="removeRow(i);" style="margin-left:2px" class="glyphicon glyphicon-remove"></button>
+                        </td>
+                    </tr> -->
+                    <tr *ngIf="tList.inputMode == false" (click)="clickRow(i)">
+                        <td style="line-height:21px">
+                            <div *ngIf="tList.AccountItem.HASSUBLEDGER == 1" style="display:inline-block">*</div>{{i+1}}.</td>
+                        <td style="line-height:21px">{{tList.AccountItem.ACCODE}}</td>
+                        <td style="line-height:21px">{{tList.AccountItem.ACNAME}}</td>
+                        <td style="line-height:21px">{{tList.DRAMNT}}</td>
+                        <td style="line-height:21px">{{tList.CRAMNT}}</td>
+                        <td [hidden]="hasCheque == false" style="line-height:21px">{{tList.ChequeNo}}</td>
+                        <td [hidden]="hasCheque == false" style="line-height:21px">{{tList.ChequeDate}}</td>
+                        <td [hidden]="hasCostCenter == false" style="line-height:21px">{{tList.CostCenter}}</td>
+                        <!-- <td style="display:flex;">
+                            <button id="editBtn{{i}}" (click)="editRow(i)" style="margin-top:0px" class="glyphicon glyphicon-edit"></button>
+                            <button (click)="removeRow(i)" style="margin-left:5px; margin-top:0px" class="glyphicon glyphicon-remove"></button>
+                        </td> -->
+                        <td>
+                           {{tList.NARATION}} 
+                        </td>
+                    </tr>  
+
+                    <!-- <tr *ngIf="tList.NARATION != null && tList.inputMode == false" (click)="clickRow(i)">
+                        <td style="padding-top: 0px; line-height:21px"></td>
+                        <td colspan="8" style="padding-top: 0px; line-height:21px">
+                            ( {{tList.NARATION}} ) 
+                        </td>
+                    </tr> -->
+                </tbody>
+            </table>
+        </div> 
+    </form>
+    <div *ngIf="showWholeSubledger==true">
+        <form *ngIf="showSubLedger==true" class="col-md-4" style="padding-left: 5px;padding-right: 0px;" id="sub-ledger">
+            <label style="text-align:center; display: block; font-size: 18px; float:none; margin-left:auto; margin-right:auto; width:auto">Sub-Ledger Entry</label>
+            <div style="display: block; max-height: 400px;min-height: 292px;" class="scroll">
+                <table class="table" style="margin-bottom: 5px; font-size: 12.5px;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #E6E6E6; border-top: 2px solid #E6E6E6">
+                            <th>S.No.</th>
+                            <th>A/C Code</th>
+                            <th>A/C Name</th>
+                            <th>{{showAmount}} Amount</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody *ngFor="let tList of subLedgerList;let i=index" style="border: 0px;">
+                        <tr *ngIf="tList.inputMode == true">
+                            <td>{{i+1}}.</td>
+                            <td>
+                                <select name="acCode{{i}}" *ngIf="enableACCodeFocus==true" [subFocus]="subAcCodeFocused" style="height: 23px;" [(ngModel)]="tList.SubledgerItem" (change)="subACCodeChange(i)">
+                                    <option *ngFor="let subItemList of subledgerItemList" [ngValue]="subItemList">{{subItemList.ACCODE}}</option>
+                                </select>
+                                <select name="acCode{{i}}" *ngIf="enableACCodeFocus==false" style="height: 23px;" [(ngModel)]="tList.SubledgerItem" (change)="subACCodeChange(i)">
+                                    <option *ngFor="let subItemList of subledgerItemList" [ngValue]="subItemList">{{subItemList.ACCODE}}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="acName{{i}}" *ngIf="enableACNameFocus==true" [subFocus]="subAcNameFocused" style="height: 23px; max-width: 140px" [(ngModel)]="tList.SubledgerItem" (change)="subACNameChange(i)">
+                                    <option *ngFor="let subItemList of subledgerItemList" [ngValue]="subItemList">{{subItemList.ACNAME}}</option>
+                                </select>
+                                <select name="acName{{i}}" *ngIf="enableACNameFocus==false" style="height: 23px; max-width: 140px" [(ngModel)]="tList.SubledgerItem" (change)="subACNameChange(i)">
+                                    <option *ngFor="let subItemList of subledgerItemList" [ngValue]="subItemList">{{subItemList.ACNAME}}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="number" *ngIf="showAmount=='Dr.'" style="height: 23px;max-width: 90px" name="subDebit{{i}}" id="subDebit"
+                                    [(ngModel)]="tList.DRAMNT" (keyup)="changeSubDebit($event.target.value,i)">
+                                <input type="number" *ngIf="showAmount=='Cr.'" style="height: 23px;max-width: 90px" name="subCredit{{i}}" id="subCredit"
+                                    [(ngModel)]="tList.CRAMNT" (keyup)="changeSubCredit($event.target.value,i)">
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr *ngIf="tList.inputMode == true">
+                            <td>
+                                <td colspan="5">
+                                    <input style="min-width: 70.5%;height: 23px;" type="text" name="narration{{i}}" [(ngModel)]="tList.NARATION" placeholder="Narration">
+                                    <button *ngIf="tList.inputMode == true && tList.editMode == false" (click)="addLedgerRow(i)" style="margin-left:3px;" [disabled]="hasLedgerAddBtn == false"
+                                        class="glyphicon glyphicon-plus"></button>
+                                    <button *ngIf="tList.editMode == true && tList.inputMode == true" (click)="saveLedgerRow(i)" style="margin-left:3px;" class="glyphicon glyphicon-floppy-disk"></button>
+                                    <button *ngIf="tList.inputMode == true" (click)="removeLedgerRow(i);" style="margin-left:1px" class="glyphicon glyphicon-remove"></button>
+                                </td>
+                        </tr>
+
+                        <tr *ngIf="tList.inputMode == false">
+                            <td>{{i+1}}.</td>
+                            <td>{{tList.SubledgerItem.ACCODE}}</td>
+                            <td>{{tList.SubledgerItem.ACNAME}}</td>
+                            <td>
+                                <div *ngIf="tList.DRAMNT != 0">{{tList.DRAMNT}}</div>
+                                <div *ngIf="tList.CRAMNT != 0">{{tList.CRAMNT}}</div>
+                            </td>
+                            <td style="display:flex;">
+                                <button id="editLedgerBtn{{i}}" (click)="editLedgerRow(i)" class="glyphicon glyphicon-edit"></button>
+                                <button (click)="removeLedgerRow(i)" style="margin-left:5px" class="glyphicon glyphicon-remove"></button>
+                            </td>
+                        </tr>
+
+                        <tr *ngIf="tList.NARATION != null && tList.inputMode == false">
+                            <td></td>
+                            <td colspan="4" style="padding-top:0px;">
+                               ( {{tList.NARATION}} )
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </form>
+
+        <div *ngIf="showSubLedgerList == true" class="col-md-4" style="padding-left: 5px;padding-right: 0px;" id="sub-ledger">
+            <label style="text-align:center; display: block; font-size: 18px; float:none; margin-left:auto; margin-right:auto; width:auto">Sub-Ledger List</label>
+            <div style="display: block; max-height: 400px;" class="scroll">
+                <table class="table" style="margin-bottom: 5px; font-size: 12.5px;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #E6E6E6; border-top: 2px solid #E6E6E6">
+                            <th>S.No.</th>
+                            <th>A/C Code</th>
+                            <th>A/C Name</th>
+                            <th>Dr. Amnt</th>
+                            <th>Cr. Amnt</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngFor="let tList of trnMain.TrntranList;let i=index" style="border: 0px;">
+                        <tr *ngIf="tList.AccountItem.HASSUBLEDGER == 1">
+                            <td *ngIf="tList.AccountItem.ACCODE != null || tList.AccountItem.ACNAME != null"><strong></strong></td>
+                            <td style="border-bottom: 2px solid #E6E6E6;line-height:20px;" *ngIf="tList.AccountItem.ACCODE != null || tList.AccountItem.ACNAME != null"><strong>{{tList.AccountItem.ACCODE}}</strong></td>
+                            <td style="border-bottom: 2px solid #E6E6E6;line-height:20px;" *ngIf="tList.AccountItem.ACCODE != null || tList.AccountItem.ACNAME != null"><strong>{{tList.AccountItem.ACNAME}}:</strong></td>
+                            <td style="border-bottom: 2px solid #E6E6E6;line-height:20px;"></td>
+                            <td style="border-bottom: 2px solid #E6E6E6;line-height:20px;"></td>
+                        </tr>
+                        <tr *ngFor="let sList of trnMain.TrntranList[i].SubledgerTranList;let j=index">
+                            <td *ngIf="sList.SubledgerItem != null && sList.SubledgerItem.ACNAME != null" style="line-height:20px;">{{j+1}}.</td>
+                            <td style="line-height:20px;" *ngIf="sList.SubledgerItem != null && sList.SubledgerItem.ACNAME != null">{{sList.SubledgerItem.ACCODE}}</td>
+                            <td style="line-height:20px;" *ngIf="sList.SubledgerItem != null && sList.SubledgerItem.ACNAME != null">{{sList.SubledgerItem.ACNAME}}</td>
+                            <td style="line-height:20px;" *ngIf="sList.SubledgerItem != null && sList.SubledgerItem.ACNAME != null">{{sList.DRAMNT}}</td>
+                            <td style="line-height:20px;" *ngIf="sList.SubledgerItem != null && sList.SubledgerItem.ACNAME != null">{{sList.CRAMNT}}</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <form *ngIf="showHelp == true" class="col-md-4" style="padding-left: 5px;padding-right: 0px;" id="help">
+            <label style="text-align:center; display: block; font-size: 18px; float:none; margin-left:auto; margin-right:auto; width:auto">Help</label>
+            <table class="table" style="margin-bottom: 5px;">
+                <h5><strong>What is Lorem Ipsum?</strong></h5>
+                <p>
+                    <strong>Lorem Ipsum</strong> is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+                    has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley
+                    of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also
+                    the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s
+                    with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing
+                    software like Aldus PageMaker including versions of Lorem Ipsum
+                </p>
+            </table>
+        </form>
+    </div> 
+</div> 
+
+<generic-popup-grid  
+  #genericGridACList 
+  [popupsettings]="gridACListPopupSettings"
+  (onItemDoubleClick) = "onAcSelect($event)"
+  ></generic-popup-grid> 

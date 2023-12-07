@@ -1,0 +1,178 @@
+<style>
+  label {
+    width: 150px;
+    font-size: 15px;
+    color: #403c3c;
+  }
+
+  input {
+    height: 30px;
+  }
+
+ 
+</style>
+
+<div class="sticky-top">
+  <div class="row clearfix" style=" padding: 0px 20px;">
+    <div class="col-md-6">
+      <h3 class="page-title">{{ Title }}</h3>
+    </div>
+    <div class="col-md-6" style="float: right;"></div>
+    <button type="button " class="btn btn-info pull-right" (click)="cancel()" style="margin-right : 10px;">
+      Back
+    </button>
+    <button type="button" (click)="SumbitSave()" title="onSave" class="btn btn-info pull-right"
+      style="margin-right : 10px;">
+      Save
+    </button>
+    <button type="button" (click)="SumbitSave()" title="onSave" class="btn btn-info pull-right"
+      [disabled]="!this.parentGroup" *ngIf="grp == 'G'" style="margin-right : 10px;">
+      Save
+    </button>
+  </div>
+</div>
+<div class="main-container" style="padding-top : 10px; margin-bottom: 0px">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="tabbable" id="ALEDGER-tabs">
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a class="nav-link active" href="#general-info1" data-toggle="tab">General Info</a>
+          </li>
+         
+          <li class="nav-item">
+              <a class="nav-link" *ngIf='showBank==1 && isGroup == 0 && isGroup == 0' href="#tab2" data-toggle="tab">Bank</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"  *ngIf='showPLedgerInfo==1 && isGroup == 0 && MasterService.PType == "C"' href="#tab3" data-toggle="tab">Customer</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link"  *ngIf='showPLedgerInfo==1 && isGroup == 0 && MasterService.PType == "V"' href="#tab4" data-toggle="tab">Supplier</a>
+                </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="general-info1">
+            <form [formGroup]="form">
+              <div class="form-group row">
+                <div class="col-sm-12">
+                  <div class="col-md-8">
+                    <div class="form-group row">
+                      <label class="col-sm-3 form-control-label">Group Name*</label>
+                      <div class="col-sm-9">
+                        <input type="text" class="form-control" formControlName="ACNAME" placeholder="Name" />
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-sm-3 form-control-label">Primary Group*</label>
+                      <div class="col-sm-9">
+                        <select class="form-control" name="MainGroup" (change)="SelectMainGrp()" [(ngModel)]="Prefix"
+                          [ngModelOptions]="{standalone:true}">
+                          <option *ngFor="let i of MainGrpList" value="{{i.ACID}}">{{i.ACNAME}}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-sm-3 form-control-label">Under:</label>
+                      <div class="col-sm-9">
+                        <input type="text" class="form-control" [formControl]="PARENTNAME"
+                          (keydown.tab)="onAcGroupPopupTab()" (keydown.enter)="onAcGroupPopupTab()"
+                          placeholder="Press ENTER or TAB to Choose Group" />
+                      </div>
+                    </div>
+                    <!-- <div class="form-group row">
+                      <label class="col-sm-3 form-control-label">ACCode</label>
+                      <div class="col-sm-9">
+                        <input
+                          type="text"
+                          class="form-control"
+                          formControlName="ACCODE"
+                          placeholder="CODE"
+                        />
+                      </div>
+                    </div> -->
+
+                    <ng-container>
+                      <div class="form-group row">
+                        <label class="col-sm-3 form-control-label">Has Sub Ledger</label>
+                        <div class="col-sm-9">
+                          <input type="checkbox" formControlName="HASSUBLEDGER">
+
+                        </div>
+                      </div>
+
+                    </ng-container>
+                    <!-- <div *ngIf="showAssets==1" class="form-group row">
+                        <label class="col-sm-3 form-control-label"
+                          >Assets Type</label
+                        >
+                        <div class="col-sm-9">
+                          <select
+                            class="form-control"
+                            formControlName="MAPID"
+                            style="height:30px;padding-bottom: 0px;"
+                          >
+                            <option value="C">Cash</option>
+                            <option value="O">Others</option>
+                          </select>
+                        </div>
+                      </div>  -->
+                    <!-- <div class="form-group row">
+                        <label class="col-sm-3 form-control-label"
+                          >Status*</label
+                        >
+                        <div class="col-sm-9">
+                          <select
+                            class="form-control"
+                            formControlName="ISACTIVE"
+                            style="height:30px;padding-bottom: 0px;"
+                          >
+                            <option value=1>Active</option>
+                            <option value=0>Inactive</option>
+                          </select>
+                        </div>
+                      </div> -->
+                    <!-- *ngIf="AccCurrentSelectedGroup" -->
+                  </div>
+                  <div class="col-md-4">
+                      <for-account-group-popup-grid #acPopupGrid (onItemDoubleClick)="onItemDoubleClick($event)" [Prefix]="Prefix">
+                        </for-account-group-popup-grid>
+                  </div>
+
+                </div>
+              </div>
+            </form>
+          </div>
+          
+          <div class="tab-pane" id="tab2" >
+              <h4>Bank Information</h4>
+              <bankdetails></bankdetails>
+            </div>
+            <div class="tab-pane" id="tab3">
+                <h4>Customer Information</h4>
+                <PLedger #PLedgerChild [PType]='PTypeForParty'></PLedger>
+              </div>
+              <div class="tab-pane" id="tab4">
+                  <h4>Supplier Information</h4>
+                  <PLedger #PLedgerChild [PType]='PTypeForParty'></PLedger>
+                </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- <div bsModal #lgModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content" style="margin-top: -210px;width: 106%;height: 480px;margin-left:0px">
+          <button class="close" (click)="CloseParty()" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        <div class="modal-body">
+          <PLedger [title]="Acctitle"></PLedger>
+        </div>
+
+      </div>
+    </div>
+  </div> -->

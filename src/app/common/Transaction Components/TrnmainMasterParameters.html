@@ -1,0 +1,86 @@
+<form [formGroup]="TrnMainForm">
+        <div class="row plainBackGround" *ngIf="masterService.ShowMore==true">
+            <div class="row" style="margin-left:10px;">
+                    <div class="col-md-6">
+                            <div class="row">
+                            <label style="width: 20%;">Customer :</label>
+            
+                                <select style="width:70%;" formControlName="PARAC" (change)="accountChange()">
+                                    <option  [ngValue]="null">-Choose options-</option>
+                                    <option *ngFor="let al of AccountList" [ngValue]="al.ACID">{{al.ACNAME}}</option></select>
+                                </div>
+                                <div class="row">
+                                        <label style="width: 20%;">Cust.Name :</label>
+                                        <input type="text" style="width:70%;" formControlName="BILLTO" (change)="formValidCheck">
+                                    </div>
+                                    <div class="row">
+                                        <label style="width: 20%;">Address :</label>
+                                        <input type="text" style="width:70%;" formControlName="BILLTOADD" (change)="formValidCheck">
+                                    </div>
+                                    <!--<div class="col-md-2">
+                                        <label style="width:85.5px;">PANNO :</label>
+                                        <input type="text" style="min-width:81%;" formControlName="BILLTO" (change)="formValidCheck">
+                                    </div>-->
+                                    <div class="row">
+                                        <label style="width: 20%;">Mobile :</label>
+                                        <input type="text" style="width:70%;" formControlName="BILLTOMOB" >
+                                    </div>
+                                    <div class="row">
+                                        <label style="width: 20%;">PAN No :</label>
+                                        <input type="number" maxlength="9" minlength="9" formControlName="BILLTOTEL" ngDefaultControl >
+                                    </div>
+                        </div>
+                <div class="col-md-6" >
+                    <div class="row">
+                    <label style="width: 20%;">Payment Type :</label>
+                    <select style="width:70%;" formControlName="TRNMODE" (change)="onpaymentmodechange()">
+                        <option *ngFor="let p of paymentmodelist" [ngValue]="p.PAYMENTMODENAME">{{p.PAYMENTMODENAME}}</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <label style="width: 20%;">Sales To Branch :</label>
+                  
+                        <select style="width:70%;" formControlName="FPOSTUSER" >
+                            <option  [ngValue]="null">-Choose options-</option>
+                            <option *ngFor="let al of BranchList" [ngValue]="al.BRANCHID">{{al.NAME}}</option></select>
+                        </div>
+                <div class="row">
+                    <label style="width: 20%;">Supplier :</label>
+                  
+                        <select style="width:70%;" formControlName="POSTUSER" (change)="supplierChange()">
+                            <option  [ngValue]="null">-Choose options-</option>
+                            <option *ngFor="let al of Suppliers" [ngValue]="al.ACID">{{al.ACNAME}}</option></select>
+                        </div>
+                <div class="row" *ngIf="AppSettings.enableCostCenter!=0">
+                        <label style="width:20%;">CostCenter :</label>
+                        <select *ngIf="AppSettings.enableCostCenter!=0" style="width:70%;" formControlName="COSTCENTER"><option *ngFor="let c of masterService.costCenterList$ | async" [ngValue]="c.CostCenterName">{{c.CostCenterName}}</option></select>
+                    </div>
+                    <!-- <div class="row">
+                        <label style="width:20%;">Warehouse :</label>
+                        <select style="width:70%;" formControlName="WAREHOUSE">
+                            <option *ngFor="let w of masterService.warehouseList$ | async" [ngValue]="w.NAME">{{w.NAME}}</option>
+                        </select>
+                    </div> -->
+                    <div class="row" *ngIf="AppSettings.ENABLEMULTICURRENCY==1">
+                          
+                                <label style="width:20%;">Currency :</label>
+                                <select style="width:30%;" formControlName="FCurrency" (change)="CurrencyChange()">
+                                <option *ngFor="let c of  masterService.Currencies" [ngValue]="c.CURNAME" >{{c.CURNAME}}</option>
+                            </select>
+            
+                            
+                                <label style="width:20%;">Exchange Rate :</label>
+                                <input type="text" style="width:18%;" formControlName="EXRATE" readonly>
+                           
+                        </div>
+                        <div class="row">
+                                <label style="width:20%;">Remarks :</label>
+                                <input type="text" style="min-width:70%;" formControlName="REMARKS" (change)="formValidCheck">
+                            </div>
+                </div>
+               
+    
+            </div> 
+        </div>
+    </form>
+    

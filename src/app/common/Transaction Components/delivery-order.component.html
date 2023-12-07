@@ -1,0 +1,66 @@
+<style>
+    .filter-container {
+        padding: 15px 0px;
+    }
+
+    .advance-search {
+        color: #3F82BB !important;
+        cursor: pointer;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-6">
+            <div class="col-md-12">
+                <h3>{{title}}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="clearfix"></div>
+<div class="row filter-container">
+    <div class="col-md-12">
+        <div class="col-md-4">
+            <div class="col-md-4"> <label>Type</label></div>
+            <div class="col-md-8">
+                <input type="text" readonly name="type" [(ngModel)]="_transactionService.FilterObj.type"
+                    class="form-control" (keydown.enter)="location.focus()">
+            </div>
+
+        </div>
+        <div class="col-md-4">
+            <div class="col-md-4">
+                <label>Location</label>
+            </div>
+            <div class="col-md-8">
+                <input type="text" readonly name="location" [(ngModel)]="_transactionService.FilterObj.location"
+                    #location (keydown.enter)="from.focus()" class="form-control">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="col-md-6">
+            <div class="col-md-2">
+                <label> Date</label>
+            </div>
+            <div class="col-md-10" style="width: 43%;margin-left:33px">
+                <input class="form-control" type="text" ngxDaterangepickerMd [(ngModel)]="selectedDate"  [showDropdowns]="true" [showCustomRangeLabel]="true"
+                    [alwaysShowCalendars]="true" [locale]="locale" [ranges]="ranges" [linkedCalendars]="true"
+                    [showCancel]="true" placeholder="Date Range..." (ngModelChange)="dateChanged($event)" />
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+            <div class="col-md-4">
+                <span>
+                    <a (click)="advanceSearch()" #advance class="advance-search">Advance Search</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="clearfix"></div>

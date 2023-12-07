@@ -1,0 +1,202 @@
+<style>
+  .modal-content {
+    padding: 1px;
+    margin: 0px;
+    float: right;
+  }
+
+  .modal-content {
+    box-shadow: -10px 0px 10px 1px #aaaaaa;
+  }
+
+  .modal-content-summary-area {
+    max-height: 20%;
+    height: 20%;
+    overflow: auto;
+    overflow-x: hidden;
+  }
+
+  /* layout.css Style */
+  .upload-drop-zone {
+    height: 130px;
+    border-width: 2px;
+    margin-bottom: 20px;
+  }
+
+  /* skin.css Style*/
+  .upload-drop-zone {
+    color: #c7dadf;
+    border-style: solid;
+    border-color:#c7dadf;
+    border-radius: 2px;
+    line-height: 130px;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .sample-download-area {
+    color: #ccc;
+    border-style: dashed;
+    border-color: #ccc;
+    line-height: 60px;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .upload-drop-zone.drop {
+    color: #222;
+    border-color: #222;
+  }
+
+  .image-preview-input {
+    position: relative;
+    overflow: hidden;
+    margin: 0px;
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+  }
+  .image-preview-input input[type="file"] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+  }
+  .image-preview-input-title {
+    margin-left: 2px;
+  }
+
+  .form-control {
+    height: 35px;
+  }
+
+  .file-dropover-continue {
+    color: #1b6ed6;
+    border-style: dashed;
+    border-color: #1b6ed6;
+    background: #ded4d4;
+  }
+</style>
+<div
+  class="modal-sticky"
+  [class.modal-sticky-hide]="!isActive"
+  style="display : block; padding: 0px;"
+>
+  <!-- Modal content -->
+  <div class="modal-content modal-content-main-area">
+    <div *ngIf="popupsettings">
+      <div>
+        <div class="modal-header" style="padding: 0px;background: #8cccfb;">
+          <button class="close" aria-label="Close" (click)="popupClose()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" style="text-align: center;">
+            {{ popupsettings.title }}
+          </h4>
+        </div>
+        <div class="upload-area container">
+          <br />
+          <div class="file-upload-area">
+            <!-- Drop Zone -->
+            <div
+              class="upload-drop-zone"
+              [class.file-dropover-continue]="dragging"
+              (dragover)="onDragOver($event)"
+              (drop)="onDrop($event)"
+              (click)="fileSelect.click()"
+              id="drop-zone"
+            >
+             <b> Choose a File</b> or Drag it Here.
+            </div>
+            <br />
+            <div class="input-group image-preview">
+              <input
+                placeholder=""
+                type="text"
+                class="form-control image-preview-filename"
+                disabled="disabled"
+                name="selectedfiles"
+                style="display: none"
+
+              />
+              <!-- don't give a name === doesn't send on POST/GET -->
+              <span class="input-group-btn">
+                <!-- image-preview-clear button -->
+                <button
+                  type="button"
+                  class="btn btn-default image-preview-clear"
+                  style="display:none;"
+                >
+                  <span class="glyphicon glyphicon-remove"></span> Clear
+                </button>
+                <!-- image-preview-input -->
+                <div class="btn btn-default image-preview-input">
+                  <span class="glyphicon glyphicon-folder-open"></span>
+                  <span class="image-preview-input-title">Browse</span>
+                  <input
+                    type="file"
+                    #fileSelect
+                    accept=".csv, .xlsx"
+                    name="input-file-preview"
+                    (change)="onFileChange($event)"
+                    ng-multiple="popupsettings.allowMultiple"
+                    [attr.accept] ="popupsettings.acceptFormat"
+                  />
+                  <!-- rename it -->
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-labeled btn-info"
+                  (click)="importConfig()"
+                  [disabled] = "!fileList"
+                >
+                  <span class="btn-label"
+                    ><i class="glyphicon glyphicon-upload"></i> </span
+                  >Upload
+                </button>
+              </span>
+            </div>
+            <br />
+            <div *ngIf="popupsettings.note">
+                <h5>Note</h5>
+                <div [innerHTML] = "popupsettings.note"></div>
+            </div>
+            <p *ngIf="popupsettings.sampleFileUrl">
+                Download the <a (click)="downloadSample()" style="cursor: pointer; color:#1b6ed6">sample template</a> to get started.
+            </p>
+
+            <div style="height:90px; overflow-y:auto;">
+              <table class="table" *ngIf="selectedFileNames.length">
+                <thead>
+                  <tr>
+                    <th>SN.</th>
+                    <th>Filename</th>
+                    <!-- <th>Action</th> -->
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of selectedFileNames; let i = index">
+                    <td>
+                      {{ i + 1 }}
+                    </td>
+                    <td>{{ item }}</td>
+                    <!-- <td>
+                      <a (click)="deleteSelectedItem(i)">
+                        <span class="glyphicon glyphicon-trash"></span
+                      ></a>
+                    </td> -->
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,85 @@
+<style>
+  .panel-heading {
+    height: 50px;
+    background-color: #F9C000;
+  }
+
+  .heading-content {
+    padding: 15px 10px;
+  }
+
+  .gstr-type {
+    cursor: pointer;
+    width: 32%;
+    padding: 0px 0px 15px 0px;
+    box-shadow: 0px 0px 5px 0px #b7b5b5;
+    background: #ffffff;
+    margin-left: 15px;
+    height: 200px;
+    outline: none;
+    margin-top: 15px;
+
+  }
+
+  .panel-body-amount {
+    margin: 10px 0px;
+    font-size: 18px;
+    font-weight: 500
+  }
+
+  .panel-body-label {
+    color: #737373;
+  }
+
+</style>
+<div class="clearfix" style="height: 500px; overflow-y:scroll">
+  <ng-container *ngFor="let gst of cardList;let i=index">
+    <div class="col-md-4 gstr-type"
+      routerLink="/pages/account/gstr/{{gst.PARENTCHILD=='C'?(gst.GSTID|lowercase)+'/'+(gst.GST_SUBTYPE|lowercase):(gst.GSTID | lowercase)}}">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="col-md-5 heading-content">{{gst.PARENTCHILD=='C'?gst.GST_SUBTYPE:gst.GSTID}}</div>
+          <ng-container *ngIf="gst.PARENTCHILD=='C'">
+            <div class="col-md-7 heading-content text-right">{{gst.total?gst.total[0]?.TOTINVOICE:'0'}}&nbsp;{{gst?.HEADER1}}
+            </div>
+          </ng-container>
+          <ng-container *ngIf="gst.PARENTCHILD=='P'">
+            <div class="col-md-7 heading-content text-right">
+              {{gst.total?(gst.total.TOTAL_INVOICE!=null?gst.total?.TOTAL_INVOICE:'0'):'0'}}&nbsp;{{gst?.HEADER1}}</div>
+          </ng-container>
+
+
+        </div>
+        <div class="panel-body">
+          <br><br>
+          <div class="col-md-6 text-left">
+            <ng-container *ngIf="gst.PARENTCHILD=='C'">
+              <div class="col-md-12 panel-body-amount">
+                {{gst.total?(gst.total[0].TOTALTAXABLEVALUE?(parseNumber(gst.total[0].TOTALTAXABLEVALUE) | currency:'INR':true:'1.2-2'):('0' | currency:'INR':true:'1.2-2' )):('0' | currency:'INR':true:'1.2-2')}}
+              </div><br>
+              <div class="col-md-12 panel-body-label">{{gst?.HEADER2}}</div>
+            </ng-container>
+            <ng-container *ngIf="gst.PARENTCHILD=='P'">
+              <div class="col-md-12 panel-body-amount">
+                {{gst.total?(gst.total.TAXABLEVALUE!=null?(parseNumber(gst.total?.TAXABLEVALUE) | currency:'INR':true:'1.2-2'):'0' | currency:'INR':true:'1.2-2' ):('0' | currency:'INR':true:'1.2-2')}}</div><br>
+              <div class="col-md-12  panel-body-label">{{gst?.HEADER2}}</div>
+            </ng-container>
+          </div>
+          <div class="col-md-6 text-right">
+            <ng-container *ngIf="gst.PARENTCHILD=='C'">
+              <div class="col-md-12 panel-body-amount">
+                {{gst.total?(gst.total[0].TOTAL_GST_COLLECTED?(parseNumber(gst.total[0].TOTAL_GST_COLLECTED)| currency:'INR':true:'1.2-2' ):('0' | currency:'INR':true:'1.2-2' )):('0' | currency:'INR':true:'1.2-2')}}
+              </div><br>
+              <div class="col-md-12  panel-body-label">{{gst?.HEADER3}}</div>
+            </ng-container>
+            <ng-container *ngIf="gst.PARENTCHILD=='P'">
+              <div class="col-md-12 panel-body-amount">
+                {{gst.total?((gst.total.TAX_COLLECTED!=null?(parseNumber(gst.total.TAX_COLLECTED) | currency:'INR':true:'1.2-2'):'0' | currency:'INR':true:'1.2-2' )):('0' | currency:'INR':true:'1.2-2')}}</div><br>
+              <div class="col-md-12  panel-body-label">{{gst?.HEADER3}}</div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

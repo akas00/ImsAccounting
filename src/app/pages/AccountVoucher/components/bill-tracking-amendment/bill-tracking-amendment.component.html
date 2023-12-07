@@ -1,0 +1,343 @@
+<style>
+  td {
+    border: 1px solid #e3e3e3;
+  }
+.radioLabel{
+  height: 28px;
+    font-weight: normal;
+    /* width: 90px; */
+    margin: 2px;
+    vertical-align: middle;
+    font-size: 13px;
+    padding-top: 4px;
+}
+</style>
+
+<div class="clearfix action-bar" style="background-color: #E2EAEA;padding: 5px;">
+  <div class="col-md-1" style="padding-left: 0px;">
+    <button class="btn btn-info"
+      (click)="BillTrack.SHOWMORE=!BillTrack.SHOWMORE">{{BillTrack.SHOWMORE?"Hide Details":"Show Details"}}[F1]</button>
+  </div>
+  <div class="col-md-3">
+    <h3>Bill Tracking Amendment</h3>
+  </div>
+  <div class="col-md-8">
+    <button class="btn btn-info pull-right" (click)="saveBillTrack()">Save</button>
+    <button class="btn btn-info pull-right" style="margin-right: 5px;" (click)="initialFormLoad()">Reset</button>
+    <button class="btn btn-info pull-right" style="margin-right: 5px;" (click)="autoAdjust()">Auto Adjust</button>
+    <button class="btn btn-info pull-right" style="margin-right: 5px;" (click)="DeleteExeedTrack()">Delete Exceed Tracking Entry</button>
+    <button class="btn btn-info pull-right" style="margin-right: 5px;" (click)="DoBillTrackFromBeg()">Do Bill Tracking From The Beginning</button>
+  
+  </div>
+</div>
+
+
+<div class="clearfix" *ngIf="BillTrack.SHOWMORE ">
+  <div style="margin:5px 0px 0px 0px ; border: 1px solid #e6e6e6; ">
+    <div class="col-md-8">
+      <div class="col-md-12" style="padding-left: 0px;">
+        <div class="col-md-6">
+          <div class="row">
+            <label style="width: 18.6%;">Party Name</label>
+            <input type="text" style="width:72.5%" id="partyname" name="partyname" (keydown)="onKeydownPrevent($event)"
+              placeholder="Press Tab or Enter to select Party" (keydown.enter)="selectParty()" (keydown.tab)="selectParty()"
+              [(ngModel)]="BillTrack.ACNAME" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="col-md-12" style="margin-left: -6%;">
+           
+              <input type="radio" [(ngModel)]="BillTrack.PARTYTYPE"  value="Party Receipt" name="1" (click)="OnPartyChange()">  <a class="radioLabel">Creditors Party Only</a>
+              <a class="radioLabel"><input type="radio" [(ngModel)]="BillTrack.PARTYTYPE"  value="Party Payment" name="1" (click)="OnPartyChange()" style="margin-left:12px"> Debtors Party Only</a>
+              <!-- <label style="width:30%;">Party Type </label> -->
+              <!-- <select name="partytype" style="width: 60%;" [(ngModel)]="BillTrack.PARTYTYPE" (change)="OnPartyChange()">
+                <option value="Party Receipt">Customer</option>
+                <option value="Party Payment">Supplier</option>
+              </select> -->
+        
+          </div>
+        </div>
+       
+      </div>
+      <div class="col-md-12" style="padding-left: 0px;">
+        <div class="col-md-3">
+          <div class="row">
+            <label style="width:37%">Ledger B/L </label>
+            <input type="text" style="width:45%" id="ledgerbl" decimalPlacesRestriction="2" name="ledgerbl"
+              [(ngModel)]="BillTrack.LEDGERBALANCE" readonly />
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="row">
+            <label style="width:37%">Due B/L </label>
+            <input type="text" style="width:45%" name="duebl" decimalPlacesRestriction="2"
+              [(ngModel)]="BillTrack.DUEBALANCE" readonly />
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="row">
+            <label style="width:37%">Balance </label>
+            <input type="text" style="width:45%" name="balance" decimalPlacesRestriction="2" [(ngModel)]="BillTrack.BALANCE"
+              readonly />
+          </div>
+        </div>
+        <div class="col-md-3">
+          
+        </div>
+      </div>
+      
+    </div>
+    <div class="col-md-4" style="border-left: 1px solid silver;">
+      <div class="col-md-12">
+        <div class="row">
+          <label style="width:30%">Tracking Amount</label>
+          <input type="text" style="width:24%" id="ledgerbl" decimalPlacesRestriction="2" name="ledgerbl"
+            [(ngModel)]="BillTrack.LEDGERBALANCE" readonly />
+            <input type="radio" [(ngModel)]="isBullTracking"  value=1 name="2" (click)="BullTracking()" style="margin-left: 3%;">  <a class="radioLabel">Bulk Tracking</a>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="row">
+          <label style="width:30%">Tracking Voucher</label>
+          <select style="width:24%" [disabled]='isBullTracking==1'>
+            <option> </option>
+          </select>
+          <input type="radio" [(ngModel)]="isBullTracking"  value=0 name="2" (click)="BullTracking()" style="margin-left: 3%;" >  <a class="radioLabel">Voucher Wise Tracking</a>
+          
+        </div>
+      </div>
+    </div>
+ 
+    <!-- <div class="col-md-4">
+      <div class="row">
+        <label style="width:30%;">REF NO </label>
+        <span>{{BillTrack.VCHRNO }}</span>
+      </div>
+    </div> -->
+ 
+    <!-- <div class="col-md-4">
+      <div class="row">
+        <label style="width:30%">Adjusting Amount </label>
+        <input type="text" [attr.readonly]="BillTrack.REFVCHRNO" style="width:60%" id="adjusstingamt" name="adjusstingamt"
+          [(ngModel)]="BillTrack.ADJUSTINGAMOUNT" (change)="validateAdjustingAmount()" />
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="row">
+        <label style="width:30%">Adjusted Amount </label>
+        <input type="text" readonly style="width:60%" id="ADJUSTINGAMOUNT" name="TOTALADJAMOUNT"
+          [(ngModel)]="BillTrack.TOTALADJAMOUNT" />
+      </div>
+    </div> -->
+    <!-- <div class="col-md-4">
+      <div class="row">
+        <label style="width:30%" for="voucher">Voucher</label>
+        <input type="text" style="width:60%" id="voucher" name="voucher" (keydown)="onKeydownPrevent($event)"
+          placeholder="Press Tab or Enter to select Vocuher" (keydown.enter)="selectVoucher()"
+          (keydown.tab)="selectVoucher()" [(ngModel)]="BillTrack.REFVCHRNO" />
+      </div>
+    </div> -->
+    <!-- <div class="col-md-4">
+      <div class="row">
+        <div class="checkbox">
+          <label style="width: 100%;">
+            <input type="checkbox" name="zero" [(ngModel)]="BillTrack.SHOWZEROBALANCE"> Show Zero Balance
+          </label>
+        </div>
+      </div>
+    </div> -->
+  </div>
+</div>
+<div class="col-md-8">
+<div class="clearfix" style="margin-top: 5px;height: 400px;overflow-y: scroll;    /* border: 1px solid silver; */
+background-color: white;">
+  <div class="header" style="position: sticky;top:0">
+    <label style="width: 100%;background: #f0f3f4;padding-top: 0p;margin-top: 0px;margin-bottom: 0px;">Due Bill List:</label> <br />
+    <table style="width: 100%;table-layout: fixed">
+      <thead>
+        <tr style="background-color: #C0C0C0;height:25px;">
+          <th style="width:40px;">Sno</th>
+          <th style="width: 12.5%;">Bill Date</th>
+          <th style="width: 7%;">Division</th>
+          <th style="width: 12.5%;">Voucher No</th>
+          <th style="width: 13%;">Ref Bill No</th>
+          <th style="width: 12%;">Bill Amount</th>
+          <th>Clear Amount</th>
+          <th>DUE Amount</th>
+          <th>Adjusting Amount</th>
+        </tr>
+      </thead>
+    </table>
+  </div>
+  <table style="width:100%;table-layout: fixed;">
+    <tbody *ngIf=" BillTrack.BILL.length">
+      <tr *ngFor="let bill of BillTrack.BILL;let i= index">
+        <td style="width: 40px;">{{i+1}}</td>
+        <td>{{bill?.BILLDATE | date: 'dd-MM-yyyy'}}</td>
+        <td style="width: 7%;">MMX</td>
+        <td>{{bill?.BILLNO}}</td>
+        <td>{{bill?.REFNO}}</td>
+        <td>{{bill?.BILLAMOUNT |number:'1.2-2'}}</td>
+        <td>{{bill?.CLEARAMOUNT |number:'1.2-2'}}</td>
+        <td>{{bill?.DUEAMOUNT |number:'1.2-2' }}</td>
+        <td>
+          <input style="width: 100%;
+                  height: 25px;
+                  padding-top: 0px;
+                  padding-bottom: 0px;text-align: right" id="adj{{i}}" type="text" [(ngModel)]="bill.TAdjustingAmt"
+            (change)="onADjustmentChange(i)" (keydown.enter)="IndividualAdjustment(i)">
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>
+<div class="col-md-4" style="border-left: 1px solid silver;">
+
+  <div class="clearfix" style="margin-top: 5px;height: 400px;overflow-y: scroll;    /* border: 1px solid silver; */
+  background-color: white;">
+    <div class="header" style="position: sticky;top:0">
+      <label style="width: 100%;background: #f0f3f4;padding-top: 0p;margin-top: 0px;margin-bottom: 0px;">Non-Track voucher List:</label><br />
+      <table style="width: 100%;table-layout: fixed">
+        <thead>
+          <tr style="background-color: #C0C0C0;height:25px;">
+            <th style="width: 19%;">Bill Date</th>
+            <th style="width: 23%;">vchrno No</th>
+           <th>Vchrno Amount</th>
+            <th>Tracked Amount</th>
+            <th>Non-Tracked AMOUNT</th>
+       
+          </tr>
+        </thead>
+      </table>
+    </div>
+    <table style="width:100%;table-layout: fixed;">
+      <tbody *ngIf=" BillTrack.NonTracking">
+        <tr *ngFor="let bill of BillTrack.BILL;let i= index">
+         <td style="width: 19%;height: 28px;">{{bill?.BILLDATE | date: 'dd-MM-yyyy'}}</td>
+          <td style="width: 23%;">{{bill?.BILLNO}}</td>
+          <td>{{bill?.REFNO}}</td>
+          <td>{{bill?.BILLAMOUNT |number:'1.2-2'}}</td>
+          <td>{{bill?.CLEARAMOUNT |number:'1.2-2'}}</td>
+        
+          
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+<generic-popup-grid #genericGrid [popupsettings]="gridPopupSettings" (onItemDoubleClick)="dblClickPartyItem($event)">
+</generic-popup-grid>
+
+
+
+
+
+
+
+<style>
+  .modal-content {
+    padding: 1px;
+    margin: 0px;
+    float: right;
+  }
+
+  tbody>tr:hover {
+    background-color: #f3f5f4;
+    cursor: pointer;
+  }
+
+  tr {
+    font-size: 11px;
+  }
+
+  .selected-row {
+    background-color: #ced6d3 !important;
+  }
+
+  .table>tbody>tr>td {
+    line-height: 30px !important;
+  }
+
+  .table>thead>tr>th {
+    line-height: 5px !important;
+  }
+
+  .table>tbody>tr>td:first-child {
+    text-align: left !important;
+    padding: 0px 0px 0px 11px !important;
+  }
+
+  .modal-content {
+    box-shadow: -10px 0px 10px 1px #aaaaaa;
+  }
+
+  .modal-content-main-area {
+    max-height: 100%;
+    height: 100%;
+    overflow: auto;
+    overflow-x: hidden;
+  }
+
+  .modal-content-summary-area {
+    max-height: 20%;
+    height: 20%;
+    overflow: auto;
+    overflow-x: hidden;
+  }
+
+  .ellipsis {
+    /* width: 220px;
+    text-overflow: ellipsis;
+    overflow: hidden; */
+    white-space: nowrap;
+  }
+
+</style>
+<div class="modal-sticky" *ngIf="isActive" style="display : block; padding: 0px;  margin-bottom: 25px;">
+  <!-- Modal content -->
+  <div class="modal-content modal-content-main-area">
+
+    <div class="modal-header" style="padding: 0px;background: #8cccfb;">
+      <button class="close" aria-label="Close" (click)="isActive=!isActive">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <h4 class="modal-title" style="text-align: center;">
+        {{ gridDuePopupSettings.title }}
+      </h4>
+    </div>
+    <div class="col-md-12 table-scroll" style="padding: 0;">
+      <table class="table">
+        <thead>
+          <tr style="background: #8cccfb;">
+            <th>VCHRNO</th>
+            <th>AMOUNT</th>
+            <th>TRACKED AMOUNT</th>
+            <th>PENDING AMOUNT</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="pendingVoucherList.length">
+          <tr class="highlight" [class.selected-row]="selectVoucherIndex == i"
+            *ngFor="let itemObj of pendingVoucherList;let i = index" (dblclick)="dblClickDueItem(itemObj)"
+            (click)="selectVoucherIndex=i" title="double click for detail view">
+            <td style="border: none;">
+              {{itemObj?.VCHRNO}}
+            </td>
+            <td style="border: none;">
+              {{itemObj?.AMOUNT}}
+            </td>
+            <td style="border: none;">
+              {{itemObj?.TRACKED_AMOUNT==null?'0.00':itemObj?.TRACKED_AMOUNT}}
+            </td>
+            <td style="border: none;">
+              {{itemObj?.AMOUNT-(itemObj?.TRACKED_AMOUNT==null?0:itemObj?.TRACKED_AMOUNT)}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

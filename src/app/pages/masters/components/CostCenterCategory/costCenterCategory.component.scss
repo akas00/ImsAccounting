@@ -1,0 +1,112 @@
+.Cost-Center-Category-section {
+    position: relative;
+    height: 40px;
+    background: #d9e5e7;
+    padding-right: 8px;
+  
+    .title-section {
+      position: absolute;
+      font-family: "Segoe UI Light";
+      height: 25px;
+      font-style: normal;
+      font-weight: bold;
+      font-size: 18px;
+      line-height: 25px;
+      color: #000000;
+      left: 4%;
+      top: 50%;
+      transform: translate(0, -50%);
+    }
+    .save-btn,
+    .back-btn {
+      background-color: #336799;
+      color: white;
+      font-size: 12px;
+      margin-left: 6px;
+      margin-top: 2px;
+    }
+  
+    .disabled-button {
+      background-color: #336799a6;
+    }
+  }
+  
+  .Cost-Center-Category-body {
+    padding: 0;
+    color: #000000;
+    font-family: "Segoe UI Light";
+    box-sizing: border-box;
+    min-height: 155px;
+    margin-top: 35px;
+    border: 1px solid #7b7979;
+    border-radius: 5px;
+    .node-rate,
+    .node-mapping {
+      margin-top: 8px;
+      input {
+        width: 15%;
+      }
+    }
+    .node-header {
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #4472c4;
+      box-sizing: border-box;
+      height: 45px;
+      border-radius: 5px 5px 0px 0px;
+      .node-title {
+        color: #ffffff;
+        height: 25px;
+        display: block;
+        width: 250px;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 16px;
+      }
+  
+      @media screen and (max-width: 320px) {
+        .node-title {
+          font-size: 80%;
+        }
+      }
+  
+      .choose-node {
+        box-sizing: border-box;
+        width: 40%;
+        height: 30px;
+        background: #ffffff;
+        border: 1px solid #9c9b9b;
+        padding-top: 1px;
+        border-radius: 5px;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: bold;
+        color: black;
+        option {
+          font-weight: bold;
+        }
+      }
+    }
+  
+    .node-body {
+      margin-left: 5%;
+      margin-top: 2%;
+      padding-bottom: 10px;
+      label {
+        font-weight: bold;
+        font-size: 14px;
+        width: 150px;
+      }
+      input {
+        height: 25px;
+        display: inline-block;
+        width: 40%;
+      }
+      .depr {
+        margin-top: 8px;
+      }
+    }
+  }
+  

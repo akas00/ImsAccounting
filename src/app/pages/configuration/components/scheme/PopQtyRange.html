@@ -1,0 +1,61 @@
+<style>
+    .TableRowSize {
+        height: 23px;
+        border: 1px solid #e6e6e6;
+    }
+</style>
+<div>
+
+    <!-- Modal content -->
+    <div class="modal-content" style="padding:2px !important;    box-shadow: -10px 0px 10px 1px #aaaaaa;">
+        <div class="modal-header" style="padding: 0px;    background: #8cccfb;">
+            <button class="close" aria-label="Close" (click)="Closed()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" style="text-align: center;">Add Range Qty</h4>
+        </div>
+
+        <div class="col-md-12">
+            Batch No: 12333
+        </div>
+        <div class="col-md-12">
+            <table style="padding: 0px;margin-left: -12px;margin-top: 2px;width: 100%;" class="Table1">
+                <tr style="background: #8cccfb;">
+                    <th style="width:80px">Quantity</th>
+                    <th style="width:80px">Discount</th>
+                    <th style="width:80px">Account</th>
+                </tr>
+                <div
+                    style="height:250px;width:90%;overflow:auto;scrollbar-3dlight-color:#FFFFFF;scrollbar-arrow-color:#000000;scrollbar-base-color:#FF9999;scrollbar-darkshadow-color:#000000;scrollbar-face-color:#000000;scrollbar-highlight-color:#000000;scrollbar-shadow-color:#0033CC;">
+                    <tr *ngFor="let sObj of RangeList;let i=index" style="height:28px" (click)="TableRowclick(i)">
+                        <td class="TableRowSize" contenteditable="true" id="quantity{{i}}" style="width:80px"
+                            class="TableRowSize" [textContent]="sObj.RangeQty"
+                            (input)="sObj.RangeQty=$event.target.textContent">
+                            {{sObj.RangeQty}}
+                        </td>
+
+                        <td class="TableRowSize" contenteditable="true" style="width:80px" class="TableRowSize"
+                            [textContent]="sObj.DisRate" (input)="sObj.DisRate=$event.target.textContent">
+                            {{sObj.DisRate}}
+                        </td>
+
+                        <td class="TableRowSize" (keydown.Tab)="accountTab(i)" (keydown.enter)="accountTab(i)"
+                            style="width:80px" class="TableRowSize"><select style="width:100px"
+                                [(ngModel)]="sObj.DiscountRateType">
+                                <option value=0>Rate</option>
+                                <option value=1>Amount</option>
+                                <option value=2>Quantity</option>
+                            </select>
+                        </td>
+
+                    </tr>
+                </div>
+
+                <tr><button (click)="LoadAllRangeQty()">Load</button></tr>
+
+            </table>
+
+        </div>
+
+    </div>
+</div>

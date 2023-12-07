@@ -1,0 +1,397 @@
+<style>
+  .white-space {
+    white-space: pre !important
+  }
+
+  thead {
+    background: #c5e3ed;
+    border-bottom: 1px solid;
+  }
+
+  th {
+    padding: 10px;
+  }
+
+  td {
+    padding: 5px;
+  }
+
+  table {
+    width: 100%;
+    border: 1px solid;
+    border-right: none;
+  }
+
+  .text-bold {
+    font-weight: bold
+  }
+
+  .selected-row {
+    background-color: #787878 !important;
+    color: white;
+    font-size: 14px;
+  }
+
+  tbody,
+  tfoot {
+    background: #ffffff;
+  }
+
+  .even-row {
+    background: #ffffeb;
+  }
+
+</style>
+
+
+
+<div class="clearfix">
+  <div class="col-md-1" style="padding: 0;width:30px;">
+    <table>
+      <tr style="height:30px;width:30px">
+        <td style="border: 1pt solid black;cursor: pointer" (click)="loadFilter()">
+          <i style="margin:5px"><span class="glyphicon glyphicon-filter" title="Filters"></span></i>
+        </td>
+      </tr>
+      <tr>
+        <td style="border: 1pt solid black;">
+
+          <i (click)="ExportReportInExcel()" style="margin:5px"> <span class="glyphicon glyphicon-export"></span></i>
+        </td>
+      </tr>
+      <tr>
+        <td style="border: 1pt solid black;">
+          <i (click)="print()" style="margin:5px"> <span class="glyphicon glyphicon-print"></span></i>
+        </td>
+      </tr>
+      <tr>
+        <td style="border: 1pt solid black;" class="cell-with-comment">
+          <i (click)="showPreviouslyLoadedReports()" style="margin:5px"> <span class="glyphicon glyphicon-open-file"></span></i>
+          <span class="cell-comment">
+            Open Report List [F4]
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div id="profitAndLossAccount" class="col-md-11" style="padding: 0;width:96.5% !important">
+    <div *ngIf="_reportFilterService.ReportFilterObj.isPlLoaded" class="clearfix col-md-12 text-center" style="padding:5px 15px;">
+      <strong>
+        Showing Profit & Loss Account for {{_reportFilterService.ReportFilterObj?.DATE1 | date}} to
+        {{_reportFilterService.ReportFilterObj?.DATE2 | date}}
+        @Division : {{_reportFilterService.ReportFilterObj?.PL_DIVISIONNAME}}
+      </strong>
+    </div>
+    <div class="clearfix col-md-12" *ngIf="_reportFilterService.ReportFilterObj.isPlLoaded"
+      style="height: 524px; overflow-y:scroll;font-size: 14px;padding-left: 0px;padding-right: 0px;">
+      <div class="col-md-12 direct-expenses" style="padding: 0px 0px 0px 5px">
+        <div class="col-md-12" style="padding: 0;position: sticky;top:0">
+          <table id="report-header" style="table-layout: fixed;width: 100%;">
+            <thead>
+              <th class="text-center" style="border-left:1px solid black;width: 20%;border-top: 1px solid black;border-bottom: 1px solid black;">
+                <b>PARTICULARS</b></th>
+              <th style="border-top: 1px solid black;border-bottom: 1px solid black;">&nbsp;</th>
+              <th style="border-top: 1px solid black;border-bottom: 1px solid black;">&nbsp;</th>
+              <th style="border: 1px solid black" class="text-center"><b>EXPENSES</b></th>
+              <th class="text-center" style="width: 20%;border-top: 1px solid black;border-bottom: 1px solid black;"><b>PARTICULARS</b></th>
+              <th style="border-top: 1px solid black;border-bottom: 1px solid black;">&nbsp;</th>
+              <th style="border-top: 1px solid black;border-bottom: 1px solid black;">&nbsp;</th>
+              <th style="border: 1px solid;" class="text-center"><b>INCOME</b></th>
+            </thead>
+          </table>
+        </div>
+        <table id="report-body" style="table-layout: fixed;min-height: 500px;">
+          <tbody>
+
+            <ng-container *ngFor="let x of _reportFilterService.ReportFilterObj.lengthOfIncomeExpense;let i=index">
+              <tr>
+                <td style="width: 20%;border-left:1px solid black;" (dblclick)="drillDown('DE',i)">
+                  <span style="white-space: pre"
+                    [ngClass]="{'text-bold':_reportFilterService.ReportFilterObj.directExpense[i]?.ACID=='DE' }">{{_reportFilterService.ReportFilterObj.directExpense[i]?.ACNAME?_reportFilterService.ReportFilterObj.directExpense[i]?.ACNAME:"&nbsp;"}}</span>
+                </td>
+                <td class="text-right" style="width: 10%">
+                  <span [ngClass]="{'text-bold':_reportFilterService.ReportFilterObj.directExpense[i]?.TYPE=='G'&&_reportFilterService.ReportFilterObj.directExpense[i]?.BL!=null}">
+                    {{_reportFilterService.ReportFilterObj.directExpense[i]?.BL}}
+                  </span>
+                </td>
+                <td class="text-right" style="width: 10%">
+                  <span>
+                    {{_reportFilterService.ReportFilterObj.directExpense[i]?.BL2}}
+                  </span>
+                </td>
+                <td class="text-right" style="border-left: 1px solid;border-right: 1px solid;width: 10%">
+                  <span [ngClass]="{'text-bold':_reportFilterService.ReportFilterObj.directExpense[i]?.TYPE=='G' && _reportFilterService.ReportFilterObj.directExpense[i]?.BL3!=null }">
+                    {{_reportFilterService.ReportFilterObj.directExpense[i]?.BL3}}
+                  </span>
+                </td>
+
+
+
+                <td style="width:20%" (dblclick)="drillDown('DI',i)">
+                  <span style="white-space: pre"
+                    [ngClass]="{'text-bold':_reportFilterService.ReportFilterObj.directIncome[i]?.ACID=='DI'}">{{_reportFilterService.ReportFilterObj.directIncome[i]?.ACNAME?_reportFilterService.ReportFilterObj.directIncome[i]?.ACNAME:"&nbsp;"}}</span>
+                </td>
+                <td style="width:10%" class="text-right">
+                  <span [ngClass]="{'text-bold':_reportFilterService.ReportFilterObj.directIncome[i]?.TYPE=='G'&& _reportFilterService.ReportFilterObj.directIncome[i]?.BL!=null}">
+                    {{_reportFilterService.ReportFilterObj.directIncome[i]?.BL}}
+                  </span>
+                </td>
+                <td style="width:10%" class="text-right">
+                  <span>
+                    {{_reportFilterService.ReportFilterObj.directIncome[i]?.BL2}}
+                  </span>
+                </td>
+                <td style="border-left: 1px solid;border-right: 1px solid;width:10%" class="text-right">
+                  <span [ngClass]="{'text-bold':_reportFilterService.ReportFilterObj.directIncome[i]?.TYPE=='G'}">
+                    {{_reportFilterService.ReportFilterObj.directIncome[i]?.BL3}}
+                  </span>
+                </td>
+              </tr>
+            </ng-container>
+            <tr id="directExpense">
+              <td style="border-left:1px solid black;">
+                <span [ngClass]="{'text-bold':_reportFilterService.ReportFilterObj.directExpenseTotal[0]?.TYPE=='T'}">
+                  {{_reportFilterService.ReportFilterObj.directExpenseTotal[0]?.PARTICULARS?_reportFilterService.ReportFilterObj.directExpenseTotal[0]?.PARTICULARS:"&nbsp;"}}
+                </span>
+              </td>
+              <td class="text-right">
+                <span>
+                  {{_reportFilterService.ReportFilterObj.directExpenseTotal[0]?.BL}}
+                </span>
+              </td>
+              <td class="text-right">
+                <span>
+                  {{_reportFilterService.ReportFilterObj.directExpenseTotal[0]?.BL2}}
+                </span>
+              </td>
+
+              <td class="text-right" style="border-left: 1px solid;border-right: 1px solid;">
+                <span [ngClass]="{'text-bold':_reportFilterService.ReportFilterObj.directExpenseTotal[0]?.TYPE=='T'}">
+                  {{_reportFilterService.ReportFilterObj.directExpenseTotal[0]?.BL3}}
+                </span>
+              </td>
+
+
+              <td>
+                <span [ngClass]="{'text-bold':_reportFilterService.ReportFilterObj.directIncomeTotal[0]?.TYPE=='T'}">
+                  {{_reportFilterService.ReportFilterObj.directIncomeTotal[0]?.PARTICULARS?_reportFilterService.ReportFilterObj.directIncomeTotal[0]?.PARTICULARS:"&nbsp;"}}
+                </span>
+              </td>
+              <td>
+                <span>
+                  {{_reportFilterService.ReportFilterObj.directIncomeTotal[0]?.BL}}
+                </span>
+              </td>
+              <td>
+                <span>
+                  {{_reportFilterService.ReportFilterObj.directIncomeTotal[0]?.BL2}}
+                </span>
+              </td>
+              <td class="text-right" style="border-left: 1px solid;border-right: 1px solid;">
+                <span [ngClass]="{'text-bold':_reportFilterService.ReportFilterObj.directIncomeTotal[0]?.TYPE=='T'}">
+                  {{_reportFilterService.ReportFilterObj.directIncomeTotal[0]?.BL3}}
+                </span>
+              </td>
+            </tr>
+            <tr class="directIncomeExpenseTotal" style="border-bottom: 1px solid;border-top: 1px solid">
+              <td style="border-left:1px solid black;" [ngClass]="{'text-bold':_reportFilterService.ReportFilterObj.directIncomeExpenseTotal[0]?.TYPE=='T'}">
+                {{_reportFilterService.ReportFilterObj.directIncomeExpenseTotal[0]?.PARTICULARS}}</td>
+              <td><span>
+                  {{_reportFilterService.ReportFilterObj.directIncomeExpenseTotal[0]?.BL}}
+                </span>
+              </td>
+              <td>
+                <span>
+                  {{_reportFilterService.ReportFilterObj.directIncomeExpenseTotal[0]?.BL2}}
+                </span>
+              </td>
+              <td class="text-right" style="border-left: 1px solid;border-right: 1px solid;"
+                [ngClass]="{'text-bold':_reportFilterService.ReportFilterObj.directIncomeExpenseTotal[0]?.TYPE=='T'}">
+                {{_reportFilterService.ReportFilterObj.directIncomeExpenseTotal[0]?.BL3}}
+              </td>
+              <td [ngClass]="{'text-bold':_reportFilterService.ReportFilterObj.directIncomeExpenseTotal[1]?.TYPE=='T'}">
+                {{_reportFilterService.ReportFilterObj.directIncomeExpenseTotal[1]?.PARTICULARS}}</td>
+              <td>
+                <span>
+                  {{_reportFilterService.ReportFilterObj.directIncomeExpenseTotal[1]?.BL}}
+                </span>
+              </td>
+              <td>
+                <span>
+                  {{_reportFilterService.ReportFilterObj.directIncomeExpenseTotal[1]?.BL2}}
+                </span>
+              </td>
+              <td class="text-right" style="border-left: 1px solid;border-right: 1px solid"
+                [ngClass]="{'text-bold':_reportFilterService.ReportFilterObj.directIncomeExpenseTotal[1]?.TYPE=='T'}">
+                {{_reportFilterService.ReportFilterObj.directIncomeExpenseTotal[1]?.BL3}}
+              </td>
+            </tr>
+            <tr id="grosslossCD" [ngClass]="{'text-bold':_reportFilterService.ReportFilterObj.grossLossCD[0]?.TYPE=='T'}">
+              <td style="border-left:1px solid black;">
+                <span>
+                  {{_reportFilterService.ReportFilterObj.grossLossCD[0]?.PARTICUALRS?_reportFilterService.ReportFilterObj.grossLossCD[0]?.PARTICUALRS:"&nbsp;"}}
+                </span>
+              </td>
+              <td>
+                <span>
+                  {{_reportFilterService.ReportFilterObj.grossLossCD[0]?.BL}}
+                </span>
+              </td>
+              <td>
+                <span>
+                  {{_reportFilterService.ReportFilterObj.grossLossCD[0]?.BL2}}
+                </span>
+              </td>
+              <td class="text-right" style="border-left: 1px solid;border-right: 1px solid;">
+                <span>
+                  {{_reportFilterService.ReportFilterObj.grossLossCD[0]?.BL3}}
+                </span>
+              </td>
+              <td>
+                {{_reportFilterService.ReportFilterObj.grossProfitCD[0]?.PARTICULARS?_reportFilterService.ReportFilterObj.grossProfitCD[0]?.PARTICULARS:"&nbsp;"}}
+              </td>
+              <td>
+                {{_reportFilterService.ReportFilterObj.grossProfitCD[0]?.BL}}
+              </td>
+              <td>
+                {{_reportFilterService.ReportFilterObj.grossProfitCD[0]?.BL2}}
+              </td>
+
+              <td class="text-right" style="border-left: 1px solid;border-right: 1px solid;">
+                {{_reportFilterService.ReportFilterObj.grossProfitCD[0]?.BL3}}
+              </td>
+            </tr>
+            <ng-container *ngFor="let x of _reportFilterService.ReportFilterObj.lengthOfIndirectIncomeExpense;let i=index">
+              <tr>
+                <td style="border-left:1px solid black;" (dblclick)="drillDown('INE',i)">
+                  <span style="white-space: pre"
+                    [ngClass]="{'text-bold':_reportFilterService.ReportFilterObj.indirectExpense[i]?.ACID=='IE'}">{{_reportFilterService.ReportFilterObj.indirectExpense[i]?.ACNAME?_reportFilterService.ReportFilterObj.indirectExpense[i]?.ACNAME:"&nbsp;"}}</span>
+                </td>
+                <td class="text-right">
+                  <span [ngClass]="{'text-bold':_reportFilterService.ReportFilterObj.indirectExpense[i]?.TYPE=='G'&&_reportFilterService.ReportFilterObj.indirectExpense[i]?.BL!=null}">
+                    {{_reportFilterService.ReportFilterObj.indirectExpense[i]?.BL}}</span>
+                </td>
+                <td class="text-right">
+                  {{_reportFilterService.ReportFilterObj.indirectExpense[i]?.BL2}}
+                </td>
+                <td class="text-right" style="border-left: 1px solid;border-right: 1px solid;">
+                  {{_reportFilterService.ReportFilterObj.indirectExpense[i]?.BL3}}
+                </td>
+                <td>
+                  <span style="white-space: pre"
+                    [ngClass]="{'text-bold':_reportFilterService.ReportFilterObj.indirectIncome[i]?.ACID=='II'}">{{_reportFilterService.ReportFilterObj.indirectIncome[i]?.ACNAME?_reportFilterService.ReportFilterObj.indirectIncome[i]?.ACNAME:"&nbsp;"}}</span>
+                </td>
+                <td class="text-right">
+                  <span [ngClass]="{'text-bold':_reportFilterService.ReportFilterObj.indirectIncome[i]?.TYPE=='G'&&_reportFilterService.ReportFilterObj.indirectIncome[i]?.BL!=null}">
+                    {{_reportFilterService.ReportFilterObj.indirectIncome[i]?.BL}}</span>
+                </td>
+
+                <td (dblclick)="drillDown('INI',i)">
+                  <span>
+                    {{_reportFilterService.ReportFilterObj.indirectIncome[i]?.BL2}}
+
+                  </span>
+                </td>
+
+                <td class="text-right" style="border-left: 1px solid;border-right: 1px solid">
+                  {{_reportFilterService.ReportFilterObj.indirectIncome[i]?.BL3}}
+                </td>
+              </tr>
+            </ng-container>
+            <tr id="netprofit" class="text-bold">
+              <td style="border-left:1px solid black;">{{_reportFilterService.ReportFilterObj.netProfit[0]?.PARTICULARS?_reportFilterService.ReportFilterObj.netProfit[0]?.PARTICULARS:"&nbsp;"}}</td>
+              <td>
+                {{_reportFilterService.ReportFilterObj.netProfit[0]?.BL}}
+              </td>
+              <td>
+                {{_reportFilterService.ReportFilterObj.netProfit[0]?.BL2}}
+              </td>
+              <td class="text-right" style="border-left: 1px solid;border-right: 1px solid;">
+                {{_reportFilterService.ReportFilterObj.netProfit[0]?.BL3}}
+              </td>
+              <td>{{_reportFilterService.ReportFilterObj.netLoss[0]?.PARTICULARS?_reportFilterService.ReportFilterObj.netLoss[0]?.PARTICULARS:"&nbsp;"}}</td>
+              <td>
+                {{_reportFilterService.ReportFilterObj.netLoss[0]?.BL}}
+              </td>
+              <td>
+                {{_reportFilterService.ReportFilterObj.netLoss[0]?.BL2}}
+              </td>
+
+              <td class="text-right" style="border-left: 1px solid;border-right: 1px solid">
+                {{_reportFilterService.ReportFilterObj.netLoss[0]?.BL3}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="col-md-12" style="padding: 0;position: sticky;bottom:0">
+          <table id="report-footer" style="table-layout: fixed">
+            <tfoot>
+              <tr class="indirectIncomeExpenseTotaltext-bold" style="border-top:1px solid">
+                <td style="border-bottom:1px solid black;width: 20%;border-left:1px solid black;">
+                  {{_reportFilterService.ReportFilterObj.indirectIncomeExpenseTotal[0]?.PARTICULARS?_reportFilterService.ReportFilterObj.indirectIncomeExpenseTotal[0]?.PARTICULARS:"&nbsp;"}}
+                </td>
+                <td style="border-bottom:1px solid black;text-align:right">{{_reportFilterService.ReportFilterObj.indirectIncomeExpenseTotal[0]?.BL}}</td>
+                <td style="border-bottom:1px solid black;text-align:right">{{_reportFilterService.ReportFilterObj.indirectIncomeExpenseTotal[0]?.BL2}}</td>
+                <td style="border-bottom:1px solid black;text-align:right;border-left: 1px solid;border-right: 1px solid;">
+                  {{_reportFilterService.ReportFilterObj.indirectIncomeExpenseTotal[0]?.BL3}}</td>
+                <td style="border-bottom:1px solid black;width: 20%">
+                  {{_reportFilterService.ReportFilterObj.indirectIncomeExpenseTotal[1]?.PARTICULARS?_reportFilterService.ReportFilterObj.indirectIncomeExpenseTotal[1]?.PARTICULARS:"&nbsp;"}}
+                </td>
+                <td style="border-bottom:1px solid black;text-align:right">{{_reportFilterService.ReportFilterObj.indirectIncomeExpenseTotal[1]?.BL}}</td>
+                <td style="border-bottom:1px solid black;text-align:right">{{_reportFilterService.ReportFilterObj.indirectIncomeExpenseTotal[1]?.BL2}}</td>
+                <td
+                  style="border-bottom:1px solid black;text-align:right;border-left: 1px solid;border-right: 1px solid;">
+                  {{_reportFilterService.ReportFilterObj.indirectIncomeExpenseTotal[1]?.BL3}}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal-sticky" *ngIf="showReportListDialog"
+  style="overflow: auto;right: 40%;width: 30%;z-index: 9999999">
+
+  <div class="modal-content modal-content-main-area">
+    <div style="height: 28px; margin-top: 5px; ">
+      <div class="col-md-12">
+        <h4 class="modal-title" id="myModalLabel">Loaded Report List</h4>
+      </div>
+
+    </div>
+    <div class="table-responsive">
+
+      <table class="table" style="display: grid;">
+        <thead>
+          <tr>
+            <th style="width: 1%; ">SI NO </th>
+            <th style="width: 8%; ">Report Name</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor=" let column of previouslyLoadedReportsList; let i= index ;">
+            <td style="width: 1%; ">{{i+1}}</td>
+            <td style="width: 8%; " [routerLink]="column.activeurlpath">{{column.reportname}}</td>
+          </tr>
+
+        </tbody>
+      </table>
+
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="CancelReportList()">Cancel</button>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+<report-filter #reportFilter (filterEmiiter)="applyFilter($event)" [reportType]="reportType"></report-filter>

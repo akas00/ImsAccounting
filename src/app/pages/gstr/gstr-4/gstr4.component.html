@@ -1,0 +1,3 @@
+<gstr-card *ngIf="_gstrService.gstMain.isGstReport" [cardList]="_gstrService.gstMain.gstrSubReport"></gstr-card>
+<gst-summmary-list *ngIf="_gstrService.gstMain.isGstSubReport"
+  [listSetting]="listSetting" [summarySource]="_gstrService.gstMain.summaryData" [totalSource]="_gstrService.gstMain.totalRowData"></gst-summmary-list>

@@ -1,0 +1,355 @@
+<style>
+    .span {
+        display: none !important;
+    }
+</style>
+<form [formGroup]="form">
+
+    <div class="row" style="margin: 0px; margin-top:-13px">
+        <ba-card style="margin-top:-15px;">
+                <h4  style="text-align:center; margin-bottom:0px">{{modeTitle}}</h4>
+            <!-- <md-input-container style="margin-left:32px; width:9.9%">
+                <input mdInput placeholder="Voucher No:" formControlName="JOBNO">
+            </md-input-container>
+            <button class="btn btn-success" style="margin-top:-7px; border-radius: 4px; padding:2px 9px; margin-left:3px; vertical-align:middle">JC</button> -->
+            <div class="plainBackGround" style="margin-top:12px; padding-bottom:0px">
+                <div style="margin:5px; margin-bottom:0px">
+                    <div class="row">
+                        <!-- <div class="col-md-2">
+                            <md-input-container style="width:100%">
+                                <input mdInput placeholder="Chalan No:" formControlName="CHALANNO">
+                            </md-input-container>
+                        </div> -->
+                        <div class="col-md-5">
+                            <md-input-container style="width:100%">
+                                <input mdInput type="date" formControlName="TRNDATE" style="margin-right: 5px;width:45%" placeholder="Entry Date: " (change)="changeTrnDateDate($event.target.value,'AD')">A.D.
+                                <input type="text" formControlName="BSDATE" placeholder="yyyy-mm-dd" style="margin-left: 5px;margin-right: 5px;width:35%"
+                                    id="nepaliDate" onclick="showNdpCalendarBox('nepaliDate')" (change)="changeTrnDateDate($event.target.value,'BS');"
+                                    (click)="clickTrnDateDate($event.target.value)">B.S.
+                            </md-input-container>
+
+                            <!--<label >Entry Date: </label>
+            
+            
+                            <input type="date" style="margin-right: 5px;width:130px;" [(ngModel)]="TrnMainObj.TRNDATE" />
+            
+                            <input type="text" style="width:100px;" [(ngModel)]="TrnMainObj.BSDATE">-->
+                        </div>
+                        <div class="col-md-5">
+                            <md-input-container style="width:100%">
+                                <input mdInput type="date" style="margin-right: 5px;width:45%;" formControlName="TRN_DATE" placeholder="Trn Date: " (change)="clickTrn_Date($event.target.value,'AD')">A.D.
+                                <input type="text" style="margin-left: 5px;margin-right: 5px;width:35%;" formControlName="BS_DATE" placeholder="yyyy-mm-dd"
+                                    onclick="showNdpCalendarBox('nepaliDate1')" id="nepaliDate1" (change)="clickTrn_Date($event.target.value,'BS');"
+                                    (click)="clickTrn_Date($event.target.value)">B.S.
+                            </md-input-container>
+                        </div>
+
+                    </div>
+                    <div class="row" style="margin-bottom:-5px">
+
+                        <div class="col-md-3" style="margin-top:-10px">
+                            <md-input-container style="min-width:36%;width:100%">
+                                <input mdInput formControlName="DIVISION" placeholder="Division:" readonly [mdAutocomplete]="division">
+                            </md-input-container>
+                            <md-autocomplete #division="mdAutocomplete" [displayWith]="displayFn">
+                                <md-option style="line-height: 1.5; height: auto; font-size: 14px; padding: 3px 5px; border-bottom: 1px solid lightgrey"
+                                    *ngFor="let d of masterService.divisionList$ | async" [value]="d">
+                                    {{ d.NAME }}
+                                </md-option>
+                            </md-autocomplete>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ba-card>
+    </div>
+    <div class="row" style="margin: 0px; margin-top:-13px">
+        <div [ngBusy]="busy"></div>
+        <ba-card style="margin-top:-15px;">
+            <div class="row">
+
+                <div class="col-md-7 plainBackGround">
+
+                    <table>
+
+                        <tr>
+                            <td style="width: 85px;">
+                                Registration Form:
+                            </td>
+                            <td colspan="2" style="width: 253px;">
+                                <!-- <select style="width:253px; margin-bottom: 5px;" formControlName="RegNo" (change)="RegNoChange()">
+                                    <option *ngFor="let i of VehicleList" [ngValue]="i">{{i.REGNO}}</option>
+                                </select> -->
+                                <div class="col-sm-12" style="display: flex;padding:0px">
+                                    <p-autoComplete formControlName="RegNo" [suggestions]="results | async" (completeMethod)="search($event)" field="REGNO" [size]="60"
+                                        placeholder="BA 68 PA 9694" [minLength]="1" (ngModelChange)="itemChanged($event)"></p-autoComplete>
+                                </div>
+
+                            </td>
+                            <td style="padding-left: 15px;">
+                                Brand
+                            </td>
+                            <td>
+                                <input class="form-control " type="text" formControlName="Brand" style="margin-left:20px;width:90%;" disabled>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Engine No:
+                            </td>
+                            <td colspan="2" style="width: 253px;">
+                                <input type="text" style="width: 234px; margin-bottom: 5px;" formControlName="EngineNo" disabled>
+                            </td>
+                            <td style="padding-left: 15px;">
+                                Model
+                            </td>
+                            <td>
+                                <input type="text" style="margin-left:20px;width:90%;" formControlName="Model" disabled>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Chasis No:
+                            </td>
+                            <td colspan="2" style="width: 253px;">
+                                <input type="text" style="width: 234px; margin-bottom: 5px;" formControlName="ChasisNo" disabled>
+                            </td>
+                            <!-- <td colspan="2" rowspan="2" style="padding-left: 15px;">
+                            <div class="col-md-12 plainBackGround">
+                                a
+                            </div>
+                        </td> -->
+                            <td style="padding-left: 15px;" colspan="2">
+                                <div style="background-color:#ffffff; border:1px solid;border-color:#dcdcdc; padding:0px; margin-bottom: 5px; margin-top:2px"></div>
+                                Last Service Date:
+                                <input type="text" style="margin-bottom:1.5px;margin-left:10px;width:50%;" formControlName="LASTSERVICEDATE" disabled>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Date of Sale:
+                            </td>
+                            <td style="width: 121px;">
+                                <!-- <input type="Date" style="margin-right: 5px;width:125px" formControlName="DateOfSALEAD" disabled> -->
+                                <input type="text" disabled formControlName="SALEDATE" style="margin-right: 5px;width:125px" >
+                            </td>
+                            <td style="width: 121px;">
+                                    <!-- <input type="text" formControlName="DELMITI" placeholder="yyyy-mm-dd" style="margin-left: 5px;margin-right: 5px;width: 125px;"
+                                    id="nepaliDate2" onclick="showNdpCalendarBox('nepaliDate2')" (change)="changeEntryDate($event.target.value,'BS');"
+                                    (click)="clickEntryDate($event.target.value)"> -->
+                                <input type="text" formControlName="SALEMITI" placeholder="yyyy-mm-dd" style="margin-left: 5px;margin-right: 5px;width:97px"
+                                    id="nepaliDate" disabled>
+                            </td>
+                            <td style="padding-left: 15px;" colspan="2">
+                                Last Service KM Reading:
+                                <input type="text" style="width: 32%;margin-left: 10px;" formControlName="LASTKMREADING" disabled>
+                            </td>
+
+                        </tr>
+                    </table>
+
+                    <div style=" width: 100%;margin-left: -5px;margin-bottom: 5px;border: 1px solid gainsboro;margin-top: 10px;">
+                        <label style="width:110px;height:25px;margin-left:5px">
+                            Job Type:</label>
+                        <label style="width:60px;height:25px;">
+                            <input type="radio" style="height:13px" formControlName="JOBTYPE" value="PaidUp" checked>Paid Up</label>
+                        <label style="width:90px;height:25px">
+                            <input type="radio" style="height:13px" formControlName="JOBTYPE" value="FreeService">Free Service</label>
+                        <label style="width:50px;height:25px;">
+                            <input type="radio" style="height:13px" formControlName="JOBTYPE" value="AMC">AMC</label>
+                        <label style="width:70px;height:25px">
+                            <input type="radio" style="height:13px" formControlName="JOBTYPE" value="Warranty">Warranty</label>
+                        <label style="width:50px;height:25px;">
+                            <input type="radio" style="height:13px" formControlName="JOBTYPE" value="FOC">FOC</label>
+                        <label style="width:90px;height:25px">
+                            <input type="radio" style="height:13px" formControlName="JOBTYPE" value="Accidental">Accidental</label>
+
+
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" style="display: flex;">
+                            <label style="width:105.5px;">Job Description :</label>
+                            <div class="col-sm-12" style="display: flex;padding:0px;float:left">
+                                <p-autoComplete formControlName="JobDescription" [suggestions]="results | async" (completeMethod)="Jobsearch($event)" field="DESCRIPTION"
+                                    [size]="30" placeholder="Service 1st time" [minLength]="1" (ngModelChange)="JobDescription($event)"></p-autoComplete>
+                            </div>
+
+                            <button (click)="onAddClick()" style="float:left;margin-right:5px">ADD</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 plainBackGround" style="border-left:0px;height: 219px;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label style="width:105.5px;">Customer Name :</label>
+                            <input type="text" style="min-width:69.4%;" formControlName="CustomerName" (change)="CustName()">
+                        </div>
+                        <div class="col-md-12">
+                            <label style="width:105.5px;">Address :</label>
+                            <input type="text" style="min-width:69.4%;" formControlName="Address">
+                        </div>
+                        <div class="col-md-12">
+                            <label style="width:105.5px;">Phone :</label>
+                            <input type="text" style="min-width:69.4%;" formControlName="Phone">
+                        </div>
+                        <div class="col-md-12">
+                            <label style="width:105.5px;">Mobile No :</label>
+                            <input type="text" style="min-width:69.4%;" formControlName="MobileNo">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div style="border: 1px solid;border-color: #dcdcdc;margin-top: 2px;margin-right: -30px;"></div>
+                            <label style="width:105.5px;">KM Reading:</label>
+                            <input type="text" formControlName="KMREADING" style="min-width:69.4%;">
+                        </div>
+                        <div class="col-md-8">
+                            <div style="border: 1px solid;border-color: #dcdcdc;margin-top: 2px;"></div>
+                            <label style="width:105.5px;">Remarks :</label>
+                            <input type="text" formControlName="REMARKS" style="min-width:90%;">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+                <!--<div class="content ">
+                            <div class="col col-md-9 left">-->
+
+                <div class="wrapper">
+                    <div class="container" style="height:300px; margin-left:0px; margin-right:0px;">
+                        <!--<div class="col-md-9 plainBackGround " style="min-height: 300px;height:300px">-->
+
+                        <div #prodlistTable id="prodlistTable" style="background-color: #FFFFFF;">
+                            <table id="fix" class="table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:10%">Sno
+                                            <div class="c1">Sno</div>
+                                        </th>
+                                        <th style="width:90%">Description
+                                            <div class="c1">Description</div>
+                                        </th>
+
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr *ngFor="let jd of JcardProdList;let jdindex=index" (dblclick)="TableRowDoubleClickEvent($event.target.textContent,jdindex)">
+                                        <td style="width:10%">{{jdindex+1}}</td>
+                                        <td style="width:90%">{{jd.DESCRIPTION}}</td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!--   </div>
+                            </div>
+                        </div>-->
+
+            </div>
+            <div class="row">
+                <div class="col-md-8 plainBackGround" style="border-left: 0px;border-right: 0px;border-bottom: 0px;">
+                    <table>
+                        <tr>
+                            <td>
+                                Delivery Date:
+                            </td>
+                            <td style="width: 121px;">
+                                <input type="Date" formControlName="DELDATE" style="width: 125px;" (change)="changeEntryDate($event.target.value,'AD')">
+                            </td>
+                            <td style="width: 121px;">
+                                <!-- <input type="text" formControlName="DELMITI" style="width: 125px;"  id="nepaliDate" onclick="showNdpCalendarBox('nepaliDate3')" (click)="clickEntryDate($event.target.value)" (change)="changeEntryDate($event.target.value,'BS')"> -->
+                                <input type="text" formControlName="DELMITI" placeholder="yyyy-mm-dd" style="margin-left: 5px;margin-right: 5px;width: 125px;"
+                                    id="nepaliDate2" onclick="showNdpCalendarBox('nepaliDate2')" (change)="changeEntryDate($event.target.value,'BS');"
+                                    (click)="clickEntryDate($event.target.value)">
+
+                            </td>
+                            <td style="padding-left: 15px;" colspan="2">
+
+                                Delivery Time:
+                                <!-- <p-calendar formControlName="DeliveryTime" [timeOnly]="true"></p-calendar>
+                                <span id="searchclear" (click)="removeStart()" class="glyphicon glyphicon-remove-circle" style="margin-left:-35px" ></span> -->
+
+                                <input type="number" formControlName="DeliveryTime" stye="width: 56px;margin-left: 10px;" placeholder="5.00" (change)="timeChange($event.target.value)">
+
+                                <input type="radio" style="height:13px;" formControlName="TwelveHrClock" value="am" checked>a.m
+
+                                <input type="radio" style="height:13px;" formControlName="TwelveHrClock" value="pm">p.m
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td style="width: 85px;">
+                                Machine Name:
+                            </td>
+                            <td colspan="2" style="width: 253px;">
+                                <select style="width:253px;margin-bottom: 5px; margin-top:10px" formControlName="MACNAME">
+                                    <option *ngFor="let a of machanicList" [ngValue]="a.MNAME">{{a.MNAME}}</option>
+                                </select>
+                            </td>
+                            <td style="padding-left: 15px; width: 90px;">
+                                Supervisor Name:
+                            </td>
+                            <td>
+                                <select style="width:90%;" formControlName="SUPNAME">
+                                    <option *ngFor="let a of SupervisorList" [ngValue]="a.MNAME">{{a.MNAME}}</option>
+                                </select>
+                            </td>
+                        </tr>
+
+
+
+                    </table>
+
+                </div>
+                <div class="col-md-4 plainBackGround" style="border-left: 0px;border-right: 0px;border-bottom: 0px;padding: 0px;height: 40px;">
+                    <div class="col-md-4" style="width: 5px;">
+                        <svg height="100" width="2">
+                            <line x1="0" y1="10" x2="0" y2="70" style="stroke:rgb(232, 220, 220);stroke-width:2" />
+
+                        </svg>
+                    </div>
+                    <div class="col-md-4">
+                        <label style="width:105.5px;margin-top: 10px;">Bearer Name:</label>
+                        <input type="text" formControlName="BearName" style="width: 290px;" disabled>
+                    </div>
+                </div>
+
+            </div>
+        </ba-card>
+        <div style="padding-bottom: 10px; margin-top: -8px;">
+            <button (click)="onSave()" style="margin-right: 4px;" class="btn btn-info ">Save</button>
+            <button type="button " class="btn btn-info">Back</button>
+        </div>
+    </div>
+</form>
+<div>
+    <div class="modal fade" bsModal #childModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" aria-label="Close" (click)="childModal.hide()">
+                        <span aria-hidden="true">&times;</span>
+
+                    </button>
+                    <h4 class="modal-title">Information</h4>
+                </div>
+                <div class="modal-body">
+                    {{DialogMessage}}
+                </div>
+                <!--<div class="modal-footer">
+                <button class="btn btn-info confirm-btn" (click)="hideChildModal()">Save changes</button>
+                <button class="btn btn-info confirm-btn" type="button" (click)=onsubmit()>Save</button>
+            </div>!-->
+
+            </div>
+        </div>
+    </div>
+</div>

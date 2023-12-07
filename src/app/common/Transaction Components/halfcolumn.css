@@ -1,0 +1,252 @@
+.col-sm-3half, .col-sm-8half {
+    position: relative;
+    min-height: 1px;
+    padding-right: 2px;
+    padding-left: 10px;
+}
+
+@media (min-width: 768px) {
+    .col-sm-3half, .col-sm-8half {
+        float: left;
+    }
+    .col-sm-3half {
+        width: 10%;
+    }
+    .col-sm-8half {
+        width: 70.83333333%;
+    }
+}
+
+.table-fixed thead {
+  width: 97%;
+}
+.table-fixed tbody {
+  height: 230px;
+  
+  width: 97%;
+}
+.table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+  display: block;
+}
+.table-fixed tbody td, .table-fixed thead > tr> th {
+  float: left;
+  border-bottom-width: 0;
+}
+
+tbody tr:hover{
+  /* background-color: #E6E6E6; */
+}
+
+
+.table-fx table {
+    width: 100%; /* 140px * 5 column + 16px scrollbar width */
+    border-spacing: 0;
+}
+
+
+.table-fx tbody, .table-fx thead tr { display: block; }
+
+.table-fx tbody {
+    height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.table-fx tbody >td, .table-fx thead > th {
+    width: 140px;
+}
+
+.table-fx thead th:last-child {
+    width: 156px; /* 140px + 16px scrollbar width */
+}
+
+
+.wrapper {
+  width: 100%;
+  position: relative;
+  /*border: 1px solid #000;*/
+  /*background: #efefef;*/
+  overflow: hidden;
+  /*border-radius: 7px;*/
+  border-bottom: 2px solid #FFFFFF;
+}
+
+.left {
+  float: left;
+}
+
+.box {
+  /*border: 1px solid #000;*/
+  width: 400px;
+}
+
+.container {
+  overflow-y: scroll;
+  height: 200px;
+  /*border-top: 41px solid transparent;*/
+  border-bottom: 41px solid transparent;
+}
+
+table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  width: 100%;
+  background-color: #FFFFFF;
+}
+
+td + td {
+  border-left: 1px solid #fff;
+}
+
+td, th {
+  /*border-bottom: 1px solid #fff;*/
+  /*background: #efefef;*/
+  padding: 0px;
+}
+
+thead tr th,
+tfoot tr td {
+  /* height: 40px;
+  line-height: 0;
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  color: transparent;
+  border: none;
+  white-space: nowrap; */
+}
+
+thead tr th div,
+tfoot tr td div {
+  position: absolute;
+  /*color: #fff;*/
+  color: #666666;
+  padding: 10px;
+  margin-left: -10px;
+  line-height: normal;
+  width: 100%;
+  z-index: 0;
+  text-align: left;
+  font-weight: bold;
+}
+
+thead tr th div {
+  /*border-left: 1px solid #000;
+  border-bottom: 1px solid #000;*/
+  border-bottom: 2px solid #E6E6E6;
+  color: #666666;
+}
+
+tfoot tr td div {
+  /*border-left: 1px solid #000;
+  border-top: 1px solid #000;*/
+  border-left: 2px solid #FFFFFF;
+  border-top: 1px solid #FFFFFF;
+}
+
+tfoot tr td div.c1,
+thead tr th div.c1 {
+  /*background: gray;*/
+}
+
+tfoot tr td div.c2,
+thead tr th div.c2 {
+  /*background: green;*/
+}
+
+tfoot tr td div.c3,
+thead tr th div.c3 {
+  /*background: yellow;*/
+  background: #E6E6E6;
+}
+
+thead tr th div {
+  top: 0;
+}
+
+tfoot tr td div {
+  bottom: 0;
+}
+
+thead tr th:first-child div,
+tfoot tr td:first-child div {
+  border-left: none;
+}
+
+.table > tbody > tr > td {
+  border-top: 0px !important;
+}
+
+/* Modal Content */
+.PList {
+  display: block;
+  margin-top: 40px;
+  height: 640px;
+  width: 1100px;
+  position: fixed;
+  float: right;
+  margin-left: 0px;
+  background-color: rgba(0, 0, 0, 0);
+  left: 0;
+  top: 0;
+  z-index: 1;
+}
+
+
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 40%;
+  /* position: fixed; */
+  height: -webkit-fill-available;
+  margin-left: 50pc;
+  margin-top: 10pc;
+}
+
+
+/* tooltip */
+#MyTable {
+  border-style: solid;
+  border-color: black;
+  border-width: 2px
+}
+
+#MyTable td {
+  border-style: solid;
+  border-color: black;
+  border-width: 1px;
+  padding: 3px;
+}
+
+.CellWithComment {
+  position: relative;
+}
+
+.CellComment {
+  margin-top: 20px;
+  display: none;
+  position: absolute;
+  z-index: 100;
+  border: 1px;
+  background-color: white;
+  border-style: solid;
+  border-width: 1px;
+  padding: 3px;
+  color: #655e5e;
+  top: 20px;
+  background: #eef1f2;
+  width: 180px;
+  text-align: center;
+  border-radius: 10px;
+  font-size: 12px;
+  font-family: cursive;
+  padding: 0px;
+  line-height: 20px;
+}
+
+.CellWithComment:hover span.CellComment {
+  display: block;
+}
+

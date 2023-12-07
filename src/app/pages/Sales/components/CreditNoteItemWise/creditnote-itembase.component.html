@@ -1,0 +1,84 @@
+﻿<div class="sticky-top">
+    <div class="row clearfix">
+        <div class="col-md-2">
+            <voucher-master-toggler></voucher-master-toggler>
+        </div>
+        <div class="col-md-2">
+            <h2 style="color: black;">{{_trnMainService.pageHeading}}</h2>
+        </div>
+        <div class="col-md-8">
+            <voucher-master-action></voucher-master-action>
+        </div>
+    </div>
+</div>
+<div class="main-container">
+    <div class="col-md-12" style="margin-right: 280px">
+        <div *ngIf="masterService.ShowMore" class="row clearfix" style="margin: 10px;">
+            <trnmain-parameters-master></trnmain-parameters-master>
+        </div>
+        <div class="row">
+            <productentry></productentry>
+        </div>
+    </div>
+     <!-- SIDE NAV -->
+  <voucher-sidebar-billdetail></voucher-sidebar-billdetail>
+  
+    <!-- <div class="col-md-2 plainBackGround"
+        style="height:440px;width:20%;overflow: scroll; margin : 0px; border: 1px solid #f1ebeb;">
+        <table class="table table-summary" style="text-align: left">
+            <tr>
+                <td>Return No:</td>
+                <td>{{_trnMainService.TrnMainObj.VCHRNO }}</td>
+            </tr>
+            <tr>
+                <td> Date:</td>
+                <td>{{_trnMainService.TrnMainObj.TRN_DATE | date: 'dd-MM-yyyy' }}</td>
+            </tr>
+
+            <tr>
+                <td>Disc%</td>
+                <td>
+                    <input style="height: 25px;" type="number" [(ngModel)]="_trnMainService.TrnMainObj.DCRATE"
+                        (change)="_trnMainService.FlatDiscountPercentChange()"> 
+                </td>
+            </tr>
+            <tr>
+                <td>Disc Amt</td>
+                <td> <input style="height: 25px;" type="number"
+                        [(ngModel)]="_trnMainService.TrnMainObj.TOTALFLATDISCOUNT"
+                        (change)="_trnMainService.FlatDiscountAmountChange()"></td>
+            </tr>
+            <tr>
+                <td>Total Disc</td>
+                <td>{{ _trnMainService.TrnMainObj.TOTALDISCOUNT| twoDigitNumber  }}</td>
+            </tr>
+            <tr>
+                <td>Round off Amount</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Taxable Amt:</td>
+                <td>{{ _trnMainService.TrnMainObj.TAXABLE | twoDigitNumber }}</td>
+            </tr>
+            <tr>
+                <td>Non-Taxable:</td>
+                <td>{{ _trnMainService.TrnMainObj.NONTAXABLE | twoDigitNumber }}</td>
+            </tr>
+            <tr>
+                <td>Rounding Adj:</td>
+                <td>{{ _trnMainService.TrnMainObj.ROUNDOFF | twoDigitNumber }}</td>
+            </tr>
+            <tr>
+                <td>Net Amt</td>
+                <td>{{ _trnMainService.TrnMainObj.NETAMNT | twoDigitNumber }}</td>
+            </tr>
+        </table>
+    </div> -->
+ 
+
+</div>
+
+
+<div class="sticky-bottom">
+    <voucher-total-area></voucher-total-area>
+</div>

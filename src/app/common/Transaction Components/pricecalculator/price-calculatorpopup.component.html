@@ -1,0 +1,122 @@
+<div class="picecalc-container" *ngIf="isActive" [ngClass]="masterService.ShowMore?'popup-showmore':'popup-regular'">
+    <div class="row" style="margin-top: 2%;">
+        <div class="col">
+            <label class="product-details">Product Code</label>
+            <input style="width:30%" [(ngModel)]="_trnMainService.TrnMainObj.ProdList[currentIndex].MCODE" disabled>
+        </div>
+        <div class="col">
+            <label class="product-details">Product Name</label>
+            <input style="width:66%" [(ngModel)]="_trnMainService.TrnMainObj.ProdList[currentIndex].ITEMDESC" disabled>
+        </div>
+        <div class="col">
+            <label class="product-details">Product Batch</label>
+            <input style="width:30%" [(ngModel)]="_trnMainService.TrnMainObj.ProdList[currentIndex].BATCH" disabled>
+        </div>
+        <div class="col">
+            <label class="product-details">PP No</label>
+            <input style="width:30%" [(ngModel)]="_trnMainService.TrnMainObj.ProdList[currentIndex].ImporterPriceCalcList.PPNO" [disabled]="savedPPNO">
+            <label class="product-details">L/C No</label>
+            <input style="width:30%" [(ngModel)]="_trnMainService.TrnMainObj.ProdList[currentIndex].ImporterPriceCalcList.LCNO" [disabled]="savedLCNO">
+        </div>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th><label class="header-class">Description</label></th>
+                <th style="width:40%;"><label class="header-class">Importer Rate</label></th>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="desc-class">Total Invoice Value</td>
+                <td><input type="number" id="upcmr"
+                        [(ngModel)]="_trnMainService.TrnMainObj.ProdList[currentIndex].ImporterPriceCalcList.TotalInvoiceData_ImporterRate"
+                        (change)="calculateCostings(currentIndex)"></td>
+            </tr>
+            <tr>
+                <td class="desc-class">Excise Duty</td>
+                <td><input type="number"
+                        [(ngModel)]="_trnMainService.TrnMainObj.ProdList[currentIndex].ImporterPriceCalcList.ExciseDuty_ImporterRate"
+                        (change)="calculateCostings(currentIndex)"></td>
+            </tr>
+            <tr>
+                <td class="desc-class">Insurance</td>
+                <td><input type="number"
+                        [(ngModel)]="_trnMainService.TrnMainObj.ProdList[currentIndex].ImporterPriceCalcList.Insurance_ImporterRate"
+                        (change)="calculateCostings(currentIndex)"></td>
+            </tr>
+            <tr>
+                <td class="desc-class">Assesable Value for Custom Duty</td>
+                <td><input type="number"
+                        [(ngModel)]="_trnMainService.TrnMainObj.ProdList[currentIndex].ImporterPriceCalcList.AssesableCustomDuty_ImporterRate"
+                        disabled></td>
+            </tr>
+            <tr>
+                <td class="desc-class">Custom Duty</td>
+                <td><input type="number"
+                        [(ngModel)]="_trnMainService.TrnMainObj.ProdList[currentIndex].ImporterPriceCalcList.CustomDuty_ImporterRate"
+                        (change)="calculateCostings(currentIndex)"></td>
+            </tr>
+            <tr>
+                <td class="desc-class">Assesable Value for Anta Shulka</td>
+                <td><input type="number"
+                        [(ngModel)]="_trnMainService.TrnMainObj.ProdList[currentIndex].ImporterPriceCalcList.AssesableAntaShulka_ImporterRate"
+                        disabled></td>
+            </tr>
+            <tr>
+                <td class="desc-class">Anta Shulka</td>
+                <td><input type="number"
+                        [(ngModel)]="_trnMainService.TrnMainObj.ProdList[currentIndex].ImporterPriceCalcList.AntaShulka_ImporterRate"
+                        (change)="calculateCostings(currentIndex)"></td>
+            </tr>
+            <tr>
+                <td class="desc-class">Service Charge</td>
+                <td><input type="number"
+                        [(ngModel)]="_trnMainService.TrnMainObj.ProdList[currentIndex].ImporterPriceCalcList.ServiceCharge_ImporterRate"
+                        (change)="calculateCostings(currentIndex)"></td>
+            </tr>
+            <tr>
+                <td class="desc-class">Others</td>
+                <td><input type="number"
+                        [(ngModel)]="_trnMainService.TrnMainObj.ProdList[currentIndex].ImporterPriceCalcList.Others_ImporterRate"
+                        (change)="calculateCostings(currentIndex)"></td>
+            </tr>
+            <tr>
+                <td class="desc-class">Cost Before VAT</td>
+                <td><input type="number"
+                        [(ngModel)]="_trnMainService.TrnMainObj.ProdList[currentIndex].ImporterPriceCalcList.CostBeforeVAT_ImporterRate"
+                        disabled></td>
+            </tr>
+            <tr>
+                <td class="desc-class">VAT</td>
+                <td><input type="number"
+                        [(ngModel)]="_trnMainService.TrnMainObj.ProdList[currentIndex].ImporterPriceCalcList.VAT_ImporterRate"
+                        (change)="validateVAT(currentIndex)"></td>
+            </tr>
+            <tr>
+                <td class="desc-class">Invoice Qty</td>
+                <td>
+                    <select style="width: 44%;border: 1px solid rgba(0, 0, 0, 0.15);border-radius: 5px;line-height: 1.25;height: 25px;text-align: center;"
+                    [(ngModel)]="_trnMainService.TrnMainObj.ProdList[currentIndex].ImporterPriceCalcList.Unit_ImporterRate"
+                    (change)="calculateQty(currentIndex)">
+                        <option value="Case">Case</option>
+                        <option value="Each">Each</option>
+                    </select>
+                    <input type="number" style="width: 53%;"
+                        [(ngModel)]="_trnMainService.TrnMainObj.ProdList[currentIndex].ImporterPriceCalcList.InvoiceQty_ImporterRate"
+                        (change)="calculateQty(currentIndex)"></td>
+            </tr>
+            <tr>
+                <td class="desc-class">Landed Cost Per Qty</td>
+                <td><input type="number"
+                        [(ngModel)]="_trnMainService.TrnMainObj.ProdList[currentIndex].ImporterPriceCalcList.LandedCostPerRate_ImporterRate"
+                        disabled></td>
+            </tr>
+
+        </tbody>
+    </table>
+    <div style="text-align: right;margin-top:2%;margin-bottom: 1%;margin-right: 1%;">
+        <button type="button" class="btn btn-primary" (click)="saveCosting(currentIndex)" [disabled]="disable_Okbutton">Ok</button>
+        <!-- <button type="button" class="btn btn-danger" (click)="deleteCosting(currentIndex)">Delete</button> -->
+        <button type="button" class="btn btn-primary" (click)="close()">Cancel</button>
+    </div>
+</div>

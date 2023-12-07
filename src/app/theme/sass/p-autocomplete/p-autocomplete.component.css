@@ -1,0 +1,11 @@
+.ui-autocomplete{
+    width: 100% !important;
+}
+
+.ui-inputtext{
+    width: 93.7% !important;
+}
+
+.ui-autocomplete-dropdown{
+    border-bottom-width: 0px !important;
+}

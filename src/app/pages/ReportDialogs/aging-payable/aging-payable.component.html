@@ -1,0 +1,95 @@
+<style>
+  .modal-content-main-area {
+    width: 100% !important;
+  }
+
+</style>
+
+<div>
+  <!-- Modal content -->
+  <div class="modal-content modal-content-main-area" style="width: 100% !important">
+    <div>
+      <div class="modal-header" style="padding: 0px;background: #8cccfb;">
+        <button class="close" aria-label="Close" (click)="closeReportBox()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" style="text-align: center;">
+          Select Date
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div class="clearfix">
+          <div class="col-md-12">
+            <div class="col-md-4 form-group">
+              <div class="report-filter single-calendar">
+                <label>Date Selection</label>
+                <input class="form-control" type="text" ngxDaterangepickerMd [(ngModel)]="selectedDate"
+                [alwaysShowCalendars]="true"
+                [singleDatePicker]="true"
+                [autoApply]="true"
+                placeholder="Date Range..." (ngModelChange)="dateChanged($event)" />
+              </div>
+              <div class="cell-with-comment report-filter">
+                <label>Supplier</label>
+                <input id="customerselectid" autocomplete="off" title="Enter or Tab to select"
+                  [(ngModel)]="ACNAME" (keydown.tab)="customerEnterCommand($event)"
+                  (keydown.enter)="customerEnterCommand($event)" (keydown)="preventInput($event)"
+                  class="form-control" />
+
+                <span class="cell-comment" style="margin-left: 27%">
+                  press ENTER or TAB to Select Supplier
+                </span>
+              </div>
+              <div></div>
+
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" name="tc" [(ngModel)]="agingpayable.reportparam.summaryreport">
+                    Is Summary?
+                </label>
+              </div>
+
+            </div>
+            <div class="col-md-8">
+              <h4 class="text-align">Selected Accounts</h4>
+              <div class="clearfix" style="height: 165px;overflow-y: scroll;">
+                <table>
+                  <thead style="width: 98%;">
+                    <th style="background-color: #e3e1df !important;">ACNAME</th>
+                    <th style="background-color: #e3e1df !important;">ACID</th>
+                    <th style="background-color: #e3e1df !important;">ACTION</th>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngIf="selectedVoucherList.length">
+                      <tr *ngFor="let itm of selectedVoucherList;let i=index">
+                        <td>
+                          {{itm?.ACNAME}}
+                        </td>
+                        <td>
+                          {{itm?.ACID}}
+                        </td>
+                        <td><i class="fa fa-trash" (click)="removeFromSelectedList(i)"></i></td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr style="margin-bottom: 0px !important">
+        <div class="clearfix" style="padding: 10px;">
+
+          <button class="btn btn-info pull-right" style="margin-left: 10px;" (click)=onload()>RUN</button>
+          <button class="btn btn-info pull-right" (click)="closeReportBox()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="custom-genericGrid" style="height: 200px;">
+    <generic-popup-grid #genericGridSupplier [popupsettings]="gridPopupSettingsForCustomer"
+      (onItemDoubleClick)="onCustomerSelected($event)">
+    </generic-popup-grid>
+  </div>

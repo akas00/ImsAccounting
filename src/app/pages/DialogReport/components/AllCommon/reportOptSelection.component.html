@@ -1,0 +1,19 @@
+<fieldset class="scheduler-border" style="height: 180px; width:410px; margin-left:-1px; margin-top:25px;">
+    <legend class="scheduler-border" style="font-size: 12px;">Report Option Selection</legend>
+
+<div class="checkbox">
+<input type="checkbox" [(ngModel)]="OpeningChecked" > Show Opening B&frasl;L Only
+</div>
+ <div class="checkbox" style="margin-left:50px;">  
+ <input type="checkbox" [disabled]="OpeningChecked == false" > Show Opening Status also
+    </div>
+  <div class="checkbox">
+    <ba-checkbox [(ngModel)]="a" [label]="'Show Contact Details Also'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
+  </div>
+  <div class="checkbox">
+    <ba-checkbox [(ngModel)]="s" [label]="'Exclude Negative Balance'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
+  </div>
+ <div class="checkbox">
+    <ba-checkbox [(ngModel)]="d" [label]="'Show Negative Balance Only'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
+  </div>
+ </fieldset>

@@ -1,0 +1,42 @@
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="close" aria-label="Close" (click)="ClosePopUp()">&times;</div>
+            <h4 class="modal-title">Dispatch List</h4>
+        </div>
+
+        <div class="modal-body">
+            <div style="background:#d4c8c8; height:2px;width:100%;"></div>
+            <table style="margin:10px;width:90%">
+                <div style="height:30px;width:90%;">
+                    <tr>
+                        <th style="width:40px">SNo</th>
+                        <th style="width:300px">VoucherNo.</th>
+                        <th style="width:80px">Division</th>
+                        <th style="width:100px">Date</th>
+                        <th style="width:100px">Miti</th>
+                        <th style="width:100px">Trn A/c</th>
+                    </tr>
+                </div>
+                <!-- <div style="height:250px;width:90%;overflow:auto;scrollbar-3dlight-color:#FFFFFF;scrollbar-arrow-color:#000000;scrollbar-base-color:#FF9999;scrollbar-darkshadow-color:#000000;scrollbar-face-color:#000000;scrollbar-highlight-color:#000000;scrollbar-shadow-color:#0033CC;">
+                    <tr *ngFor="let t of ComboByItemList;let i=index" style="height:28px">
+
+                        <td style="width:40px"> {{i+1}}</td>
+                        <td style="width:300px"> {{t.DESCA}} </td>
+                        <td style="width:100px"><input type="text" [(ngModel)]="t.Quntity"></td>
+                        <td style="width:100px"><input type="text" [(ngModel)]="t.Rate"></td>
+                        <td style="width:100px"><input type="text" [(ngModel)]="t.Discount"></td>
+                    </tr>
+
+
+                </div> -->
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer">
+
+        <button class="btn btn-info confirm-btn" type="button" [disabled]="selectedRow==null" (click)=onsubmit()>OK</button>
+    </div>
+</div>
+
+

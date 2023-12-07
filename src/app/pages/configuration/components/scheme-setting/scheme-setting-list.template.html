@@ -1,0 +1,9 @@
+<div class="widgets">
+  <button class="btn btn-info" style="margin-bottom: 10px;" (click)="onAddClick()" >Add Discount Scheme</button>
+  <div class="row">
+    <ba-card title="Membership Scheme List" baCardClass="with-scroll">
+      <ng2-smart-table [settings]="settings" [source]="source" (edit)="onEditClick($event)" (deleteConfirm)="onDeleteConfirm($event)"></ng2-smart-table>
+    </ba-card>
+  </div>
+
+</div>

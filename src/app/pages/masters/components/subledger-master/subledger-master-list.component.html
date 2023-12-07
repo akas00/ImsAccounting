@@ -1,0 +1,83 @@
+<!-- <div class="widgets">
+    <div class ="row">
+        <button type="button" class="btn btn-info" (click)="newSubLedger()" style="margin-left:18px; margin-bottom: 10px;">New Sub Ledger </button>
+        </div>
+    
+      <div class="row">
+        <ba-card  title="Sub Ledger Master" baCardClass="with-scroll">
+          <ng2-smart-table [settings]="settings" [source]="source" (edit)="onEditClick($event)" (view)="onViewClick($event)" (delete)="onDeleteClick($event)"></ng2-smart-table>
+        </ba-card>
+      </div>  
+</div> -->
+
+<!--New Ui design for subledger master-->
+<div class="row col-md-12">
+  <div class="col-md-4">
+      <h5 style="font-weight: bold;font-size: 1.1rem;">Sub-Ledger Master</h5>
+
+  </div>
+  <div class="col-md-8">
+      <!-- <button class="btn btn-info pull-right" style="font-size: 12px;" routerLink="/pages/dashboard">Back</button> -->
+      <button *ngIf="userSetting.enableMaster_AddEdit==1" type="button" class="btn btn-info pull pull-right" (click)="newSubLedger()" style="font-size: 12px;">Add Sub Ledger </button>
+      <button type="button" class="btn btn-info pull pull-right" (click)="ExportSubledger()" style="font-size: 12px;">Export Sub Ledger </button>     
+      <button [disabled]="addMode" type="button" class="btn btn-info pull-right" (click)="ExcelUploadPartyLedger()"
+            style="margin-bottom: 10px;margin-right: 11px;">Excel Upload</button>
+  </div>
+</div>
+
+<div class="row" style="align-items: center;">
+  <div class="col-md-12 col-sm-8" style="margin-top:0.5rem">
+
+    <div class="card" style="margin: auto; width: 63rem;">
+      <div class="card-header">
+        
+        <span class="col-md-6" >Sub-Ledger Lists</span>
+        <div style="margin-left: 15rem;">
+          <input type="text" name="search" [(ngModel)]="filter" #searchFilter="ngModel" class="form-control" placeholder="Search..." style="width: 15rem; height: 1.7rem; padding: 0px 6px;">
+        </div>
+       
+        
+      </div>
+
+      <div class="card-body">
+        <table class="table table-striped">
+          <thead>
+              <tr style="position: sticky; top:0;line-height: 1.5rem;">
+                  <th scope="col" style="width:3%">S.N</th>
+                  <th scope="col" style="width:18%">Name</th>
+                  <th scope="col" style="width:8%">ID</th>
+                  <th scope="col" style="text-align:center;width:10%">Action</th>
+              </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="this.subLedgerList && this.subLedgerList.length > 0">
+              <tr *ngFor="let subledger of (this.subLedgerList|searchData:filter); let i=index">
+                <td style="width:3%;">{{i+1}}</td>
+                <td style="width:18%;">{{subledger.SL_ACNAME}}</td>
+                <td style="width:8%;">{{subledger.SL_ACID}}</td>
+                <td style="width:10%;text-align: center;">
+                <button style="width: 60px;" type="button" class="btn btn-sm btn-info mr-1 btn-sm" data-toggle="modal" (click)="onViewClick(subledger)">View</button>
+                <button *ngIf="userSetting.enableMaster_AddEdit==1" style="width: 60px;" type="button" class="btn btn-sm btn-info mr-1 btn-sm" data-toggle="modal" (click)="onEditClick(subledger)">Edit</button>
+                <button style="width: 60px;" type="button" class="btn btn-sm btn-info mr-1 btn-sm" data-toggle="modal" (click)="onDeleteClick(subledger)">Delete</button>
+
+                </td> 
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="this.subLedgerList && (this.subLedgerList|searchData:filter).length === 0">
+              <tr>
+                <td colspan="4">
+                  <div class="font-weight-bold">Sub Ledger Information are unavailable.</div>
+                </td>
+              </tr>
+          </ng-container>
+          </tbody>
+      </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<file-uploader-popup #fileUploadPopup [popupsettings]="fileUploadPopupSettings"
+(onUploaded)="fileUploadSuccess($event)">
+</file-uploader-popup>

@@ -1,0 +1,14 @@
+<div class="widgets">
+ <div class ="row">
+    
+      <button type="button" class="btn btn-info" name=test (click)="onAddClick()" style="margin-bottom:10px; margin-left:18px">Add ExpensesVoucher</button>
+    
+  </div>
+  <div class="row">
+    <ba-card title="Expenses Voucher" baCardClass="with-scroll">
+      <ng2-smart-table [settings]="settings" [source]="source"  (edit)="onEditClick($event)" (view)="onViewClick($event)" (deleteConfirm)="onDeleteConfirm($event)"></ng2-smart-table>
+    </ba-card>
+  </div>
+ 
+
+</div>

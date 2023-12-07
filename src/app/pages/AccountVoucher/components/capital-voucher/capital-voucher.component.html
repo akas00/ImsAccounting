@@ -1,0 +1,765 @@
+<style>
+    .table tr th {
+      text-align: center;
+      vertical-align: middle;
+      line-height: 15px;
+    }
+  
+    tr {
+      /* border: 1px solid #e6e6e6; */
+      max-height: 25px;
+    }
+  
+    td {
+      height: 20px;
+      /* border: 1px solid #e6e6e6; */
+     
+  
+    }
+  
+    .bottom {
+      position: fixed;
+      bottom: 20px;
+      left: 0px;
+      width: 100%;
+      height: 140px;
+      z-index: 999997;
+      /* background: #e2eaea !important; */
+    }
+    .colorLabel{
+    width: 120px !important;
+    font-size: 21px !important;
+    font-weight: bold;
+    color: #2dacd1;
+  }
+  .diffAmountItemForAccount{
+    font-size: 21px;
+    width: 160px;
+    color: #2dacd1;
+    text-align: right;
+    border: 1px solid #cbcbcb;
+    font-weight: bold;
+  }
+  .sectionWrapper{
+      display: flex;
+      flex-direction: column;
+      height: 94vh;
+    }
+
+ .midTableWrapper{
+  flex: 1; 
+  overflow: auto;
+  overflow-x:hidden;
+}
+.footer-wrapper {
+  background: lightgreen;
+  min-height: 185px;
+}
+
+  
+  
+  </style>
+
+    <div class="sectionWrapper">
+      <div class="topWwrapper">
+          
+<div class="sticky-top">
+    <div class="row clearfix">
+        <div class="col-md-1">
+            <voucher-master-toggler></voucher-master-toggler>
+        </div>
+        <div class="col-md-5">
+            <!-- <h2 style="color: black; font-size: 15px; font-weight: 400">{{_transactionService.pageHeading}}[{{this._transactionService.TrnMainObj.Mode}}] </h2> -->
+            <label style="font-family: Segoe UI Light;font-weight: bold;font-size: 20px;padding-left: 5%;padding-top: 1%;width:50%;">{{ _transactionService.pageHeading }}</label>
+            <label style="font-size: 14px;width: 150px;padding-top: 9px;">&nbsp;>> {{ _transactionService.TrnMainObj?.Mode | titlecase}} Voucher</label>
+        </div>
+        <div class="col-md-6">
+            <account-master-action  
+            ></account-master-action> 
+        </div>
+    </div>
+</div>
+<div class="main-container" style="margin-bottom: 0;">
+    <div [hidden]="masterService.ShowMore" class="row clearfix" style="margin: 2px;">
+        <div class="col-md-12" style="margin: 2px 15px ; padding-left: 5px; padding-right: 5px; border: 1px solid #e6e6e6; ">
+         <div class="col-md-8" style=" padding-left: 0px; padding-right: 2px; height: 135px; overflow-y: auto; overflow-x: hidden; " >
+            <!-- <div class="row" >
+                <div class="col-md-3">
+                    <label class=" form-control-label">Account Name
+                    </label>
+                      <input 
+                         type="number"
+                         class="form-control"
+                         placeholder="Account Name"/>
+                </div>
+                <div class="col-md-3">
+                    <label class=" form-control-label">Amount 
+                    </label>
+                      <input 
+                        type="number"
+                        class="form-control"
+                        placeholder="Amount"
+                       />
+                </div>
+                <div class="col-md-4">
+                    <label class=" form-control-label">Naration
+                    </label>
+                    <textarea style="height: 25px; width: 100%; " >
+                    </textarea>
+                </div>
+                <div class="col-md-2">
+                    <button (click)="onAddClick()" style="margin: 0px 4px;" class="btn btn-info pull-right">
+                        ADD
+                    </button>
+                </div>
+            </div> -->
+            <div class="row">   
+                <div class="col-md-2" >
+                    <div class="row">
+                        <div class="col-md-10" style="font-size: 12px;">
+                            Cr A/c Selection :
+                        </div>
+                        <div class="col-md-2" style="padding: 0px;">
+                            <div style="border-top : 1px solid #a7c7d4;margin-top: 5px;padding-left: 0px; width: 100%; "></div>
+                        </div>
+                    </div>                      
+                </div>       
+                <div class="col-md-10" style="padding-left: 0px;">                
+                    <div style="border-top : 1px solid #a7c7d4;margin-top: 5px;padding-left: 0px; width: 100%; "></div>
+                </div>
+            </div>
+            <div class="row" style="margin-left: 0px;">
+                <!-- <fieldset> -->
+                    <!-- <legend>Cr A/c Selection </legend> -->
+                    <table style="width: 98%;" >
+                        <thead>
+                            <tr style="border-bottom: 1px solid #E6E6E6; border-top: 1px solid #E6E6E6;    height: 25px;
+                            background:#C0C0C0;
+                            color: black;" >
+    
+                            <th style="width: 3%;font-weight: normal;font-size: 13px;">Sn</th>
+                            <!-- <th style="width: 24%;font-weight: normal;font-size: 13px;">Ledger A/C</th> -->
+                            <th style="width: 24%;font-weight: normal;font-size: 13px;">Ledger A/C</th>
+                            <th *ngIf="_transactionService.userSetting.ENABLESUBLEDGER==1" style="width: 23%;font-weight: normal;font-size: 13px;">
+                                Sub Ledger A/C
+                              </th>
+                              <!-- <th style="width: 15%;font-weight: normal;font-size: 13px;">Amount Without VAT</th> -->
+                            <th style="width: 15%;font-weight: normal;font-size: 13px;">Amount</th>
+                            <th style="width: 66%;font-weight: normal;font-size: 13px;">Narration </th>
+    
+                            </tr>
+                          
+                        </thead>
+                        <tbody *ngFor="let t of _transactionService.creditList; let i = index"  >
+                            <tr>
+                                <td style="width: 3%;">
+                                    {{i+1}}
+                                </td>
+                                <td style="width: 24%;" class="cell-with-comment" >
+                                   <input
+                                   #ACCODEInput_
+                                   style="width: 100%;"
+                                   autocomplete="off"
+                                   id = "AccountName_{{i}}"
+                                   type="text"
+                                   placeholder="press ENTER to Select"
+                                   [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'"
+                                   [(ngModel)]="t.ACNAME" 
+                                   (keydown.Enter)="showAcList(i); "
+                                   (keydown.Tab)="focusNextValidation('Ledger',t)"
+                                   (keydown)="preventInput($event)" 
+                                   (keydown.Shift.Delete)="clearRow($event, i);"
+                                   (focus)="onFocusCreditSelection($event,i)"
+                                   />
+    
+                                   <!-- <span class="cell-comment">
+                                    press ENTER or TAB to Select
+                                    {{ _transactionService.TableAcHeader }}
+                                  </span> -->
+                                   
+                                </td>
+                                <td  *ngIf="_transactionService.userSetting.ENABLESUBLEDGER==1" class="cell-with-comment">
+             
+       
+                                    <div *ngIf="(_transactionService.TrnMainObj.Mode == 'NEW' || _transactionService.TrnMainObj.Mode == 'EDIT')" style="width: 100%;">
+                                      <input #SubLedgerInput id="SubLedgerInputCr_{{i}}" autocomplete="off" [(ngModel)]="t.SL_ACNAME"
+                                        style="height:23px;width: 100%;" (keyup.Enter)="onsubLedgerTab(i); SubLedgerInput.blur()"
+                                        (keydown.Tab)="focusNextValidation('SubLedger',t)"
+                                        (keydown.Shift.Delete)="clearRow($event, i,t);" (keydown)="preventInput($event)" (focusout)="changedSubLedger($event,t)"
+                                        placeholder="press ENTER to Select" [disabled]="t.disableSubLedger == true"/>
+                                      <!-- <span class="cell-comment">
+                                        press ENTER or TAB to Select Sub-Ledger
+                                      </span> -->
+                                    </div>
+                                
+                                    <div *ngIf="_transactionService.TrnMainObj.Mode != 'NEW' && _transactionService.TrnMainObj.Mode != 'EDIT'" style="width: 100%;">
+                                      <div style="width:100%;line-height:21px;">
+                                        {{ t.SL_ACNAME }}
+                                      </div>
+                                    </div>
+                                  </td>
+
+                                  <!-- <td style="width: 15%;">
+                                    <input
+                                    style="width: 100%; text-align: right; "
+                                    id = "Amount_withoutvat_{{i}}"
+                                    type="number"
+                                    [disabled] = "t.ACNAME == null || _transactionService.TrnMainObj.Mode== 'VIEW'"
+                                    [(ngModel)]="t.CRAMNT_WITHOUTVAT" decimalPlacesRestriction="2"
+                                    (change)="ChangeCRAMNT_WithoutVAT(i)"
+                                    (keydown.Enter)="CRAMNT_WithoutVAT_RowOk(i,t)"
+                                    (keydown.Tab)="CRAMNT_WithoutVAT_RowOk(i,t)" 
+                                    (focusout)="CRAMNT_WithoutVAT_RowOk(i,t)" 
+                                    (keydown.Shift.Delete)="clearRow($event, i);"
+                                    />
+                                </td> -->
+                                
+                                <td style="width: 15%;">
+                                    <input
+                                    style="width: 100%; text-align: right; "
+                                    id = "Amount_{{i}}"
+                                    type="number"
+                                    [disabled] = "t.ACNAME == null || _transactionService.TrnMainObj.Mode== 'VIEW'"
+                                    [(ngModel)]="t.CRAMNT" decimalPlacesRestriction="2"
+                                    (change)="onChagneCRAmount(i)"
+                                    (keydown.Enter)="CRAMNTRowOk(i,t)"
+                                    (keydown.Tab)="CRAMNTRowOk(i,t)" 
+                                    (focusout)="CRAMNTRowOk(i,t)" 
+                                    (keydown.Shift.Delete)="clearRow($event, i);"
+                                    />
+                                </td>
+                                <td style="width: 66%;">
+                                    <input
+                                    style="width: 100%;"
+                                    id = "NarrationCr_{{i}}"
+                                    [(ngModel)]="t.NARATION"
+                                    type="text"
+                                    [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'"
+                                    (keydown.Enter)="addCreditnewRow($event, i)"
+                                    (keydown.Tab)="addCreditnewRow($event, i)" 
+                                    (keydown.Shift.Delete)="clearRow($event, i);"
+                                    />
+                                </td>
+                            </tr>
+    
+                        </tbody>
+                    </table>
+                <!-- </fieldset> -->
+               
+            </div>
+  
+         </div>
+         <div class="col-md-4">
+            <table
+              class="table table-summary"
+              style="text-align: left; white-space: nowrap;"
+            >
+              <tr>
+                <td style="line-height: 16px;font-size: 13px; text-align: left;"  >Voucher No :</td>
+                <td style="line-height: 16px;font-size: 13px;"   ><b>{{ _transactionService.TrnMainObj.VCHRNO }}</b></td>
+              </tr>
+              <tr >
+                <td style="line-height: 16px; font-size: 13px; text-align: left;"  >Entry Date :</td>
+                <td style="line-height: 16px; font-size: 13px; display: flex; margin-bottom: 15px;" >
+                  <!-- {{ _transactionService.TrnMainObj.TRNDATE | date: "dd-MM-yyyy" }} -->
+                  <input 
+                  type="date"
+                  #adEntryDate
+                  id="date" 
+                  style="width:41%; height: 30px;"  
+                  placeholder="Year Start Date" 
+                  [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'" 
+                  [(ngModel)]="EntryDate.DATE3"
+                  (change)="changeEntryDate1($event.target.value,'AD')" 
+                  (focusout)="focusOutEntryDate($event)"
+                  max="{{date1 | date:'yyyy-MM-dd'}}" min="{{date2 | date:'yyyy-MM-dd'}}"> &nbsp;A.D&nbsp;
+                  <div style="width: 128px;">
+                    <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDatefrom'"
+                    (change)="changeEntryDate1($event.detail.value,'BS')"
+                    [label]="'From'"
+                    [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'" [(ngModel)]="EntryDate.BSDATE1">
+                    </nepali-date-picker>
+                  </div>
+                 
+                  <!-- <input
+                   #bsEntryDate
+                   id="nepaliDate" 
+                   style="width:90px;height:25px;text-align:left"
+                   class="nepali-calendar ndp-nepali-calendar"
+                   [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'" 
+                   [(ngModel)]="EntryDate.BSDATE1" type="text"
+                   (change)="changeEntryDate1($event.target.value,'BS')"
+                   placeholder="yyyy-mm-dd"> &nbsp;B.S -->
+                </td>
+              </tr>
+              <tr >
+                <td style="line-height: 16px;text-align: left;font-size: 13px;" >Trn Date :</td>
+                <td class="trndatepicker"style="line-height: 16px;font-size: 13px; display:flex; margin-bottom: 15px;"  >
+                  <!-- <ims-date-picker (onDateChange)="setTrnDate($event,i)" [index]="'TRN'" [date]="getTrnDate()" [ID]="'trndate'"></ims-date-picker> -->
+                  <input
+                    type="date" 
+                    #adTrnDate
+                    style="width:41%; height: 30px;" 
+                    placeholder="Year Start Date"
+                    [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'" 
+                    (change)="changeEntryDate($event.target.value,'AD')"  
+                    [(ngModel)]="VoucherEntry.DATE1" max="{{date1 | date:'yyyy-MM-dd'}}"
+                    max="{{date1 | date:'yyyy-MM-dd'}}" min="{{date2 | date:'yyyy-MM-dd'}}"> &nbsp;A.D&nbsp;
+                  <div style="width: 128px;">
+                    <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDateto'"
+                    (change)="changeEntryDate($event.detail.value,'BS')"
+                    [label]="'From'"
+                    [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'" [(ngModel)]="VoucherEntry.BSDATE1">
+                    </nepali-date-picker>
+                  </div>
+                  <!-- <input 
+                    #bsTrnDate
+                    id="nepaliDate"
+                    style="width:90px;height:25px;text-align:left" 
+                    class="nepali-calendar ndp-nepali-calendar"
+                    [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'" 
+                    [(ngModel)]="VoucherEntry.BSDATE1" type="text" 
+                    (change)="changeEntryDate($event.target.value,'BS')"
+                    placeholder="yyyy-mm-dd" /> &nbsp;B.S -->
+      
+                </td>
+              </tr>
+              <tr >
+                <!-- <td  style="line-height: 16px;"  >Ref No:</td>
+                <td  style="line-height: 16px;" >
+                  <input
+                    type="text"
+                    class="form-control"
+                    [(ngModel)]="_transactionService.TrnMainObj.REFBILL"
+                  />
+                </td> -->       
+                <!-- <td style="line-height: 16px; font-size: 13px; text-align: left;"  >
+                   CP Type :
+                </td>          -->
+                <!-- <td>
+                    <select 
+                    [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'"
+                    [(ngModel)]="_transactionService.TrnMainObj.CNDN_MODE" 
+                    style="width: 91%;"
+                  >
+                     
+                      <option [ngValue]=0>Capitalize Purchase Voucher</option>
+                      <option [ngValue]=10>Non-Capitalize Purchase Voucher</option>
+                    </select>
+                   
+                </td> -->
+              </tr>
+              <tr >
+                <!-- <td  style="line-height: 16px;"  >Ref No:</td>
+                <td  style="line-height: 16px;" >
+                  <input
+                    type="text"
+                    class="form-control"
+                    [(ngModel)]="_transactionService.TrnMainObj.REFBILL"
+                  />
+                </td> -->       
+                <td style="line-height: 16px; font-size: 13px; text-align: left;"  >
+                   Cost Center :
+                </td>         
+                <td>
+                   
+                   
+                    <select 
+                    [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'"
+                    [(ngModel)]="_transactionService.TrnMainObj.COSTCENTER" 
+                    style="width: 91%;"
+                  >
+                      <option [ngValue]=""></option>
+                      <option *ngFor="let c of costlists" [ngValue]="c.CCID">
+                        {{ c.COSTCENTERNAME }}</option>
+                    </select>
+                </td>
+              </tr>
+              <tr>          
+                <td style="line-height: 16px; font-size: 13px; text-align: left;">
+                    Refno. :
+                </td>
+                <td *ngIf = "userSetting.PrefixForRefNoInvEntry ==1"  >
+                    <select
+                      name="prefix" 
+                      id="prefix"
+                      [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'"
+                      [(ngModel)]="_transactionService.TrnMainObj.CHALANNOPREFIX"
+                      style="width: 41%;"
+                    >
+                      <option value="" selected="selected">Choose Prefix</option>
+                      <option value="{{chalan.series}}" *ngFor="let chalan of chalanSeries;">{{chalan.series}}</option>
+                    </select>
+                    <input
+                        type="text"
+                        style="width: 41%;"
+                        [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'"
+                        [(ngModel)]="_transactionService.TrnMainObj.CHALANNO"                      
+                    />
+                </td>
+                <td  *ngIf = "userSetting.PrefixForRefNoInvEntry ==0 ">
+                    <input 
+                        type="text" 
+                        style="width: 91%;"
+                        [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'"
+                        [(ngModel)]="_transactionService.TrnMainObj.CHALANNO"
+                    />
+                </td>                         
+          </tr>
+            </table>
+          </div>
+          
+        </div>
+    </div>
+  
+        
+</div> 
+
+      </div>
+       <div class="midTableWrapper">
+
+           <div class="clearfix" style="margin-top: 5px">
+        <div class="row">   
+            <div class="col-md-2" >
+                <div class="row">
+                    <div class="col-md-7" style="font-size: 12px;">
+                        Dr A/c Selection :
+                    </div>
+                    <div class="col-md-5" style="padding: 0px;">
+                        <div style="border-top : 1px solid #a7c7d4;margin-top: 5px;padding-left: 0px; width: 100%; "></div>
+                    </div>
+                </div>                      
+            </div>       
+            <div class="col-md-10" style="padding-left: 0px;">                
+                <div style="border-top : 1px solid #a7c7d4;margin-top: 5px;padding-left: 0px; width: 100%; "></div>
+            </div>
+        </div>
+                 
+        <trntran-voucher-entry></trntran-voucher-entry> 
+    </div>
+
+       </div>
+
+       <div class=" footer-wrapper" style="text-align:right; background:#C0C0C0;">
+        <div class="col-md-4" >
+            <fieldset style="border: 1px solid #e6e6e6; padding:0px 2px 4px 2px; ">
+                <legend style="font-size:11px;font-weight: bold; width:auto; text-align: left;" >Supplier Information </legend>
+                <div class="row" >
+                    <div class= "col-md-3">
+                        <label style="text-align: left;height: 15px; ">Name :</label>
+                        <label style="text-align: left;height: 15px;" >Address :</label>
+                        <label style="text-align: left;height: 15px;" >VAT NO :</label>
+                    </div> 
+                    <div class= "col-md-9">
+                        <input id="Name" 
+                        style="width: 100%;" 
+                        type="text"
+                        autocomplete="off"
+                        placeholder="Press ENTER or TAB to select Supplier"
+                        [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'"
+                        (keydown.enter)="SupplierEnterCommand($event)"
+                        (keydown.tab)="SupplierEnterCommand($event)"
+                        [(ngModel)]="_transactionService.TrnMainObj.BILLTO"
+                        (keydown)="preventInput($event)" 
+                        />
+                        <input                
+                        id="Address"
+                        type="text"
+                        autocomplete="off"
+                        [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'"
+                        style="width: 100%;"
+                        [(ngModel)]="_transactionService.TrnMainObj.BILLTOADD" 
+                         (keydown)="preventInput($event)"                  
+                          />
+                        <input 
+                        id="VATNO" 
+                        type="text"
+                        autocomplete="off"
+                        [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'"
+                        style="width: 100%;" 
+                        [(ngModel)]="_transactionService.TrnMainObj.BILLTOTEL"
+                        (keydown)="preventInput($event)" 
+                        />
+                    </div> 
+                </div>
+            </fieldset>
+            <!-- <fieldset style="border: 1px solid black; padding:0px 2px 0px 1px; "> -->
+                <!-- <legend style="font-size:11px;font-weight: bold; width:auto; text-align: left;" >Remarks </legend> -->
+                <div class="row" style="margin-top: 7px;" >
+                    <div class="col-md-3">
+                        <label style="text-align: left;height: 15px; ">Remarks :</label>
+                    </div>
+                    <div class= "col-md-9">
+                        <input
+                         id="Remarks" 
+                         type="text"
+                         [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'"
+                         [(ngModel)]="_transactionService.TrnMainObj.REMARKS"
+                         style="width: 100%;"
+                          />                       
+                    </div> 
+                </div>
+            <!-- </fieldset> -->
+        </div>
+        <div class="col-md-4" >
+            <div class="row" style="margin-top: 55px;">
+               
+                    <label class="colorLabel">A/C B/L :
+                    </label><label class="diffAmountItemForAccount">{{ differenceAmount | number }}</label>&nbsp;
+                    <label style="width:30px !important;font-size:18px;color: #2dacd1;font-weight: bold;" *ngIf="diffAmountDrCrType == 'Dr'">Dr.</label>
+                    <label style="width:30px !important;font-size:18px;color: #2dacd1;font-weight: bold;" *ngIf="diffAmountDrCrType == 'Cr'">Cr.</label>    
+        
+            </div>
+            <div class="row" style="margin-top: 8px;">
+                <!-- <div class="col-md-2" >
+                   Total
+                </div> -->
+                <div class="col-md-6" style="border: 1px solid #e6e6e6;">
+                    <label *ngIf = "_transactionService.nullToZeroConverter(_transactionService.totalDRAmount) != 0 " > {{_transactionService.totalDRAmount | twoDigitNumber }} Dr.  </label>
+                    <label *ngIf = "_transactionService.nullToZeroConverter(_transactionService.totalDRAmount) == 0 " >0Dr.</label>
+                </div>
+                <div class="col-md-6" style="border: 1px solid #e6e6e6;"  >
+                    <label *ngIf ="_transactionService.nullToZeroConverter(this._transactionService.totalCRAmount) !=0 " > {{this._transactionService.totalCRAmount | twoDigitNumber }} Cr.</label>
+                    <label *ngIf ="_transactionService.nullToZeroConverter(this._transactionService.totalCRAmount) ==0 " >0Cr.</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <!-- <div class="row" >
+                <div class="col-md-6">
+                    <label style="text-align: left;height: 15px; ">Gross Amount</label>
+                        <label style="width:100%;height: 15px;" >Discount</label>
+                        <label style="width:100%;height: 15px;" >Taxable Amount</label>
+                        <label style="width:100%;height: 15px; ">Non Taxable Amount</label>
+                        <label style="width:100%;height: 15px;" >VAT Amount</label>
+                        <label style="width:100%;height: 15px;" >Net Amount</label>
+                        <label style="width:100%;height: 15px;" >Rounding</label>
+                </div>
+                <div class="col-md-6">
+                    <input id="Name" style="width: 100%;" />
+                    <input id="Address" style="width: 100%;" />
+                    <input id="VATNO" style="width: 100%;" />
+                    <input id="Name" style="width: 100%;" />
+                    <input id="Address" style="width: 100%;" />
+                    <input id="VATNO" style="width: 100%;" />
+                    <input id="VATNO" style="width: 100%;" />
+                </div>
+            </div> -->
+            <table class="table" style="height: 100px; ">
+               <tbody>
+                   <tr>
+                       <td style="line-height: 12px;text-align:left;font-size: 12px; font-weight: bold;">Gross Amount </td>
+                       <td style="line-height: 12px;">
+                           <input                          
+                           id="Gross Amount"
+                           type="number"
+                           [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'"
+                           style="width:100%; height: 19px;text-align:right; "
+                           [ngModel]="_transactionService.TrnMainObj.TOTAMNT | twoDigitNumber "
+                           (ngModelChange)="_transactionService.TrnMainObj.TOTAMNT = $event" 
+                           (keydown)="preventInput($event)" 
+                           />
+                               
+                       </td>
+                   </tr>
+              
+                   <tr>
+                        <td style="line-height: 12px;text-align:left; font-size: 12px; font-weight: bold; " >Discount </td>
+                        <td style="line-height: 12px;text-align:right;" >
+                            <input
+                           
+                            id="Discount"
+                            type="number"
+                            style="width:100%;height: 19px;text-align:right;"
+                            [ngModel]="applyPipeinDiscount?(_transactionService.TrnMainObj.DCAMNT |twoDigitNumber):_transactionService.TrnMainObj.DCAMNT"
+                            (ngModelChange)="_transactionService.TrnMainObj.DCAMNT =$event"
+                            [disabled]="_transactionService.TrnMainObj.Mode =='VIEW'"                    
+                            (keyup)="discountChange($event)"
+                            (focusout)="discountFocusOut($event)"
+                            />
+                            <!-- <input
+                            *ngIf = "_transactionService.nullToZeroConverter(_transactionService.TrnMainObj.TOTALDISCOUNT) ==0"
+                            id="Discount"
+                            type="number"
+                            style="width:100%;height: 19px;text-align:right;"
+                            [(ngModel)]="discount"
+                            (change)="budgetCalculation()"
+                            /> -->
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="line-height: 12px;text-align:left; font-size: 12px; font-weight: bold; " >Taxable Amount </td>
+                        <td style="line-height: 12px;text-align:right;" >
+                            <input                           
+                            id="TaxableAmount"
+                            type="number"
+                         
+                            style="width:100%; height: 19px;text-align:right;"
+                            [ngModel]="applyPipeinTaxableAmount?(_transactionService.TrnMainObj.TAXABLE |twoDigitNumber):_transactionService.TrnMainObj.TAXABLE"
+                            [disabled]="_transactionService.TrnMainObj.Mode =='VIEW'"
+                            (ngModelChange)="_transactionService.TrnMainObj.TAXABLE = $event"
+                            (keyup) = "taxableAmountChange($event)"
+        
+                            (focusout)="foucsOutTaxableAmount($event)"
+                            />
+                        
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="line-height: 12px;text-align:left;font-size: 12px; font-weight: bold; " >Non Taxable Amount </td>
+                        <td style="line-height: 12px;text-align:right;" >
+                            <input                         
+                            id="NonTaxableAmount"
+                            type="number"
+                            [disabled]="_transactionService.TrnMainObj.Mode =='VIEW'"
+                            style="width:100%; height: 19px;text-align:right;"
+                            [ngModel]="applyPipeinNonTaxableAmount? (_transactionService.TrnMainObj.NONTAXABLE |twoDigitNumber):_transactionService.TrnMainObj.NONTAXABLE"
+                            (ngModelChange)= "_transactionService.TrnMainObj.NONTAXABLE = $event"
+                            (keyup) = "nonTaxableAmountChange($event)"
+                            (change)="nonTaxableAmountChange($event)"
+                            (focusout)="foucsOutNonTaxableAmount($event)"
+                            />
+                      
+                        </td>
+                   </tr>
+                   <tr>
+                        <td style="line-height: 12px;text-align:left;font-size: 12px; font-weight: bold; " >VAT Amount </td>
+                        <td style="line-height: 12px;text-align:right;" >
+                            <input                           
+                            id="VATAmount"
+                            type="number"
+                            [disabled]="_transactionService.TrnMainObj.Mode =='VIEW'"
+                            style="width:100%; height: 19px;text-align:right;"
+                            [ngModel]="applyPipeinVatAmount?(_transactionService.TrnMainObj.VATAMNT |twoDigitNumber):_transactionService.TrnMainObj.VATAMNT"   
+                            (ngModelChange)="_transactionService.TrnMainObj.VATAMNT=$event"
+                            (keyup) = "VATAmountChange($event)"                       
+                            (change)="VATAmountChange($event)"
+                            (focusout)="foucsOutVATAmount($event)"
+                            />
+                           
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="line-height: 12px;text-align:left;font-size: 12px; font-weight: bold; " >Net Amount </td>
+                        <td style="line-height: 12px;text-align:right;" >
+                            <input                         
+                            id="NetAmount"
+                            type="number"
+                            [disabled]="_transactionService.TrnMainObj.Mode =='VIEW'"
+                            style="width:100%; height: 19px;text-align:right;"
+                            [ngModel]="_transactionService.TrnMainObj.NETAMNT | twoDigitNumber"
+                            (ngModelChange) = "_transactionService.TrnMainObj.NETAMNT = $event "
+                            (keydown)="preventInput($event)" 
+                            />
+                      
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="line-height: 12px;text-align:left;font-size: 12px; font-weight: bold; " >Rounding </td>
+                        <td style="line-height: 12px;text-align:left;" >
+                            <input
+                            id="Rounding"
+                            type="number"
+                            autocomplete="off"
+                            [disabled]="_transactionService.TrnMainObj.Mode =='VIEW'"
+                            style="width:100%; height: 19px;text-align:right;"
+                            [ngModel]="applyPipeinRoundingAmount?(_transactionService.TrnMainObj.ROUNDOFF | twoDigitNumber):_transactionService.TrnMainObj.ROUNDOFF"
+                            (ngModelChange)="_transactionService.TrnMainObj.ROUNDOFF =$event"
+                            (keyup) = "RoundedAmountChange($event)" 
+                           
+                            (focusout)="roundOffFocusOut($event)"  
+                            />
+                        </td>
+                    </tr>
+               </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+ 
+
+
+<generic-popup-grid #genericGridACList [popupsettings]="gridACListPopupSettings"
+  (onItemDoubleClick)="onAcSelect($event)"></generic-popup-grid>
+  <generic-popup-grid #genericGridSupplier [popupsettings]="gridPopupSettingsForSupplier"
+  (onItemDoubleClick)="onSupplierSelected($event)">
+</generic-popup-grid>
+<generic-popup-grid #gridSubLedgerSettingList [popupsettings]="gridSubLedgerSetting"
+  (onItemDoubleClick)="onSubLedgerSelect($event)"></generic-popup-grid>
+  
+  <!--TDS Popup-->
+  <div *ngIf="showTDSDetailPopup" style="display : block; padding: 0px;  margin-bottom: 25px;height: auto;
+  position: absolute;right: 31%;top: 22%;width: 44%;z-index: 9999999">
+
+  <div class="modal-content modal-content-main-area">
+    <div class="modal-header">
+      <h4 class="modal-title" id="myModalLabel">Please Select TDS AC</h4>
+     
+      <!-- <div style="float:right;    margin-right: -1%;">
+        <label style="width: 49% !important">
+          TDS Receivable :
+        </label>
+        <label><b style="font-size: 20px;">Rs. {{FinalCrTDSObj.DRAMNT}}</b></label>
+      </div>
+      <div style="float:right;    margin-right: -1%;">
+        <label>
+          TDS Payable :
+        </label>
+        <label><b style="font-size: 20px;">Rs. {{FinalDrTDSObj.CRAMNT}}</b></label>
+      </div> -->
+    </div>
+    <div class="modal-body">
+      <div class="main-container" style="padding-top : 10px; margin-bottom: 0px; margin-top: 0px !important;">
+        <div class="row">
+          <div class="col-md-12">
+              <table>
+                    <tr>
+                     
+                      <th style="border-bottom: 1px solid;width: 10%;">Sno</th>
+                      <th style="width: 50%;border-bottom: 1px solid;">Ledger A/C</th>
+                      <th style="width: 15%;border-bottom: 1px solid;">Base Amnt</th>
+                      <th style="width: 15%;border-bottom: 1px solid;">TDS</th>
+
+                    </tr>
+                    
+                      <tbody *ngFor="let x of this.PartyListFilter;let i=index" (click)="TdsPopupClick(i)">
+                        <tr (click)="TdsPopupClick(i)" style="height: 38px;">
+                     
+                        <td>{{i+1}}</td>
+                        <td><input type="text" list="product" [(ngModel)]="x.DESCA"  (change)="ChangeDesca($event)"
+                          style="width: 90%;"
+                         autocomplete="off" >
+                      <datalist id="product" >
+                          <option *ngFor="let t of FilterList"  [value]="t.ACNAME" >
+                      </datalist>
+                    </td>
+                        
+                        <td><input type="number" [(ngModel)]="x.AMNT" style="width: 90%;" (change)="BaseAmntChange()"></td>
+                        <td>{{x.TDS}}</td>
+                      </tr>
+                      </tbody>
+
+                  
+
+
+                  </table>
+
+                </div>
+               
+
+     
+
+    
+       
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal"
+        (click)="cancelTDSDetailPopup()">Cancel</button>
+      
+      <button type="button" class="btn btn-primary" (click)="TdsPopupOK()">Ok</button>
+    </div>
+  </div>
+
+</div>

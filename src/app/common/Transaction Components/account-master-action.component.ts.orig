@@ -1,0 +1,1845 @@
+import { AdditionalCostService } from "../../pages/Purchases/components/AdditionalCost/addtionalCost.service";
+import { TransactionService } from "./transaction.service";
+
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+  HostListener,
+  ElementRef
+} from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+//import {TAcList} from '../../../../common/interfaces';
+import { TrnMain, VoucherTypeEnum, Trntran } from "../interfaces/TrnMain";
+import { FormGroup, FormControl } from "@angular/forms";
+import { MasterRepo } from "../repositories/masterRepo.service";
+import { Subscription } from "rxjs/Subscription";
+import { SettingService, AppSettings } from "../services";
+import { AuthService } from "../services/permission/authService.service";
+import { MdDialog } from "@angular/material";
+import {
+  GenericPopUpComponent,
+  GenericPopUpSettings
+} from "../popupLists/generic-grid/generic-popup-grid.component";
+import { AlertService } from "../services/alert/alert.service";
+import { SpinnerService } from "../services/spinner/spinner.service";
+import { HotkeysService, Hotkey } from "angular2-hotkeys";
+import { PrintInvoiceComponent } from "../Invoice/print-invoice/print-invoice.component";
+import * as _ from "lodash";
+import { TAcList } from "../interfaces";
+import { ModalDirective } from "ng2-bootstrap";
+import { VoucherTrackingComponent } from "../../pages/AccountVoucher/components/VoucherTracking/VoucherTracking.component";
+import { AlternateUnitTabComponent } from "../../pages/masters/components/ProductMaster/AlternateUnitTabComponent";
+import { HttpUrlEncodingCodec } from "@angular/common/http";
+import { importdocument } from "../interfaces/AddiitonalCost.interface";
+
+@Component({
+  selector: "account-master-action",
+  templateUrl: "./account-master-action.component.html",
+  styleUrls: ["../../pages/Style.css", "./_theming.scss"]
+})
+export class AccountMasterActionComponent implements OnInit {
+  @Input() isSales;
+  transactionType: string; //for salesmode-entry options
+  mode: string = "NEW";
+  modeTitle: string = "";
+  public activeurlpath: string;
+  // public activeurlpath2:string;
+  public activeUrlPage: string;
+
+
+  //TrnMainObj: TrnMain = <TrnMain>{};
+
+  form: FormGroup;
+  AppSettings: AppSettings;
+  pageHeading: string;
+  showOrder = false;
+  voucherType: VoucherTypeEnum;
+  subscriptions: any[] = [];
+  tempWarehouse: any;
+  userProfile: any = <any>{};
+  serverDate: any;
+
+  savedVchrno: any;
+  filename: any;
+  rownumber: any;
+  numtowords: any;
+  showVoucherReplicateButton: boolean;
+  isValueLoaded = false;
+  gettingMessage: any;
+  selectedPostDate: any;
+
+  @Output() onViewClickEmit: EventEmitter<any> = new EventEmitter<any>();
+  @Output() onSaveClickedEmit: EventEmitter<any> = new EventEmitter<any>();
+  @Output() onBillTrackEmit: EventEmitter<any> = new EventEmitter<any>();
+
+  @ViewChild('DeleteAcc') DeleteAcc: ModalDirective;
+  @ViewChild("genericGrid") genericGrid: GenericPopUpComponent;
+  @ViewChild("voucherTrack") VoucherTracking: VoucherTrackingComponent;
+  @ViewChild('ShowDate') ShowDate: ModalDirective;
+  returnUrl: string;
+  checkstatus = true;
+  viewSubscription: Subscription = new Subscription();
+  gridPopupSettings: GenericPopUpSettings = new GenericPopUpSettings();
+
+  showSecondaryButtons: boolean;
+  gridPopupSettingsForHoldBill: GenericPopUpSettings = new GenericPopUpSettings();
+  trialUrl: boolean = false;
+  showUnApprove: boolean = false;
+  showgstsetuponAccount: boolean = false;
+  showgstItcReversalPopup: boolean = false;
+  vouchernois: any;
+  division: any;
+  phiscalid: any;
+  paymentmode: any;
+  isActive: boolean = false;
+  constructor(
+    public masterService: MasterRepo,
+    public _trnMainService: TransactionService,
+    private setting: SettingService,
+    public additionalCostService: AdditionalCostService,
+    public authservice: AuthService,
+    public dialog: MdDialog,
+    private router: Router,
+    private arouter: ActivatedRoute,
+    private alertService: AlertService,
+    private _hotkeysService: HotkeysService,
+    private loadingService: SpinnerService,
+    public invoicePrint: PrintInvoiceComponent,
+    public _additionalCostService: AdditionalCostService
+
+  ) {
+    //this.TrnMainObj = _trnMainService.TrnMainObj;
+    this.activeurlpath = this.arouter.snapshot.url[0].path;
+    let currentPath = arouter.snapshot.url.join('');
+    this.activeUrlPage = this.arouter.snapshot.url[1].path
+    ////console.log("activeUrlPage", this.arouter.snapshot.url[1].path)
+    this.masterService.ShowMore = false;
+    this.AppSettings = this.setting.appSetting;
+    this.userProfile = authservice.getUserProfile();
+    this.voucherType = this._trnMainService.TrnMainObj.VoucherType;
+    this._trnMainService.TrnMainObj.BRANCH = this.userProfile.userBranch;
+    this._trnMainService.TrnMainObj.PhiscalID = this._trnMainService.PhiscalObj.PhiscalID;
+    this._trnMainService.TrnMainObj.DIVISION = this.userProfile.userDivision;
+    this.showSecondaryButtons = false;
+    this.userSetting = authservice.getSetting()
+    this.masterService.refreshTransactionList();
+    if (
+      this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.CreditNote ||
+      this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.SalesReturn
+    ) {
+      this.transactionType = "creditnote";
+    }
+    if (this._trnMainService.TrnMainObj.VoucherType === VoucherTypeEnum.AdditionalCost) {
+      this._trnMainService.TrnMainObj.VoucherPrefix = 'AD'
+    }
+    this.gridPopupSettings = this.masterService.getGenericGridPopUpSettings(
+      this._trnMainService.TrnMainObj.VoucherPrefix, this._trnMainService.TrnMainObj.VoucherPrefix
+    );
+    this.getCurrentServerDate();
+    this.masterService.addnMode = 'NEW'
+  }
+
+  inputDisabled: boolean;
+  ngOnInit() {
+    this.arouter.queryParams.subscribe(params => {
+      if (params['mode'] == "DRILL" && params['returnUrl']) {
+        let activeurlpath = params['returnUrl']
+        let abcd = '/pages/financialreports/account-ledger-reports/'
+        this.returnUrl = abcd + activeurlpath;
+      } else {
+        this.returnUrl = "/pages/dashboard/dashboard";
+        this.inputDisabled = false
+      }
+    });
+
+  }
+
+
+  ngOnDestroy() {
+    try {
+      this.subscriptions.forEach((sub: Subscription) => {
+        sub.unsubscribe();
+      });
+    } catch (ex) {
+      this.alertService.error(ex)
+    }
+  }
+
+  getCurrentServerDate() {
+    this.masterService.getCurrentDate().subscribe((res: any) => {
+      this.serverDate = res && res.Date ? res.Date : new Date();
+
+    }, err => { });
+  }
+
+
+
+
+  onCloseClicked() {
+    this.router.navigate(["/pages/dashboard"]);
+  }
+
+  onViewClicked() {
+    this.masterService.addnMode = 'VIEW'
+    this.inputDisabled = true;
+    this._trnMainService.replicateVoucher = false;
+    this.showVoucherReplicateButton = false;
+    // this._trnMainService.TrnMainObj.Mode = "VIEW";
+    this._trnMainService.buttonClickMode = "VIEW";
+
+    if (this._trnMainService.TrnMainObj.VoucherPrefix == "CN") {
+      this.genericGrid.show(this._trnMainService.TrnMainObj.PARAC, false, "cnlistforview");
+    }
+    else if (this._trnMainService.TrnMainObj.VoucherPrefix == "DN") {
+      this.genericGrid.show(this._trnMainService.TrnMainObj.PARAC, false, "dnlistforview");
+    }
+    else if (this._trnMainService.TrnMainObj.VoucherType == 12) {
+      this.genericGrid.show(this._trnMainService.TrnMainObj.PARAC, false, "journal");
+    }
+
+    else {
+      this.genericGrid.show();
+
+    }
+    if (this.userSetting.ENABLEVOUCHERSERIES == 0) {
+      // ////console.log("CheckVlaue#",this._trnMainService.TrnMainObj,this._trnMainService.prefix)
+      this.masterService.getGenericGridPopUpSettings(
+        this._trnMainService.TrnMainObj.VoucherPrefix, this._trnMainService.TrnMainObj.VoucherAbbName
+      );
+    }
+
+
+
+  }
+
+
+
+  //for print
+  public promptPrintDevice: boolean = false
+  promptPrintDeviceAfterSave: boolean = false
+  public printControl = new FormControl(0)
+
+
+  setPrinterAndprint() {
+    this.promptPrintDevice = false;
+    this.userProfile.PrintMode = this.printControl.value
+    if (this.userProfile.PrintMode == 1) {
+      this.loadingService.show("please wait. Getting invoice data ready for printing.")
+      try {
+        this.masterService.getInvoiceData(this._trnMainService.TrnMainObj.VCHRNO, this._trnMainService.TrnMainObj.DIVISION, this._trnMainService.TrnMainObj.PhiscalID, this._trnMainService.TrnMainObj.TRNAC).subscribe((res) => {
+          // this.invoicePrint.printInvoice(res.result, res.result2, this._trnMainService.TrnMainObj.VoucherPrefix)
+          this.invoicePrint.printInvoice(res.result, res.result2, this._trnMainService.TrnMainObj.VoucherPrefix);
+          this.loadingService.hide()
+        }, err => {
+          this.alertService.error(err)
+        })
+      } catch (ex) {
+        this.alertService.error(ex)
+      }
+    } else if (this._trnMainService.TrnMainObj.VoucherType == 12 && this.userProfile.PrintMode == 2) {
+      if (this._trnMainService.TrnMainObj.REVCHARGE == 'Y') {
+        try {
+          this.masterService.getInvoiceData(this._trnMainService.TrnMainObj.VCHRNO, this._trnMainService.TrnMainObj.DIVISION, this._trnMainService.TrnMainObj.PhiscalID, this._trnMainService.TrnMainObj.PARAC).subscribe((res) => {
+            this.invoicePrint.printInvoice(res.result, res.result2, this._trnMainService.TrnMainObj.VoucherPrefix, "", 1, true)
+            this.loadingService.hide()
+          }, err => {
+            this.alertService.error(err)
+          })
+        } catch (ex) {
+          this.alertService.error(ex)
+        }
+      } else {
+        this.promptPrintDevice = false;
+        this.alertService.error("Please load RCM Entry for Self Invoice");
+      }
+    }
+  }
+
+
+
+  changeCursor: boolean;
+  onPrintClicked() {
+    // if (this._trnMainService.TrnMainObj.TrntranList.length > 0) {
+    //   this.promptPrintDevice = true;
+    // } else {
+    //   this.alertService.warning("No voucher Found for Printing");
+    // }
+    this._trnMainService.replicateVoucher = false;
+    this.showVoucherReplicateButton = false;
+    ////console.log("@@VoucherPrefix", this._trnMainService.TrnMainObj.VoucherPrefix)
+    //console.log('VAT', this.userProfile.CompanyInfo.VAT);
+    let vat = this.userProfile.CompanyInfo.VAT;
+    let VATresult = vat.split("");
+
+    this.masterService.getPrintFileName(this._trnMainService.TrnMainObj.VoucherPrefix).subscribe((res) => {
+      if (res.status == "ok") {
+        this.filename = res.result ? res.result[0].FileName : '';
+        this.rownumber = res.result ? res.result[0].RowsNumber : 0;
+
+        this.changeCursor = true;
+        //console.log('vchrno',this._trnMainService.TrnMainObj.VCHRNO);
+        //console.log('initial',this.userProfile.CompanyInfo.INITIAL);
+        //console.log('psyid',this.masterService.PhiscalObj.PhiscalID);
+        //console.log('cmpid', this.userProfile.CompanyInfo.COMPANYID);
+        //console.log('name',this.userProfile.CompanyInfo.NAME);
+        //console.log('address',this.userProfile.CompanyInfo.ADDRESS);
+
+
+
+        this.masterService.getNumberToWords(this._trnMainService.TrnMainObj.VCHRNO, this.userProfile.CompanyInfo.INITIAL, this.masterService.PhiscalObj.PhiscalID, this.userProfile.CompanyInfo.COMPANYID).subscribe(
+          (res) => {
+            if (res.status == "ok") {
+              this.numtowords = res.result ? res.result[0].NUMTOWORDS : '';
+              ////console.log("@@numtowords", this.numtowords);
+
+              this.masterService.getAllInvoiceData(this.filename, this.rownumber, this._trnMainService.TrnMainObj.VCHRNO, this.userProfile.CompanyInfo.NAME, this.userProfile.CompanyInfo.ADDRESS, this.userProfile.CompanyInfo.INITIAL, this.masterService.PhiscalObj.PhiscalID, this.userProfile.CompanyInfo.COMPANYID, this.numtowords, VATresult[0], VATresult[1], VATresult[2], VATresult[3], VATresult[4], VATresult[5], VATresult[6], VATresult[7], VATresult[8]).subscribe(
+                (res) => {
+                  ////console.log("pdfresponse", res);
+
+                  const blobUrl = URL.createObjectURL(res.content);
+                  const iframe = document.createElement('iframe');
+                  iframe.style.display = 'none';
+                  iframe.src = blobUrl;
+                  document.body.appendChild(iframe);
+                  iframe.contentWindow.print();
+                  this.changeCursor = false;
+
+                }
+              )
+
+            }
+          })
+
+
+      }
+
+    })
+    this.changeCursor = false;
+
+  }
+
+
+
+  print(printStr: string) {
+    var ws;
+    ws = new WebSocket("ws://127.0.0.1:1660");
+    ws.addEventListener("message", ws_recv, false);
+    ws.addEventListener("open", ws_open(printStr), false);
+    function ws_open(text) {
+      alert("Are you sure to print?");
+      ws.onopen = () => ws.send(text);
+      // ws.send(text);
+    }
+
+    function ws_recv() {
+      alert("2 : success");
+    }
+  }
+
+  onSaveClicked() {
+
+<<<<<<< HEAD
+    if (this.userProfile.CompanyInfo.FYClose == 1) {
+=======
+  if (this.userProfile.CompanyInfo.FYClose == 1) {
+>>>>>>> e7b94f0e61ea2b23b3c1d9962fd1344a7c8ce1cb
+      this.alertService.warning("Fiscal Year Book '" + this.masterService.PhiscalObj.PhiscalID + "' is already closed! Hence, Cannot do further transaction")
+      return;
+    }
+    this.showVoucherReplicateButton = false;
+    this._trnMainService.replicateVoucher = false;
+
+    // ////console.log("this._trnMainService.TrnMainObj.TrntranList", this.voucherType, this._trnMainService.TrnMainObj.TrntranList)
+
+    // ////console.log("vchrnInfo", this.voucherType, this.masterService.AdditionalCostTrnTran)
+    if (this.voucherType == 66)//AdditionalCost
+    {
+      if (this.masterService.AdditionalCostTrnTran) {
+        this._trnMainService.TrnMainObj.TrntranList = [];
+        this._trnMainService.TrnMainObj.TrntranList = this.masterService.AdditionalCostTrnTran
+      }
+      else {
+        this.alertService.warning("Accounting for Additional Cost is not preprared!")
+        return;
+      }
+      if (this.additionalCostService.addtionalCostList == []) {
+        this.alertService.warning("Costing is not prepared!");
+        return;
+      }
+      else {
+        this._trnMainService.TrnMainObj.AdditionalCostJson = JSON.stringify(this.additionalCostService.costdetail)
+        this._trnMainService.TrnMainObj.ImportDocument = this.masterService.importDocumentDetailsObj;
+        // this._trnMainService.TrnMainObj.importDocument.SUPPLIER = this.masterService.RefObj.SupplierName;
+      }
+      // this._trnMainService.TrnMainObj = <TrnMain>{};
+      // this._trnMainService.TrnMainObj.costList = this.additionalCostService.costList;
+      // this._trnMainService.TrnMainObj.addtionalCostList =this.additionalCostService.addtionalCostList
+      // this.additionalCostService.costdetail = [];
+      // this.masterService.AdditionalCostTrnTran = [];
+      // this.masterService.importDocumentDetailsObj  =<importdocument>{}
+      // this.masterService.RefObj = <any>{};
+      // ////console.log("xxa",this.additionalCostService.costdetail,this.additionalCostService.costList,this.additionalCostService.header)
+      this._trnMainService.TrnMainObj.REFBILL = this.masterService.RefObj.Refno;
+      this._trnMainService.TrnMainObj.REFORDBILL = this.masterService.RefObj.InvoiceNo;
+      this._trnMainService.TrnMainObj.BILLTO = this.masterService.RefObj.SupplierName;
+    }
+    // return;
+    if (this._trnMainService.TrnMainObj.Mode == "NEW" || this._trnMainService.TrnMainObj.Mode == "EDIT") {
+      // if (this._trnMainService.TrnMainObj.REFBILL == null || this._trnMainService.TrnMainObj.REFBILL == "" || this._trnMainService.TrnMainObj.REFBILL == undefined) {
+      //   this.alertService.error("Please provide Refbill.");
+      //   return;
+      // }
+
+      if (this._trnMainService.TrnMainObj.VoucherType == 64) {
+        this._trnMainService.TrnMainObj.AdditionTranList = [];
+        let item = 0;
+        for (let i of this._trnMainService.creditList) {
+          this._trnMainService.TrnMainObj.AdditionTranList.push(this._trnMainService.creditList[item]);
+          item++;
+        }
+
+      }
+
+      if (this._trnMainService.TrnMainObj.VoucherType == 17) {
+        this._trnMainService.TrnMainObj.RETTO = "Payment Voucher";
+      }
+
+      if (this._trnMainService.TrnMainObj.VoucherType == 65) {
+        this._trnMainService.TrnMainObj.RETTO = "SINGLE PAYMENT";
+      }
+
+      // ////console.log("first tranlist", this._trnMainService.TrnMainObj.TrntranList);
+
+      // if (this._trnMainService.TrnMainObj.REFBILL == null || this._trnMainService.TrnMainObj.REFBILL == "" || this._trnMainService.TrnMainObj.REFBILL == undefined) {
+      //   this.alertService.error("Please provide Refbill.");
+      //   return;
+      // }
+      if (!this.SubLedgerValidation()) { return }
+
+      // ////console.log("@@beforesubmit1", this.voucherType, this._trnMainService.TrnMainObj.TrntranList)
+
+
+
+      this.onSubmit();
+    } else {
+      this.alertService.warning("Cannot Save in View Mode")
+    }
+
+
+  }
+  SubLedgerValidation(): boolean {
+    // ////console.log("SaveTransactionObj",this._trnMainService.TrnMainObj)
+    for (let i of this._trnMainService.TrnMainObj.TrntranList) {
+      if (i.AccountItem.HASSUBLEDGER == 1 && (!i.SL_ACID)) {
+        var ACNAME = i.AccountItem.ACNAME;
+        this.alertService.warning("PLEASE, SPECIFY SUB LEDGER FOR A/C '" + ACNAME + "'");
+        return false;
+      }
+    }
+    if (this._trnMainService.TrnMainObj.VoucherType === VoucherTypeEnum.CapitalVoucher) {
+      for (let x of this._trnMainService.TrnMainObj.AdditionTranList) {
+        if (x.AccountItem.HASSUBLEDGER == 1 && (!x.SL_ACID)) {
+          var ACNAME = x.AccountItem.ACNAME;
+          this.alertService.warning("PLEASE, SPECIFY SUB LEDGER FOR A/C '" + ACNAME + "'");
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+  transactionValidator(): boolean {
+    if (!this._trnMainService.setDefaultValueInTransaction()) {
+      return false;
+    }
+    return true;
+  }
+  userSetting: any;
+
+
+  onSubmit() {
+
+    if (this._trnMainService.TrnMainObj.VoucherType != VoucherTypeEnum.AdditionalCost) {
+      //Below code are already used there but Not required for AddiotionalCost.
+      this._trnMainService.TrnMainObj.REFBILL = this._trnMainService.TrnMainObj.CHALANNO;
+    }
+
+
+
+    try {
+
+      if (this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.CapitalVoucher) {
+
+        if (Math.round((this._trnMainService.totalCRAmount + Number.EPSILON) * 100) / 100
+          != Math.round((this._trnMainService.totalDRAmount + Number.EPSILON) * 100) / 100) {
+          this.alertService.info("DR and Cr amount are not equall");
+          return;
+        }
+        if (this._trnMainService.TrnMainObj.BILLTO == null ||
+          this._trnMainService.TrnMainObj.BILLTO == "" ||
+          this._trnMainService.TrnMainObj.BILLTO == undefined
+        ) {
+          this.alertService.info("Supplier is not selected");
+          return;
+        }
+
+        this._trnMainService.TrnMainObj.DCAMNT = Math.round((this._trnMainService.TrnMainObj.DCAMNT + Number.EPSILON) * 100) / 100;
+        this._trnMainService.TrnMainObj.VATAMNT = Math.round((this._trnMainService.TrnMainObj.VATAMNT + Number.EPSILON) * 100) / 100;
+      }
+
+      if (this._trnMainService.TrnMainObj.VoucherType == 17 ||
+        this._trnMainService.TrnMainObj.VoucherType == 18) {
+        if (this._trnMainService.TrnMainObj.TRNACName == null ||
+          this._trnMainService.TrnMainObj.TRNACName === undefined ||
+          this._trnMainService.TrnMainObj.TRNACName == ""
+        ) {
+          this.alertService.info("CASH/BANK A/C IS NOT SELECTED. PLS SELECT IT FIRST");
+          return;
+        }
+      }
+
+
+      // ////console.log("#123")
+      if (this._trnMainService.TrnMainObj.TRNDATE > this.serverDate) {
+        this.alertService.info("TRN DATE SHOULD NOT BE ENTERED FUTURE DATE");
+        return;
+      }
+
+      // ////console.log("CheckDate",this._trnMainService.TrnMainObj.TRN_DATE,this.masterService.PhiscalObj.EndDate)
+      if ((this._trnMainService.TrnMainObj.TRN_DATE < this.masterService.PhiscalObj.BeginDate)
+        || this._trnMainService.TrnMainObj.TRN_DATE > this.masterService.PhiscalObj.EndDate
+      ) {
+        this.alertService.info("ENTRY DATE SHOULD BE WITH IN  FISCAL YEAR DATE RANGE");
+        return;
+      }
+      // ////console.log("#1234")
+      if (this._trnMainService.TrnMainObj.VoucherType !== VoucherTypeEnum.AdditionalCost) {
+        if (this.userSetting.RefNoReqInvEntry == 1) {
+          if (this._trnMainService.TrnMainObj.CHALANNO == '' ||
+            this._trnMainService.TrnMainObj.CHALANNO == null) {
+            this.alertService.info("Refno cannot be empty");
+            return;
+          }
+
+        }
+      }
+      // ////console.log("#1235",this.userSetting.PrefixForRefNoInvEntry,this._trnMainService.TrnMainObj.CHALANNO )
+      if (this.userSetting.PrefixForRefNoInvEntry == 1) {
+        // ////console.log("chalan no value", this._trnMainService.TrnMainObj.CHALANNO);
+
+        if (this._trnMainService.TrnMainObj.CHALANNO == '' ||
+          this._trnMainService.TrnMainObj.CHALANNO == null ||
+          this._trnMainService.TrnMainObj.CHALANNOPREFIX == '' ||
+          this._trnMainService.TrnMainObj.CHALANNOPREFIX == null
+        ) {
+          this.alertService.info("Refno/Prefix cannot be empty");
+          return;
+        }
+
+      }
+
+      if (this._trnMainService.TrnMainObj.VoucherType !== VoucherTypeEnum.AdditionalCost) {
+        if (
+          this._trnMainService.TrnMainObj.TrntranList[this._trnMainService.TrnMainObj.TrntranList.length - 1].AccountItem.ACID == null
+        ) {
+          this._trnMainService.TrnMainObj.TrntranList.splice(
+            this._trnMainService.TrnMainObj.TrntranList.length - 1,
+            1
+          );
+        }
+      }
+
+      // ////console.log("#1237")
+      //Check Limit in Payment vouhcer in overdraft account
+      if (this._trnMainService.TrnMainObj.VoucherType == 17 && this._trnMainService.MAPID_Is == "OD") {
+        // ////console.log("@@totalDramnt",this._trnMainService.drTotal)
+        // ////console.log("@@totalCramnt",this._trnMainService.crTotal)
+        // ////console.log("@@_trnMainService.diffAmountIs",this._trnMainService.diffAmountIs)
+        // ////console.log("@@creditlimit",this._trnMainService.creditlimit)
+        let a = this._trnMainService.drTotal - this._trnMainService.crTotal;
+        let b = this._trnMainService.creditlimit + (this._trnMainService.diffAmountIs);
+        if (Math.abs(a) > b) {
+          let pqr = b - Math.abs(a);
+          this.alertService.info(" O/D LIMIT (Rs. " + this._trnMainService.creditlimit + ") WILL BE EXCEED BY (Rs." + Math.abs(pqr) + ") WITH THIS TRANSACTION. HENCE, REQUESTED COMMAND IS ABORTED.");
+          return;
+        }
+      }
+
+      // This function below is for Payment and Receive Voucher
+      // ////console.log("#1238")
+      // return;
+      if (this._trnMainService.TrnMainObj.VoucherType == 17 || this._trnMainService.TrnMainObj.VoucherType == 18) {
+        // CheckBillTrack
+        var isBillTrack: Boolean;
+
+        if (this._trnMainService.TrnMainObj.BillTrackedList != null &&
+          this._trnMainService.TrnMainObj.BillTrackedList !== undefined
+        ) {
+          if (this._trnMainService.TrnMainObj.BillTrackedList.length > 0) {
+            isBillTrack = true;
+          }
+        }
+
+        // ////console.log("#1239")
+        try {
+          if (this._trnMainService.Party_or_Expense_Ac != null) {
+            // ////console.log("reached here")
+            var TotalDebit = 0;
+            var TotalCredit = 0;
+            var BalanceDebitCredit = 0;
+            var addnewTran: Boolean = false;
+            var countDr = 0
+            var countCr = 0
+            var changeNarration: Boolean = false;
+            var remarks = '';
+            var skipArrayIfBillTrackedCr: boolean;
+            var skipArrayIfBillTrackedDr: boolean;
+            // count DR/CR seperatly
+            // Below function is for Narration of TDS assign to others
+            // ////console.log("#12399")
+            for (let i of this._trnMainService.TrnMainObj.TrntranList) {
+              if (this._trnMainService.TrnMainObj.VoucherType == 17) {
+                if (i.DRAMNT != 0)
+                  countDr += 1;
+                if (i.AccountItem.PARENT == 'AG214') {
+                  remarks = i.NARATION;
+
+                }
+              }
+              else if (this._trnMainService.TrnMainObj.VoucherType == 18) {
+                if (i.CRAMNT != 0)
+                  countCr += 1
+                if (i.AccountItem.PARENT == 'AG215') {
+                  ////console.log("reached 2")
+                  remarks = i.NARATION;
+                }
+              }
+            }
+            for (let i of this._trnMainService.TrnMainObj.TrntranList) {
+              skipArrayIfBillTrackedDr = false;
+              skipArrayIfBillTrackedCr = false;
+              if (isBillTrack == true) {
+                for (let b of this._trnMainService.TrnMainObj.BillTrackedList) {
+                  if (i.guid == b.ID) {
+                    if (this._trnMainService.TrnMainObj.VoucherType == 17) {
+                      skipArrayIfBillTrackedCr = true
+                    }
+
+                    if (this._trnMainService.TrnMainObj.VoucherType == 18) {
+                      skipArrayIfBillTrackedDr = true
+                    }
+
+                  }
+                }
+              }
+              // ////console.log("#12312")
+              if (i.DRAMNT == undefined) {
+                i.DRAMNT = 0;
+              } if (i.CRAMNT == undefined) {
+                i.CRAMNT = 0;
+              }
+              if (skipArrayIfBillTrackedDr == false) {
+                TotalDebit += i.DRAMNT
+              }
+
+              if (skipArrayIfBillTrackedCr == false) {
+                TotalCredit += i.CRAMNT;
+              }
+              // ////console.log("TotalDDD", TotalDebit, TotalCredit, countDr, countCr, remarks)
+              if (TotalDebit > 0 && TotalCredit > 0) {
+                this._trnMainService.TrnMainObj.isOneisToManyvchr = true;
+                if (this._trnMainService.TrnMainObj.VoucherType == 17) {
+                  BalanceDebitCredit = TotalDebit - TotalCredit;
+                  addnewTran = true;
+                  if (countDr == 1) {
+
+                    //  i.NARATION = "tds";
+                    ////console.log("i.NARATION", i.NARATION)
+                  }
+
+                }
+                else if (this._trnMainService.TrnMainObj.VoucherType == 18) {
+                  BalanceDebitCredit = TotalCredit - TotalDebit;
+                  addnewTran = true;
+                  if (countCr == 1) {
+
+                    //  i.NARATION = "tds";
+                    ////console.log("reach 3", i.NARATION)
+                  }
+                }
+
+              }
+              else {
+                this._trnMainService.TrnMainObj.isOneisToManyvchr = false;
+              }
+
+
+            }
+            if (this._trnMainService.TrnMainObj.VoucherType == 17) {
+              if (countDr == 1) {
+                for (let i of this._trnMainService.TrnMainObj.TrntranList) {
+                  if (i.DRAMNT != 0) {
+                    if (i.AccountItem.PARENT == 'AG214') {
+
+                      // this._trnMainService.TrnMainObj.TrntranList.forEach(x => x.NARATION = remarks);
+                    }
+                  }
+                }
+              }
+            }
+
+            if (this._trnMainService.TrnMainObj.VoucherType == 18) {
+              if (countCr == 1) {
+                for (let i of this._trnMainService.TrnMainObj.TrntranList) {
+                  if (i.CRAMNT != 0) {
+
+                    if (i.AccountItem.PARENT == 'AG215') {
+
+                      //  this._trnMainService.TrnMainObj.TrntranList.forEach(x => x.NARATION = remarks);
+                    }
+                  }
+                }
+              }
+
+            }
+            // ////console.log("addneTran", addnewTran);
+            if (addnewTran == true) {
+              this.addNewTranRowWhenSave(BalanceDebitCredit, remarks)
+            }
+          }
+
+        } catch (error) {
+          alert(error);
+        }
+
+      }
+
+
+
+      // 16 ~ Debit note
+      // This function below is for Debit Credit Note
+      if (this._trnMainService.TrnMainObj.VoucherType == 16 || this._trnMainService.TrnMainObj.VoucherType == 15) {
+
+        if (this._trnMainService.Party_or_Expense_Ac != null) {
+          this.DebitCreditNoteRecalculate(this._trnMainService.TrnMainObj.VoucherType);
+
+        }
+      }
+
+
+      if (this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.ReceiveVoucher || this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.PaymentVoucher || this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.ContraVoucher) {
+        for (let i of this._trnMainService.TrnMainObj.TrntranList) {
+          if (i.AccountItem != null) {
+            if (i.NARATION1 == "cheque") {
+              if (i.ChequeNo == null || i.ChequeNo == "" || i.ChequeNo == undefined || i.ChequeDate == null || i.ChequeDate == "" || i.ChequeDate == undefined) {
+                this.alertService.error(`Cheque Date and Cheque Number required for ${i.AccountItem.ACNAME} `);
+                return;
+              }
+            }
+            else if (i.NARATION1 == "DemandDraft" || i.NARATION1 == "others" || i.NARATION1 == "e-transfer") {
+              if (i.ChequeNo == null || i.ChequeNo == "" || i.ChequeNo == undefined || i.ChequeDate == null || i.ChequeDate == "" || i.ChequeDate == undefined) {
+                this.alertService.error(`Date and  Number required for ${i.AccountItem.ACNAME} `);
+                return;
+              }
+            }
+          }
+        }
+      }
+
+      try {
+        for (var t in this._trnMainService.TrnMainObj.TrntranList) {
+          if (this._trnMainService.TrnMainObj.TrntranList[t].SubledgerTranList !== undefined) {
+            if (this._trnMainService.TrnMainObj.TrntranList[t].SubledgerTranList.length > 0) {
+
+              if (
+                this._trnMainService.TrnMainObj.TrntranList[t].AccountItem.HASSUBLEDGER == 1 &&
+                (this._trnMainService.TrnMainObj.TrntranList[t].SubledgerTranList[
+                  this._trnMainService.TrnMainObj.TrntranList[t].SubledgerTranList.length - 1
+                ].SubledgerItem.ACID == null ||
+                  this._trnMainService.TrnMainObj.TrntranList[t].SubledgerTranList[
+                    this._trnMainService.TrnMainObj.TrntranList[t].SubledgerTranList.length - 1
+                  ].CRAMNT == null)
+              ) {
+                this._trnMainService.TrnMainObj.TrntranList[t].SubledgerTranList.splice(
+                  this._trnMainService.TrnMainObj.TrntranList[t].SubledgerTranList.length - 1,
+                  1
+                );
+              }
+
+            }
+          }
+        }
+
+      } catch (error) {
+        alert(error);
+      }
+
+
+      if (this._trnMainService.TrnMainObj.VoucherType == 22 || this._trnMainService.TrnMainObj.VoucherType == 23) {
+        this._trnMainService.TrnMainObj.ProdList = [];
+      }
+
+      let path2 = this.arouter.snapshot.url[1];
+      if (path2 != null) {
+        if (path2.path == "debit-note" || path2.path == "credit-note") {
+          this._trnMainService.TrnMainObj.CNDN_MODE = 1;
+        }
+        else if (path2.path == "debit-note-rate-adjustment" || path2.path == "credit-note-rate-adjustment") {
+          this._trnMainService.TrnMainObj.CNDN_MODE = 2;
+        }
+      }
+
+      this._trnMainService.TrnMainObj.tag = "accountbase";
+      this._trnMainService.TrnMainObj.IsAccountBase = true;
+      if (this._trnMainService.TrnMainObj.TrntranList.filter(y => y.AccountItem != null).findIndex(x => x.AccountItem.isAutoGSTApplicable == 1) < 0) {
+
+      }
+      else {
+        this._trnMainService.AutoGstPreparation();
+      }
+      if (this._trnMainService.TrnMainObj.gstInfoOfAccount != null && this._trnMainService.TrnMainObj.gstInfoOfAccount.GSTLIST != null && this._trnMainService.TrnMainObj.gstInfoOfAccount.GSTLIST.length > 0) {
+        this._trnMainService.JournalGstListPreparationForSave();
+      }
+
+      // if(this._trnMainService.TrnMainObj.CHALANNOPREFIX != "" || this._trnMainService.TrnMainObj.CHALANNOPREFIX != null){
+      //   this._trnMainService.TrnMainObj.CHALANNO = `${this._trnMainService.TrnMainObj.CHALANNOPREFIX}${this._trnMainService.TrnMainObj.CHALANNO}`
+      // }
+
+
+
+
+
+
+      // ////console.log("@@SAVEthis._trnMainService.TrnMainObj.TrntranList",this._trnMainService.TrnMainObj.TrntranList)
+
+      this.masterService.saveTransaction(this._trnMainService.TrnMainObj.Mode, this._trnMainService.TrnMainObj)
+        .subscribe(
+          data => {
+            if (data.status == "ok") {
+
+              this.savedVchrno = data.savedvchrno;
+
+              this.DeleteAcc.show();
+              this._trnMainService.masterSelectACID = '';
+              if (this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.Journal && data.result2.REVCHARGE == "Y") {
+                try {
+
+                  this.loadingService.hide()
+                  //  this.promptPrintDeviceAfterSave = false
+
+                  // this.masterService.getInvoiceData(data.savedvchrno, this._trnMainService.TrnMainObj.DIVISION, this._trnMainService.TrnMainObj.PhiscalID, this._trnMainService.TrnMainObj.PARAC)
+                  // .subscribe((res) => {
+                  //   this.invoicePrint.printInvoice(res.result, res.result2, this._trnMainService.TrnMainObj.VoucherPrefix, "", 1, true)
+                  //   this.loadingService.hide()
+                  // }, err => {
+                  //   this.alertService.error(err)
+                  // })
+                } catch (ex) {
+                  this.alertService.error(ex)
+                }
+              }
+
+              if (this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.Journal && data.result2.REVCHARGE != "Y" ||
+                this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.ContraVoucher ||
+                this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.PaymentVoucher ||
+                this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.ReceiveVoucher ||
+                this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.DebitNote ||
+                this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.CreditNote) {
+                //  this.loadingService.show("please wait. Getting invoice data ready for printing.")
+                try {
+                  // this.masterService.getInvoiceData(this._trnMainService.TrnMainObj.VCHRNO, this._trnMainService.TrnMainObj.DIVISION, this._trnMainService.TrnMainObj.PhiscalID, this._trnMainService.TrnMainObj.TRNAC)
+                  // .subscribe((res) => {
+                  //   this.invoicePrint.printInvoice(res.result, res.result2, this._trnMainService.TrnMainObj.VoucherPrefix);
+                  //   this.loadingService.hide()
+                  // }, err => {
+                  //   this.alertService.error(err)
+                  // })
+
+                  this.loadingService.hide()
+
+                  // this.promptPrintDeviceAfterSave = true;
+                } catch (ex) {
+                  this.alertService.error(ex)
+                }
+              }
+
+
+              if (this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.CapitalVoucher) {
+                this._trnMainService.creditList = [];
+                this._trnMainService.totalCRAmount = 0;
+                this._trnMainService.totalDRAmount = 0;
+                this._trnMainService.storePreviousRoundOff = 0;
+                this._trnMainService.addCreditListnewRow();
+              }
+
+              this._trnMainService.crTotal = 0;
+              this._trnMainService.drTotal = 0;
+              this._trnMainService.diffAmountItemForAccount = 0;
+
+              //this._trnMainService.viewDate.next(); //update date value
+
+              this._trnMainService.initialFormLoad(this._trnMainService.TrnMainObj.VoucherType);
+
+              if (this._trnMainService.TrnMainObj.VoucherType == 14 || this._trnMainService.TrnMainObj.VoucherType == 15) {
+                this._trnMainService.TrnMainObj.VATBILL = 0;
+
+              }
+
+              if (this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.PaymentVoucher) {
+                this._trnMainService.TrnMainObj.TRNMODE = 'Party Payment'
+                this.FlushBillList();
+                this.VoucherTracking.HoldALLBillList = [];
+
+              }
+              else if (this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.ReceiveVoucher) {
+                this._trnMainService.TrnMainObj.TRNMODE = 'Party Receipt';
+                this.FlushBillList();
+                this.VoucherTracking.HoldALLBillList = [];
+
+              }
+              else if (this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.PostDirectory) {
+                this._trnMainService.TrnMainObj.TRNMODE = 'Party Receipt';
+              }
+
+              if (this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.AdditionalCost) {
+
+                this.onNewClick();
+
+
+              }
+
+
+            }
+            else {
+
+              if (this._trnMainService.TrnMainObj.VoucherType == 17 ||
+                this._trnMainService.TrnMainObj.VoucherType == 18) {
+
+                if (this._trnMainService.TrnMainObj.isOneisToManyvchr == true) {
+                  this._trnMainService.TrnMainObj.TrntranList.splice(
+                    this._trnMainService.TrnMainObj.TrntranList.length - 1
+
+                  );
+                }
+              }
+              if (this._trnMainService.TrnMainObj.VoucherType == 15 ||
+                this._trnMainService.TrnMainObj.VoucherType == 16) {
+
+                if (this._trnMainService.TrnMainObj.isOneisToManyvchr == true) {
+                  this._trnMainService.TrnMainObj.TrntranList.splice(
+                    this._trnMainService.TrnMainObj.TrntranList.length - 2);
+                }
+              }
+            }
+          },
+          error => {
+          }
+        );
+    } catch (e) {
+    }
+  }
+
+  setPrinterAndprintAfterSave() {
+    ////console.log("vchrn", this.savedVchrno);
+    this.promptPrintDeviceAfterSave = false
+    // this.masterService.getInvoiceData(this.savedVchrno, this._trnMainService.TrnMainObj.DIVISION, this._trnMainService.TrnMainObj.PhiscalID, this._trnMainService.TrnMainObj.TRNAC)
+    //           .subscribe((res) => {
+    //             this.invoicePrint.printInvoice(res.result, res.result2, this._trnMainService.TrnMainObj.VoucherPrefix);
+    //             this.loadingService.hide()
+    //           }, err => {
+    //             this.alertService.error(err)
+    //           })
+    let vat = this.userProfile.CompanyInfo.VAT;
+    let VATresult = vat.split("");
+    this.masterService.getPrintFileName(this._trnMainService.TrnMainObj.VoucherPrefix).subscribe((res) => {
+      if (res.status == "ok") {
+        this.filename = res.result ? res.result[0].FileName : '';
+        this.rownumber = res.result ? res.result[0].RowsNumber : 0;
+
+        this.masterService.getNumberToWords(this.savedVchrno, this.userProfile.CompanyInfo.INITIAL, this.masterService.PhiscalObj.PhiscalID, this.userProfile.CompanyInfo.COMPANYID).subscribe(
+          (res) => {
+            if (res.status == "ok") {
+              this.numtowords = res.result ? res.result[0].NUMTOWORDS : '';
+              ////console.log("@@numtowords", this.numtowords);
+
+              this.masterService.getAllInvoiceData(this.filename, this.rownumber, this.savedVchrno, this.userProfile.CompanyInfo.NAME, this.userProfile.CompanyInfo.ADDRESS, this.userProfile.CompanyInfo.INITIAL, this.masterService.PhiscalObj.PhiscalID, this.userProfile.CompanyInfo.COMPANYID, this.numtowords, VATresult[0], VATresult[1], VATresult[2], VATresult[3], VATresult[4], VATresult[5], VATresult[6], VATresult[7], VATresult[8]).subscribe(
+                (res) => {
+                  ////console.log("pdfresponse", res);
+                  const blobUrl = URL.createObjectURL(res.content);
+                  const iframe = document.createElement('iframe');
+                  iframe.style.display = 'none';
+                  iframe.src = blobUrl;
+                  document.body.appendChild(iframe);
+                  iframe.contentWindow.print();
+                }
+              )
+            }
+          })
+      }
+    })
+  }
+
+
+  // Below function below is for Debit Credit Note only
+  DebitCreditNoteRecalculate(VoucherType) {
+    ////console.log("reach hera");
+    if (this._trnMainService.TrnMainObj.VATAMNT == undefined) this._trnMainService.TrnMainObj.VATAMNT = 0
+    var BalanceDebitCredit = 0;
+    for (let i of this._trnMainService.TrnMainObj.TrntranList) {
+
+      if (i.DRAMNT == undefined) {
+        i.DRAMNT = 0;
+      } if (i.CRAMNT == undefined) {
+        i.CRAMNT = 0;
+      }
+      this.TotalDrCr_Debit += i.DRAMNT
+      this.TotalDrCr_Credit += i.CRAMNT;
+      if (i.NARATION != null) {
+        this.RemarksToDrCrAccount = i.NARATION;
+      }
+
+
+    }
+
+    if (this._trnMainService.TrnMainObj.VATAMNT != 0) {
+      this.createnewAcObjForVAT(VoucherType);
+      if (VoucherType == 16) {
+        BalanceDebitCredit = this.TotalDrCr_Credit + this._trnMainService.TrnMainObj.VATAMNT;
+        this.addNewTrnTranRowForDrCR(0, BalanceDebitCredit, this._trnMainService.Party_or_Expense_Ac, false)
+        this._trnMainService.TrnMainObj.isOneisToManyvchr = true;
+      }
+      else if (VoucherType == 15) {
+        BalanceDebitCredit = this.TotalDrCr_Debit + this._trnMainService.TrnMainObj.VATAMNT;
+        this.addNewTrnTranRowForDrCR(BalanceDebitCredit, 0, this._trnMainService.Party_or_Expense_Ac, false)
+        this._trnMainService.TrnMainObj.isOneisToManyvchr = true;
+      }
+    }
+    else {
+      this._trnMainService.TrnMainObj.isOneisToManyvchr = false;
+    }
+
+  }
+
+  remainingAmtForDrCr: any;
+  CRAMNT = 0;
+  DRAMNT = 0;
+  TotalDrCr_Debit = 0;
+  TotalDrCr_Credit = 0;
+
+  // Below function below is for Debit Credit Note only
+  createnewAcObjForVAT(VoucherType) {
+    var newAC = <TAcList>{}
+
+    newAC.ACID = "LB01003",
+      newAC.ACNAME = "VAT A/C",
+      newAC.PARENT = "AG007",
+      newAC.TYPE = "A",
+      newAC.MAPID = "N",
+      newAC.IsBasicAc = 0,
+      newAC.ADDRESS = null,
+      newAC.PHONE = null,
+      newAC.FAX = null,
+      newAC.EMAIL = null,
+      newAC.VATNO = null,
+      newAC.PType = "B",
+      newAC.CRLIMIT = 0,
+      newAC.CRPERIOD = 0,
+      newAC.SALEREF = 0,
+      newAC.ACCODE = "LB01003",
+      newAC.LEVELS = 4,
+      newAC.FLGNEW = 0,
+      newAC.COMMON = 0,
+      newAC.PATH = null,
+      newAC.INITIAL = null,
+      newAC.EDATE = null,
+      newAC.DISMODE = "0",
+      newAC.MCAT = null,
+      newAC.HASSUBLEDGER = 0,
+      newAC.RATETYPE = null,
+      newAC.INVCHECK = 0,
+      newAC.LEADTIME = 0
+    //  16 Debit note
+    if (this._trnMainService.TrnMainObj.VoucherType == 16) {
+
+      this.CRAMNT = this._trnMainService.TrnMainObj.VATAMNT;
+      this.DRAMNT = 0
+      ////console.log("CheckTran", this.DRAMNT, this.CRAMNT, this._trnMainService.TrnMainObj.VATAMNT)
+      this.addNewTrnTranRowForDrCR(this.CRAMNT, this.DRAMNT, newAC, true)
+    }
+    //  15 Credit note
+    else if (this._trnMainService.TrnMainObj.VoucherType == 15) {
+
+      this.CRAMNT = 0
+      this.DRAMNT = this._trnMainService.TrnMainObj.VATAMNT;
+      ////console.log("CheckTran", this.DRAMNT, this.CRAMNT, this._trnMainService.TrnMainObj.VATAMNT)
+      this.addNewTrnTranRowForDrCR(this.CRAMNT, this.DRAMNT, newAC, true)
+    }
+
+
+
+  }
+
+  RemarksToDrCrAccount: any;
+  //  this.VATACID = "LB01003";
+  // Below function below is for Debit Credit Note only
+  addNewTrnTranRowForDrCR(CRAMNT, DRAMNT, value: TAcList, isVATAccount = false) {
+    var newRow = <Trntran>{};
+    newRow.AccountItem = value;
+    newRow.A_ACID = value.ACID;
+    newRow.NARATION1 = "none";
+    newRow.CRAMNT = CRAMNT,
+      newRow.DRAMNT = DRAMNT,
+      newRow.inputMode = true;
+    newRow.editMode = true;
+    newRow.ROWMODE = "new";
+    ////console.log("CheckDATA2", this.RemarksToDrCrAccount)
+    if (this.RemarksToDrCrAccount != null) {
+
+      if (isVATAccount == false) {
+
+        newRow.NARATION = this.RemarksToDrCrAccount
+        ////console.log("CheckDATA2", newRow.NARATION)
+      }
+    }
+    this._trnMainService.TrnMainObj.TrntranList.push(newRow);
+  }
+
+  //Below function is for Payment and Receipt voucher only!
+  addNewTranRowWhenSave(BalanceDebitCredit, remarks) {
+
+    var newRow = <Trntran>{};
+
+    newRow.AccountItem = this._trnMainService.Party_or_Expense_Ac;
+    if (this._trnMainService.TrnMainObj.Mode == "EDIT") {
+      newRow.A_ACID = this._trnMainService.Party_or_Expense_Ac.ACID
+
+    }
+
+    newRow.NARATION1 = "none";
+    newRow.inputMode = true;
+    newRow.editMode = true;
+    if (this._trnMainService.TrnMainObj.VoucherType == 17) {
+      // this._trnMainService.TrnMainObj.TrntranList.forEach(x => x.NARATION = remarks);
+      newRow.CRAMNT = BalanceDebitCredit;
+      if (this._trnMainService.TrnMainObj.REMARKS != null &&
+        this._trnMainService.TrnMainObj.REMARKS !== undefined &&
+        this._trnMainService.TrnMainObj.REMARKS !== ""
+      ) {
+        newRow.NARATION = this._trnMainService.TrnMainObj.REMARKS;
+      }
+    }
+
+    else
+      newRow.CRAMNT = 0
+    if (this._trnMainService.TrnMainObj.VoucherType == 18) {
+      //this._trnMainService.TrnMainObj.TrntranList.forEach(x => x.NARATION = remarks);
+      newRow.DRAMNT = BalanceDebitCredit;
+      if (this._trnMainService.TrnMainObj.REMARKS != null &&
+        this._trnMainService.TrnMainObj.REMARKS !== undefined &&
+        this._trnMainService.TrnMainObj.REMARKS !== ""
+      ) {
+        newRow.NARATION = this._trnMainService.TrnMainObj.REMARKS;
+      }
+    }
+
+    else
+      newRow.DRAMNT = 0
+    newRow.ROWMODE = "new";
+    newRow.PartyDetails = [];
+    this._trnMainService.TrnMainObj.TrntranList.push(newRow);
+
+  }
+
+  cancelprint() {
+    this.promptPrintDevice = !this.promptPrintDevice;
+    this.promptPrintDeviceAfterSave = false;
+    // this._trnMainService.initialFormLoad(this._trnMainService.TrnMainObj.VoucherType);
+  }
+
+
+  nullToZeroConverter(value) {
+    if (value == undefined || value == null || value == "") {
+      return 0;
+    }
+    return parseFloat(value);
+  }
+
+  onItemDoubleClick(event) {
+    this.masterService.loadedTrnmain.Mode = this.masterService.addnMode;
+    if (this._trnMainService.TrnMainObj.VoucherPrefix == "CN" || this._trnMainService.TrnMainObj.VoucherPrefix == "DN") {
+      if (event.CNDN_MODE == 1) {
+        this.loadVoucher(event);
+      } else {
+        this.alertService.warning(`Cannot Load Voucher!! The Voucher is ${event.VOUCHERREMARKS} based.`)
+        return;
+      }
+    }
+    else if (this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.CapitalVoucher) {
+      this._trnMainService.CapitalBudgetData(event.VCHRNO, event.DIVISION, event.PhiscalID);
+    }
+    else if (this._trnMainService.TrnMainObj.VoucherType === VoucherTypeEnum.AdditionalCost) {
+      ////console.log("view add cost", event);
+      this._additionalCostService.loadAdditionalCost(event)
+      setTimeout(() => {
+        // this._trnMainService.TrnMainObj.Mode = 'VIEW'
+        // this._trnMainService.TrnMainObj.Mode = this._trnMainService.buttonClickMode;
+
+        this._trnMainService.TrnMainObj = this.masterService.loadedTrnmain
+        this._trnMainService.TrnMainObj.Mode = this.masterService.addnMode;
+
+        //Dbl check if trnmain vchrno missing -- sometimes date will not show on Edit or View
+        this.loadVoucher(this._trnMainService.TrnMainObj);
+      }, 2000);
+
+      return
+    }
+    else {
+      this.loadVoucher(event);
+    }
+
+    if (this._trnMainService.TrnMainObj.VoucherPrefix == 'JV' && this._trnMainService.buttonClickMode == "VIEW") {
+      this.showVoucherReplicateButton = true;
+    }
+  }
+
+  loadVoucher(selectedItem) {
+    this._trnMainService.loadData(
+      selectedItem.VCHRNO,
+      selectedItem.DIVISION,
+      selectedItem.PhiscalID
+    );
+
+    this._trnMainService.showPerformaApproveReject = false;
+    if (this._trnMainService.TrnMainObj.gstInfoOfAccount == null) {
+      this._trnMainService.TrnMainObj.gstInfoOfAccount = <any>{}
+    }
+    this._trnMainService.TrnMainObj.gstInfoOfAccount.TRNTYPE = selectedItem.PSTYPE
+    this.vouchernois = selectedItem.VCHRNO;
+    this.division = selectedItem.DIVISION;
+    this.phiscalid = selectedItem.PhiscalID;
+
+  }
+
+  onNewClick() {
+    // ////console.log("Checkaaa",this._trnMainService.TrnMainObj)
+
+    this.additionalCostService.costList = [];
+    this.additionalCostService.addCostTotAmount = 0;
+    this.additionalCostService.loadedTrnmain.TOTAMNT = 0;
+    this.additionalCostService.header = [{ TITLE: 'Item Code' }, { TITLE: 'Item Name' }, { TITLE: 'Batch' }, { TITLE: 'Qty' }, { TITLE: 'Amount' }];
+    this.additionalCostService.addtionalCostList = [];
+    this.additionalCostService.costdetail = [];
+    this.masterService.AdditionalCostTrnTran = [];
+    this.masterService.importDocumentDetailsObj = <importdocument>{}
+    this.masterService.RefObj = <any>{};
+    this._trnMainService.initialFormLoad(
+      this._trnMainService.TrnMainObj.VoucherType
+    );
+
+    // alert("voucherTy"+ this._trnMainService.TrnMainObj.VoucherType)
+
+
+    if (this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.Journal ||
+      this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.ContraVoucher ||
+      this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.PaymentVoucher ||
+      this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.ReceiveVoucher ||
+      this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.DebitNote ||
+      this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.CreditNote ||
+      this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.PostDirectory) {
+      if (this._trnMainService.userSetting.enableCostCenter == 1) {
+        this.masterService.focusAnyControl("costcenter");
+        this
+      } else {
+        if (this.userSetting.PrefixForRefNoInvEntry == 0) {
+          this.masterService.focusAnyControl("refno");
+        } else {
+          this.masterService.focusAnyControl("prefix");
+        }
+      }
+    }
+
+
+    this.masterService.ShowMore = false;
+    this._trnMainService.showPerformaApproveReject = false;
+    this.inputDisabled = false;
+    this._trnMainService.crTotal = 0;
+    this._trnMainService.drTotal = 0;
+    this._trnMainService.diffAmountItemForAccount = 0;
+    this._trnMainService.differenceAmount = 0;
+    if (this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.CapitalVoucher) {
+      this._trnMainService.creditList = [];
+      this._trnMainService.totalCRAmount = 0;
+      this._trnMainService.totalDRAmount = 0;
+      this._trnMainService.addCreditListnewRow();
+      this._trnMainService.TrnMainObj.DCAMNT = 0;
+      this._trnMainService.TrnMainObj.TAXABLE = 0;
+      this._trnMainService.TrnMainObj.NONTAXABLE = 0;
+      this._trnMainService.storePreviousRoundOff = 0;
+    }
+    this._trnMainService.masterSelectACID = "";
+
+    if (this._trnMainService.TrnMainObj.VoucherType == 14 || this._trnMainService.TrnMainObj.VoucherType == 15) {
+      this._trnMainService.TrnMainObj.VATBILL = 0;
+    }
+
+    if (this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.PaymentVoucher) {
+      this._trnMainService.TrnMainObj.TRNMODE = 'Party Payment'
+      this.FlushBillList();
+      this.VoucherTracking.HoldALLBillList = [];
+
+    }
+    else if (this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.ReceiveVoucher) {
+      this._trnMainService.TrnMainObj.TRNMODE = 'Party Receipt';
+      this.FlushBillList();
+      this.VoucherTracking.HoldALLBillList = [];
+    }
+    else if (this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.PostDirectory) {
+      this._trnMainService.TrnMainObj.TRNMODE = 'Party Receipt';
+    }
+
+    this._trnMainService.viewDate.next();
+    this._trnMainService.replicateVoucher = false;
+    this.showVoucherReplicateButton = false;
+    if (this._trnMainService.TrnMainObj.VoucherType == VoucherTypeEnum.AdditionalCost) {
+      // ////console.log("@@RESET")
+      this.router.navigate['/pages/account/acvouchers/additional-cost'];
+      setTimeout(() => {
+        this.masterService.focusAnyControl("REFPINO_AD");
+      }, 1000);
+    }
+
+
+  }
+  FlushBillList() {
+    this._trnMainService.TrnMainObj.BillTrackedList = [];
+
+  }
+
+  okClicked(value) {
+    this._trnMainService.TrnMainObj.TenderList = value;
+    let TB = this._trnMainService.TrnMainObj.TenderList[0];
+    if (TB == null) {
+      this.alertService.error("Tender Amount not detected");
+      return;
+    }
+    this._trnMainService.TrnMainObj.TRNAC = TB.ACCOUNT;
+    if (!this.transactionValidator()) return;
+    this.onSubmit();
+  }
+
+  okAddNewClicked(value) {
+    let CustObj = value;
+    CustObj.PRICELEVEL = value.GEO;
+    CustObj.TYPE = "A";
+    CustObj.PARENT = "PA";
+    CustObj.PType = "C";
+    CustObj.COMPANYID = this._trnMainService.userProfile.CompanyInfo.COMPANYID;
+  }
+  onGstSetUpClick() {
+    if (this._trnMainService.TrnMainObj.TrntranList.filter(y => y.AccountItem != null).findIndex(x => x.AccountItem.isAutoGSTApplicable == 1) < 0) {
+      this._trnMainService.expensesAccountFromTranTranList();
+      this._trnMainService.partyListFromTrnTranList();
+      if (this._trnMainService.EnteredSupplierAcList.length <= 0) {
+        this.alertService.error("Party not found...");
+        return;
+      }
+
+      if (this._trnMainService.TrnMainObj.gstInfoOfAccount == null) {
+        this._trnMainService.TrnMainObj.gstInfoOfAccount = <any>{};
+      }
+      if (this._trnMainService.TrnMainObj.gstInfoOfAccount.GSTLIST == null) {
+        this._trnMainService.TrnMainObj.gstInfoOfAccount.GSTLIST = [];
+      }
+      if (this._trnMainService.GSTSETUPOBJ == null) {
+        this._trnMainService.GSTSETUPOBJ = <any>{};
+      }
+
+      if (this._trnMainService.TrnMainObj.gstInfoOfAccount.TRNTYPE == null) {
+        this._trnMainService.TrnMainObj.gstInfoOfAccount.TRNTYPE = "local";
+      }
+      if (this._trnMainService.TrnMainObj.REVCHARGE == null) { this._trnMainService.TrnMainObj.REVCHARGE = 'N'; }
+      this.showgstsetuponAccount = true;
+      if (this._trnMainService.TrnMainObj.gstInfoOfAccount.PARAC == null) {
+        let aa = this._trnMainService.EnteredSupplierAcList[0];
+        if (aa != null) {
+          this._trnMainService.TrnMainObj.gstInfoOfAccount.PARAC = aa.ACID;
+        }
+
+      }
+      if (this._trnMainService.TrnMainObj.gstInfoOfAccount.NETAMNT == null || this._trnMainService.TrnMainObj.gstInfoOfAccount.NETAMNT == 0) {
+        this._trnMainService.TrnMainObj.gstInfoOfAccount.NETAMNT = 0;
+        this._trnMainService.TrnMainObj.TrntranList.forEach(x => { this._trnMainService.TrnMainObj.gstInfoOfAccount.NETAMNT += x.DRAMNT });
+      }
+    }
+    else {
+      this._trnMainService.AutoGstPreparation();
+    }
+    this.showgstsetuponAccount = true;
+  }
+  ReverseChargeApplicablecheck(e) {
+    if (e.target.checked) { this._trnMainService.TrnMainObj.REVCHARGE = "Y"; }
+    else { this._trnMainService.TrnMainObj.REVCHARGE = "N"; }
+  }
+  gstchange() {
+    this.TaxAmountCalculateForGST();
+  }
+  TaxAmountCalculateForGST() {
+    if (this._trnMainService.GSTSETUPOBJ.GST > 0 && this._trnMainService.GSTSETUPOBJ.GSTRATE > 0) {
+      this._trnMainService.GSTSETUPOBJ.AMOUNT = this._trnMainService.GSTSETUPOBJ.GST * 100 / this._trnMainService.GSTSETUPOBJ.GSTRATE;
+    }
+  }
+  AddGstObj() {
+    this.TaxAmountCalculateForGST();
+    this._trnMainService.GSTSETUPOBJ.REFTRNAC_NAME = this._trnMainService.EnteredExpensesAcList.filter(x => x.ACID == this._trnMainService.GSTSETUPOBJ.REFTRNAC)[0].ACNAME;
+    this._trnMainService.TrnMainObj.gstInfoOfAccount.GSTLIST.push(this._trnMainService.GSTSETUPOBJ);
+    this._trnMainService.GSTSETUPOBJ = <any>{};
+  }
+  cancelGstSetUp() {
+    this._trnMainService.TrnMainObj.gstInfoOfAccount = <any>{};
+    this._trnMainService.TrnMainObj.gstInfoOfAccount.GSTLIST = [];
+    this._trnMainService.GSTSETUPOBJ = <any>{};
+    this.showgstsetuponAccount = false;
+  }
+  OkGstSetUp() {
+    this.showgstsetuponAccount = false;
+  }
+
+
+  onGstItcReversal() {
+    let gstItcList = [
+      { SNO: 1, DECSRIPTION: "Amount in terms of rule 37(2)", MODE: "add", ITC_INTEGRATED: 0, ITC_CENTRAL: 0, ITC_STATE: 0, ITC_CESS: 0 },
+      { SNO: 2, DECSRIPTION: "Amount in terms of rule 42(1)(m)", MODE: "add", ITC_INTEGRATED: 0, ITC_CENTRAL: 0, ITC_STATE: 0, ITC_CESS: 0 },
+      { SNO: 3, DECSRIPTION: "Amount in terms of rule 43(1)(h)", MODE: "add", ITC_INTEGRATED: 0, ITC_CENTRAL: 0, ITC_STATE: 0, ITC_CESS: 0 },
+      { SNO: 4, DECSRIPTION: "Amount in terms of rule 42(2)(a)", MODE: "add", ITC_INTEGRATED: 0, ITC_CENTRAL: 0, ITC_STATE: 0, ITC_CESS: 0 },
+      { SNO: 5, DECSRIPTION: "Amount in terms of rule 42(2)(b)", MODE: "add", ITC_INTEGRATED: 0, ITC_CENTRAL: 0, ITC_STATE: 0, ITC_CESS: 0 },
+      { SNO: 6, DECSRIPTION: "On account of amount paid subsequent to reversal of ITC", MODE: "add", ITC_INTEGRATED: 0, ITC_CENTRAL: 0, ITC_STATE: 0, ITC_CESS: 0 },
+      { SNO: 7, DECSRIPTION: "Any other liability(Specify)", MODE: "add", ITC_INTEGRATED: 0, ITC_CENTRAL: 0, ITC_STATE: 0, ITC_CESS: 0 }
+    ];
+    if (this._trnMainService.TrnMainObj.gstItcReversalList != null && this._trnMainService.TrnMainObj.gstItcReversalList.length > 0) {
+
+      for (var g of gstItcList) {
+        for (var f of this._trnMainService.TrnMainObj.gstItcReversalList) {
+          if (g.SNO == f.SNO) {
+            g.MODE = f.MODE;
+            g.ITC_INTEGRATED = f.ITC_INTEGRATED;
+            g.ITC_CENTRAL = f.ITC_CENTRAL;
+            g.ITC_STATE = f.ITC_STATE;
+            g.ITC_CESS = f.ITC_CESS;
+          }
+        }
+      }
+
+    }
+    this._trnMainService.TrnMainObj.gstItcReversalList = gstItcList;
+    this.showgstItcReversalPopup = true;
+  }
+  cancelGstItcReversal() {
+    this._trnMainService.TrnMainObj.gstItcReversalList = [];
+    this.showgstItcReversalPopup = false;
+  }
+  OkGstItcReversal() {
+    this.showgstItcReversalPopup = false;
+  }
+
+  isFormValid: boolean;
+  formValidCheck = (): boolean => {
+    if (this._trnMainService.Warehouse == undefined || this._trnMainService.Warehouse == '') {
+      return false;
+    }
+    if (this._trnMainService.TrnMainObj.ProdList == undefined) {
+      return false;
+    }
+    else {
+      if (this._trnMainService.TrnMainObj.ProdList.length < 1) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  @HostListener("document : keydown", ["$event"])
+  handleKeyDownboardEvent($event: KeyboardEvent) {
+    if ($event.code == "ControlLeft" || $event.code == "ControlRight") {
+      $event.preventDefault();
+      this.showSecondaryButtons = true;
+    }
+    else if ($event.code == "F3") {
+      $event.preventDefault();
+      this.onNewClick();
+    } else if ($event.code == "F6") {
+      $event.preventDefault();
+      if (this._trnMainService.TrnMainObj.Mode != 'VIEW') {
+        this.onSaveClicked();
+      }
+    } else if ($event.code == "F8") {
+      $event.preventDefault();
+      this.onPrintClicked();
+    } else if ($event.code == "F10") {
+      $event.preventDefault();
+      this.onBackClicked();
+    } else if ($event.code == "F5") {
+      $event.preventDefault();
+      this.onEditClicked();
+    } else if ($event.code == "F4") {
+      $event.preventDefault();
+      this.onViewClicked();
+    } else if ($event.code == "F7") {
+      $event.preventDefault();
+      this.BillTrack();
+    }
+    else if ($event.code == "shift+del") {
+      ////console.log("detect shift del");
+    }
+
+
+  }
+  @HostListener("document : keyup", ["$event"])
+  handleKeyUpboardEvent($event: KeyboardEvent) {
+    if ($event.code == "ControlLeft" || $event.code == "ControlRight") {
+      $event.preventDefault();
+      this.showSecondaryButtons = false;
+    }
+  }
+  //  // if (this._authService.checkMenuRight("stock-issue", "add") == true) {
+  //   this._router.navigate(["/pages/transaction/inventory/stock-issue/add-stock-issue", { vt: 5, mode: "add", returnUrl: this._router.url }])
+  //   // } else {
+  //   //   this.messageSubject.next("You are not authorized to add stock issue.");
+  //   //   this.openAuthDialog();
+  //   // }
+  onEditClicked() {
+    this.masterService.addnMode = 'VIEW'
+    this._trnMainService.replicateVoucher = false;
+    this.showVoucherReplicateButton = false;
+    if (this.CheckMenuRights(this.activeUrlPage, "edit") == true) {
+      // this._trnMainService.TrnMainObj.Mode = "EDIT";
+      if (this._trnMainService.TrnMainObj.Mode) {
+        if (this._trnMainService.TrnMainObj.Mode.toLocaleUpperCase() == "VIEW") {
+          if (confirm('Are you sure you want to edit the voucher?')) {
+            this._trnMainService.buttonClickMode = "EDIT";
+            this.loadVoucher(this._trnMainService.TrnMainObj);
+          }
+        } else {
+          this._trnMainService.buttonClickMode = "EDIT";
+
+          if (this._trnMainService.TrnMainObj.VoucherPrefix == "CN") {
+            this.genericGrid.show(this._trnMainService.TrnMainObj.PARAC, false, "cnlistforview");
+          }
+          else if (this._trnMainService.TrnMainObj.VoucherPrefix == "DN") {
+            this.genericGrid.show(this._trnMainService.TrnMainObj.PARAC, false, "dnlistforview");
+          } else if (this._trnMainService.TrnMainObj.VoucherType == 12) {
+            this.genericGrid.show(this._trnMainService.TrnMainObj.PARAC, false, "editjournal");
+          }
+          else {
+            this.genericGrid.show();
+
+          };
+
+        }
+      }
+    }
+    this.inputDisabled = false;
+
+
+  }
+
+  BillTrack() {
+    this.onBillTrackEmit.emit(true)
+  }
+
+
+
+
+
+
+  onBackClicked() {
+    this._trnMainService.replicateVoucher = false;
+    this.showVoucherReplicateButton = false;
+    this.router.navigate([this.returnUrl]);
+  }
+
+  onCancelClicked() {
+    if (this.userProfile.CompanyInfo.FYClose == 1) {
+      this.alertService.warning("Fiscal Year Book '" + this.masterService.PhiscalObj.PhiscalID + "' is already closed! Hence, Cannot do further transaction")
+      return;
+    }
+    this._trnMainService.replicateVoucher = false;
+    this.showVoucherReplicateButton = false;
+    if (this.CheckMenuRights(this.activeUrlPage, "delete") == true) {
+      let trntrn = this._trnMainService.TrnMainObj.TrntranList.filter(x => x.ACNAME != "" && x.ACNAME != null && x.ACNAME != undefined);
+      if (trntrn.length == 0) {
+        this.alertService.error("Please load Voucher to Cancel");
+        return;
+      }
+      let data = <any>{};
+      data.VoucherType = this._trnMainService.TrnMainObj.VoucherType;
+      data.VCHRNO = this._trnMainService.TrnMainObj.VCHRNO;
+      data.MODE = "CANCEL";
+      data.VoucherPrefix = this._trnMainService.TrnMainObj.VoucherPrefix;
+      if (confirm("Are you sure to cancel this voucher?")) {
+        this.loadingService.show(`Cancelling Voucher ${data.VCHRNO}. Please Wait.`);
+        this.masterService.cancelAccoutingVoucher(data).subscribe((res) => {
+          this.loadingService.hide();
+          if (res.status == "ok") {
+            this.alertService.success(res.result);
+            this._trnMainService.initialFormLoad(this._trnMainService.TrnMainObj.VoucherType);
+          } else {
+            this.alertService.error(res.result);
+          }
+        }, error => {
+          this.loadingService.hide();
+          this.alertService.error(error);
+        })
+      }
+    }
+  }
+
+  PrintYes() {
+    this.DeleteAcc.hide();
+    this.promptPrintDeviceAfterSave = true;
+  }
+  PrintNo() {
+    this.DeleteAcc.hide();
+  }
+
+
+  CheckMenuRights(activePage, mode) {
+    var Checkright = this.authservice.getMenuRight(activePage, mode)
+    if (Checkright != null) {
+      if (Checkright.right != true) {
+        this.alertService.warning("You are not authorized to " + mode + " the " + activePage);
+        return false;
+      }
+      else {
+        return true;
+      }
+    }
+  }
+
+  onReplicateClick() {
+    this._trnMainService.replicateVoucher = true;
+    if (confirm("Are you sure to replicate this voucher?")) {
+      this._trnMainService.loadData(this.vouchernois, this.division, this.phiscalid);
+      this.showVoucherReplicateButton = false;
+    } else {
+      this.showVoucherReplicateButton = true;
+    }
+  }
+
+  SelectedPopupDate: any;
+  SelectDate() {
+    this.SelectedPopupDate = this._trnMainService.transformDate(new Date());
+    this.ShowDate.show();
+
+
+<<<<<<< HEAD
+=======
+  }
+  ShowDateOk(){
+this.masterService.getReceiveLogDataFromDate(this.SelectedPopupDate,'RV').subscribe((x=>{
+// ////console.log("CheckValue",x);
+if(x.status == 'ok'){
+
+  if(x.result.length == 0){
+    this.ShowDate.hide();
+    this.alertService.info(`No data found on ${this.SelectedPopupDate}`);
+    return;
+>>>>>>> e7b94f0e61ea2b23b3c1d9962fd1344a7c8ce1cb
+  }
+  ShowDateOk() {
+    this.masterService.getReceiveLogDataFromDate(this.SelectedPopupDate, 'RV', this.paymentmode).subscribe((x => {
+      // ////console.log("CheckValue",x);
+      if (x.status == 'ok') {
+
+        if (x.result.length == 0) {
+          this.ShowDate.hide();
+          this.alertService.info(`No data found on ${this.SelectedPopupDate}`);
+          return;
+        }
+        this._trnMainService.TrnMainObj.TrntranList.splice(0);
+
+        if (x.result) {
+          for (let i of x.result) {
+            var val: any = <any>{ AccountItem: <TAcList>{} }
+            var AccountItem: TAcList = <TAcList>{};
+
+            val.AccountItem.ACNAME = i.customerName;
+            val.AccountItem.ACID = i.ACID;
+            val.CRAMNT = i.Amount;
+            val.CostCenter = i.CostCenter;
+            if (i.PaymentMode == "Cheque") {
+              val.NARATION1 = "cheque";
+              val.ChequeDate = this._trnMainService.transformDate(i.ChequeDate);
+            } else {
+              val.NARATION1 = i.PaymentMode;
+            }
+            val.ChequeNo = i.ChequeNo;
+            val.guid = i.GUID;
+            //   val.ChequeDate = this._trnMainService.transformDate(i.ChequeDate);
+            val.DRAMNT = 0;
+            // val.PartyDetails=[];
+            // val.ROWMODE = "new";
+            val.disableSubLedger = true;
+            val.editMode = true;
+            val.inputMode = true;
+            val.A_ACID = i.ACID;
+            if (this._trnMainService.userSetting.enableSalesman == 1) {
+              val.SALESMAN = i.CostCenter;
+            }
+
+
+            // ////console.log("@@val.A_ACID",val.A_ACID)
+            if (val.A_ACID) {
+              if (val.A_ACID != null) {
+                this._trnMainService.TrnMainObj.TrntranList.push(val)
+              }
+
+            }
+
+
+<<<<<<< HEAD
+          }
+          // this.AddCredit();
+          ////console.log("@@CheckAssighValue", this._trnMainService.TrnMainObj.TrntranList)
+        }
+
+        this.ShowDate.hide();
+
+=======
+
+      // ////console.log("@@val.A_ACID",val.A_ACID)
+      if(val.A_ACID ){
+        if(val.A_ACID!=null){
+          this._trnMainService.TrnMainObj.TrntranList.push(val)
+        }
+
+>>>>>>> e7b94f0e61ea2b23b3c1d9962fd1344a7c8ce1cb
+      }
+    }))
+  }
+
+<<<<<<< HEAD
+  ShoWdateClose() {
+    this.ShowDate.hide()
+  }
+  BillList:any[]=[]
+  clickPostDate(){
+    this.isActive = true;
+  }
+  HidePostDate(){
+    this.isActive = false;
+  }
+
+  LoadPostDateData(){
+    this.masterService.LoadPostDirectory(this.selectedPostDate,this._trnMainService.TrnMainObj.VoucherPrefix).subscribe(res=>{
+      this.BillList = res.result;
+      this.isValueLoaded = true;
+      this.gettingMessage = 'getting data please wait..'
+      if (res.result.length == 0) {
+          this.isValueLoaded = false;
+          this.gettingMessage = 'data not found!'
+      }
+    });
+  }
+
+  clickCheckBox(index){
+for (let i of this.BillList.filter(x => x.checkbox == true)) {
+  if(i.ChequeDate && index.ChequeDate){
+    if(i.ChequeDate == index.ChequeDate){
+      i.checkbox=true;
+    }else{
+      i.checkbox=false;
+    }
+  }else{
+    i.checkbox=false;
+  }
+=======
+
+    }
+    // this.AddCredit();
+    ////console.log("@@CheckAssighValue",this._trnMainService.TrnMainObj.TrntranList)
+  }
+
+  this.ShowDate.hide();
+
+}
+}))
+>>>>>>> e7b94f0e61ea2b23b3c1d9962fd1344a7c8ce1cb
+}
+  }
+
+  okClick() {
+    // var guid = null;
+    // const uuidV1 = require('uuid/v1');
+    // guid = uuidV1();
+    this._trnMainService.TrnMainObj.TrntranList.splice(0);
+
+    for (let i of this.BillList.filter(x => x.checkbox == true)) {
+////console.log("@@i",i)
+
+  var val: any = <any>{ AccountItem: <TAcList>{} }
+  var AccountItem: TAcList = <TAcList>{};
+
+  val.AccountItem.ACNAME = i.ACNAME;
+  val.AccountItem.ACID = i.ACID;
+  val.CostCenter = i.CostCenter;
+  ////console.log("@@i.ChequeDate",i.ChequeDate)
+    if(i.ChequeDate!= null && i.ChequeDate!= undefined){
+      val.ChequeDate = this._trnMainService.transformDate(i.ChequeDate);
+      this._trnMainService.TrnMainObj.TRN_DATE = this._trnMainService.transformDate(i.ChequeDate);
+      this._trnMainService.TrnMainObj.TRNDATE = this._trnMainService.transformDate(i.ChequeDate);
+      this.changeEntryDate(val.ChequeDate,"AD");
+    }
+  val.NARATION1 = i.NARATION1;
+  val.ChequeNo = i.ChequeNo;
+  val.guid = i.guid;
+  // ////console.log("@@this.activeUrlPage",this.activeUrlPage)
+  if(this.activeUrlPage == 'expense-voucher'){
+    val.CRAMNT = 0;
+    val.DRAMNT = i.DRAMNT;
+  }else if(this.activeUrlPage == 'income-voucher'){
+    val.CRAMNT = i.CRAMNT;
+    val.DRAMNT = 0;
+  }
+  val.disableSubLedger = true;
+  val.editMode = true;
+  val.inputMode = true;
+  val.A_ACID = i.ACID;
+  val.POSTDATEVOUCHERNO=i.VCHRNO;
+  if (this._trnMainService.userSetting.enableSalesman == 1) {
+    val.SALESMAN = i.CostCenter;
+  }
+
+
+  // ////console.log("@@val.A_ACID",val.A_ACID)
+  if (val.A_ACID) {
+    if (val.A_ACID != null) {
+      this._trnMainService.TrnMainObj.TrntranList.push(val)
+    }
+
+<<<<<<< HEAD
+=======
+  ShoWdateClose(){
+    this.ShowDate.hide()
+>>>>>>> e7b94f0e61ea2b23b3c1d9962fd1344a7c8ce1cb
+  }
+
+    }
+    this.isActive = false;
+    }
+
+    changeEntryDate(value, format: string) {
+      var adbs = require("ad-bs-converter");
+      if (format == "AD") {
+          var adDate = (value.replace("-", "/")).replace("-", "/");
+          var bsDate = adbs.ad2bs(adDate);
+          this._trnMainService.TrnMainObj.BSDATE = (bsDate.en.day == '1' || bsDate.en.day == '2' || bsDate.en.day == '3' || bsDate.en.day == '4' || bsDate.en.day == '5' || bsDate.en.day == '6' || bsDate.en.day == '7' || bsDate.en.day == '8' || bsDate.en.day == '9' ? '0' + bsDate.en.day : bsDate.en.day) +  '-' + bsDate.en.month + '-' + bsDate.en.year ;
+      }
+}
+
+resetall(){
+  this.BillList=[];
+}
+}

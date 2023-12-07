@@ -1,0 +1,207 @@
+<!-- <style type="text/css">
+._left_section{
+    float : left;
+    width : 50%;
+    
+
+}
+
+._right_section{
+    float : left;
+    width : 50%;
+    padding-left : 0.7%
+}
+
+.horizontal_line{
+    height : 1px;
+    width : 100%;
+    float : none;
+    clear : both;
+}
+
+legend{
+    font-size: 12px;
+    width: auto;
+    padding : 0;
+    margin : 0;
+    color : black;
+}
+
+fieldset{
+    margin-bottom: 3%;
+    line-height: 22px;
+}
+
+select{
+    width : 100%;
+}
+
+._date_range{
+    /* width : 80%;
+    margin : 0px auto; */
+    padding-left : 2%;
+}
+
+.dateRangeLink{
+    text-decoration: none;
+    color : black;
+    height : 35px;
+    line-height: 35px;
+    width : 30%;
+    margin-right: 2%;
+    background-color : #ffffff;
+    padding : 5px;
+    border : 1px solid;
+}
+
+._salesModeSelection{
+    width : 100%;
+}
+
+._mode_left{
+    width : 50%;
+    float : left;
+}
+
+._mode_right{
+    width : 50%;
+    float : left;
+}
+
+._actionButtons{
+    float : right;
+}
+
+._dateCss{
+    width: 73%;
+    border-radius: 4px 4px;
+    border: 1px solid;
+    /* padding: 4px; */
+    font-size: 75%;
+}
+
+
+</style> -->
+
+
+<div id="purchaseBookReportId" style="background-color : #ffffff; padding :1%; height : auto; ">
+   <div class="row">
+      <div class="modal-header" style="width : 97%; margin : 0px auto;">
+         <button type="button" class="close" data-dismiss="modal" (click)="closeReportBox()">&times;</button>
+         <h4 class="modal-title">Purchase Book Report</h4>
+      </div>
+      <!-- Left Column -->
+      <div class="col-md-6">
+         <fieldset>
+            <legend>Report Option : </legend>
+            <label class="smallBoldLabel"><input type="radio" value=1 name="optReportType"
+                  [(ngModel)]="ReportParameters.OPT_REPORT_TYPE">&nbsp;Voucher Wise</label>
+            <label class="smallBoldLabel"><input type="radio" value=2 name="optReportType"
+                  [(ngModel)]="ReportParameters.OPT_REPORT_TYPE">&nbsp;Day Wise</label>
+            <label class="smallBoldLabel"><input type="radio" value=3 name="optReportType"
+                  [(ngModel)]="ReportParameters.OPT_REPORT_TYPE">&nbsp;Month Wise</label>
+
+
+         </fieldset>
+
+         <fieldset style="width : 99%;">
+            <legend>Date Range Selection :</legend>
+            <div class="_date_range">
+               <a (click)="changeDateByRange('1')" value="week" style="color : white;" class="btn btn-info">This
+                  Week</a>
+               <a (click)="changeDateByRange('2')" value="month" style="color : white;" class="btn btn-info">This
+                  Month</a>
+               <a (click)="changeDateByRange('3')" value="year" style="color : white;" class="btn btn-info">This
+                  Year</a>
+            </div>
+            <table>
+               <tr>
+                  <td><label class="smallBoldLabel">From(AD):</label></td>
+                  <td><label class="smallBoldLabel">To(AD):</label></td>
+               </tr>
+               <tr>
+                  <td>
+                     <label class="smallBoldLabel"><input type="date" style="width:152px; min-width:50%;"
+                           placeholder="Year Start Date" [(ngModel)]="ReportParameters.DATE1"
+                           (change)="changestartDate($event.target.value,'AD')"></label>
+                  </td>
+                  <td>
+                     <label class="smallBoldLabel"><input type="date" style="width:152px; min-width:50%;"
+                           placeholder="Year Start Date" [(ngModel)]="ReportParameters.DATE2"
+                           (change)="changeEndDate($event.target.value,'AD')"></label>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     <label class="smallBoldLabel"><input id="nepaliDate"
+                           style="width:152px;height:25px;text-align:center" class="nepali-calendar ndp-nepali-calendar"
+                           [(ngModel)]="ReportParameters.BSDATE1" type="text"
+                           (change)="changestartDate($event.target.value,'BS')" placeholder="yyyy-mm-dd" /> </label>
+                  </td>
+                  <td>
+                     <label class="smallBoldLabel"><input id="nepaliDate"
+                           style="width:152px;height:25px;text-align:center" class="nepali-calendar ndp-nepali-calendar"
+                           [(ngModel)]="ReportParameters.BSDATE2" type="text"
+                           (change)="changeEndDate($event.target.value,'BS')" placeholder="yyyy-mm-dd" /> </label>
+                  </td>
+               </tr>
+            </table>
+         </fieldset>
+
+         <fieldset>
+            <label class="smallBoldLabel"><input type="radio" value=0 name="showDetReport"
+                  [(ngModel)]="ReportParameters.OPT_SHOWDETAL_REPORT">&nbsp;Summary Report</label>
+            <label class="smallBoldLabel"><input type="radio" value=1 name="showDetReport"
+                  [(ngModel)]="ReportParameters.OPT_SHOWDETAL_REPORT">&nbsp;Detail Report</label>
+         </fieldset>
+
+
+
+
+
+
+      </div>
+      <!-- Another column -->
+      <div class="col-md-6">
+
+         <fieldset>
+            <legend>Supplier Selection:</legend>
+            <select style="width : 100%;" [(ngModel)]="ReportParameters.SUPPLIER_ACID">
+               <option value="%">ALL</option>
+               <option *ngFor="let suplist of supplierList" value="{{suplist.ACID}}">
+                  {{ suplist.ACNAME }}
+               </option>
+
+            </select>
+         </fieldset>
+
+         <fieldset>
+            <legend>Division Selection:</legend>
+            <select [(ngModel)]="ReportParameters.DIVISION" style="width : 100%;">
+               <option value="%" *ngIf="masterService.userSetting.userwisedivision==0">ALL</option>
+               <option *ngFor="let div of division" value="{{ div.INITIAL }}">
+                  {{ div.NAME }}
+               </option>
+            </select>
+         </fieldset>
+
+
+
+         <label class="smallBoldLabel"> <input type="checkbox"
+               (change)="$event.target.checked?(ReportParameters.CHK_INCLUDE_RETURN=1):(ReportParameters.CHK_INCLUDE_RETURN=0)"
+               name="showSalesSum" [checked]="ReportParameters.CHK_INCLUDE_RETURN == 1"
+               name="includePurchaseReturn">&nbsp;Include Purchase Return Transaction Also</label><br>
+
+
+         <div class="btn">
+            <!-- <button type="button"  title="onSave" class="btn btn-info">Run</button>    -->
+            <button class="btn btn-info confirm-btn" type="button" (click)=onload()>RUN</button>
+            <button type="button" title="Cancel" class="btn btn-info" (click)="closeReportBox()">Close</button>
+         </div>
+      </div>
+   </div>
+   <!-- <div class="modal-footer">
+         <button class="btn btn-info confirm-btn" type="button"  (click)=onload()>RUN</button>
+         </div> -->
+
+</div>

@@ -1,0 +1,286 @@
+<style>
+    .table tr th {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    tr {
+        border: 1px solid #e6e6e6;
+        max-height: 25px;
+    }
+
+    td {
+        height: 23px;
+        border: 1px solid #e6e6e6;
+
+    }
+
+    .bottom {
+        position: fixed;
+        padding: 9px;
+        bottom: 20px;
+        left: 0px;
+        width: 100%;
+        height: 40px;
+        z-index: 999997;
+         background: #E2EAEA !important; 
+    }
+</style>
+
+
+<div class="sticky-top">
+    <div class="row clearfix">
+        <div class="col-md-2">
+            <voucher-master-toggler></voucher-master-toggler>
+        </div>
+        <div class="col-md-2">
+            <h2 style="color: black; font-size: 15px; font-weight: 400">{{pageHeading}} </h2>
+        </div>
+        <div class="col-md-8">
+            <button (click)="onResetClick()" style="margin: 0px 4px;" class="btn btn-info pull-right">
+                RESET
+            </button>
+            <button *ngIf="_trnMainService.TrnMainObj.Mode=='NEW' || _trnMainService.TrnMainObj.Mode=='EDIT'"  (click)="onSaveClick()" style="margin: 0px 4px;" class="btn btn-info pull-right">
+                SAVE
+            </button>
+            <button (click)="onViewClick()" style="margin: 0px 4px;" class="btn btn-info pull-right">
+                VIEW
+            </button>
+            <button (click)="onPrintClick()" style="margin: 0px 4px;" class="btn btn-info pull-right">
+                PRINT
+            </button>
+            <button (click)="onEditClick()" style="margin: 0px 4px;" class="btn btn-info pull-right">
+                EDIT
+            </button>
+            <button (click)="onCancelClick()" style="margin: 0px 4px;" class="btn btn-info pull-right">
+                CANCEL
+            </button>
+        </div>
+    </div>
+</div>
+<div class="main-container">
+    <div [hidden]="!masterService.ShowMore" class="row clearfix" style="margin: 10px;">
+        <div class="col-md-12" style="margin: 8px 15px ; border: 1px solid #e6e6e6; ">
+            <div class="col-md-6">
+                <div class="row">
+                    <label style="width:30%">Customer/Supplier: </label>
+                    <input
+                     type="text" 
+                     style="width:60%"
+                     id="CustomerSupplier"
+                     name="CustomerSupplier"
+                     [(ngModel)]="this._trnMainService.TrnMainObj.BILLTO"
+                     (keydown.tab)="onCustomerSupplierPopUPTab()"
+                     (keydown.enter)="onCustomerSupplierPopUPTab()"
+                     placeholder="Press ENTER or TAB to Customer & Supplier" 
+                     [disabled]="_trnMainService.TrnMainObj.Mode=='VIEW'"
+                     />
+                </div>
+                <div class="row">
+                    <label style="width:30%">Address: </label>
+                    <input 
+                    type="text"
+                    style="width:60%"
+                    [(ngModel)]="this._trnMainService.TrnMainObj.BILLTOADD"
+                    id="Address" 
+                    name="Address" 
+                    placeholder="Address"
+                    [disabled]="_trnMainService.TrnMainObj.Mode=='VIEW'" />
+                </div>
+
+                <div class="row">
+                    <label style="width:30%">Remarks: </label>
+                    <input 
+                    type="text" 
+                    style="width:60%" 
+                    [(ngModel)]="this._trnMainService.TrnMainObj.REMARKS"
+                    id="Remarks" 
+                    name="Remarks" 
+                    placeholder="Remarks"
+                    [disabled]="_trnMainService.TrnMainObj.Mode=='VIEW'" />
+                </div>
+
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <label style="width:30%">Ref Bill NO: </label>
+                    <input 
+                    type="text" 
+                    style="width:60%" 
+                    id="RefBillNo" 
+                    name="RefBillNO"
+                    [(ngModel)]="this._trnMainService.TrnMainObj.REFBILL"
+                    (keydown.enter)="onRefBillNoPopUPTab($event)"
+                    placeholder="Press ENTER  to Ref Bill NO"
+                    [disabled]="_trnMainService.TrnMainObj.Mode=='VIEW'" />
+                </div>
+                <!-- <div class="row">
+                    <label style="width:30%">Return Mode: </label>
+                    <select 
+                    style="width: 60%" 
+                    [(ngModel)]="this._trnMainService.TrnMainObj.TRNMODE"
+                    >
+                        <option></option>
+                        <option value="credit">CREDIT</option>
+                    </select>
+                </div> -->
+
+                <!-- <div class="row">
+                    <label style="width:30%">Sales Type: </label>
+                    <select style="width: 60%">
+                        <option></option>
+                    </select>
+                </div> -->
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12" style="height: 550px;">
+        <table class="table" style="margin-bottom: 5px; font-size: 12.5px;">
+            <thead>
+                <tr style="border-bottom: 2px solid #E6E6E6; border-top: 2px solid #E6E6E6;    height: 30px;
+                                    background:#C0C0C0;
+                                    color: black;">
+                    <th><span class="texttitle" style="color: black">S NO </span></th>
+                    <th><span class="texttitle" style="color: black">Code </span></th>
+                    <th><span class="texttitle" style="color: black">Description </span></th>
+                    <th><span class="texttitle" style="color: black">BatchNo </span></th>
+                    <th><span class="texttitle" style="color: black">Qty </span></th>
+                    <th><span class="texttitle" style="color: black">Packing </span></th>
+                    <th><span class="texttitle" style="color: black">MRP </span></th>
+                    <th><span class="texttitle" style="color: black">RATE </span></th>
+                    <th><span class="texttitle" style="color: black">New Rate </span></th>
+                    <th><span class="texttitle" style="color: black">Difference Amount </span></th>
+                    <th><span class="texttitle" style="color: black">GST(%) </span></th>     
+                    <th><span class="texttitle" style="color: black">GST AMT </span></th>                                   
+                    <th><span class="texttitle" style="color: black">Total Amount </span></th>  
+                    
+                </tr>
+            </thead>
+            <tbody style="border: 1px;" *ngFor="let tList of _trnMainService.TrnMainObj.ProdList;let i=index" >
+                
+                <tr (click)="RowClick(i)"  [class.selected]="isTableRowSelected(i)" [class.highlighted]="i==activerowIndex" (keydown.delete)="deleteRow()" >
+                    <td style="width: 55px;">
+                        {{i+1}}
+                    </td>
+
+                    <td style="width: 95px;">
+                        <input *ngIf="_trnMainService.TrnMainObj.Mode=='NEW' " 
+                        type="text" 
+                        id="Code{{i}}" 
+                        name="Code" 
+                        style="width: 120px;"
+                        placeholder="Code"
+                        [(ngModel)]="tList.MENUCODE"
+                        (keydown.tab)="onItemPopUPTab()"
+                        (keydown.enter)="onItemPopUPTab()"
+                        (focus)="activerowIndex=i"
+
+                    />
+                    <span *ngIf="_trnMainService.TrnMainObj.Mode=='VIEW' || _trnMainService.TrnMainObj.Mode=='EDIT'" >{{tList.MENUCODE}}</span>
+                    </td>
+                    <td style="width: 300px;">
+                            {{tList.DESCA}}
+                    </td>
+
+                    <td style="width: 110px;">
+                            {{tList.BATCH}}
+                    </td>
+
+                    <td style="width: 85px;">
+                            {{tList.STOCK}}
+                    </td>
+
+                    <td style="width: 85px;">
+                            {{tList.UNIT}}
+                    </td>
+
+                    <td style="width: 80px;">
+                            {{tList.MRP}}
+                    </td>
+                    <td style="width: 100px;">
+                            {{tList.RATE | number : '1.2-2' }}
+                    </td>
+
+
+                    <td style="width:120px;">
+                            <input 
+                            *ngIf="_trnMainService.TrnMainObj.Mode=='NEW' || _trnMainService.TrnMainObj.Mode=='EDIT'"
+                            type="text"  
+                            style="width: 120px;"
+                            id="NewRate" 
+                            name="NewRate" 
+                            [(ngModel)]="tList.ADJUSTMENTNEWRATE" 
+                            (keyup.enter)="addNewRow($event,i)"
+                            (keydown.Delete)="removeRow(i)"
+                            (blur)="onBlurClick(i)"      
+                            placeholder="NewAmount" />
+                            <span  *ngIf="_trnMainService.TrnMainObj.Mode=='VIEW'">{{tList.ADJUSTMENTNEWRATE}}</span>
+                    </td>
+
+                    <td style="width:100px;">
+                        {{ !tList.DIFFERENCEAMOUNT?'0.00':tList.DIFFERENCEAMOUNT | number : '1.2-2' }}
+                    </td>
+                    <td style="width:60px;">
+                        {{tList.GSTRATE}}
+                    </td>
+                    <td style="width:100px;">
+                        {{tList.VAT  | number : '1.2-2'}}
+                    </td>
+                    <td style="width:100px;">
+                        {{tList.NETAMOUNT | number : '1.2-2' }}
+                    </td>
+                  
+                </tr>
+           
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+</div>
+
+<div class="bottom">
+    <table style="width: 1400px; border: 0px;">
+        <td style="width: 900px;text-align: right ;border: 0px;">
+            <h4>Total </h4>
+        </td>
+        <td style="text-align: center;width: 223px; border: 0px;">
+            {{totalDifferenceAmount | number : '1.2-2'}}
+        </td>
+        <td style="text-align: right;width: 40px; border: 0px;">
+            
+        </td>
+        <td style="text-align: center;border: 0px;" >
+            {{totalGST | number : '1.2-2' }}
+        </td>
+        <td style="text-align: center;width: 162px;border: 0px;">
+            {{totalAmount | number : '1.2-2' }}
+        </td>
+    </table>
+
+
+</div>
+
+<generic-popup-grid #customerSupplierGeneric [popupsettings]="gridCustomerSupplierPopupSettings"
+    (onItemDoubleClick)="onItemDoubleClickCustomerSupplier($event)">
+</generic-popup-grid>
+
+<generic-popup-grid #refBillNoGeneric [popupsettings]="gridRefBillNoGenericPopupSettings"
+    (onItemDoubleClick)="onItemDoubleClickRefBillNO($event)">
+</generic-popup-grid>
+
+<generic-popup-grid #itemGeneric [popupsettings]="gridItemGenericPopupSettings"
+    (onItemDoubleClick)="onItemDoubleClick($event)">
+</generic-popup-grid>
+
+<generic-popup-grid #vchrnoView [popupsettings]="gridVoucherGenericPopupSettings"
+    (onItemDoubleClick)="onVoucherDoubleClick($event)">
+</generic-popup-grid>
+<generic-popup-grid #editVchrno [popupsettings]="gridVoucherGenericPopupSettings"
+    (onItemDoubleClick)="onEditVoucherDoubleClick($event)">
+</generic-popup-grid>
+

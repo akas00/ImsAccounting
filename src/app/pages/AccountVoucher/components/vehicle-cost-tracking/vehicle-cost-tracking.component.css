@@ -1,0 +1,183 @@
+.modal-content {
+  padding: 1px;
+  margin: 0px;
+  float: right;
+}
+
+.table-scroll {
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+tbody>tr:hover {
+  background-color: #f3f5f4;
+  cursor: pointer;
+}
+
+tr {
+  font-size: 11px;
+}
+
+.selected-row {
+  background-color: #ced6d3 !important;
+}
+
+td {
+  padding: 2px;
+  border: 1px solid #ddd;
+  white-space: nowrap !important;
+}
+
+th {
+  padding: 0 10px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  width: 10%;
+  text-align: center;
+  font-weight: bold;
+}
+
+.modal-sticky {
+  position: fixed;
+  bottom: 65px;
+  right: 38%;
+  width: 115%;
+  height: 76%;
+  z-index: 2;
+  top: 10%;
+
+}
+
+/* .modal-content{
+    width: 52% !important;
+  } */
+@media screen and (max-width:1400px) {
+  .modal-sticky {
+    right: 45% !important;
+
+  }
+
+  .container .row .modal-sticky .modal-content {
+    width: 47% !important;
+  }
+
+
+}
+
+
+.input {
+  width: 80%
+}
+
+td {
+  line-height: 0px !important;
+  height: 26px
+}
+
+.table>tbody>tr>td {
+  border-top: 0px solid gainsboro !important;
+}
+
+.TopMargin {
+  Margin-Top: 10px
+}
+
+.table>tbody>tr>td:first-child {
+  text-align: left !important;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+label {
+  height: 21px;
+  font-weight: normal;
+  margin: 2px;
+  vertical-align: middle;
+  font-size: 13px;
+  padding-top: 6px;
+}
+
+.headindTable td {
+
+  border: none;
+}
+
+.headindTable input {
+  height: 23px;
+  margin-top: 7px;
+  margin-bottom: 7px;
+}
+.tablebody td{
+  position: relative;
+}
+.pidetail-class {
+  top: 10%;
+  display: block;
+  position: absolute;
+  left: 134%;
+  width: 99%;
+  z-index: 9999999;
+  background: white;
+  margin-top: 26px;
+}
+
+.pidetail-class td {
+  padding: 10px;
+}
+
+.headindTable .pd-r {
+  padding-right: 20px;
+}
+
+td:hover .tooltips {
+  opacity: 1;
+  visibility: visible;
+
+
+}
+
+.tableBorder {
+  position: relative !important;
+}
+
+.tooltips {
+  opacity: 0;
+  visibility: hidden;
+
+  transition: 0.3s ease-in-out;
+  position: absolute;
+  top: 23px;
+  background: #000;
+  padding: 0 5px;
+  border-radius: 5px;
+  font-size: 12px !important;
+  z-index: 999999;
+}
+
+.tooltips p {
+  color: #fff !important;
+  margin-bottom: 0;
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.showTooltips:hover .tooltips {
+  opacity: 1;
+  visibility: visible;
+}
+
+.showTooltips:hover .tooltips:after {
+  display: block;
+}
+
+@media screen and (max-width:1400px) {
+
+  .pidetail-class {
+    left: 118%;
+
+  }
+}

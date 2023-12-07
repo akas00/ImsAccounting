@@ -1,0 +1,114 @@
+﻿
+<!--<ba-card style="margin-top:-15px;">-->
+    <form [formGroup]="form">
+        <div class="row">
+            <div class="row">
+                <div class="col-md-3">
+                        <md-input-container style="margin-left:15px;">
+                                <input mdInput placeholder="Voucher No:" formControlName="VCHRNO">
+                            </md-input-container>
+                            <button [disabled]="TrnMainObj.Mode == 'VIEW'" class="btn btn-success" style="margin-top:-7px; border-radius: 4px; padding:2px 9px; margin-left:3px; vertical-align:middle" id="J" data-toggle="modal" data-toggle="modal" data-target="#orderModal" value="{{_trnMainService.prefix.VNAME}}">{{(_trnMainService.prefix.VNAME==null)? 'Prefix': _trnMainService.prefix.VNAME}}</button>
+                            <sales-mode *ngIf="isSales" [transactionType]="transactionType" style="display: inline-block; margin-left: 20px"></sales-mode>
+                </div>
+                <div class="col-md-6">
+     <h4 *ngIf="additionCost!=99" style="text-align:center; margin-bottom:0px">{{modeTitle}} {{_trnMainService.pageHeading}}</h4>
+                <h4 *ngIf="additionCost==99" style="text-align:center; margin-bottom:0px">Add Additional Cost</h4> 
+                </div>
+                <div class="col-md-3">
+                <div *ngIf="additionCost!=99">
+                        <md-input-container style="width: 75%;float: right;margin-right: 15px;">
+                            <input mdInput placeholder="Chalan No:" formControlName="CHALANNO">
+                        </md-input-container>
+                        <!--<label style="margin-left: 15px; width:30%">Chalan No: </label>
+                <input type="text" [(ngModel)]="TrnMainObj.CHALANNO" style="width:50%;">-->
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div *ngIf="additionCost==99">
+                        <md-input-container style="width: 75%;float: right;margin-right: 15px;">
+                            <input mdInput placeholder="Bill No:" formControlName="VCHRNO" (keydown.enter)="getAdditionalCost($event.target.value)">
+                        </md-input-container>
+                        <!--<label style="margin-left: 15px; width:30%">Chalan No: </label>
+                <input type="text" [(ngModel)]="TrnMainObj.CHALANNO" style="width:50%;">-->
+                    </div>
+                </div>
+               
+                
+                 <!--<creditnode-mode *ngIf="voucherType==15" style="display: inline-block; margin-left: 20px"></creditnode-mode>-->
+                <!--<label style="margin-left:20px">Voucher No:</label>
+                <label> {{TrnMainObj.VCHRNO}}</label>-->
+            </div>
+            <div  class="plainBackGround" style="margin-top:-12px; padding-bottom:0px">
+                <div *ngIf="masterService.ShowMore==true" style="margin:5px; margin-bottom:0px">
+                    <div class="row">
+                            <div class="col-md-4">
+                                    <md-input-container style="width:100%">
+                                        <input mdInput type="date" formControlName="TRNDATE" style="margin-right: 5px;width:40%" placeholder="Entry Date: " (change)="changeEntryDate($event.target.value,'AD')">A.D.
+                                        <input type="text" formControlName="BSDATE" placeholder="yyyy-mm-dd" style="margin-left: 5px;margin-right: 5px;width:35%" id="nepaliDate" onclick="showNdpCalendarBox('nepaliDate')" (change)="changeEntryDate($event.target.value,'BS');" (click)="clickEntryDate($event.target.value)">B.S.
+                                    </md-input-container>
+                
+                                    <!--<label >Entry Date: </label>
+                
+                
+                            <input type="date" style="margin-right: 5px;width:130px;" [(ngModel)]="TrnMainObj.TRNDATE" />
+                
+                            <input type="text" style="width:100px;" [(ngModel)]="TrnMainObj.BSDATE">-->
+                                </div>
+                                <div class="col-md-4">
+                                    <md-input-container style="width:100%">
+                                        <input mdInput type="date" style="margin-right: 5px;width:40%;" formControlName="TRN_DATE" placeholder="Trn Date: " (change)="changeTrnDate($event.target.value,'AD')">A.D. 
+                                        <input type="text" style="margin-left: 5px;margin-right: 5px;width:35%;" formControlName="BS_DATE" placeholder="yyyy-mm-dd" onclick="showNdpCalendarBox('nepaliDate1')" id="nepaliDate1" (change)="changeTrnDate($event.target.value,'BS');" (click)="clickTrnDate($event.target.value)">B.S.
+                                    </md-input-container>
+                                </div>
+                                <div class="col-md-4">
+                                    <div>
+                                        <!-- <md-input-container style="min-width:36%;width:100%">
+                                            <input mdInput formControlName="DIVISION" placeholder="Division:" readonly [mdAutocomplete]="division">
+                                        </md-input-container>
+                                        <md-autocomplete #division="mdAutocomplete" [displayWith]="displayFn">
+                                            <md-option style="line-height: 1.5; height: auto; font-size: 14px; padding: 3px 5px; border-bottom: 1px solid lightgrey" *ngFor="let d of masterService.divisionList$ | async" [value]="d">
+                                                {{ d.NAME }}
+                                            </md-option>
+                                        </md-autocomplete> -->
+                                        <!--<md-select style="width:100%;" [(ngModel)]="TrnMainObj.DIVISION" placeholder="Division:" name="d">
+                
+                                            <md-option *ngFor="let d of divisionList" [value]="d.INITIAL">{{d.NAME}}</md-option>
+                                        </md-select>-->
+                
+                                    </div>
+                                      <div  *ngIf="TrnMainObj.VoucherType==3">
+                                        <md-input-container style="width:40%;">
+                                            <input mdInput type="text" style="width:100%;" formControlName="REFBILL" placeholder="Ref Bill:" floatPlaceholder="always">
+                                        </md-input-container>
+                                         <button  style="margin-left: -5px; padding-bottom: 1.5px; background-color: #90B900; color: white; border-color: #90B900;vertical-align: text-bottom;"
+                                        (click)="LoadSalesBill()">Load</button>
+                                    </div>
+                                </div>
+                        <!--<label>Voucher No:</label>
+                    <input type="text" style="width:90px;" [(ngModel)]="TrnMainObj.VoucherNumber">-->
+                        
+                       
+                    </div>
+                    <div class="row" style="margin-bottom:-5px">
+                      
+                       
+                    </div>
+                </div>
+                <button *ngIf="masterService.ShowMore==false" style="height:18px;font-size:10px;margin-bottom: 10px" (click)="ShowMore()">(..) </button><a style="padding-left: 10px;color: #924a10;" (click)="ShowMore()" *ngIf="masterService.ShowMore==false">Show More!</a> 
+                <!-- <div *ngIf="masterService.ShowMore==false"class="col-md-4" style="float:right"><a>Note :</a>Enter Code or press ENTER or TAB to Select Item</div> -->
+            </div>
+            
+        </div>
+       
+    </form>
+    <!--<trnmain-purchase-entry></trnmain-purchase-entry>-->
+    
+    <!--</ba-card>-->
+    
+    
+    <!--<div class="row">
+        <input type="button" value="Save" class="btn btn-success">
+        <input type="button" value="Cancel" (click)="onCancelClicked()" class="btn btn-warning">
+    
+    </div>-->
+    

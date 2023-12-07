@@ -1,0 +1,48 @@
+<fieldset>
+    <legend style="font-size:11px;font-weight: bold; width:auto">Date Range Selection :</legend>
+    <table>
+        <tr>
+            <td><label class="smallBoldLabel">From:(AD)</label></td>
+            <td><label class="smallBoldLabel">To:(AD)</label></td>
+        </tr>
+        <tr>
+            <td>
+                <label class="smallBoldLabel"><input type="date"
+                        style="min-width:50%;" placeholder="Year Start Date"
+                        [(ngModel)]="_reportFilterService.ReportFilterObject.DATE1"
+                        [disabled]="_reportFilterService.ReportFilterObject.REPORTMODEVR==1"
+                        (change)="changeEntryDate($event.target.value,'AD')"></label>
+            </td>
+            <td>
+                <label class="smallBoldLabel"><input type="date"
+                        style="min-width:50%;" placeholder="Year Start Date"
+                        [(ngModel)]="_reportFilterService.ReportFilterObject.DATE2"
+                        [disabled]="_reportFilterService.ReportFilterObject.REPORTMODEVR==1"
+                        (change)="changeEndDate($event.target.value,'AD')"></label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="smallBoldLabel"> <input id="nepaliDate"
+                        style="height:25px;text-align:center;min-width:50%;"
+                        class="nepali-calendar ndp-nepali-calendar"
+                        [disabled]="_reportFilterService.ReportFilterObject.REPORTMODEVR==1"
+                        [(ngModel)]="_reportFilterService.ReportFilterObject.BSDATE1" type="text"
+                        (change)="changeEntryDate($event.target.value,'BS')"
+                        placeholder="yyyy-mm-dd" />
+                </label>
+
+            </td>
+            <td>
+                <label class="smallBoldLabel">
+                    <input id="nepaliDate" style="height:25px;text-align:center;min-width:50%;"
+                        class="nepali-calendar ndp-nepali-calendar"
+                        [disabled]="_reportFilterService.ReportFilterObject.REPORTMODEVR==1"
+                        [(ngModel)]="_reportFilterService.ReportFilterObject.BSDATE2" type="text"
+                        (change)="changeEndDate($event.target.value,'BS')"
+                        placeholder="yyyy-mm-dd" />
+                </label>
+            </td>
+        </tr>
+    </table>
+</fieldset>

@@ -1,0 +1,97 @@
+
+<style>
+    .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #CFD5EA;
+}
+.table-striped > tbody > tr:nth-of-type(even) {
+    background-color: #E9EBF5;
+}
+</style>
+<div class="row col-md-12" style="margin-top: 20px;">
+    <div class="col-md-4">
+        <h5 style="font-weight: bold;font-size: 1.1rem;">Cost Center Category  Master</h5>
+  
+    </div>
+    <div class="col-md-8">
+        <button class="btn btn-info pull-right" style="font-size: 12px;" routerLink="/pages/dashboard/dashboard">Back</button>
+        <button type="button" class="btn btn-info pull pull-right" (click)="AddCostCategoryCenter()" style="font-size: 12px; margin-right:10px;">Add Category </button>
+  
+    </div>
+  </div>
+
+  
+<div class="row" style="align-items: center;">
+    <div class="col-md-12 col-sm-8" style="margin-top:0.5rem">
+  
+      <div class="card" style="margin: auto; width: 63rem;">
+        <div class="card-header" style="    background: #4472C4;
+        color: #ffff;">
+          
+          <span class="col-md-6" >Cost Center Category  Lists</span>
+          <div style="margin-left: 45rem; margin-top: -6px;">
+            <input type="text" name="search" [(ngModel)]="filter"  class="form-control" placeholder="Search..." style="width: 15rem; height: 1.7rem; padding: 0px 6px;">
+          </div>
+         
+          
+        </div>
+  
+        <div class="card-body">
+          <table class="table table-striped">
+            <thead style="    background: #FFF;
+            box-shadow: 2px 4px 4px 2px rgba(0, 0, 0, 0.25);">
+                <tr style="position: sticky; top:0;line-height: 1.5rem;">
+                    <th scope="col" style="width:3%; font-weight: bold;">S.N</th>
+                    <th scope="col" style="width:40%; font-weight: bold">Cost Center Category Name</th>
+                    <th scope="col" style="text-align:center;width:18%; font-weight: bold ">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+
+              <ng-container *ngIf="this.source">
+                <tr *ngFor="let costcenterCategory of(this.source.data|searchData:filter); let i=index">
+                  <td style="width:3%;">{{i+1}}</td>
+                  <td style="width:40%;">{{costcenterCategory.COSTCENTERGROUPNAME}}</td>
+                  <td style="width:18%;text-align: center;">
+                  <button style="width: 60px;" type="button" class="btn btn-sm btn-info mr-1 btn-sm" data-toggle="modal" (click)="onViewClick(costcenterCategory)">View</button>
+                  <button style="width: 60px;" type="button" class="btn btn-sm btn-info mr-1 btn-sm" data-toggle="modal" (click)="onEditClick(costcenterCategory)">Edit</button>
+                  <button style="width: 60px;" type="button" class="btn btn-sm btn-info mr-1 btn-sm" data-toggle="modal" (click)="onDeleteClick(costcenterCategory)">Delete</button>
+  
+                  </td> 
+                </tr>
+              </ng-container>
+               <!-- <ng-container >
+                <tr>
+                  <td style="width:3%;">1</td>
+                  <td style="width:40%;">COSTCENTERNAME</td>
+                  <td style="width:18%;text-align: center;">
+
+                  <button style="width: 60px;" type="button" class="btn btn-sm btn-info mr-1 btn-sm" data-toggle="modal" (click)="onEditClick($event)">Edit</button>
+                  <button style="width: 60px;" type="button" class="btn btn-sm btn-info mr-1 btn-sm" data-toggle="modal" (click)="onDeleteClick($event)">Delete</button>
+  
+                  </td> 
+                </tr>
+                <tr>
+                    <td style="width:3%;">1</td>
+                    <td style="width:40%;">COSTCENTERNAME</td>
+                    <td style="width:18%;text-align: center;">
+  
+                    <button style="width: 60px;" type="button" class="btn btn-sm btn-info mr-1 btn-sm" data-toggle="modal" (click)="onEditClick($event)">Edit</button>
+                    <button style="width: 60px;" type="button" class="btn btn-sm btn-info mr-1 btn-sm" data-toggle="modal" (click)="onDeleteClick($event)">Delete</button>
+    
+                    </td> 
+                  </tr>
+              </ng-container> -->
+              <!-- <ng-container *ngIf="this.source.data && (this.source.data|searchData:filter).length === 0">
+                <tr>
+                  <td colspan="3">
+                    <div class="font-weight-bold">Cost Center Information are unavailable.</div>
+                  </td>
+                </tr>
+            </ng-container>  -->
+            </tbody>
+        </table>
+        </div>
+  
+      </div>
+    </div>
+  </div>

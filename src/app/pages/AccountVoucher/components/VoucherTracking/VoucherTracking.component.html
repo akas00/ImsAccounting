@@ -1,0 +1,258 @@
+<style>
+  .modal-content {
+    padding: 1px;
+    margin: 0px;
+    float: right;
+  }
+
+  .table-scroll {
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+
+  tbody>tr:hover {
+    background-color: #f3f5f4;
+    cursor: pointer;
+  }
+
+  tr {
+    font-size: 11px;
+  }
+
+  .selected-row {
+    background-color: #ced6d3 !important;
+  }
+
+  td {
+    padding: 2px;
+    border: 1px solid black;
+  }
+
+  th {
+    padding: 2px;
+    border: 1px solid black;
+    font-size: 14px;
+    width: 10%;
+  }
+
+  .modal-sticky {
+    position: fixed;
+    bottom: 45px;
+    right: 14%;
+    width: 120%;
+    height: 76%;
+    z-index: 2;
+  }
+
+  .input {
+    width: 80%
+  }
+
+  td {
+    line-height: 0px !important;
+    height: 26px
+  }
+
+  .table>tbody>tr>td {
+    border-top: 0px solid gainsboro !important;
+  }
+
+  .TopMargin {
+    Margin-Top: 10px
+  }
+
+  .table>tbody>tr>td:first-child {
+    text-align: left !important;
+  }
+
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  label {
+    height: 21px;
+    font-weight: normal;
+    margin: 2px;
+    vertical-align: middle;
+    font-size: 13px;
+    padding-top: 6px;
+  }
+</style>
+<div class="modal-sticky" [class.modal-sticky-hide]="!isActive" style="display : block; padding: 0px;">
+  <!-- Modal content -->
+  <div class="modal-content" style="background-color: #f1f1f1; width:60% !important;height: 450px;
+    border: 1px solid;">
+    <div class="modal-header" style="padding: 0px;background: #f1f1f1;;">
+
+      <h4 class="modal-title" style="text-align: center;    background-color: #8cccfb;">
+        Bill Tracking
+      </h4>
+    </div>
+
+    <!-- <div class="col-md-9 plainBackGround"
+      style="height:80px;margin : 0px;  border-bottom: 1px solid silver;padding-top: 12px;">
+      <div class="col-md-12">
+      
+        <label>Party Name: </label>
+        <input type="text" style="width:82%" [(ngModel)]="TrackingObject.PartyName" readonly>
+      </div>
+
+      <div class="col-md-12 row">
+        <div class="col-md-4" style="display: flex;padding-right: 0px;">
+          <label style="width: 35%;">Ledger B/L: </label>
+          <input type="text" style="width:49.5%;text-align: right;height: 23px;" [(ngModel)]="_trnMainService.diffAmountItemForAccount" readonly>
+       
+          <label *ngIf="_trnMainService.diffAmountDrCrType == 'Dr'">Dr.</label>
+          <label *ngIf="_trnMainService.diffAmountDrCrType == 'Cr'">Cr.</label>
+         
+        </div>
+        <div class="col-md-4" style="    padding-left: 6%;">
+          <label>Due B/L: </label>
+          <input type="text" style="width:43%;text-align: right" [(ngModel)]="TrackingObject.DUEAMOUNT" readonly>
+          <label>{{ACBalanceType}}</label>
+        </div>
+        <div class="col-md-4">
+          <label>Tracking Amt</label>
+          <input type="text" style="width:49.5%;
+          text-align: right;" [(ngModel)]="TrackingObject.AdjustingAmt" readonly>
+          
+        </div>
+
+      </div>
+
+    </div> -->
+
+    <div class="col-md-12">
+      <table style="width: 99.3%;margin-bottom: 10px;">
+        <tr>
+          <td style="font-size: 12px;/* font-weight: bold; */width: 8%;border: 1px solid #f1f1f1;;">PartyName</td>
+          <td colspan="7" style="border: 1px solid #f1f1f1;"><input type="text"
+              style="width:69.33%;height: 23px;font-size: 12px;border: #e2eaea;" [(ngModel)]="TrackingObject.PartyName" readonly></td>
+        </tr>
+        <tr>
+          <td style="font-size: 12px;border: 1px solid #f1f1f1;">Ledger B/L:</td>
+          <td style="width: 15%;border: 1px solid #f1f1f1;">
+            <input type="text" style="width:80%;text-align: right;height: 23px;font-size: 12px;border: #e2eaea;"
+              [(ngModel)]="_trnMainService.diffAmountItemForAccount" readonly>
+           <a style="font-size: 12px;" *ngIf="_trnMainService.diffAmountDrCrType == 'Dr'">Dr.</a>
+            <a style="font-size: 12px;" *ngIf="_trnMainService.diffAmountDrCrType == 'Cr'">Cr.</a>
+          </td>
+
+          <td style="width:2%;border: 1px solid #f1f1f1;">
+
+          </td>
+          <td style="font-size: 12px;border: 1px solid #f1f1f1;">Due B/L:</td>
+          <td style="border: 1px solid #f1f1f1;"> <input type="text"
+              style="width:80%;text-align: right;font-size: 12px;height: 23px;border: #e2eaea;"
+              [(ngModel)]="TrackingObject.DUEAMOUNT" readonly></td>
+          <td style="width: 9%;border: 1px solid #f1f1f1;font-size: 12px">Tracking Amt:</td>
+          <td style="border: 1px solid #f1f1f1;"> <input type="text"
+              style="width:81%;text-align: right;height: 23px;font-size: 12px;border: #e2eaea;"
+              [(ngModel)]="TrackingObject.AdjustingAmt" readonly></td>
+          <td style="border: 1px solid #f1f1f1;">
+            <button style="float: right;height: 30px;width: 100px;" class="btn btn-info" (click)="Refresh()"
+              [disabled]='_trnMainService.TrnMainObj.Mode=="VIEW"'>Reset All</button>
+            <button style="float: right;margin-right: 10px;height: 30px;width: 100px;" class="btn btn-info"
+              (click)="AutoAdjust(TrackingObject.AdjustingAmt)"
+              [disabled]='_trnMainService.TrnMainObj.Mode=="VIEW"'>Auto-Adjust</button>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <!-- <div class="col-md-3 plainBackGround"
+      style="height:80px;margin : 0px;  border-bottom: 1px solid silver;padding-top: 12px;">
+      <button style="height: 40px" class="btn btn-info" (click)="AutoAdjust(TrackingObject.AdjustingAmt)" [disabled]='_trnMainService.TrnMainObj.Mode=="VIEW"'>Auto-Adjust</button>
+      <button style="height: 40px" class="btn btn-info" (click)="Refresh()" [disabled]='_trnMainService.TrnMainObj.Mode=="VIEW"'>Reset All</button>
+
+    </div> -->
+
+    <div class="col-md-12" style="overflow: scroll;max-height: 300px;height:300px;">
+      <table style="width:100%" *ngIf="isValueLoaded">
+        <tr style="background-color:#8cccfb;    font-size: 13px;
+        font-weight: bolder;
+        height: 25px;">
+          <th style="width: 1.5% !important;"></th>
+          <th>Bill Date</th>
+          <th>Bil No</th>
+          <th>Ref Bill No</th>
+          <th>Bill Amount</th>
+          <th>Clear Amount</th>
+          <th>Due Amount</th>
+          <th>Tracking Amount</th>
+        </tr>
+        <tbody *ngFor="let i of BillList; let index = index" (click)="selectedRow(index)">
+          <tr style="font-size: 12px;">
+            <td style="text-align: center;"><input type="checkbox" [(ngModel)]="i.checkbox" (click)='clickCheckBox(index)'
+                [disabled]='_trnMainService.TrnMainObj.Mode=="VIEW"'></td>
+            <td>{{i.BILLDATE}}</td>
+            <td>{{i.BILLNO}}</td>
+            <td>{{i.REFNO}}</td>
+            <td style="text-align: right">{{_trnMainService.nullToZeroConverter(i.BILLAMOUNT) |number:'1.2-2'}}</td>
+            <td style="text-align: right">{{_trnMainService.nullToZeroConverter(i.CLEARAMOUNT) |number:'1.2-2'}}</td>
+            <td style="text-align: right">{{_trnMainService.nullToZeroConverter(i.DUEAMOUNT) |number:'1.2-2' }}</td>
+            <td>
+              <input style="width: 100%;
+              height: 25px;
+              padding-top: 0px;
+              padding-bottom: 0px;text-align: right;border: #e2eaea;" id="adj{{index}}" type="text" [(ngModel)]="i.AdjustingAmt"
+                (change)="IndAdjAmountChange(index)" (keydown.enter)="IndAdjAmountChange(index)"
+                [readonly]='_trnMainService.TrnMainObj.Mode=="VIEW"'>
+            </td>
+          </tr>
+        </tbody>
+
+
+      </table>
+      <table style="width:100%" *ngIf="!isValueLoaded">
+        <tr style="background-color:#8cccfb;    font-size: 13px;
+        font-weight: bolder;
+        height: 25px;">
+          <th style="width: 1.5% !important;"></th>
+          <th>Bill Date</th>
+          <th>Bil No</th>
+          <th>Ref Bill No</th>
+          <th>Bill Amount</th>
+          <th>Clear Amount</th>
+          <th>Due Amount</th>
+          <th>Tracking Amount</th>
+        </tr>
+        <td colspan="9">
+          <div style="text-align: center;"><b>{{gettingMessage}}</b></div>
+
+        </td>
+
+      </table>
+    </div>
+    <div class="col-md-12">
+      <table style="width:100%">
+        <tr style="font-size: 14.5px;
+        font-weight: bolder;
+        height: 25px;">
+          <td colspan="6" style="width: 71.5%;border: 1px solid #f1f1f1;">
+            <button style="height: 30px;width: 100px;" class="btn btn-info" (click)="okClick()"
+            [disabled]='_trnMainService.TrnMainObj.Mode=="VIEW"'>OK</button>
+          <button style="height: 30px;width: 100px;" class="btn btn-info" (click)="hide()">Cancel</button>
+
+          </td>
+         
+          <td style="width: 14%;border: 1px solid #f1f1f1;text-align: right;
+          /* margin-left: 20px; */
+          padding-right: 20px;">Total</td>
+          <td style="border: 1px solid #f1f1f1;"><input type="text" style="width: 130px;
+            text-align: right;border: #e2eaea;" [(ngModel)]="TrackingObject.Total" readonly></td>
+        </tr>
+
+
+
+      </table>
+      <!-- <button style="height: 26px;width: 100px;" class="btn btn-info" (click)="okClick()"
+        [disabled]='_trnMainService.TrnMainObj.Mode=="VIEW"'>OK</button>
+      <button style="height: 26px;width: 100px;" class="btn btn-info" (click)="hide()">Cancel</button>
+      <a style="margin-left:56%">
+        Total :
+        <input type="text" style="width: 130px;
+      text-align: right;" [(ngModel)]="TrackingObject.Total" readonly></a> -->
+    </div>
+  </div>

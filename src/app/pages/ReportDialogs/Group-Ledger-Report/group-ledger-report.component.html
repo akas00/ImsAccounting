@@ -1,0 +1,132 @@
+<div style="background-color : #ffffff; padding :1%; height : auto; width:100%; ">
+    <div class="row">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" (click)="hide()">&times;</button>
+            <h4 class="modal-title">Group Ledger Report</h4>
+        </div>
+        <div class="_left_section col-md-12">
+            <div class='col-md-6'>
+                <fieldset style="width:352px">
+                    <div id=treediv>
+                        <h4>Group Ledger</h4>
+                        <input name="filter" #filter (keyup)="filterNodes(filter.value, tree)"
+                            placeholder="&nbsp;Search Account" class="filterclass" />
+                        <div
+                            style=" overflow: auto; border: black;border-width: 2px;height: 320px;background:#f0f3f4;margin:10px;font-size:12px;width:290px !important">
+                            <Tree #tree [nodes]="nodes " [focused]="true " [options]="customTemplateStringOptions
+                                                                  " (onEvent)="onEvent($event) "
+                                (onActivate)="onselect(tree,$event) ">
+                                <ng-template #treeNodeTemplate let-node>
+                                    <span *ngIf="node.data.TYPE=='G' && node.children.length>0"
+                                        title="{{node.data.subTitle}} " [contextMenu]="myContextMenu
+                                                                  " [contextMenuSubject]="node.data "
+                                        style="margin-left:24px"><img src="../../../assets/img/Folder.jpg" alt="Group"
+                                            height="20" width="20" style="margin-top:-2px">
+                                        {{ node.data.ACNAME }}{{ childrenCount(node) }}</span>
+                                    <span *ngIf="node.data.TYPE=='G' && node.children.length==0"
+                                        title="{{node.data.subTitle}} " [contextMenu]="myContextMenu
+                                                                  " [contextMenuSubject]="node.data "><img
+                                            src="../../../assets/img/Folder.jpg" alt="Group" height="20" width="20"
+                                            style="margin-top:-2px">
+                                        {{ node.data.ACNAME }}{{ childrenCount(node) }}</span>
+                                    <!-- <span *ngIf="node.data.TYPE=='A'" title="{{node.data.subTitle}} " [contextMenu]="myContextMenu
+                                                                  " [contextMenuSubject]="node.data "><img
+                                            src="../../../assets/img/File.png" alt="ListItem" height="20" width="15"
+                                            style="margin-top:-2px">
+                                        {{ node.data.ACNAME }}</span> -->
+                                </ng-template>
+                                <ng-template #loadingTemplate>Loading, please hold....</ng-template>
+                            </Tree>
+
+                        </div>
+                        <br>
+                    </div>
+                </fieldset>
+            </div>
+            <div class='col-md-6'>
+
+                <fieldset style="width:352px">
+                    <legend style="font-size:11px;font-weight: bold; width:auto">Date Range Selection :</legend>
+                    <table>
+                        <tr>
+                            <td><label class="smallBoldLabel">From:(AD)</label></td>
+                            <td><label class="smallBoldLabel">To:(AD)</label></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="smallBoldLabel"><input type="date" style="width:152px; min-width:50%;"
+                                        placeholder="Year Start Date" [(ngModel)]="GroupLedgerReport.DATE1"
+                                        (change)="changeEntryDate($event.target.value,'AD')"></label>
+                            </td>
+                            <td>
+                                <label class="smallBoldLabel"><input type="date" style="width:152px; min-width:50%;"
+                                        placeholder="Year Start Date" [(ngModel)]="GroupLedgerReport.DATE"
+                                        (change)="changeEndDate($event.target.value,'AD')"></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="smallBoldLabel"> <input id="nepaliDate"
+                                        style="width:152px;height:25px;text-align:center"
+                                        class="nepali-calendar ndp-nepali-calendar"
+                                        [(ngModel)]="GroupLedgerReport.BSDATE1" type="text"
+                                        (change)="changeEntryDate($event.target.value,'BS')" placeholder="yyyy-mm-dd" />
+                                </label>
+                            </td>
+                            <td>
+                                <label class="smallBoldLabel">
+                                    <input id="nepaliDate" style="width:152px;height:25px;text-align:center"
+                                        class="nepali-calendar ndp-nepali-calendar"
+                                        [(ngModel)]="GroupLedgerReport.BSDATE2" type="text"
+                                        (change)="changeEndDate($event.target.value,'BS')" placeholder="yyyy-mm-dd" />
+                                </label>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+
+                <!-- Division Selection Start -->
+                <fieldset style="width:352px;">
+                    <legend>Division Selection:</legend>
+                    <select class="form-control" [(ngModel)]="GroupLedgerReport.DIV" #division
+                        (change)="divisionChanged()">
+                        <option value="%" *ngIf="masterService.userSetting.userwisedivision==0" selected>ALL</option>
+                        <option *ngFor="let divs of divisionList;let i=index" value="{{divs.INITIAL}}">{{divs.NAME}}
+                        </option>
+                    </select>
+                </fieldset>
+
+                <!-- Division Selection End -->
+
+                <!-- R1,R2,R3 start-->
+                <!-- <fieldset>
+                <div class="checkbox" style="padding-top:5px;width:200px;">
+                    <label class="smallBoldLabel">
+                        <input type="checkbox" [(ngModel)]="this.OneLakhAbovePurchaseReport.isR1">
+                        Credit Sales Only
+                    </label>
+                </div>
+                <div class="checkbox" style="padding-top:1px;width:200px;">
+                    <label class="smallBoldLabel">
+                        <input type="checkbox" [(ngModel)]="this.OneLakhAbovePurchaseReport.isR2">
+                        Non Credit Sales With Pan No Only
+                    </label>
+                </div>
+                <div class="checkbox" style="padding-top:1px;width:300px;">
+                    <label class="smallBoldLabel">
+                        <input type="checkbox" [(ngModel)]="this.OneLakhAbovePurchaseReport.isR3">
+                        Non Credit Sales Without Pan No Only
+                    </label>
+                </div>
+            </fieldset> -->
+                <!-- R1,R2,R3 end-->
+            </div>
+
+            <div style='margin-top:20px;'>
+                <button class="btn btn-info confirm-btn" type="button" (click)=onload()>RUN</button>
+                <button type="button" (click)="cancel()" title="Cancel" class="btn btn-info">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>

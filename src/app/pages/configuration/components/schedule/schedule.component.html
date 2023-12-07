@@ -1,0 +1,129 @@
+<style>
+    #searchclear {
+        position: absolute;
+        right: 5px;
+        top: 0;
+        bottom: 0;
+        height: 14px;
+        margin: auto;
+        font-size: 14px;
+        cursor: pointer;
+        color: #ccc;
+    }
+
+    #searchclear::before {
+        margin-left: -115px;
+    }
+</style>
+<form id=formId class="form-horizontal" [formGroup]="form">
+    <ba-card [title]="modeTitle">
+
+        <div class="form-group row ">
+            <label for="initial " class="col-sm-2 form-control-label ">Name</label>
+            <div class="col-sm-7 ">
+                <input style="color:black" type="text " class="form-control " formControlName="discountname" placeholder="Name ">
+            </div>
+        </div>
+        <div class="form-group row ">
+            <div class="col-sm-2">
+                <table>
+                    <tr>
+                        <td><label>Start Date </label></td>
+                    </tr>
+                    <tr>
+                        <td>{{date1 | date:'MM/dd/yyyy'}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-sm-3">
+                <p-calendar (onSelect)="setDate()" formControlName="startdate" [inline]="true" value="a"></p-calendar>
+            </div>
+            <div class="col-sm-1">
+                <table>
+                    <tr>
+                        <td><label>End Date </label></td>
+                    </tr>
+                    <tr>
+                        <td>{{date2 | date:'MM/dd/yyyy'}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-sm-4">
+                <p-calendar (onSelect)="endDate()" formControlName="enddate" [inline]="true" value="b"></p-calendar>
+            </div>
+        </div>
+
+        <div class="form-group row ">
+            <label for="id " class="col-sm-2 form-control-label ">Daywise</label>
+            <div class="col-sm-7 ">
+                <div class="col-md-1">
+                    <input type="checkbox" formControlName="sun" ><span>Sun</span>
+                </div>
+                <div class="col-md-1">
+                    <input type="checkbox" formControlName="mon" ><span>Mon</span>
+                </div>
+                <div class="col-md-1">
+                    <input type="checkbox"  formControlName="tue" ><span>Tue</span>
+                </div>
+                <div class="col-md-1">
+                    <input type="checkbox"  formControlName="wed"><span>Wed</span>
+                </div>
+                <div class="col-md-1">
+                    <input type="checkbox"  formControlName="thu"><span>Thu</span>
+                </div>
+                <div class="col-md-1">
+                    <input type="checkbox"  formControlName="wed"><span>Fri</span>
+                </div>
+                <div class="col-md-1">
+                    <input type="checkbox"  formControlName="thu"><span>Sat</span>
+                </div>
+                <!-- <p-checkbox name="group1" label="Sun" [formControl]="form.controls['sun']" (onChange)="selectSunday(1)"></p-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+                <!-- <p-checkbox name="group2"  label="Mon" formControlName="mon" (onChange)="selectMonday(2)"></p-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <p-checkbox name="group3"  label="Tue" formControlName="tue" (onChange)="selectTuesday(3)"></p-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <p-checkbox name="group4"  label="Wed" formControlName="wed" (onChange)="selectWednesday(4)"></p-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <p-checkbox name="group5" value="5" label="Thu" formControlName="thu" (onChange)="selectThursday(5)"></p-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <p-checkbox name="group6" value="6" label="Fri" formControlName="fri" (onChange)="selectFriday(6)"></p-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <p-checkbox name="group7" value="7" label="Sat" formControlName="sat" (onChange)="selectSaturday(7)"></p-checkbox>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+            </div>
+        </div>
+        <div class="form-group row ">
+            <label for="id " class="col-sm-2 form-control-label ">Start Time</label>
+            <div class="col-sm-3 ">
+                <p-calendar formControlName="starttime" [timeOnly]="true"></p-calendar>
+                <span id="searchclear" (click)="removeStart()" class="glyphicon glyphicon-remove-circle"></span>
+            </div>
+            <label for="id " class="col-sm-1 form-control-label ">End Time</label>
+            <div class="col-sm-3 ">
+                <p-calendar formControlName="endtime" [timeOnly]="true"></p-calendar>
+                <span id="searchclear" (click)="removeEnd()" class="glyphicon glyphicon-remove-circle"></span>
+            </div>
+        </div>
+    </ba-card>
+    <div style="padding-bottom: 10px; margin-top: -8px;">
+        <button (click)="onSave()" *ngIf="viewMode == false"  style="margin-right: 4px;" class="btn btn-info " [disabled]="!form.valid">Save</button>
+        <button type="button " class="btn btn-info" (click)="onClickBack()">Back</button>
+    </div>
+
+</form>
+<div class="modal fade" bsModal #childModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" aria-label="Close" (click)="childModal.hide()">
+  <span aria-hidden="true">&times;</span>
+  
+</button>
+                <h4 class="modal-title">Information</h4>
+            </div>
+            <div class="modal-body">
+                {{DialogMessage}}
+            </div>
+            <!--<div class="modal-footer">
+                <button class="btn btn-info confirm-btn" (click)="hideChildModal()">Save changes</button>
+                <button class="btn btn-info confirm-btn" type="button" (click)=onsubmit()>Save</button>
+            </div>!-->
+
+        </div>
+    </div>
+</div>

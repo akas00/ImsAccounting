@@ -1,0 +1,146 @@
+<!-- <div class="widgets">
+  <button class="btn btn-info" style="margin-bottom: 10px;" (click)="onAddClick(); (false)">
+    Add User
+  </button>
+  <button class="btn btn-info" style="margin-bottom: 10px;" (click)="addRole(); (false)">
+    Add Role
+  </button>
+
+  <div class="row">
+    <ba-card baCardClass="with-scroll">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a class="nav-link active" href="#user" data-toggle="tab">User List</a>
+            </li>
+           
+            <li class="nav-item">
+              <a class="nav-link" href="#role" data-toggle="tab">Role List</a>
+            </li>
+          </ul>
+      <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="user">
+          <ng2-smart-table [settings]="settings" [source]="source" (edit)="onEditClick($event)"
+            (deleteConfirm)="onDeleteConfirm($event)"></ng2-smart-table>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="role">
+            <ng2-smart-table [settings]="roleSettings" [source]="roleSource" (edit)="onRoleEditClick($event)"
+            ></ng2-smart-table>
+        </div>
+      </div>
+    </ba-card>
+  </div>
+</div> -->
+
+<!--NEW UI DESIGN FOR USER MANAGER-->
+<div class="row col-md-12">
+  <div class="col-md-4">
+      <h5 style="font-weight: bold;" *ngIf="this.userManager == 'user'">User Profile Master</h5>
+      <h5 style="font-weight: bold;" *ngIf="this.userManager == 'role'">Role Master</h5>
+
+  </div>
+  <div class="col-md-8">
+      <!-- <button class="btn btn-info pull-right" style="font-size: 12px;" routerLink="/pages/dashboard">Back</button> -->
+      <button *ngIf="this.userManager == 'user'" class="btn btn-info pull-right" style="font-size: 12px;" (click)="onAddClick()">Add User</button>
+      <button *ngIf="this.userManager == 'role'"class="btn btn-info pull-right" style="font-size: 12px;" (click)="addRole()">Add Role</button>
+
+      <button *ngIf="this.userManager == 'role'" class="btn btn-info pull-right" style="font-size: 12px;" (click)="openUserList()">User List</button>
+      <button *ngIf="this.userManager == 'user'"  class="btn btn-info pull-right" style="font-size: 12px;" (click)="openRoleList()">Role List</button>
+
+  </div>
+</div>
+
+<div class="row" style="align-items: center;">
+  <div class="col-md-12 col-sm-8" style="margin-top:0.5rem">
+      <div class="card" style="margin: auto; width: 63rem;">
+        <div *ngIf="this.userManager == 'user'">
+          <div class="card-header">
+              <span style="font-weight: bold;">User Profile Lists</span>
+              
+          </div>
+
+          <div class="card-body">
+              <!-- <perfect-scrollbar class="perfect__scrollbar" style="height: calc(98vh - 32vh);"> -->
+                  <table class="table table-striped">
+                      <thead>
+                          <tr style="position: sticky; top:0;line-height: 1.5rem;">
+                              <th scope="col" style="width:3%">S.N</th>
+                              <th scope="col" style="width:18%">User Name</th>
+                              <!-- <th scope="col" style="width:13%">Email</th> -->
+                              <th scope="col" style="width:8%">Role</th>
+                              <th scope="col" style="width:8%">Role Type</th>
+                              <th scope="col" style="width:8%">Division</th>
+                              <th scope="col" style="width:8%">Warehouse</th>
+                              <th scope="col" style="width:8%">Status</th>
+                              <th scope="col" style="text-align:center;width:18%">Action</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                        <ng-container *ngIf="this.userList && this.userList.length > 0">
+                          <tr *ngFor="let user of this.userList; let i=index">
+                            <td style="width:3%;">{{i+1}}</td>
+                            <td style="width:18%;">{{user.username}}</td>
+                            <!-- <td style="width:13%;">{{user.email}}</td> -->
+                            <td style="width:8%;">{{user.role}}</td>
+                            <td style="width:8%;">{{user.userrole}} </td>
+                            <td style="width:8%;">{{user.division}} </td>
+                            <td style="width:8%;">{{user.WAREHOUSE}} </td>
+                            <td style="width:8%;">{{user.ISACTIVE}} </td>
+                            <td style="width:18%;text-align: center;">
+                            <button style="width: 60px;" type="button" class="btn btn-sm btn-info mr-1 btn-sm" data-toggle="modal" (click)="onEditClick(user)">Edit</button>
+                            <button style="width: 60px;" type="button" class="btn btn-sm btn-info mr-1 btn-sm" data-toggle="modal" (click)="onDeleteConfirm(user)">Delete</button>
+
+                            </td>
+                          </tr>
+                        </ng-container>
+                      </tbody>
+                  </table>
+
+            </div>
+        </div>
+        <div *ngIf="this.userManager == 'role'">
+          <div class="card-header">
+              <span>Role Lists</span>
+              
+          </div>
+
+          <div class="card-body">
+              <!-- <perfect-scrollbar class="perfect__scrollbar" style="height: calc(98vh - 32vh);"> -->
+                  <table class="table table-striped">
+                      <thead>
+                          <tr style="position: sticky; top:0;line-height: 1.5rem;">
+                              <th scope="col" style="width:3%">S.N</th>
+                              <th scope="col" style="width:18%">Role Name</th>
+                              <th scope="col" style="width:8%">Role</th>
+                              <th scope="col" style="text-align:center;width:18%">Action</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                        <ng-container *ngIf="this.roleList && this.roleList.length > 0">
+                          <tr *ngFor="let role of this.roleList; let i=index">
+                            <td style="width:3%;">{{i+1}}</td>
+                            <td style="width:18%;">{{role.rolename}}</td>
+                            <td style="width:8%;">{{role.role}}</td>
+                            <td style="width:18%;text-align: center;">
+                            <button style="width: 60px;" type="button" class="btn btn-sm btn-info mr-1 btn-sm" data-toggle="modal" (click)="onRoleEditClick(role)">Edit</button>
+                            <!-- <button style="width: 60px;" type="button" class="btn btn-sm btn-info mr-1 btn-sm" data-toggle="modal" (click)="onDeleteConfirm(user)">Delete</button> -->
+
+                            </td>
+                          </tr>
+                        </ng-container>
+                      </tbody>
+                  </table>
+
+            </div>
+        </div>
+            <!-- <div class="card-footer" style="padding:5px" *ngIf="customerLists && (customerLists | searchData: filter:searchProduct).length > itemsPerPage">
+            <div class="pagination" >
+              <div style="margin:auto">
+              <pagination-controls (pageChange)="customerPagination($event)"></pagination-controls>
+              </div>
+            </div> 
+            </div> -->
+          
+
+      </div>
+  </div>
+</div>

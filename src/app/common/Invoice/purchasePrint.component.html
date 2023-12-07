@@ -1,0 +1,137 @@
+<div class="modal fade" role="dialog" id="SalesInvoicePrint" aria-labelledby="orderModalLabel">
+<div style="width: 100%; background: white; height: 1000px;">
+<p class="InvoiceHeader">&nbsp;</p>
+<p class="InvoiceHeader" style="letter-spacing: 2px;">{{printData?.COMPANYNAME}}</p>
+<p class="InvoiceHeader" style="letter-spacing: 2px;">{{printData?.COMPANYADDRESS}}</p>
+<p class="InvoiceHeader" style="letter-spacing: 2px;">PAN : {{printData?.VAT}}</p>
+<p class="InvoiceHeader" style="font-size: 13; letter-spacing: 2px;">{{InvoiceType}}</p>
+<p class="InvoiceHeader" style="font-size: 11; letter-spacing: 2px;">{{printCopyCaption}}</p>
+<p class="InvoiceHeader" style="font-size: 11; letter-spacing: 2px;"></p>
+<p class="InvoiceHeader" style="font-size: 13; letter-spacing: 2px;">&nbsp;</p>
+<table class="summaryTable" style="height: 55px; width: 710px; text-align: left; font-size: 12px; float: left;">
+<tbody>
+<tr>
+<th style="width: 120px; font-size: 12.5px;">Customer Name</th>
+<td style="width: 24px; font-size: 12.5;">:</td>
+<td style="width: 293px; text-align: left; font-size: 12.5;" colspan="4">{{printData?.TRNMAIN?.BILLTO}}</td>
+<th style="width: 85px; font-size: 12.5;">Bill Number</th>
+<td style="width: 44px; font-size: 12.5;">:</td>
+<th style="width: 143px; font-size: 12.5;">{{printData?.TRNMAIN?.VCHRNO}}</th>
+</tr>
+<tr>
+<th style="width: 120px; font-size: 12.5;">Address</th>
+<td style="width: 24px; font-size: 12.5;">:</td>
+<td style="width: 216px; text-align: left; font-size: 12.5;" colspan="2">{{printData?.TRNMAIN?.BILLTOADD}}</td>
+<td style="width: 24px; font-size: 12.5;">&nbsp;</td>
+<td style="width: 53px; font-size: 12.5;">&nbsp;</td>
+<th style="width: 85px; font-size: 12.5;">BIll Date</th>
+<td style="width: 44px; font-size: 12.5;">:</td>
+<th style="width: 143px; font-size: 12.5;">{{printData?.TRNMAIN?.TRNDATE}} &nbsp; [{{printData?.TRNMAIN?.BSDATE}}]</th>
+</tr>
+<tr>
+<th style="width: 120px; font-size: 12.5;">Ref. Job Sheet#</th>
+<td style="width: 24px; font-size: 12.5;">&nbsp;</td>
+<td style="width: 160px; text-align: left; font-size: 12.5;">{{printData?.TRNMAIN?.BILLTOTEL}}</td>
+<th style="width: 56px; font-size: 12.5;">Model</th>
+<td style="width: 24px; font-size: 12.5;">:</td>
+<td style="width: 53px; text-align: left; font-size: 12.5;">X40</td>
+<th style="width: 85px; font-size: 12.5;">Ref. IMEI</th>
+<td style="width: 44px; font-size: 12.5;">:</td>
+<th style="width: 143px; font-size: 12.5;">{{printData?.TRNMAIN?.REFBILLQTY}}</th>
+</tr>
+<tr style="height: 20px;">
+<th style="width: 120px; height: 20px;">&nbsp;</th>
+<td style="width: 24px; height: 20px;">&nbsp;</td>
+<td style="width: 160px; height: 20px; text-align: left;">&nbsp;</td>
+<th style="width: 56px; height: 20px;">&nbsp;</th>
+<td style="width: 24px; height: 20px;">&nbsp;</td>
+<td style="width: 53px; height: 20px; text-align: left;">&nbsp;</td>
+<th style="width: 85px; height: 20px;">&nbsp;</th>
+<td style="width: 44px; height: 20px;">&nbsp;</td>
+<th style="width: 143px; height: 20px;">&nbsp;</th>
+</tr>
+</tbody>
+</table>
+<div class="com-sm-12" style="height: 300px;">
+<table class="summaryTable" style="width: 100%; padding: 0px;">
+<thead>
+<tr>
+<td style="width: 12%; border-bottom: 1px dashed black; border-top: 1px dashed black; font-size: 13px; text-align: left;">Sno:</td>
+<td style="width: 15%; border-bottom: 1px dashed black; border-top: 1px dashed black; font-size: 13px; text-align: left;">Part Number:</td>
+<td style="width: 21%; border-bottom: 1px dashed black; border-top: 1px dashed black; font-size: 13px; text-align: left;">Particulars:</td>
+<td style="width: 15%; border-bottom: 1px dashed black; border-top: 1px dashed black; font-size: 13px; text-align: left;">Rate.</td>
+<td style="width: 18%; border-bottom: 1px dashed black; border-top: 1px dashed black; font-size: 13px; text-align: left;">Quantity</td>
+<td style="width: 16%; border-bottom: 1px dashed black; border-top: 1px dashed black; font-size: 13px; text-align: left;">Total</td>
+</tr>
+</thead>
+<tbody *ngFor="let item of printData?.TRNPRODLIST" style="font-size:12px;">
+<tr>
+<td style="width: 12%; text-align: left;">{{item.SNO}}</td>
+<td style="width: 15%; text-align: left;">{{item.MCODE}}</td>
+<td style="width: 21%; text-align: left;">{{item.ITEMDESC}}</td>
+<td style="text-align: left; width: 15%;"> {{item.RATE| twoDigitNumber}}</td>
+<td style="text-align: left; width: 18%;">{{item.Quantity}}</td>
+<td style="text-align: left; width: 16%;">{{item.AMOUNT| twoDigitNumber}}</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="col-md-12"><br />
+<table class="summaryTable" style="width: 685px;">
+<tbody>
+<tr>
+<td style="width: 394px; font-size: 12.5;">&nbsp;</td>
+<th style="width: 132px; text-align: left; border-top: 1px dashed black; font-size: 12.5;">Total</th>
+<td style="width: 15px; text-align: left; border-top: 1px dashed black; font-size: 12.5;">:</td>
+<td style="width: 143px; text-align: right; border-top: 1px dashed black; font-size: 12.5;">{{printData?.TRNMAIN?.TOTAMNT | twoDigitNumber}}</td>
+</tr>
+<tr>
+<td style="width: 394px; font-size: 12.5;">&nbsp;</td>
+<th style="width: 132px; text-align: left; font-size: 12.5;">Discount</th>
+<td style="width: 15px; text-align: left; font-size: 12.5;">:</td>
+<td style="width: 143px; text-align: right; font-size: 12.5;">{{printData?.TRNMAIN?.DCAMNT | twoDigitNumber}}</td>
+</tr>
+<tr>
+<td style="width: 394px; font-size: 12.5;">&nbsp;</td>
+<th style="width: 132px; text-align: left; font-size: 12.5;">Service Charge</th>
+<td style="width: 15px; text-align: left; font-size: 12.5;">:&nbsp;</td>
+<td style="width: 143px; text-align: right; font-size: 12.5;">00.00</td>
+</tr>
+<tr>
+<td style="width: 394px; font-size: 13;">&nbsp;</td>
+<th style="width: 132px; text-align: left; font-size: 13;">Final Amount</th>
+<td style="width: 15px; text-align: left; font-size: 13;">:&nbsp;</td>
+<td style="width: 143px; text-align: right; font-size: 13;">{{printData?.TRNMAIN?.NETAMNT | twoDigitNumber}}</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<table class="summaryTable" style="height: 44px; width: 710px;">
+<tbody>
+<tr>
+<th style="width: 10px; text-align: left; border-top: 1px dashed black; border-bottom: 1px dashed black;">&nbsp;Tax : 13.00%</th>
+<th style="width: 48px; border-top: 1px dashed black; border-bottom: 1px dashed black;">&nbsp;</th>
+<th style="width: 140px; border-top: 1px dashed black; border-bottom: 1px dashed black;">&nbsp;</th>
+<th style="width: 93px; border-top: 1px dashed black; border-bottom: 1px dashed black;">&nbsp;</th>
+</tr>
+<tr>
+<th style="width: 10px; text-align: left;">&nbsp;</th>
+<th style="width: 48px;">&nbsp;</th>
+<th style="width: 140px;">&nbsp;</th>
+<th style="width: 93px;">&nbsp;</th>
+</tr>
+<tr>
+<th style="width: 198px; text-align: left;" colspan="3">Cashier: {{printData?.TRNMAIN?.TRNUSER}}</th>
+<th style="width: 93px; text-align: left;">&nbsp;Signature:</th>
+</tr>
+<tr>
+<th style="width: 198px; text-align: left;" colspan="3">Time &nbsp; : &nbsp; {{printData?.TRNMAIN?.TRNTIME}}</th>
+<th style="width: 93px; text-align: left;"></th>
+</tr>
+</tbody>
+</table>
+
+<p>&nbsp;</p>
+</div>
+</div>

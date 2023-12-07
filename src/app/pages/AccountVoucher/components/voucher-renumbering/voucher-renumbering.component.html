@@ -1,0 +1,115 @@
+<div class="sticky-top">
+    <div class="clearfix">
+      <div class="col-md-4">
+        <!-- <h2 style="color: black;">Bank Reconciliation </h2> -->
+        <label style="font-family: Segoe UI Light;font-weight: bold;font-size: 20px;padding-left: 5%;padding-top: 1%;width: 100%;">VOUCHER RENUMBERING</label>
+      </div>
+      <div class="col-md-7">
+        <button style="margin: 0px 4px;" class="btn btn-info pull-right" (click)='SaveRenum()'>
+          Update
+        </button>
+  
+      </div>
+    </div>
+  </div>
+
+  <div class="main-container">
+      <div class="row" style="margin: 8px 15px ; border: 1px solid #e6e6e6; padding: 10px 10px;">
+        <form [formGroup]="form" (ngSubmit)="onSearch()">
+        <div class="row">
+        <div class="col-md-4">
+            <div class=" form-group row">
+
+                <label class="form-control-label col-md-2" style="width: 100px;">From Date:</label>
+
+                <div class="col-md-8">
+                <input type="date" class="form-control" formControlName="FROMDATE">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group row">
+                
+            <label class="form-control-label col-md-2">To Date:</label>
+            <div class="col-md-8">
+            <input type="date" class="form-control" formControlName="TODATE">
+            </div>
+            </div>
+
+        </div>
+
+      </div>
+
+      <div class="row">
+          <div class="col-md-4">
+              <div class="form-group row">
+                  <label class="form-control-label col-md-2" style="width:20%">Form: </label>
+              
+                    <div class="col-md-4">
+                        <select class="form-control" formControlName="FORM" style="width:222%">
+                            <option value="JV%">Journal Voucher</option>
+                            <option value="CV%">Contra Voucher</option>
+                            <option value="PV%">Payment Voucher</option>
+                            <option value="RV%">Receipt Voucher</option>
+                            <option value="CP%">Capital Purchase Voucher</option>
+                            <option value="AD%">Additional Cost</option>
+
+                        </select>
+                        <!-- <select (change)="FormName($event)">
+                          <option></option>
+                          <option *ngFor="let a of accoutMenus" values="a">{{a.path}}</option>
+                        </select> -->
+                    </div>
+              </div>
+
+          </div>
+          <div class="col-md-4">
+              <button type="submit" class="btn btn-info">Search</button>
+          </div>
+
+      </div>
+        </form>
+      </div>
+
+      <div class="clearfix" style="margin-top: 5px;">
+        <div class="row" style="margin-left: 15px;">
+            <table class="table table-striped" style="width: 98%;">
+            <thead>
+                <tr style="position: sticky; top:0;line-height: 2.4rem; border-bottom: 1px solid #E6E6E6; border-top: 1px solid #E6E6E6;
+                background:#C0C0C0;
+                color: black;">
+                    <th scope="col" style="width: 5%;">S.N</th>
+                    <th scope="col" style="width: 10%;">VCHRNO</th>
+                    <th scope="col" style="width: 10%;">TRNDATE</th>
+                    <th scope="col" style="width: 10%;">BSDATE</th>
+                    <th scope="col" style="width: 10%;">NETAMNT</th>
+                    <th scope="col" style="width: 10%;">TRNMODE</th>
+                    <th scope="col" style="width: 10%;">PHISCALID</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngIf="voucherLists && voucherLists.length > 0">
+                <tr *ngFor="let voucher of voucherLists; let i = index">
+                    <td style="width: 5%;">{{i+1}}</td>
+                    <td style="width: 10%;">{{voucher.VCHRNO}}</td>
+                    <td style="width: 10%;">{{voucher.TRNDATE}}</td>
+                    <td style="width: 10%;">{{voucher.BSDATE}}</td>
+                    <td style="width: 10%;">{{voucher.NETAMNT}}</td>
+                    <td style="width: 10%;">{{voucher.TRNMODE}}</td>
+                    <td style="width: 10%;">{{voucher.PHISCALID}}</td>
+                </tr>
+                </ng-container>
+                <ng-container *ngIf="voucherLists && voucherLists.length === 0">
+                    <tr>
+                      <td colspan="7">
+                        <div class="font-weight-bold">Voucher List Information are unavailable.</div>
+                      </td>
+                    </tr>
+                  </ng-container> 
+            </tbody>
+            </table>
+        </div>
+
+      </div>
+
+  </div>

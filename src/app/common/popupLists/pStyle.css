@@ -1,0 +1,122 @@
+
+.modal1 {
+    display: block;
+    margin-top: 40px;
+    height: 440px;
+    width: 800px;
+    position: fixed;
+    float: right;
+    margin-left: 220px;
+    background-color: rgba(0, 0, 0, 0);
+    left: 0;
+    top: 0;
+    z-index: 1;
+  }
+  
+  /* Modal Content */
+  .modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 70%;
+    /* position: fixed; */
+    height: -webkit-fill-available;
+    margin-left: 35pc;
+    margin-top: 10pc;
+  }
+  
+  /* The Close Button */
+  .close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  /*  pagination */
+  .pagination {
+    display: inline-block;
+  }
+  
+  .pagination a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+  }
+  
+  .pagination a.active {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .pagination a:hover:not(.active) {
+    background-color: #ddd;
+  }
+  
+  /* tooltip */
+  #MyTable {
+    border-style: solid;
+    border-color: black;
+    border-width: 2px
+  }
+  
+  #MyTable td {
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+    padding: 3px;
+  }
+  
+  .CellWithComment {
+    position: relative;
+  }
+  
+  .CellComment {
+    margin-top: 20px;
+    display: none;
+    position: absolute;
+    z-index: 100;
+    border: 1px;
+    background-color: white;
+    border-style: solid;
+    border-width: 1px;
+    padding: 3px;
+    color: #655e5e;
+    top: 20px;
+    background: #eef1f2;
+    width: 180px;
+    text-align: center;
+    border-radius: 10px;
+    font-size: 12px;
+    font-family: cursive;
+    padding: 0px;
+    line-height: 20px;
+  }
+  
+  .CellWithComment:hover span.CellComment {
+    display: block;
+  }
+  
+  /* .table tr.active td {
+  background-color:#123456 !important;
+  color: white;
+  } */
+  
+  .table tr.active td {
+    background-color:#123456 !important;
+    color: white;
+  }
+  .highlighted
+  {
+    background: silver;
+    color: black;
+  }

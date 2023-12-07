@@ -1,0 +1,94 @@
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-md-12">
+            <div style="background-color : #ffffff;width: 105%;">
+
+                <div class="row">
+                    <div class="modal-header" style="border:0px;">
+                        <button type="button" class="close" data-dismiss="modal" (click)="closeReportBox()">&times;</button>
+                        <h4 class="modal-title" style="padding-left: 20px;">Sales Valuation Report</h4>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top: -2%;">
+                    <div class="row col-md-12" style="padding-top: 2%;">
+                        <div class="col-md-6" style="padding-left: 30px;">
+                            <fieldset>
+                                <legend style="font-size:11px;font-weight: bold; width:auto">Date Range Selection :
+                                </legend>
+                                <table>
+                                    <tr>
+                                        <td><label class="smallBoldLabel">From:(AD)</label></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label class="smallBoldLabel"><input type="date"
+                                                    style="width:152px; min-width:50%;" placeholder="Year Start Date"
+                                                    [(ngModel)]="_reportFilterService.StockValuationAccountObj.StockValuationAccount_DATE1"
+                                                    (change)="changeEntryDate($event.target.value,'AD')"></label>
+                                        </td>
+                                        <td>
+                                            <nepali-date-picker name="nepaliDatefrom" [id]="'nepaliDatefrom'"
+                                                (change)="changeEntryDate($event.detail.value,'BS')" [label]="'From'"
+                                                [(ngModel)]="_reportFilterService.StockValuationAccountObj.StockValuationAccount_BSDATE1">
+                                            </nepali-date-picker>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </fieldset>
+
+                            <fieldset>
+                                <legend class="legend-class">Report Type :</legend>
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <input type="radio" value=0
+                                            [(ngModel)]="_reportFilterService.StockValuationAccountObj.StockValuationAccount_SHOWDETAIL">
+                                    </div>
+                                    <div calss="col">
+                                        <label style="width: 200px;" class="smallBoldLabel">Summary Report</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <input type="radio" value=1
+                                            [(ngModel)]="_reportFilterService.StockValuationAccountObj.StockValuationAccount_SHOWDETAIL">
+                                    </div>
+                                    <div calss="col">
+                                        <label style="width: 200px;" class="smallBoldLabel">Detail Report</label>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                        </div>
+                        <div class="col-md-6">
+                            <fieldset>
+                                <legend>Product:</legend>
+                                <input type="text" class="form-control"
+                                    [(ngModel)]="_reportFilterService.StockValuationAccountObj.StockValuationAccount_ITEM"
+                                    placeholder="Press Enter or Tab for Product"
+                                    (keydown.Tab)="ProductEnterClicked($event)"
+                                    (keydown.enter)="ProductEnterClicked($event)">
+
+                            </fieldset>
+
+                        </div>
+
+
+
+                    </div>
+                </div>
+
+                <div class="modal-footer" style="width : 97%; margin : 0px auto;">
+                    <button class="btn btn-info confirm-btn" type="button" (click)=onload()>RUN</button>
+                    <button type="button" (click)="closeReportBox()" title="Cancel" class="btn btn-info">Close</button>
+                </div>
+            </div>
+            <!-- Filter Ends -->
+            <!-- Modal Ends -->
+        </div>
+    </div>
+</div>
+
+<generic-popup-grid #genericGridProduct [popupsettings]="gridPopupSettingsForProduct"
+    (onItemDoubleClick)="dblClickProductSelect($event)">
+</generic-popup-grid>

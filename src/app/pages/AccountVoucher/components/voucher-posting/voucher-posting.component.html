@@ -1,0 +1,71 @@
+<style>
+  .mr {
+    margin-left: 0px;
+    padding-left: 0px;
+  }
+
+</style>
+
+
+<div class="clearfix">
+  <div class="col-md-12 mr">
+    <div class="col-md-8 mr">
+      <div class="col-md-4 mr">
+        <div class="date-filters mr">
+
+          <div class="form-group">
+            <label>Voucher Date</label>
+            <input class="form-control" type="text" ngxDaterangepickerMd [(ngModel)]="selectedDate"
+              [showDropdowns]="true" [showCustomRangeLabel]="true" [alwaysShowCalendars]="true" [locale]="locale"
+              [ranges]="ranges" [linkedCalendars]="true" [showCancel]="true" placeholder="Date Range..."
+              (ngModelChange)="dateChanged($event)" />
+          </div>
+
+        </div>
+      </div>
+      <div class="col-md-4">
+
+        <div class="form-group">
+          <label>Division Selection</label>
+          <select class="form-control" [(ngModel)]="_transactionService.voucherPostingObj.division">
+            <option *ngFor="let div of divisionList;let i=index" value="{{div.INITIAL}}">{{div.NAME}}</option>
+
+          </select>
+        </div>
+
+      </div>
+    </div>
+    <div class="col-md-4">
+      <button class="btn btn-info" style="float: right;" (click)="loadVoucher()">Load</button>
+      <button class="btn btn-info" style="float: right;" (click)="postInvoice()">Save</button>
+    </div>
+  </div>
+  <div class="col-md-12 mr">
+    <div class="col-md-8 mr">
+      <div class="col-md-4 mr">
+        <div class="voucher-type-filters mr">
+
+          <div class="form-group">
+            <select class="form-control" [(ngModel)]="_transactionService.voucherPostingObj.voucherPrefix">
+              <option value="JV">Journal Voucher</option>
+              <option value="CE">Contra</option>
+              <option value="PV">Expense Voucher</option>
+              <option value="RV">Income Voucher</option>
+              <option value="DN">Debit Note</option>
+              <option value="CN">Credit Note</option>
+            </select>
+          </div>
+
+        </div>
+      </div>
+      <div class="col-md-6">
+
+      </div>
+    </div>
+    <div class="col-md-4"></div>
+  </div>
+</div>
+
+
+<invoice-list #invoiceList [listSetting]="listSetting" [source]="itemList" (pageChange)="pageValueChanged($event)">
+</invoice-list>

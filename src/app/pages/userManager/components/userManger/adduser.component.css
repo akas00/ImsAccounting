@@ -1,0 +1,60 @@
+.card {
+    margin: auto !important;
+    width: 60%;
+  }
+
+  .card-body {
+    padding: 5px !important;
+    max-height: 455px !important;
+  }
+
+  input,
+  select,
+  textarea {
+    border: 1px solid #cbcbcb;
+    border-radius: 3px;
+    color: black;
+  }
+
+  label{
+    text-align: end;
+    height: 25px;
+    font-size: 14px;
+}
+
+.col-sm-7{
+  padding-left: 1px;
+}
+
+.form-control{
+  font-size: 14px;
+}
+
+.table tbody tr td{
+  line-height: 24px;
+}
+
+.table td, .table th{
+  padding: 0.10rem !important;
+}
+
+tbody {
+  display:block;
+  height:59vh;
+  overflow:auto;
+}
+
+thead, tbody tr {
+display:table;
+width:100%;
+table-layout:fixed;/* even columns width , fix width of table too*/
+}
+
+th{
+font-size: 14px;
+font-weight: bold;
+}
+
+td{
+font-size: 13px;
+}

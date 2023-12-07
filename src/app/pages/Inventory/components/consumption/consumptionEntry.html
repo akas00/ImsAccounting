@@ -1,0 +1,207 @@
+<style>
+    .td {
+        border: 1px solid gray !important
+    }
+</style>
+<div class="row" style="margin-top: -15px; margin-bottom: 10px;">
+
+    <div class="col-md-12 form-horizontal">
+        <ba-card title="consumption entry">
+
+            <div [formGroup]="form" class="row">
+
+                <div class="col-md-12 plainBackGround" style="padding:1px;">
+
+                    <div class="row">
+                        <div class="col-md-1">
+                            <label style="width:100%;">As on :</label>
+                        </div>
+                        <div class="col-sm-3" style="padding-top:7px">
+                            <input type="date" style="width: 129px;margin-left: -20px;" formControlName="TRNDATE" (change)="changeEntryDate($event.target.value,'AD')">
+                            <input type="text" formControlName="BSDATE" placeholder="yyyy-mm-dd" style="margin-left: 5px;margin-right: 5px;width:35%"
+                                id="nepaliDate" onclick="showNdpCalendarBox('nepaliDate')" (change)="changeEntryDate($event.target.value,'BS');"
+                                (click)="clickEntryDate($event.target.value)">(Miti)
+                        </div>
+                        <div class="col-md-1">
+                            <label style="width:100%;">Warehouse:</label>
+                        </div>
+                        <div class="col-sm-2" style="padding-top:7px">
+                            <select style="color:black" class="form-control" formControlName="WAREHOUSE" style="height:24px; padding:0px;">
+                                <option *ngFor="let w of wareHouseList">{{w.NAME}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1">
+                            <label style="width:100%;">Item Type:</label>
+                        </div>
+                        <div class="col-sm-2" style="padding-top:7px">
+                            <select style="color:black" class="form-control" formControlName="PTYPENAME" style="height:24px; padding:0px;">
+                                <option *ngFor="let p of PTypeList" [value]="p.PTYPEID">{{p.PTYPENAME}}</option>
+                            </select>
+                        </div>
+                        <button style="float: right; margin-right: 40px; width: 90px; height: 40px;" (click)="onRunClick()">Run</button>
+                    </div>
+                </div>
+
+
+            </div>
+            <fieldset style="border: 1px;margin-left: -10px;">
+                <!-- <div class="row">
+                <fieldset [disabled]="mode==new" style="width: 1090px;height: 100px">
+                    <legend style="width: 180px;margin: 0px">
+                        <label style="width: 100%;font-size: 13px;height: 30px">
+                            Consumption Date Range :</label>
+                    </legend>
+                    
+                </fieldset>
+            </div> -->
+                <div class="row">
+
+                    <!--<div class="content ">
+                            <div class="col col-md-9 left">-->
+
+                    <div class="wrapper" style="border-bottom: 2px solid #E6E6E6;">
+                        <div class="container" style="height:300px; margin-left:0px; margin-right:0px;">
+                            <!--<div class="col-md-9 plainBackGround " style="min-height: 300px;height:300px">-->
+
+                            <div style="background-color: #FFFFFF; display: block; position: relative;">
+                                <table id="fix" class="table">
+                                    <thead>
+                                        <tr style="font-size:12px !important">
+                                            <th style="width:5px;">Sno
+                                                <div class="c1">Sno</div>
+                                            </th>
+                                            <th style="min-width:100px;margin-left:5px;">Item Code
+                                                <div class="c1" style="margin-left:5px">Item Code</div>
+                                            </th>
+                                            <th style="min-width:200px">Item Consumption
+                                                <div class="c1">Item Consumption</div>
+                                            </th>
+                                            <th style="min-width:40px">Unit
+                                                <div class="c1">Unit</div>
+                                            </th>
+                                            <th style="min-width:80px">Opening St
+                                                <div class="c1">Opening St</div>
+                                            </th>
+                                            <th style="min-width:60px">Stock In
+                                                <div class="c1">Stock In</div>
+                                            </th>
+                                            <th style="min-width:65px">Stock Out
+                                                <div class="c1">Stock Out</div>
+                                            </th>
+                                            <th style="min-width:90px">Consumption
+                                                <div class="c1">Consumption</div>
+                                            </th>
+                                            <th style="min-width:125px">Other Consumption
+                                                <div class="c1">Other Consumption</div>
+                                            </th>
+                                            <th style="min-width:130px">Stock Adjustment
+                                                <div class="c1">Stock Adjustment</div>
+                                            </th>
+                                            <th style="min-width:130px">Receipe Consumption
+                                                <div class="c1">Receipe Consumption</div>
+                                            </th>
+                                            <th style="min-width:80px">Total Stock
+                                                <div class="c1">Total Stock</div>
+                                            </th>
+                                            <th style="min-width:95px">Physical Stock
+                                                <div class="c1">Physical Stock</div>
+                                            </th>
+                                            <th style="min-width:60px">Variance
+                                                <div class="c1">Variance</div>
+                                            </th>
+                                            <th style="min-width:80px">Variance(%)
+                                                <div class="c1">Variance(%)</div>
+                                            </th>
+                                            <th style="min-width:100px">Purchase Rate
+                                                <div class="c1">Purchase Rate</div>
+                                            </th>
+                                            <th style="min-width:120px">Variance Amount
+                                                <div class="c1">Variance Amount</div>
+                                            </th>
+                                            <th style="min-width:130px">LastCount Date
+                                                <div class="c1">LastCount Date</div>
+                                            </th>
+
+
+
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr *ngFor="let c of ConsumptionList;let i=index">
+                                            <td style="width:5px ;border:2px solid #E6E6E6;">{{i+1}}</td>
+                                            <td style="width:100px;border: 2px solid #E6E6E6;">{{c.Code}}</td>
+                                            <td style="width:200px;border: 2px solid #E6E6E6;">{{c.Item}}</td>
+                                            <td style="width:40px;border: 2px solid #E6E6E6;">{{c.Unit}}</td>
+                                            <td style="width:80px;border: 2px solid #E6E6E6;">{{c.OPENINGQTY}}</td>
+                                            <td style="width:60px;border: 2px solid #E6E6E6;">{{c.StockIN}}</td>
+                                            <td style="width:65px;border: 2px solid #E6E6E6;">{{c.StockOUT}}</td>
+                                            <td style="width:90px;border: 2px solid #E6E6E6;">{{c.Consumption}}</td>
+                                            <td style="width:125px;border: 2px solid #E6E6E6;">{{c.OtherConsumption}}</td>
+                                            <td style="width:130px;border: 2px solid #E6E6E6;">{{c.StockAdjustment}}</td>
+                                            <td style="width:130px;border: 2px solid #E6E6E6;">{{c.ReceipeConsumption}}</td>
+                                            <td style="width:95px;border: 2px solid #E6E6E6;">{{c.Total}}</td>
+                                            <td style="width:80px;border: 2px solid #E6E6E6;" (change)="changePhysicalStock($event.target.value,i)">
+                                                <input type="text" [(ngModel)]="c.PhysicalStock">
+                                            </td>
+                                            <td style="width:60px;border: 2px solid #E6E6E6;">{{c.Variance}}</td>
+                                            <td style="width:80px;border: 2px solid #E6E6E6;">{{c.VariancePercent}}</td>
+                                            <td style="width:100px;border: 2px solid #E6E6E6;">{{c.PRATE_A}}</td>
+                                            <td style="width:120px;border: 2px solid #E6E6E6;">{{c.VarianceAmt}}</td>
+                                            <td style="width:130px;border: 2px solid #E6E6E6;">{{c.STOCKCLOSINGDATE}}</td>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!--   </div>
+                            </div>
+                        </div>-->
+
+                </div>
+                <div class="row" [formGroup]="form">
+                    <div class="col-md-5">
+                        <label style="width:100%;">Export:</label>
+                    </div>
+                    <div class="col-sm-3" style="padding-top:7px">
+                        Total Amount: {{Consumption.TOTAMNT|twoDigitNumber}}
+                       
+                    </div>
+                </div>
+            </fieldset>
+        </ba-card>
+
+    </div>
+
+</div>
+<div style="padding-bottom: 10px; margin-top: -8px;">
+    <button (click)="onClickSave()" style="margin-right: 4px;" class="btn btn-info ">Save</button>
+    <button type="button " class="btn btn-info">Back</button>
+</div>
+
+<div>
+    <div class="modal fade" bsModal #childModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" aria-label="Close" (click)="childModal.hide()">
+                        <span aria-hidden="true">&times;</span>
+
+                    </button>
+                    <h4 class="modal-title">Information</h4>
+                </div>
+                <div class="modal-body">
+                    {{DialogMessage}}
+                </div>
+                <!--<div class="modal-footer">
+                <button class="btn btn-info confirm-btn" (click)="hideChildModal()">Save changes</button>
+                <button class="btn btn-info confirm-btn" type="button" (click)=onsubmit()>Save</button>
+            </div>!-->
+
+            </div>
+        </div>
+    </div>
+</div>

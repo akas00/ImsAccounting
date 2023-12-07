@@ -1,0 +1,218 @@
+﻿<style>
+  .total-title {
+    font-size: 18px !important;
+    font-weight: bold;
+    width: 50px !important;
+  }
+
+  .difference-title {
+    width: 175px !important;
+    font-size: 18px !important;
+    font-weight: bold;
+  }
+
+  .account-balance-title {
+    width: 120px !important;
+    font-size: 21px !important;
+    font-weight: bold;
+    color: #2dacd1;
+  }
+
+  .cr-dr-amount {
+    padding: 0px 10px !important;
+  }
+
+  .diffAmountItemForAccount{
+    font-size: 21px;
+    width: 160px;
+    color: #2dacd1;
+    text-align: right;
+    border: 1px solid #cbcbcb;
+    font-weight: bold;
+  }
+  .LeftRightBorder{
+    border-right: 1px solid #cbcbcb;
+    border-left: 1px solid #cbcbcb;
+  }
+  .tooltips{
+        opacity: 0;
+        visibility: hidden;
+       
+
+        transition: 0.3s ease-in-out;
+    position: absolute;
+    top: -20px;
+    background: #000;
+    padding: 0 5px;
+    border-radius: 5px;
+    font-size: 12px !important;
+    z-index: 999999;
+    right: 7px;
+}
+    
+    
+    
+    .tooltips p{
+        color: #fff !important;
+        margin-bottom: 0;
+        font-size: 11px;
+        line-height: 1.8;
+    }
+    .showTooltips:hover .tooltips{
+        opacity: 1;
+        visibility: visible;
+
+    }
+    .showTooltips:hover .tooltips:after{
+        display: block;
+
+    }
+</style>
+
+<div class="clearfix">
+  <div class="col-md-12">
+    <table style="padding-bottom: 3%;font-size: 13px;width: 100%;">
+      <thead>
+        <tr style="border-bottom: 2px solid #E6E6E6;
+          border-top: 2px solid #E6E6E6;
+          height: 30px;
+          background: #e2eaea;
+          color: black;">
+          <th style="width:15%">
+          </th>
+          <th >
+            <h4  style="text-align:right;  padding-right: 20px;margin-top: 2px;font-size: 21px;font-weight: bold;font-family: Segoe UI Light;padding-bottom: 3%;">Total :</h4>
+          </th>
+          <!-- <th style="width:10%;text-align:right;font-size: 21px;" class="LeftRightBorder"
+            *ngIf="voucherType == 16  ||  voucherType == 15  ">
+            <a >
+              {{ _trnMainService.drTotal   | number}} Dr.
+            </a> 
+      
+        </th> -->
+        <th style="width:10%;text-align:right;font-size: 21px; font-weight: bold;font-family: Segoe UI Light;padding-bottom: 1%;" class="LeftRightBorder"
+        *ngIf="voucherType == 17 || voucherType == 15 ">
+      
+          <a>
+            {{ _trnMainService.drTotal | twoDigitNumber }}
+            </a>
+        
+       </th>
+       <th style="width:10%;text-align:right;font-size: 21px;font-weight: bold;font-family: Segoe UI Light;padding-bottom: 1%;" class="LeftRightBorder"
+       *ngIf="voucherType == 17  ">
+      
+        <a>
+          {{ _trnMainService.crTotal | twoDigitNumber }} 
+          </a> 
+       
+       </th>
+
+       <th style="width:10%;text-align:right;font-size: 21px;font-weight: bold;font-family: Segoe UI Light;padding-bottom: 1%;" class="LeftRightBorder"
+       *ngIf="voucherType == 18 || voucherType == 16">
+      
+        <a>
+          {{ _trnMainService.crTotal | twoDigitNumber }} 
+          </a> 
+       
+       </th>
+
+       <th style="width:10%;text-align:right;font-size: 21px;font-weight: bold;font-family: Segoe UI Light;padding-bottom: 1%;" class="LeftRightBorder"
+       *ngIf="voucherType == 18 ">
+     
+         <a>
+           {{ _trnMainService.drTotal | twoDigitNumber }}
+           </a>
+       
+      </th>
+
+
+
+         <!-- <th style="width:10%;text-align:right;font-size: 21px;" class="LeftRightBorder"
+        *ngIf="voucherType == 16  ">
+       
+          <a>
+          {{ _trnMainService.crTotal | twoDigitNumber }} Cr.
+          </a> 
+         
+     </th> -->
+        <th style="text-align: right;font-size: 21px;font-weight: bold;font-family: Segoe UI Light;padding-bottom: 1%;" *ngIf="voucherType !=17 && voucherType !=18 && voucherType != 16 &&  voucherType != 15  && voucherType!= 75" >
+            {{ _trnMainService.drTotal | twoDigitNumber }} Dr.
+
+          </th>
+          <th style="text-align: right;font-size: 21px;font-weight: bold;font-family: Segoe UI Light;padding-bottom: 1%;" *ngIf="voucherType == 75 " >
+            {{ _trnMainService.drTotal | number }} Dr.
+
+          </th>
+          <th
+          *ngIf="voucherType == 12 || voucherType == 62 ||  voucherType == 22  || voucherType == 23" 
+          style="width:10%;text-align:right;font-size: 21px;font-weight: bold;font-family: Segoe UI Light;padding-bottom: 1%;" 
+          class="LeftRightBorder"> {{ _trnMainService.crTotal |twoDigitNumber }} Cr. 
+          </th>
+          <th style="width:20%"
+            *ngIf=" voucherType == 18 ||  voucherType == 22 || voucherType == 23 || voucherType == 17 || voucherType == 15  ">
+          </th>
+          <!-- <th style="width:20%;padding-left: 30px; font-size: 21px;" >[ {{ _trnMainService.differenceAmount | twoDigitNumber }}
+            ]</th> -->
+
+           
+          <th  class="showTooltips" style="float: right;    margin-top: -1px; position: relative;">
+            <div class="tooltips">
+             
+              <p >{{ _trnMainService.diffAmountItemForAccount}}</p>
+             </div>
+             <div>
+              <label class="account-balance-title" style="font-weight: bold;font-family: Segoe UI Light;font-size: 21px;padding-bottom: 3%;">A/C B/L:
+              </label><label class="diffAmountItemForAccount" style="font-weight: bold;font-family: Segoe UI Light;font-size: 21px;padding-bottom: 3%;">{{ _trnMainService.diffAmountItemForAccount | number }}</label>&nbsp;
+              <label style="width:30px !important;font-size:18px;color: #2dacd1;font-weight: bold;font-family: Segoe UI Light;font-size: 21px;padding-bottom: 3%;" *ngIf="_trnMainService.diffAmountDrCrType == 'Dr'">Dr.</label>
+              <label style="width:30px !important;font-size:18px;color: #2dacd1;font-weight: bold;font-family: Segoe UI Light;font-size: 21px;padding-bottom: 3%;" *ngIf="_trnMainService.diffAmountDrCrType == 'Cr'">Cr.</label>
+
+             </div>
+          
+           
+          </th>
+
+        </tr>
+      </thead>
+    </table>
+
+    <!-- <span disabled decimalPlacesRestriction="2" class="cr-dr-amount">{{ _trnMainService.drTotal }}</span> -->
+    <!-- <div class="col-md-4">
+      <h4>
+        <label class="total-title">
+          <h4>Total:</h4>
+        </label>
+        <span disabled decimalPlacesRestriction="2" class="cr-dr-amount">{{ _trnMainService.drTotal }}</span>
+        <span disabled decimalPlacesRestriction="2" class="cr-dr-amount">
+          {{ _trnMainService.crTotal }} Cr.</span
+        >
+      </h4>
+    </div> -->
+    <!-- <div class="col-md-4">
+      <h4>
+        <label class="total-title"><h4>Total:</h4></label>
+        <span disabled decimalPlacesRestriction="2" class="cr-dr-amount">
+          {{ _trnMainService.trntranTotal }}
+        </span>
+      </h4>
+    </div> -->
+    <!-- <div class="col-md-4">
+      <h4>
+        <label class="difference-title">Difference Amount: </label>
+        <span disabled decimalPlacesRestriction="2" class="cr-dr-amount">
+          {{ _trnMainService.differenceAmount }}
+        </span>
+      </h4>
+    </div> -->
+    <!-- <div class="col-md-3">
+      <h4>
+        <label class="account-balance-title">Account Balance: </label>
+        <span decimalPlacesRestriction="2" *ngIf="_trnMainService.diffAmountDrCrType == 'Dr'"
+          class="cr-dr-amount">{{ _trnMainService.diffAmountItemForAccount }}
+        </span>
+        <span decimalPlacesRestriction="2" class="cr-dr-amount"
+          *ngIf="_trnMainService.diffAmountDrCrType == 'Cr'">({{ _trnMainService.diffAmountItemForAccount }})
+        </span>
+      </h4>
+    </div> -->
+  </div>
+</div>

@@ -1,0 +1,78 @@
+<div class="modal fade" role="dialog" id="invoicePrint" aria-labelledby="orderModalLabel">
+    <div  style="width: 400px; background:white">
+        <p class="InvoiceHeader"> {{InvoiceType}}
+
+        </p>
+        <p class="InvoiceHeader"> {{CompanyName}}
+
+        </p>
+        <p class="InvoiceHeader"> {{CompanyAddress}}
+
+        </p>
+        <p class="InvoiceHeader"> {{CompanyPan}}
+
+        </p>
+        <p>
+            <label style="width: 90px;">Invoice No :</label>
+            <label style="width: 130px;"> {{TrnMainObj?.VCHRNO}}</label>
+            <label style="width: 60px;">Date :</label>
+            <label style="width: 90px;"> {{TrnMainObj?.BSDATE}}</label>
+        </p>
+        <p>
+            <label style="width: 90px;">Name :</label>
+            <label> {{TrnMainObj?.BILLTO}}</label>
+        </p>
+        <p>
+            <label style="width: 90px;">Address :</label>
+            <label> {{TrnMainObj?.BILLTOADD}}</label>
+        </p>
+        <p>
+            <label style="width: 90px;">PAN :</label>
+            <label colspan="3"> {{TrnMainObj?.BILLTOTEL}}</label>
+        </p>
+        <table class="itemtable">
+            <thead>
+                <tr>
+                    <th style="width: 40px;">Sno.</th>
+                    <th style="width: 200px;">Particulars</th>
+                    <th style="width: 50px;">Qty.</th>
+                    <th style="width: 50px;">Rate</th>
+                    <th style="width: 60px;">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of TrnMainObj.ProdList">
+                    <td> {{item?.SNO}}</td>
+                    <td> {{item?.ITEMDESC}}</td>
+                    <td style="text-align:right"> {{item?.Quantity}}</td>
+                    <td style="text-align:right"> {{item?.REALRATE}}</td>
+                    <td style="text-align:right"> {{item?.AMOUNT}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="summaryTable">
+            <tbody>
+                <tr>
+                    <td>Net Amount :</td>
+                    <td>{{TrnMainObj?.TOTAMNT}}</td>
+                </tr>
+                <tr>
+                    <td>Discount :</td>
+                    <td>{{TrnMainObj?.DCAMNT}}</td>
+                </tr>
+                <tr>
+                    <td>Taxable :</td>
+                    <td>{{TrnMainObj?.TAXABLE}}</td>
+                </tr>
+                <tr>
+                    <td>VAT Amount :</td>
+                    <td>{{TrnMainObj?.VATAMNT}}</td>
+                </tr>
+                <tr>
+                    <td>Total Amount :</td>
+                    <td>{{TrnMainObj?.NETAMNT}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

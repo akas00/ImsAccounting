@@ -1,0 +1,67 @@
+<style>
+  .modal-content-main-area {
+    width: 100% !important;
+  }
+
+</style>
+
+<div>
+  <div class="modal-content modal-content-main-area" style="width: 50% !important">
+    <div>
+      <div class="modal-header" style="padding: 0px;background: #8cccfb;">
+        <button class="close" aria-label="Close" (click)="closeReportBox()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" style="text-align: center;">
+          Select Date
+        </h4>
+      </div>
+      <div class="modal-body">
+        <div class="clearfix">
+          <div class="col-md-12">
+            <div class="col-md-6 form-group">
+              <div class="report-filter single-calendar">
+                <label>Date Selection</label>
+                <input class="form-control" type="text" ngxDaterangepickerMd [(ngModel)]="selectedDate"
+                  [showDropdowns]="true" [showCustomRangeLabel]="true" [alwaysShowCalendars]="true" [locale]="locale"
+                  [ranges]="ranges" [linkedCalendars]="true" [showCancel]="true" placeholder="Date Range..."
+                  (ngModelChange)="dateChanged($event)" max="{{masterService.date1 | date:'yyyy-MM-dd'}}" min="{{masterService.date2 | date:'yyyy-MM-dd'}}"/>
+              </div>
+              <div class="cell-with-comment report-filter">
+                <label>Supplier</label>
+                <input id="customerselectid" type="text"
+                autocomplete="off" title="Enter or Tab to select"
+                [(ngModel)]="ACNAME" (keydown.tab)="customerEnterCommand($event)"
+                (keydown.enter)="customerEnterCommand($event)" (keydown)="preventInput($event)"
+                class="form-control" />
+
+                <span class="cell-comment" style="margin-left: 27%">
+                  press ENTER or TAB to Select Supplier
+                </span>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" name="zerobl" [(ngModel)]="accountpayable.reportparam.SHOWZEROBL">
+                  Show Zero Balance?
+                </label>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <hr style="margin-bottom: 0px !important">
+        <div class="clearfix" style="padding: 10px;">
+
+          <button class="btn btn-info pull-right" style="margin-left: 10px;" (click)=onload()>RUN</button>
+          <button class="btn btn-info pull-right" (click)="closeReportBox()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="custom-genericGrid" style="height: 200px;">
+    <generic-popup-grid #genericGridCustomer [popupsettings]="gridPopupSettingsForCustomer"
+      (onItemDoubleClick)="onCustomerSelected($event)">
+    </generic-popup-grid>
+  </div>

@@ -1,0 +1,12 @@
+[
+    {
+        "rategroupId": "1",
+        "description": "PREMIUM",
+        "shortname": "Premium"
+    },
+    {
+        "rategroupId": "2",
+        "description": "Lower",
+        "shortname": "lower"
+    }
+]

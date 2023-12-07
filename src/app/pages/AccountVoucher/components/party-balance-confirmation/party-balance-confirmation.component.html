@@ -1,0 +1,257 @@
+
+<!-- <div style="background: #e2eaea !important; height: 40px;"  class="clearfix" >
+  <label
+    style="
+    font-family: Segoe UI Light;
+    font-weight: bold;
+    font-size: 20px;
+    padding-left: 5%;
+    padding-top: 1%;
+    "
+    >PARTY BALANCE CONFIRMATION</label>
+    <button style="margin-top: 9px; margin-right: 59px;" class="btn btn-info pull-right" (click)='reSet()'> Reset</button>
+
+</div> -->
+
+<div class="clearfix"  style="background: #e2eaea !important; height: 40px;" >
+  <div>
+  <div class="col-md-4">
+    <!-- <h2 style="color: black;">Bank Reconciliation </h2> -->
+    <label
+      style="font-family: Segoe UI Light;font-weight: bold;font-size: 20px;padding-left: 5%;padding-top: 3%;width: 100%;">PARTY BALANCE CONFIRMATION
+      </label>
+  </div>
+  <div class="col-md-4">
+
+  </div>
+  <div class="col-md-4" style="margin-top:8px;">
+    <button style="margin: 0px 4px;" class="btn btn-info pull-right" (click)="reSet()">
+      Reset
+    </button>
+    <button class="btn btn-info pull-right" (click)="onPrintClicked()"> Print</button>
+    <!-- <button class="btn btn-info pull-right" (click)="SelectDate()">
+      View
+    </button> -->
+  </div>
+  </div>
+</div>
+
+
+<style>
+  input{
+    height: 25px;
+    vertical-align: middle;
+    font-size: 13px;
+    border: 1px solid #cbcbcb;
+    border-radius: 3px;
+    color: black;
+    padding-left: 4px;
+  }
+  label{
+    font-family: Roboto, Arial, sans-serif;
+    font-size: 14px;
+  }
+  legend{
+    font-family: Roboto, Arial, sans-serif;
+    font-size: 14px;
+    width:0;
+
+  }
+  .date{
+    margin-left: 8px;
+  }
+</style>
+
+<div  class="col-md-12" style="border-bottom: 1px solid #828080;
+        margin-top:10px;
+        margin-bottom: 5px;
+        padding-bottom: 10px;
+        background: #e2eaea; padding-top: 9px;
+        width: 100%;
+       ">
+
+      <div style="display: flex;">
+      <div class="col-md-3">
+        <label>From:</label>
+        <input  placeholder="Year Start Date" style="width:128px; height:24px;" type="date"
+        [(ngModel)]="PartyBalanceData.DATE1"
+        (change)="changeEntryDate($event.target.value,'AD')">&nbsp;A.D &nbsp;
+
+        <div style=" width: 134px;margin-left: 202px; margin-top: -29px;">
+          <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDatefrom'"
+            (change)="changeEntryDate($event.detail.value,'BS')"
+            [label]="'dd/mm/yyyy'"
+            [(ngModel)]="PartyBalanceData.BSDATE1">
+            </nepali-date-picker>
+        </div>
+        <!-- <input  autocomplete="off" id="nepaliDate" placeholder="yyyy-mm-dd"type="text"
+        [(ngModel)]="PartyBalanceData.BSDATE1" style="width: 90px;" type="text"
+        (change)="changeEntryDate($event.target.value,'BS')">&nbsp;B.S
+        &nbsp; -->
+      </div>
+      <div class="col-md-3" style="margin-top: 8px;">
+        <label><input type="radio" name="partytype" [(ngModel)]="PartyBalanceData.PARTYTYPE" value=C (change)="parttypeChange()">&nbsp;Customer</label>
+        <label><input type="radio" name="partytype" [(ngModel)]="PartyBalanceData.PARTYTYPE" value=V (change)="parttypeChange()">&nbsp;Supplier</label>
+      </div>
+      <div class="col-md-5" style="margin-top: 8px;">
+        <label  class="smallBoldLabel"><input type="checkbox" name="transaction" [(ngModel)]="PartyBalanceData.INCLUDECASHTRANSACTION" (change)="$event.target.checked
+          ? (PartyBalanceData.INCLUDECASHTRANSACTION = 1)
+          : (PartyBalanceData.INCLUDECASHTRANSACTION = 0)">&nbsp;Including Cash Transaction</label>
+      </div>
+    </div>
+      <div class="col-md-3" style="margin-top: 4px;">
+        <label>To :</label>
+        <input   placeholder="Year Start Date" type="date" style="width: 128px; height: 24px; margin-left: 13px;"
+        [(ngModel)]="PartyBalanceData.DATE2"
+        (change)="changeEndDate($event.target.value,'AD')">&nbsp;A.D &nbsp;
+
+        <div style=" width: 134px;margin-left: 202px; margin-top: -29px;">
+          <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDateto'"
+            (change)="changeEndDate($event.detail.value,'BS')"
+            [label]="'dd/mm/yyyy'"
+            [(ngModel)]="PartyBalanceData.BSDATE2">
+            </nepali-date-picker>
+        </div>
+        <!-- <input class="date" autocomplete="off" id="nepaliDate" placeholder="yyyy-mm-dd" type="text"
+        [(ngModel)]="PartyBalanceData.BSDATE2" type="text" style="width: 90px;"
+        (change)="changeEndDate($event.target.value,'BS')">&nbsp;B.S -->
+        &nbsp;
+      </div>
+      <div class="col-md-3" style="margin-top: 8px;">
+        <label>Cost Center :</label>
+        <select id="costcenter"
+          [(ngModel)]="PartyBalanceData.COSTCENTER" style="width: 60%;height: 21px;
+          padding-left: 14px;">
+          <option [ngValue]=""></option>
+          <option *ngFor="let c of costlists" [ngValue]="c.CCID">
+            {{ c.COSTCENTERNAME }}</option>
+        </select>
+      </div>
+      <div class="col-md-4" style="margin-top: 9px;">
+        <div>
+          <label  style="margin-right:1%;" >Party Account:</label>
+          <input style="height: 25px; margin-left: 1%; width: 74%;"
+          (keydown.Enter)="showAcList(i);" name="customerName" [(ngModel)]="PartyBalanceData.CUSTOMERNAME" type= "text" placeholder="Press Enter to select" autocomplete="off">
+        </div>
+      </div>
+      <div class="col-md-1" style="margin-top: 6px;">
+        <button class="btn btn-info pull-left" (click)='onLoad()'> Load</button>
+      </div>
+</div>
+
+<div class="col-md-12">
+    <!-- <div class="col-md-8" style="margin-top: 5px;">
+      <div>
+      <label>Prepared By:</label>
+      <label style="margin-left: 15px;">Name:</label>
+      <input  [(ngModel)]="Name" id="Name0" type="text">
+
+      <label style="margin-left:30px;">Designation:</label>
+        <input [(ngModel)]="Designation" id="destination" type="text">
+      </div>
+    </div> -->
+  <!-- <fieldset style="height: 89px; width:113%">
+      <legend>Prepared By:</legend>
+      <div >
+        <label>Name:</label>
+        <input style="width: 79%; margin-left:9.3%"  type="text">
+      </div>
+      <div>
+        <label>Designation:</label>
+        <input style="width:79%; margin-left: 1%;"  type="text">
+      </div>
+  </fieldset>
+</div> -->
+    <div class="col-md-3"></div>
+
+
+    <div class="col-md-1">
+      <!-- <button
+      *ngIf="_trnMainService.TrnMainObj.Mode == 'VIEW'  &&
+    !showSecondaryButtons && _trnMainService.TrnMainObj.VoucherType==12 && _trnMainService.TrnMainObj.VoucherType==15|| _trnMainService.TrnMainObj.VoucherType==16 || _trnMainService.TrnMainObj.VoucherType!=3 "
+      [ngClass]="changeCursor==true?'PrintPending':'PrintDone'" (click)="onPrintClicked()" class="btn btn-info pull-right" [disabled]="_trnMainService.TrnMainObj.Mode == 'NEW' || _trnMainService.TrnMainObj.Mode == 'EDIT'" >
+      F8 PRINT
+    </button> -->
+      <!-- <button class="btn btn-info pull-left" (click)="onPrintClicked()"> Print</button> -->
+    </div>
+</div>
+
+
+<style>
+  table {
+  border-collapse: collapse;
+}
+  td {
+    /* border: 2px solid #000000; */
+    height: 24px;
+  }
+
+  th {
+    font-weight: bold;
+    font-family: Roboto, Arial, sans-serif;
+    text-align: center;
+  }
+
+</style>
+
+
+<!-- **************table****************** -->
+
+<div style="margin-top: 100px">
+  <div style="height: 480px;">
+    <table style="margin-bottom: 5px; font-size: 13px; width: 100%">
+      <thead>
+        <tr
+          style="
+            border-bottom: 2px solid #e6e6e6;
+            border-top: 2px solid #e6e6e6;
+            height: 30px;
+            background: silver;
+            color: black;">
+
+          <th style="width: 1%">SNo.</th>
+          <th style="width: 19%; padding-left: 1%">Particular</th>
+          <th style="width: 11%; padding-left: 1%">Operation</th>
+          <th style="width: 7%; padding-left: 1%">Amount</th>
+
+        </tr>
+      </thead>
+      <tbody *ngFor="let i of PartyInfo" >
+
+        <tr style="border: 1px solid #e6e6e6;max-height:25px;">
+
+          <td style="line-height: 21px; text-align: center; border: 1px solid #e6e6e6; ">
+           {{i.SNO}}
+          </td>
+
+          <td style="line-height: 21px; text-align: center; border: 1px solid #e6e6e6;">
+            <input
+              style="height: 25px; width: 100%" [(ngModel)]="i.PARTICULAR" readonly/>
+          </td>
+          <td style="line-height: 21px; text-align: center; border: 1px solid #e6e6e6;">
+            <input
+              style="height: 25px; width: 100%" [(ngModel)]="i.OPERATION" readonly/>
+          </td>
+          <td style="line-height: 21px; text-align: center; border: 1px solid #e6e6e6;">
+            <input
+              style="height: 25px; text-align: right; width: 100% " [(ngModel)]="i.AMOUNT" readonly/>
+          </td>
+
+        </tr>
+      </tbody>
+      <!-- <ng-container *ngIf="PartyInfo.length == 0">
+        <tbody style="background:#e2eaea;">
+          <tr>
+            <td colspan="4">
+              Party Info is Empty.
+            </td>
+          </tr>
+        </tbody>
+      </ng-container> -->
+    </table> 
+  </div>
+</div>
+
+
+<generic-popup-grid #genericGridACList [popupsettings]="gridACListPopupSettings"
+  (onItemDoubleClick)="onAcSelect($event)"></generic-popup-grid>

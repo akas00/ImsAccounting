@@ -1,0 +1,64 @@
+<div class="row col-md-12" style="padding-top: 10px;">
+    <div class="col-md-4">
+        <h5 style="font-weight: bold;font-size: 1.1rem;"> Local Purchase Cost Allocation </h5>
+
+    </div>
+    <div class="col-md-8">
+        <button type="button" class="btn btn-info pull pull-right" style="font-size: 12px;"
+            (click)="AddNewLocalPurchaseCost()">Add Local Purchase Cost</button>
+
+    </div>
+</div>
+
+<div class="row" style="align-items: center;">
+    <div class="col-md-12 col-sm-8" style="margin-top:0.5rem">
+
+        <div class="card" style="margin: auto; width: 63rem;">
+            <div class="card-header">
+
+                <span class="col-md-6">Local Purchase Cost Allocation </span>
+                <div style="margin-left: 15rem;">
+                    <input type="text" name="search" [(ngModel)]="filter" #searchFilter="ngModel" class="form-control" placeholder="Search..." style="width: 15rem; height: 1.7rem; padding: 0px 6px;" autocomplete="off">
+                </div>
+
+
+            </div>
+
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr style="position: sticky; top:0;line-height: 1.5rem;">
+                            <th scope="col" style="width:3%">S.N</th>
+                            <th scope="col" style="width:40%">Ref Voucher No</th>
+                            <th scope="col" style="width:40%">Total Amount</th>
+                            <th scope="col" style="text-align:center;width:18%">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container>
+                            <tr *ngFor="let vchrno of pivouchersList |searchData:filter; let i=index">
+                                <td style="width:3%;">{{i+1}}</td>
+                                <td style="width:40%;">{{vchrno.CAPITALPURCHASE_VCHRNO}}</td>
+                                <td style="width:40%;">{{vchrno.TOTALAMOUNT | number : '1.2-2'}}</td>
+                                <td style="width:18%;text-align: center;">
+                                    <button style="width: 60px;" type="button" class="btn btn-sm btn-info mr-1 btn-sm"
+                                        data-toggle="modal" (click)="onViewClick(vchrno)">View</button>
+                                    <button style="width: 60px;" type="button" class="btn btn-sm btn-info mr-1 btn-sm"
+                                        data-toggle="modal" (click)="onEditClick(vchrno)">Edit</button>
+                                </td>
+                            </tr>
+                        </ng-container>
+                        <ng-container *ngIf="pivouchersList && pivouchersList.length === 0">
+                            <tr>
+                                <td colspan="3">
+                                    <div class="font-weight-bold">Local Purchase Cost Allocation Data are unavailable.
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

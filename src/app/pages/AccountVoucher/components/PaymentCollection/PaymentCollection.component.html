@@ -1,0 +1,252 @@
+<style>
+  td {
+    border: 1px solid #e6e6e6;
+    height: 24px;
+  }
+
+  input {
+    padding: 8px;
+    border: 0px;
+    width: 100%;
+    /* padding: 2%; */
+    margin: 2%;
+  }
+
+  th {
+    font-weight: bold;
+    font-family: Roboto, Arial, sans-serif;
+  }
+
+  input_hight {
+    height: 24px;
+  }
+</style>
+
+<div class="clearfix">
+  <div>
+    <div class="clearfix">
+      <!-- <div class="col-md-4">
+        <label
+          style="font-family: Segoe UI Light;font-weight: bold;font-size: 20px;padding-left: 5%;padding-top: 1%;width: 100%;">Payment
+          Collection</label>
+      </div> -->
+      <div class="row col-md-7">
+        <label
+          style="font-family: Segoe UI Light;font-weight: bold;font-size: 20px;padding-left: 3%;padding-top: 1%;">Payment
+          Collection</label>
+        <label style="font-size: 14px;">&nbsp;>> {{mode}}</label>
+
+        <!-- <div style="padding: 0px;" class="col" > -->
+        <label class="smallBoldLabel" style="padding-left: 3%">Entry Date :</label>
+        <input type="date" id="PE_date" style="width:145px;height: 25px;" placeholder="Year Start Date"
+          [disabled]="isViewMode" [(ngModel)]="EntryDate.RECEIVEDATEIS"
+          (change)="changeEntryDate($event.target.value,'AD')"> &nbsp;A.D&nbsp;
+
+        <div style=" width: 134px; margin-left: 67%; margin-top: -44px; margin-bottom: 8px;">
+          <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDatefrom'"
+            (change)="changeEntryDate($event.detail.value,'BS')" [label]="'dd/mm/yyyy'" [(ngModel)]="EntryDate.BSDATE"
+            [disabled]="isViewMode">
+          </nepali-date-picker>
+        </div>
+        <!-- <label class="smallBoldLabel">BS Date :</label>
+          <input style="width:100px;height: 25px;" type="text" [(ngModel)]="EntryDate.BSDATE"
+              [disabled]="isViewMode"  (keydown.Enter)="focusCustomer()" (keydown.Tab)="focusCustomer()"
+              (change)="changeEntryDate1($event.target.value,'BS')"
+              /> -->
+        <!-- </div> -->
+      </div>
+
+      <!-- <div style="padding: 0px;;" class="col-md-5" >
+        <label class="smallBoldLabel">Entry Date :</label>
+        <input 
+        type="date"
+        id="PE_date" style="width:145px;height: 25px;" 
+        placeholder="Year Start Date" 
+        [disabled] = "isViewMode"
+        [(ngModel)]="EntryDate.RECEIVEDATEIS"
+        (change)="changeEntryDate($event.target.value,'AD')"
+        > &nbsp;A.D&nbsp;
+        
+
+        <label class="smallBoldLabel">BS Date :</label>
+        <input style="width:26%;height: 25px;" type="text" [(ngModel)]="EntryDate.BSDATE"
+            [disabled]="isViewMode"  (keydown.Enter)="focusCustomer()" (keydown.Tab)="focusCustomer()"
+            (change)="changeEntryDate1($event.target.value,'BS')"
+            />
+      </div> -->
+
+      <div class="col-md-5" style="margin-top:10px">
+
+
+        <!-- <button style="margin: 0px 4px;" (click)="SelectDate()" class="btn btn-info pull-right">
+        Show Date
+        </button> -->
+
+
+
+
+
+
+        <button style="margin: 0px 4px;" (click)="back()" class="btn btn-info pull-right">
+          F10 BACK
+        </button>
+        <button style="margin: 0px 4px;" (click)="delete()" class="btn btn-info pull-right" [disabled]="!isViewMode">
+          Delete
+        </button>
+        <button style="margin: 0px 4px;" class="btn btn-info pull-right" (click)="saveClick()" [disabled]="isViewMode">
+          F6 Save
+        </button>
+        <button style="margin: 0px 4px;" (click)="view()" class="btn btn-info pull-right">
+          F4 View
+        </button>
+        <button style="margin: 0px 4px;" (click)="edit()" class="btn btn-info pull-right">
+          F5 Edit
+        </button>
+        <button style="margin: 0px 4px;" (click)="reset()" class="btn btn-info pull-right">
+          F3 Reset
+        </button>
+     
+
+      </div>
+    </div>
+  </div>
+  <div style="padding-right: 0px !important; padding-left: 0px !important;">
+    <div style="height:480px; overflow-y: scroll">
+      <table style="margin-bottom: 5px;font-size: 13px;width: 100%;">
+        <thead>
+          <tr style=" border-bottom: 2px solid #E6E6E6;
+                            border-top: 2px solid #E6E6E6;
+                            height: 30px;
+                            background: silver;
+                            color: black;">
+            <th style="width: 2%;">SNo.</th>
+
+            <th style="width:19%;padding-left: 1%;">Customer Name</th>
+            <th style="width: 11%;padding-left: 1%;">
+              Bill No
+            </th>
+            <th style="width:7%;padding-left: 1%;">
+              Amount
+            </th>
+
+            <th style="width:11%;padding-left: 1%;">
+              Payment Mode
+            </th>
+            <th style="width:17%;padding-left: 1%;">
+              Cheque No
+            </th>
+
+            <th style="width:7%;padding-left: 1%;">
+              Cheque Date
+            </th>
+
+            <th style="width:17%;padding-left: 1%;">
+              Salesman
+            </th>
+          </tr>
+        </thead>
+        <tbody *ngFor="let i of DetailList;let x = index" (click)="rowClick(x)">
+          <tr style="border: 1px solid #e6e6e6;max-height:25px;">
+            <td style="line-height:21px; text-align:center">
+              {{x+1}}
+            </td>
+
+            <td style="line-height:21px; text-align:center">
+              <input #customerInput id="ACCODEInput_Cust{{x}}" type="text" [(ngModel)]="i.customerName"
+                style="height:24px;width: 95% !important;" (keydown.Enter)="showAcList(i); customerInput.blur();"
+                (keydown.Shift.Delete)="clearRow($event)" placeholder="Press Enter to select"
+                [disabled]="isViewMode || i.IsStatusOne == true" autocomplete="off">
+            </td>
+            <td style="line-height:21px; text-align:center">
+              <input #Bill_Input id="BillInput{{x}}" type="text" [(ngModel)]="i.BillNo" class="input_hight"
+                style="height:24px;width: 94% !important;" (keydown.Enter)="onBillShow(i); Bill_Input.blur();"
+                (keydown.Shift.Delete)="clearRow($event)" placeholder="Press Enter to select"
+                [disabled]="isViewMode || i.IsStatusOne == true" autocomplete="off">
+            </td>
+            <td style="line-height:21px; text-align:center">
+              <input id="amountInput{{x}}" type="number" [(ngModel)]="i.Amount" class="input_hight"
+                style="height:24px;float: right;width: 93% !important;padding-right: 0px;text-align: right;"
+                (keydown.Enter)="focusPmode(i)" (keydown.Shift.Delete)="clearRow($event)"
+                [disabled]="isViewMode || i.IsStatusOne == true" autocomplete="off">
+            </td>
+            <td style="line-height:21px; text-align:center">
+              <select id="PmodeInput{{x}}" (keydown.Shift.Delete)="clearRow($event)" [(ngModel)]="i.PaymentMode"
+                class="input_hight" style="height:24px" (keydown.Shift.Delete)="clearRow($event)" style="width: 100%;
+              height: 24px;
+              border: 0px;
+              margin: 2%;width: 93% !important" [disabled]="isViewMode || i.IsStatusOne == true"
+                (change)="ChangePMode($event)" (keydown.Enter)="focusChequeNo(i)">
+                <option>Cash</option>
+                <option>Cheque</option>
+                <option>Demand Draft</option>
+                <option>E-Payment</option>
+              </select>
+
+            </td>
+            <td style="line-height:21px; text-align:center">
+              <input #chequeNo_Pay id="chequeNo_Pay{{x}}" type="text" [(ngModel)]="i.ChequeNo" class="input_hight"
+                style="height:24px;width: 90% !important" (keydown.Shift.Delete)="clearRow($event)"
+                (keydown.Enter)="focusChequeDate(i)" (keydown.Tab)="focusChequeDate(i)"
+                [disabled]="isViewMode || !i.isChequeMode || i.IsStatusOne == true" autocomplete="off">
+            </td>
+            <td style="line-height:21px; text-align:center">
+              <input #chequeDate id="chequeDate{{x}}" type="date" [(ngModel)]="i.ChequeDate" class="input_hight"
+                style="height:24px;width: auto !important;" (keydown.Enter)="focusSalesman(i)"
+                (keydown.Tab)="focusSalesman(i)" (keydown.Shift.Delete)="clearRow($event)"
+                [disabled]="isViewMode || !i.isChequeMode || i.IsStatusOne == true" autocomplete="off">
+            </td>
+            <td style="line-height:21px; text-align:center">
+              <input #sm_Pay id="sm_Pay{{x}}" type="text" [(ngModel)]="i.CostCenter" (keydown.Tab)="checkValidation(i)"
+                (focusin)="Focus_Salesman()" (keydown.Enter)="EnterClick()" style="height: 24px;width: 94% !important;"
+                (keydown.Shift.Delete)="clearRow($event)" placeholder="Press Enter to select" autocomplete="off"
+                [disabled]="isViewMode || i.IsStatusOne == true">
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" bsModal #ShowDate="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog"
+  aria-labelledby="mySmallModalLabel" aria-hidden="true" style="margin:-100px;height:460px">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content" style="width: 420px;">
+      <div class="modal-header">
+        <button class="close" aria-label="Close" (click)="ShoWdateClose()">
+          <span aria-hidden="true">&times;</span>
+
+        </button>
+        <h4 class="modal-title">Date Info:</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12" style="margin-top: -25px;margin-bottom: 12px;">
+            <label class="col">Please select Date:</label>
+
+            <input class="col" style="width:43% !important;padding:0px !important;" type="date"
+              [(ngModel)]="SelectedPopupDate">
+          </div>
+          <div class="col-md-12">
+            <button (click)="ShowDateOk()" style="margin-right: 4px;" class="btn btn-danger ">Yes</button>
+            <button (click)="ShoWdateClose()" type="button " class="btn btn-warning">No</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<generic-popup-grid #genericGridACList [popupsettings]="gridACListPopupSettings"
+  (onItemDoubleClick)="onAcSelect($event)"></generic-popup-grid>
+
+<generic-popup-grid #genericVchrnoList [popupsettings]="gridvchrnoListPopupSettings"
+  (onItemDoubleClick)="onVchrnoSelect($event)"></generic-popup-grid>
+
+<generic-popup-grid #genericeSalesManList [popupsettings]="gridCostSalesManPopupSetting"
+  (onItemDoubleClick)="onSalesManSelect($event)"></generic-popup-grid>
+
+<generic-popup-grid #genericGrid [popupsettings]="gridPopupSettings" (onItemDoubleClick)="onItemDoubleClick($event)">
+</generic-popup-grid>

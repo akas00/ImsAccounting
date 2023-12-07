@@ -1,0 +1,9 @@
+<div #modalcontainer class="modal-container" (mouseout)="hideContextMenuWithTimer($event)" (mouseover)="clearContextMenuHideTimer()"
+     [style.left.px]="containerPosX" [style.top.px]="containerPosY">
+  <div class="modal-tip" ngClass="{{isArrowUpward ? 'modal-tip-upward-arrow' : 'modal-tip-downward-arrow'}}"></div>
+  <ul id="left-container" class="left-container">
+    <li *ngFor="let item of data.menuItems">
+      <a (click)="callSubscriber(item)" href="javascript:void(0)">{{item.label}}</a>
+    </li>
+  </ul>
+</div>

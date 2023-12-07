@@ -1,0 +1,400 @@
+<style>
+    th {
+        padding: 0px 5px;
+        font-family: Roboto, Arial, sans-serif;
+        font-size: 13px;
+    }
+
+    td {
+        font-size: 12px;
+    }
+
+    tbody {
+        display: block;
+        height: 33vh;
+        overflow: auto;
+    }
+
+    thead,
+    tbody tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+        /* even columns width , fix width of table too*/
+    }
+    .costingMethodWrapper {
+border:1px solid #ddd;
+margin-top:-83px;
+    padding: 0px 10px 5px 10px;
+}
+.costingMethodWrapper label{
+
+ width: 100px;
+    background: #F1F1F1;
+    margin-top: -11px;
+    padding-left: 6px;
+}
+.costingMethodWrapper a{
+font-size:12px;
+}
+</style>
+
+<form disabled [formGroup]="form">
+    <div class="row">
+
+        <div class="col-md-12 plainBackGround">
+            <div class="row">
+                <div class="col-md-1"><label>Cost Type: </label></div>
+                <div class="col-md-4">
+                    <a style="margin-left: 2.5rem;"><input type="radio" name="grouping" value="GroupCost"
+                            (change)="IndividualPI(false)" [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'"
+                            [(ngModel)]="masterService.costType" [ngModelOptions]="{standalone:true}" checked> Group
+                        Cost</a>
+                    <a style="margin-left: 1rem;"><input type="radio" name="grouping" value="IndividualCost"
+                            (change)="IndividualPI(true)" [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'"
+                            [(ngModel)]="masterService.costType" [ngModelOptions]="{standalone:true}"> Individual Item
+                        Cost </a>
+                </div>
+                <div class="col-md-3">
+                    <label style="float: left;">Item :</label>
+                    <!-- <select class="form-control col-md-4" name="menucode" id="_item" [(ngModel)] = "ItemObj" [ngModelOptions]="{standalone: true}"
+                        (change)="passValue()" [disabled]="PI == false"
+                        style="padding: 0px !important;width: 68%;margin-top:0px; margin-left: -18px;">
+                        <option style="color: black;" *ngFor="let d of _addionalcostService.addtionalCostList"
+                            [ngValue]="d">
+                            {{d.desca}}</option>
+                    </select> -->
+                    <input id="_item" type="text" [(ngModel)]="masterService.desca" [ngModelOptions]="{standalone:true}"
+                        style="height:23px;width: 70%;margin-left: -18px; margin-bottom: 8px;" (keydown.Enter)="ItemSelect()"
+                        autocomplete="off" placeholder="press Enter to select Item" [disabled]="PI == false || _transactionService.TrnMainObj.Mode=='VIEW'">
+                </div>
+                <div class="col-md-3">
+                    <label style="float: left;margin-left:-8%;">Batch :</label>
+                    <!-- <select class="form-control col-md-4" name="batch" formControlName="BATCH"
+                        (change)="passValue()"
+                        style="padding: 0px !important;width: 68%;margin-top:0px; margin-left: 0%;">
+                        <option style="color: black;" *ngFor="let d of BatchList"
+                            [ngValue]="d.batch">
+                            {{d.batch}}</option>
+                    </select> -->
+                    <input id="_batch" type="text" [(ngModel)]="masterService.batch" [ngModelOptions]="{standalone:true}"
+                        style="height:23px;width: 60%;margin-left: -20px; margin-bottom: 8px;" (keydown.Enter)="BatchSelect()"
+                        autocomplete="off" placeholder="press Enter to select Batch" [disabled]="PI == false || _transactionService.TrnMainObj.Mode=='VIEW'">
+                </div>
+                <!-- <div class="col-md-1">
+                    <input id="_batchid" type="text" [(ngModel)]="masterService.batchid"  [ngModelOptions]="{standalone:true}"> 
+                </div> -->
+                <!-- <div> <a><input type="radio" value="IndividualCost" name="grouping" (change)="IndividualPI(true)" [(ngModel)]="masterService.costType" [ngModelOptions]="{standalone: true}"> Individual -->
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-5">
+                    <label style="width: initial;">Additional Cost A/C :</label>
+                    <!-- <select class="form-control col-md-2" name="ACNAME" formControlName="AdditionalPurchaseAc" style="height:23px;padding:0px !important;width: 70%;float: right;">
+        <option *ngFor="let d of allList" [ngValue]="d">{{d.ACNAME}}</option>
+       </select> -->
+                    <input id="AdditionalCostAc_" type="text" [(ngModel)]="masterService.AdditionalPurchaseAcObj"
+                        [ngModelOptions]="{standalone: true}"
+                        style="height:23px;width: 70%;margin-left: 20px; margin-bottom: 8px;"
+                        (keydown.Enter)="TabAcBox('AC')" autocomplete="off" placeholder="press Enter to select"
+                        [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'">
+                </div>
+                <div class="col-md-5">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label style="float: left;">Amounts :</label>
+                             
+                            <input *ngIf="_transactionService.TrnMainObj.Mode!='VIEW'" id="AmountsAD_"
+                                class="form-control col-md-2" type="number" 
+                                [(ngModel)]="masterService.AdditionalAMOUNT" [ngModelOptions]="{standalone: true}"
+                                 style="width: 50%; margin-left: -18px;">
+                            <input *ngIf="_transactionService.TrnMainObj.Mode=='VIEW'" id="AmountsAD_"
+                                class="form-control col-md-2" type="number" 
+                                [(ngModel)]="masterService.AdditionalAMOUNT" [ngModelOptions]="{standalone: true}"
+                                style="width: 50%; margin-left: -18px;"
+                                disabled="_transactionService.TrnMainObj.Mode=='VIEW'">
+                                <!-- <div class="invalid-feedback d-block"
+                                *ngIf="form.controls['AMOUNT'].invalid && (form.controls['AMOUNT'].dirty || form.controls['AMOUNT'].touched)">
+                                <span *ngIf="form.controls['AMOUNT'].errors.required" style="color:red; font-size:12px;float: left;
+    margin-left: -15px;"> required.</span>
+                            </div> -->
+                             
+
+                        </div>
+                          
+                       
+                      
+<!-- 
+                        <div class="col-md-7">
+                            <label style="float: left;">Item :</label>
+                            <select class="form-control col-md-6" name="menucode" [(ngModel)] = "ItemObj" [ngModelOptions]="{standalone: true}"
+                                (change)="passValue()" [disabled]="PI == false"
+                                style="padding: 0px !important;width: 75%;margin-top:-33px; margin-left: 39px;">
+                                <option style="color: black;" *ngFor="let d of _addionalcostService.addtionalCostList"
+                                    [ngValue]="d">
+                                    {{d.desca}}</option>
+                            </select>
+                        </div> -->
+
+                    </div>
+                </div>
+                <!-- <div class="col-md-3" style="    margin-left: -3%;"> -->
+                <!-- <label>Costing Type</label>
+                     <select class="form-control col-md-2" name="ACNAME" style="height:23px;padding:0px !important;width: 37%; float: right;"
+                      (change)="byQuantity($event.target.value)">
+                        <option value="Amount">Amount</option>
+                        <option value="Qty">Qty</option>
+                    </select> -->
+                <!-- <div class="row">
+                    <label style="float: left;">Item :</label> -->
+
+                <!-- <input type="text" placeholder="Press Enter or Tab"
+                    formControlName="MCODE" style="height:23px;padding:0px !important;    width: 75%;
+                        /* float: right; */
+                        margin-left: 6%;" (keydown.Enter)="TabAcBox('AC')" (keydown.Tab)="TabAcBox('AC')" [disabled]="PI == false"> -->
+                <!-- <select class="form-control col-md-6" name="menucode" formControlName="MCODE"
+                        (change)="passValue()" style="padding: 0px !important;width: 75%;float: right;" >
+                        <option *ngFor="let d of _addionalcostService.addtionalCostList" [ngValue]="d.mcode" >
+                            {{d.desca}}</option>
+                    </select>
+                    </div>
+                    </div> -->
+                <div class="col-md-2">
+                    <!-- <div class="col-md-7">
+                        <label style="float: left;margin-left: -82%;">Batch :</label>
+                        <select class="form-control col-md-6" name="menucode" formControlName="BATCH"
+                            (change)="passValue()"
+                            style="padding: 0px !important;width: 135%;margin-top:-33px; margin-left: -30%;">
+                            <option style="color: black;" *ngFor="let d of BatchList"
+                                [ngValue]="d.batch">
+                                {{d.batch}}</option>
+                        </select>
+                    </div> -->
+                    <!-- <label class="col-md-4">Individuals :</label>
+
+                    <input class="col-md-2" type="checkbox" style="margin-left:18px; margin-top:5px; height:15px"
+                        (change)="IndividualPI($event.target.checked)">
+                    <div *ngIf="PI==true">
+                        <select class="form-control col-md-6" name="menucode" formControlName="MCODE"
+                            (change)="passValue()" style="height:23px;padding:0px !important;width: 56%;">
+                            <option *ngFor="let d of _addionalcostService.addtionalCostList" [ngValue]="d.mcode">
+                                {{d.desca}}</option>
+                        </select>
+
+                    </div> -->
+                  
+
+                    <!-- <input class="col-md-2" type="checkbox" style="margin-left:18px; margin-top:5px; height:15px"
+                        (change)="IndividualPI($event.target.checked)">
+                    <div *ngIf="PI==true">
+                        <select class="form-control col-md-6" name="menucode" formControlName="MCODE"
+                            (change)="passValue()" style="height:23px;padding:0px !important;width: 56%;">
+                            <option *ngFor="let d of _addionalcostService.addtionalCostList" [ngValue]="d.mcode">
+                                {{d.desca}}</option>
+                        </select>
+
+                    </div> -->
+                </div>
+            </div>
+            <div class="row">
+
+
+                <div class="col-md-5">
+                    <label style="margin-left: 44px;">Credited A/C :</label>
+                    <!-- <select class="form-control col-md-2" name="ACNAME" formControlName="CREDITEDAC" style="height:23px; padding:0px !important;width: 70%;float: right;">
+                <option *ngFor="let d of allList" [ngValue]="d">{{d.ACNAME}}</option>
+               </select> -->
+                    <input type="text" placeholder="Press Enter to select"
+                        [(ngModel)]="masterService.AdditionalPurchaseCreditAcObj" [ngModelOptions]="{standalone: true}"
+                        style="height:23px;width: 70%;margin-left: 7px; margin-bottom: 8px;"
+                        (keydown.Enter)="TabAcBox('CreditAC')" [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'">
+                </div>
+                <div class="col-md-5">
+                    <div class="col-md-7" style="margin-left: -15px;">
+                    <label style="float: left;">Remarks :</label>
+                    <input id="RemarksAD_" type="text" class="form-control col-md-9" 
+                    [(ngModel)]="masterService.AdditionalREMARKS" [ngModelOptions]="{standalone: true}"
+                        style="width: 66%; margin-left: -18px;"
+                        [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'" (keydown.Enter)="remarksEntered()" autocomplete="off">
+                    </div>
+                    <div class="col-md-5">   <label style="width: 100%;">Group Cost Mode :</label></div>
+                     
+                </div>
+                <div>
+                   
+                    <select class="form-control col-md-1" name="ACNAME" style="height: 23px;
+                padding: 0px !important;
+                width: 11%;
+                margin-left: -110px;" [(ngModel)]="GcostMode" [ngModelOptions]="{standalone:true}"
+                        (change)="byQuantity($event.target.value)" [disabled]="PI == true"
+                        [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'" (keydown.Enter)="gcostEntered()">
+                        <option value=""></option>
+                        <option value="Qty">ON QTY</option>
+                        <option value="Amount">ON AMOUNT</option>
+
+                    </select>
+                </div>
+                  <div class="col-md-2">
+                    <div class="costingMethodWrapper" style="margin-top: -83px; margin-left:70px;">
+                         <label style="width: 100px;"> Costing Mode: </label>
+                            <div class="wrapper" style="display: flex; flex-direction:column;border-bottom: 0;">
+
+                                <!-- <a style="margin-left: 2.5rem;"><input type="radio" name="grouping" value="GroupCost"
+                                        (change)="IndividualPI(false)" [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'"
+                                        [(ngModel)]="masterService.costType" [ngModelOptions]="{standalone:true}" checked> Group
+                                    Costing</a> -->
+                                
+            <!-- 
+                            <a style="margin-left: 2.5rem;">
+                                <input type="radio" checked id="costing"  name="addcosting"   value = "true" [(ngModel)]="masterService.addcosting"   [ngModelOptions]="{standalone:true}"
+                                    
+                                    > <label for="costing">Costing</label> 
+                                    </a>
+                                <a style="margin-left: 1rem;">
+                                    <input type="radio" id="non-costing" name="addcosting"  value= "false" [(ngModel)]="masterService.addcosting" [ngModelOptions]="{standalone:true}"  
+                                    
+                                    >  <label for="non-costing">Non-Costing</label> 
+                                    </a> -->
+                                    <a ><input type="radio" name="addcosting" value="COSTING"
+                                        [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'"
+                                        [(ngModel)]="masterService.addcosting" [ngModelOptions]="{standalone:true}" checked> Costing
+                                    </a>
+                                <a ><input type="radio" name="addcosting" value="NONCOSTING"
+                                    [disabled]="_transactionService.TrnMainObj.Mode=='VIEW'"
+                                        [(ngModel)]="masterService.addcosting" [ngModelOptions]="{standalone:true}">  Non-Costing
+                                    </a>
+
+
+                                
+                            </div>
+
+                    </div>
+                    </div>
+                   
+
+                <div class="col-md-1">
+                    <!-- <button class="btn btn-info btn-add-focus" (click)="onAddClick()" 
+                        style=" width:100%; height: 1.4rem;"
+                        *ngIf="_transactionService.TrnMainObj.Mode!='VIEW'" disabled="!form.validate">Add</button> -->
+
+                               <button class="btn btn-info btn-add-focus" (click)="onAddClick()" 
+                        style=" width:100%; height: 1.4rem;margin-left: 70px;"
+                        *ngIf="_transactionService.TrnMainObj.Mode!='VIEW'">Add</button>
+
+                </div>
+
+
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="row" style="width: 105%;">
+
+        <div class="wrapper">
+            <div style="margin-left:0px; margin-right:0px;">
+
+
+                <div #prodlistTable style="background-color: #FFFFFF;">
+                    <table id="fix" class="table">
+                        <thead>
+                            <tr style="border-bottom: 10px solid #c0c0c0;
+                            border-top: 2px solid #c0c0c0;
+                            height: 30px;
+                            background: silver;
+                            color: black;
+                            position: sticky;">
+                                <th style="width:30px;">S.N
+
+                                </th>
+                                <th style="width:250px;margin-left:5px;padding-left: 10px;">Additional Cost A/C
+
+                                </th>
+
+                                <th style="width:100px">Amount
+
+                                </th>
+                                <th style="width:250px">Credited A/C
+
+                                </th>
+                                <th style="width:150px">Remarks
+
+                                </th>
+                                <th style="width:100px">Cost Type
+
+                                </th>
+                                <th style="width:100px">G-Cost Mode
+
+                                </th>
+                                <!-- <th *ngIf="PIADD==true" style="width:300px">Individual
+
+                                </th> -->
+                                <th style="width:200px">Item Description
+
+                                </th>
+                                   <th style="width:150px">Costing/Non-Costing
+
+                                </th>
+                                <th style="width:250px">Batch
+
+                                </th>
+
+
+
+                            </tr>
+                        </thead>
+
+                        <tbody style="background-color: #e9e9e9;">
+                            <tr *ngFor="let l of _addionalcostService.costList;let i=index"
+                                (dblclick)="TableRowDoubleClickEvent(l,i)" (click)="checkRow(i)">
+                                <td class="tableBorder" style="width:30px">{{i+1}}</td>
+                                <td class="tableBorder" style="width:250px">{{l.costAc.ACNAME}}</td>
+                                <td class="tableBorder" style="width:100px; text-align: right;">{{l.amount}}</td>
+                                <td class="tableBorder" style="width:250px">{{l.creditAc.ACNAME}}</td>
+                                <td class="tableBorder" style="width:150px">{{l.remarks}}</td>
+                                <td class="tableBorder" style="width:100px">{{l.CostingType}}</td>
+                                <td class="tableBorder" style="width:100px">{{l.GCOSTMODE}}</td>
+                                <!-- <td class="tableBorder" style="width:250px">{{l.mcode}}</td> -->
+                                <td class="tableBorder" style="width:200px">{{l.desca}}</td>
+                                 <td class="tableBorder" style="width:150px">{{l.CostingNonCostingValue}}</td>
+                                <td class="tableBorder" style="width:250px">{{l.batch}}</td>
+                                <!-- <td *ngIf="PIADD==true" style="width:300px">{{l.mcode}}</td> -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+<div class="sticky-bottom" style="background: gray;">
+    <div class="row">
+        <div class="col-md-6">
+            &nbsp;
+        </div>
+        <div class="col-md-4" style="text-align: end;">
+            <label style="font-weight: bold;font-size: 16px; width: 125px;">Total Amount:</label>
+        </div>
+        <div class="col-md-2" style="text-align: end;">
+            <label
+                style="font-size: 15px; font-weight: bold; margin-right: 2rem; ">{{this._addionalcostService.addCostTotAmount|
+                number}} </label>
+        </div>
+    </div>
+</div>
+
+<generic-popup-grid #genericGridACParty [popupsettings]="gridACListPartyPopupSettings"
+    (onItemDoubleClick)="ACNameSelect_Additional($event)"></generic-popup-grid>
+
+<generic-popup-grid #genericGridCreditACListParty [popupsettings]="gridCreditACListPartyPopupSettings"
+    (onItemDoubleClick)="ACNameSelect_Credit($event)"></generic-popup-grid>
+
+<generic-popup-grid #genericGridItem [popupsettings]="gridItemPopupSettings"
+    (onItemDoubleClick)="dblClickItemSelection($event)"></generic-popup-grid>
+
+<generic-popup-grid #genericGridBatch [popupsettings]="gridBatchPopupSettings"
+    (onItemDoubleClick)="dblClickBatchSelection($event)"></generic-popup-grid>

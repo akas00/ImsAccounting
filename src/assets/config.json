@@ -1,0 +1,14 @@
+{
+    "hotkeys": {
+      "F3": [ "MainComponent.F3" ],
+      "F4": [ "MainComponent.F4" ],
+      "F6": [ "MainComponent.F6" ],
+      "F7": [ "MainComponent.F7" ],
+      "F8": [ "MainComponent.F8" ],
+      "F9": [ "MainComponent.F9" ],
+      "F10": [ "MainComponent.F10" ],
+      "F":["MainComponent.F" ],
+      "left": [ "MainComponent.MoveLeft" ]
+    }
+  }
+ 

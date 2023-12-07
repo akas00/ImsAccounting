@@ -1,0 +1,217 @@
+<style>
+   .input-text {
+      width: 100%;
+      /* height: 30px !important; */
+      font-weight: bold;
+   }
+
+   .td-class {
+      border: none !important;
+   }
+
+   .date-input {
+      width: 93%;
+      font-size: 12px !important;
+      height: 30px !important;
+   }
+        @media screen and (max-width:991px) {
+         .report-container{
+           width: 100% !important;
+    }
+    .report-height{
+        height:52vh; 
+        overflow:auto;
+    }
+    }
+    @media screen and (max-width:767px) {
+        .smallBoldLabel{
+            width: auto !important;
+        }
+      
+        
+    }
+</style>
+<div class="container report-container" style="background-color : #ffffff; padding :1%; height : auto;  ">
+   <div class="row">
+      <div class="modal-header" style="width : 97%; margin : 0px auto;">
+         <button type="button" class="close" data-dismiss="modal" (click)="closeReportBox()">&times;</button>
+         <h4 class="modal-title">Debtors Report</h4>
+      </div>
+      <div class="col-md-12 report-height" style="padding-top: 2%;">
+         <!-- Left Column -->
+         <div class="col-md-6">
+            <fieldset>
+               <legend style="font-size:11px;font-weight: bold; width:auto;margin-bottom: -4px;">Date Range Selection :
+               </legend>
+               <table>
+                  <tr>
+                     <td class="td-class"><label class="smallBoldLabel">From:(AD)</label></td>
+                     <td class="td-class"><label class="smallBoldLabel">To:(AD)</label></td>
+                  </tr>
+                  <tr>
+                     <td class="td-class">
+                        <input type="date" class="date-input form-control" placeholder="Year Start Date"
+                           [(ngModel)]="_reportFilterService.DebtorsReportObj.Debtors_DATE1"
+                           (change)="changeEntryDate($event.target.value,'AD')" max="{{masterService.date1 | date:'yyyy-MM-dd'}}" min="{{masterService.date2 | date:'yyyy-MM-dd'}}">
+                     </td>
+                     <td class="td-class">
+                        <input type="date" class="date-input form-control" placeholder="Year Start Date"
+                           [(ngModel)]="_reportFilterService.DebtorsReportObj.Debtors_DATE2"
+                           (change)="changeEndDate($event.target.value,'AD')" max="{{masterService.date1 | date:'yyyy-MM-dd'}}" min="{{masterService.date2 | date:'yyyy-MM-dd'}}">
+                     </td>
+                  </tr>
+                  <tr>
+                     <td class="td-class">
+                       <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDatefrom'"
+                        (change)="changeEntryDate($event.detail.value,'BS')"
+                        [label]="'From'"
+                        [(ngModel)]="_reportFilterService.DebtorsReportObj.Debtors_BSDATE1">
+                        </nepali-date-picker>
+
+                     </td>
+                     <td class="td-class">
+                      <nepali-date-picker name="nepaliDateTo" [id]="'nepaliDateTo'"
+                      (change)="changeEndDate($event.detail.value,'BS')"
+                      [label]="'To'"
+                      [(ngModel)]="_reportFilterService.DebtorsReportObj.Debtors_BSDATE2">
+                      </nepali-date-picker>
+                     </td>
+                  </tr>
+               </table>
+            </fieldset>
+
+            <fieldset>
+               <legend>Division Selection:</legend>
+               <select [(ngModel)]="_reportFilterService.DebtorsReportObj.Debtors_DIV"
+                  style="height: 30px !important;" class="form-control input-text">
+                  <option value="%" *ngIf="masterService.userSetting.userwisedivision==0 ||  masterService.showAll">ALL</option>
+                  <option *ngFor="let div of division" value="{{ div.INITIAL }}">
+                     {{ div.NAME }}
+                  </option>
+               </select>
+            </fieldset>
+            <fieldset *ngIf="this.masterService.userSetting.enableCostCenter!=0">
+               <legend>Cost Center:</legend>
+               <select [(ngModel)]="_reportFilterService.DebtorsReportObj.Debtors_CostCenter"
+                  style="height: 30px !important;" class="form-control input-text">
+                  <option value="%"> </option>
+                  <option *ngFor="let i of CostcenterList" value={{i.CCID}}>{{i.COSTCENTERNAME}}
+                  </option>
+               </select>
+            </fieldset>
+
+            <label class="smallBoldLabel"><input type="checkbox" name="showCred" (change)="checkValueForOpeningDebtors()"
+               [(ngModel)]="_reportFilterService.DebtorsReportObj.Debtors_OPNINGBLONLY">&nbsp;Show Opening Debtors
+            Only </label><br>
+            <label class="smallBoldLabel"><input type="checkbox" name="showCred"
+               (change)="$event.target.checked?(_reportFilterService.DebtorsReportObj.Debtors_SHOWBRANCHBL=1):(_reportFilterService.DebtorsReportObj.Debtors_SHOWBRANCHBL=0)"
+               [checked]="_reportFilterService.DebtorsReportObj.Debtors_SHOWBRANCHBL == 1">&nbsp;Do Not Show Branch Party B/L in Debtors Report</label><br>
+
+            <label class="smallBoldLabel"><input type="checkbox" name="showCred"
+               (change)="$event.target.checked?(_reportFilterService.DebtorsReportObj.SHOWDPARTYDETAIL=1):(_reportFilterService.DebtorsReportObj.SHOWDPARTYDETAIL=0)"
+               [checked]="_reportFilterService.DebtorsReportObj.SHOWDPARTYDETAIL == 1">&nbsp;Show Party Detail
+            Info</label><br>
+
+            <!-- <label class="smallBoldLabel"><input type="checkbox" name="showCred"
+               (change)="$event.target.checked?(_reportFilterService.DebtorsReportObj.Debtors_INCLUDEPOSTEDTRANSACTION=1):(_reportFilterService.DebtorsReportObj.Debtors_INCLUDEPOSTEDTRANSACTION=0)"
+               [checked]="_reportFilterService.DebtorsReportObj.Debtors_INCLUDEPOSTEDTRANSACTION == 1">&nbsp;INCLUDE POSTED TRANSACTION</label><br> -->
+               <label class="smallBoldLabel"><input type="checkbox" name="incpostdate"
+                     (change)="$event.target.checked?(_reportFilterService.DebtorsReportObj.Debtors_INCLUDEPOSTEDTRANSACTION=1):(_reportFilterService.DebtorsReportObj.Debtors_INCLUDEPOSTEDTRANSACTION=0)"
+                     [checked]="_reportFilterService.DebtorsReportObj.Debtors_INCLUDEPOSTEDTRANSACTION == 1">&nbsp;Include Post Dated
+                  Transaction</label><br>
+         </div>
+         <!-- Right Column -->
+         <div class="col-md-6">
+            <fieldset>
+               <legend>Report Option</legend>
+               <div class="row">
+                  <div class="col-sm-4">
+                     <label class="smallBoldLabel"><input type="radio" name="BalViewOpt"
+                           [(ngModel)]="_reportFilterService.DebtorsReportObj.REPORTMODE" value=0>&nbsp;Show All</label>
+                  </div>
+               
+                  <div class="col-sm-8">
+                     <label class="smallBoldLabel" style="margin-left: -33px;"><input type="radio" name="BalViewOpt"
+                           [(ngModel)]="_reportFilterService.DebtorsReportObj.REPORTMODE" value=4>&nbsp;Show Negative Debtors B/L
+                        Separately</label>
+                  </div>
+               </div>
+               <label class="smallBoldLabel"><input type="radio" name="BalViewOpt"
+                     [(ngModel)]="_reportFilterService.DebtorsReportObj.REPORTMODE" value=1>&nbsp;Exclude Negative
+                  Debtors B/L</label>
+               <label class="smallBoldLabel"><input type="radio" name="BalViewOpt"
+                     [(ngModel)]="_reportFilterService.DebtorsReportObj.REPORTMODE" value=2>&nbsp;Show Negative
+                  Debtors B/L Only</label>
+               <label class="smallBoldLabel"><input type="radio" name="BalViewOpt"
+                     [(ngModel)]="_reportFilterService.DebtorsReportObj.REPORTMODE" value=3>&nbsp;Show Zero B/L
+                  Debtors Only</label>
+            </fieldset>
+
+            <fieldset>
+               <legend>Report Filter Option:</legend>
+               <div class="row">
+                  <div class="col-sm-5"><label class="smallBoldLabel">Area:</label></div>
+                  <div class="col-sm-7">
+                     <select [(ngModel)]="_reportFilterService.DebtorsReportObj.DebtorsReport_AreaWise"
+                     style="height: 30px !important;" class="form-control">
+                         <option value=0></option>
+                         <option *ngFor="let i of AreaList" value={{i.AREA_ID}}>{{i.AREA_NAME}}</option>
+                     </select>
+                  </div>
+               </div>
+
+               <div class="row" style="margin-top: 10px;">
+                  <div class="col-sm-5"><label class="smallBoldLabel">Party Group:</label></div>
+                  <div class="col-sm-7">
+                     <select [(ngModel)]="_reportFilterService.DebtorsReportObj.DebtorsReport_PartyGroup"
+                     style="height: 30px !important;" class="form-control">
+                         <option value='%'></option>
+                         <option *ngFor="let i of PartyGroupList" value={{i.ACID}}>{{i.ACNAME}}</option>
+                     </select>
+                  </div>
+               </div>
+
+               <div class="row" style="margin-top: 10px;">
+                  <div class="col-sm-5"><label class="smallBoldLabel">Party Category:</label></div>
+                  <div class="col-sm-7">
+                     <select [(ngModel)]="_reportFilterService.DebtorsReportObj.DebtorsReport_PartyCategory"
+                     style="height: 30px !important;" class="form-control">
+                         <option value='%'></option>
+                         <option *ngFor="let i of PartyCategoryList" value={{i.CATEGORY_ID}}>{{i.CATEGORYNAME}}</option>
+                     </select>
+                  </div>
+               </div>
+                  
+            </fieldset>
+
+            <fieldset>
+               <legend>Report Grouping Options :</legend>
+               <select [(ngModel)]="_reportFilterService.DebtorsReportObj.GROUPBY" style="height: 30px !important;" class="form-control input-text">
+                  <option value=0></option>
+                  <option value=1>Area Wise</option>
+                  <option value=2>Party Group Wise</option>
+                  <option value=3>Party Group Wise in Tree Format</option>
+                  <option value=4>Party Category Wise</option>
+               </select>
+
+              
+            </fieldset>
+            <!-- <fieldset>
+               <legend>Salesman:</legend>
+               <input type="text" style="font-weight: bold;" class="form-control" placeholder="please enter to select the salesman" (keydown.Tab)="showSalesmanList($event)" [(ngModel)]="_reportFilterService.DebtorsReportObj.Debtors_salesman"
+               (keydown.enter)="showSalesmanList($event)">
+                                    
+              
+            </fieldset> -->
+
+         </div>
+      </div>
+
+      <div class="modal-footer" style="width : 97%; margin : 0px auto;">
+         <button class="btn btn-info confirm-btn" type="button" (click)=onload()>RUN</button>
+         <button type="button" (click)="closeReportBox()" title="Cancel" class="btn btn-info">Close</button>
+      </div>
+
+   </div>
+   <generic-popup-grid #genericeSalesManList [popupsettings]="gridSalesmanListPopupSettings"
+   (onItemDoubleClick)="onSalesManSelect($event)"></generic-popup-grid>

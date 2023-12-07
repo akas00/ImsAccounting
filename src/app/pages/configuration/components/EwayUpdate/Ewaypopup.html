@@ -1,0 +1,104 @@
+<style>
+  .modal-content {
+    padding: 1px;
+    margin: 0px;
+    float: right;
+  }
+
+  .table-scroll {
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+
+  tbody>tr:hover {
+    background-color: #f3f5f4;
+    cursor: pointer;
+  }
+
+  tr {
+    font-size: 11px;
+  }
+
+  .selected-row {
+    background-color: #ced6d3 !important;
+  }
+
+  td {
+    padding: 2px
+  }
+
+  .modal-sticky {
+    position: fixed;
+    bottom: 25px;
+    right: 35%;
+    width: 80%;
+    height: 70%;
+    z-index: 2;
+  }
+
+  .input {
+    width: 80%
+  }
+
+  td {
+    line-height: 0px !important
+  }
+
+  .table>tbody>tr>td {
+    border-top: 0px solid gainsboro !important;
+  }
+
+  .TopMargin {
+    Margin-Top: 10px
+  }
+
+  .table>tbody>tr>td:first-child {
+    text-align: left !important;
+  }
+
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  label {
+    height: 21px;
+    font-weight: normal;
+    width: 100px;
+    margin: 2px;
+    vertical-align: middle;
+    font-size: 13px;
+    padding-top: 6px;
+  }
+</style>
+<div class="modal-sticky" [class.modal-sticky-hide]="!isActive" style="display : block; padding: 0px;">
+  <!-- Modal content -->
+  <div class="modal-content" style="background-color: #ffffff;width: 35% !important;height:250px;">
+    <div class="modal-header" style="padding: 0px;background: #f1f1f1;;">
+
+      <h4 class="modal-title" style="text-align: center;">
+        Update E-Way
+      </h4>
+    </div>
+
+    <div class="col-md-12 plainBackGround" style="margin : 0px;  border-bottom: 1px solid silver;padding-top: 0px;    margin-top: 30px;">
+      <table class="table table-summary TopMargin" style="text-align: left">
+        <tr>
+          <td><label>Ewayno</label></td>
+          <td>
+            <input #Transporter id="Transporter" type="text" [(ngModel)]="ewayObj.ewayno"
+              (keyup.enter)="onEnterTransporter()" />
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="Col-md-12" style="padding-top:10px;    margin-top: 30px;">
+
+      <button type="button" class="btn btn-info TopMargin" style="width:80px" (click)="Update()">Update</button>
+      <button type="button" class="btn btn-warning TopMargin" style="margin-right:10px;"
+        (click)="hide()">Cancel</button>
+    </div>
+  </div>
+</div>

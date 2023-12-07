@@ -1,0 +1,752 @@
+export const PAGES_MENU = [
+  {
+    path: "pages",
+    children: [
+      {
+        path: "",
+        data: {
+          menu: {
+            title: "HamroSDS",
+            icon: "ion-android-home",
+            selected: true,
+            expanded: false,
+            order: 0
+          }
+        },
+        children: [
+          {
+            path: "",
+            data: {
+              menu: {
+                title: "Dashboard",
+                icon: "ion-navicon-round",
+                selected: true,
+                expanded: false,
+                order: 0
+              }
+            }
+          },
+          // {
+          //   path: "terminal",
+          //   data: {
+          //     menu: {
+          //       title: "Terminal Setup",
+          //       icon: "ion-gear-b",
+          //       selected: false,
+          //       expanded: false,
+          //       order: 700
+          //     }
+          //   }
+          // },
+          // {
+          //   path: "backup-restore",
+          //   isOnlyCentral: true,
+          //   data: {
+          //     menu: {
+          //       title: "Backup & Restore",
+          //       icon: "ion-android-upload",
+          //       selected: false,
+          //       expanded: false,
+          //       order: 0
+          //     }
+          //   }
+          // }
+        ]
+      },
+      {
+        path: "account",
+        data: {
+          menu: {
+            title: "Financial Account",
+            icon: "fa fa-usd"
+          }
+        },
+        children: [
+          {
+            path: "AccountLedger",
+            data: {
+              menu: {
+                title: "Account Info",
+                icon: "nb-compose"
+              }
+            },
+            children: [
+
+              {
+                path: "AccountTree",
+                data: {
+                  menu: {
+                    title: "Account Tree"
+                  }
+                }
+              },
+              {
+                path: "bank",
+                data: {
+                  menu: {
+                    title: "Bank"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            path: "acvouchers",
+            data: {
+              menu: {
+                title: "Accounting Vouchers"
+              }
+            },
+            children: [
+              {
+                path: "journal-voucher",
+                data: {
+                  menu: {
+                    title: "Journal"
+                  }
+                }
+              },
+              {
+                path: "contra-voucher",
+                data: {
+                  menu: {
+                    title: "Contra"
+                  }
+                }
+              },
+              {
+                path: "expense-voucher",
+                data: {
+                  menu: {
+                    title: "Payment Voucher"
+                  }
+                }
+              },
+              {
+                path: "income-voucher",
+                data: {
+                  menu: {
+                    title: "Receipt Voucher"
+                  }
+                }
+              },
+              {
+                path: "debit-note",
+                data: {
+                  menu: {
+                    title: "Debit Note"
+                  }
+                }
+              },
+              {
+                path: "credit-note",
+                data: {
+                  menu: {
+                    title: "Credit Note"
+                  }
+                }
+              },
+              {
+                path: "debit-note-rate-adjustment",
+                data: {
+                  menu: {
+                    title: "Debit Note-Rate Adjustment"
+                  }
+                }
+              },
+              {
+                path: "credit-note-rate-adjustment",
+                data: {
+                  menu: {
+                    title: "Credit Note-Rate Adjustment"
+                  }
+                }
+              },
+
+              {
+                path: "bill-tracking",
+                data: {
+                  menu: {
+                    title: "Bill Tracking Amendment"
+                  }
+                }
+              },
+
+              {
+                path: "additional-cost",
+                data: {
+                  menu: {
+                    title: "Additional Cost"
+                  }
+                }
+              },
+
+              {
+                path: "capital-voucher",
+                data: {
+                  menu: {
+                    title: "Capital Purchase"
+                  }
+                }
+              },
+
+            ]
+          },
+          {
+            path: "account-opening-balance",
+            data: {
+              menu: {
+                title: "A/C Opening Balance"
+              }
+            }
+          },
+          {
+            path: "party-opening-balance",
+            data: {
+              menu: {
+                title: "Party Opening Balance"
+              }
+            }
+          },
+          {
+            path: "AccountPosting",
+            data: {
+              menu: {
+                title: "Account Posting",
+                icon: "nb-compose"
+              }
+            },
+            children: [
+              {
+                path: "Setting-EnableLatePost",
+                data: {
+                  menu: {
+                    title: "Enable-Late Post"
+                  }
+                }
+              },
+
+            ]
+          },
+          {
+            path: "bank-reconciliation",
+            data: {
+              menu: {
+                title: "Bank Reconciliation"
+              }
+            }
+          },
+          // {
+          //   path: "gstr",
+          //   data: {
+          //     menu: {
+          //       title: "GST Report"
+          //     }
+          //   }
+          // },
+         
+
+          // {
+          //   path: "reports",
+          //   data: {
+          //     menu: {
+          //       title: "Additional Report",
+          //       selected: false,
+          //       expanded: false,
+          //       order: 1
+          //     }
+          //   },
+          //   children: [
+          //     {
+          //       path: "accountpayablereport",
+          //       data: {
+          //         menu: {
+          //           title: "Account Payable Report"
+          //         }
+          //       }
+          //     },
+          //     {
+          //       path: "accountreceivablereport",
+          //       data: {
+          //         menu: {
+          //           title: "Account Receivable Report"
+          //         }
+          //       }
+          //     }
+          //   ]
+          // },
+          {
+            path: "multiple-print",
+            menuType: [0],
+            data: {
+              menu: {
+                title: "Multiple Voucher Print"
+              }
+            },
+
+          }
+
+
+        ]
+      },
+      {
+        path: "financialreports",
+        data: {
+          menu: {
+            title: "Financial Report",
+            selected: false,
+            expanded: false,
+            order: 1
+          }
+        },
+        children: [
+          // {
+          //   path: "ledger-report",
+          //   data: {
+          //     menu: {
+          //       title: "Account Ledger",
+          //       selected: false,
+          //       expanded: false
+          //     }
+          //   }
+          // },
+          {
+            path: "account-ledger-reports",
+            data: {
+              menu: {
+                title: "Account Ledger",
+                selected: false,
+                expanded: false
+              }
+            },
+            
+          children: [
+            {
+              path: "summaryledgerreport",
+              menuType: [],
+              data: {
+                menu: {
+                  title: "Summary Ledger Report",
+                  selected: false,
+                  expanded: false
+                }
+              }
+            },
+            {
+              path: "accountledgerreport",
+              menuType: [],
+              data: {
+                menu: {
+                  title: "Account Ledger Report",
+                  selected: false,
+                  expanded: false
+                }
+              }
+            },
+            {
+              path: "summarypartyledger",
+              menuType: [],
+              data: {
+                menu: {
+                  title: "Summary Party Ledger Report",
+                  selected: false,
+                  expanded: false
+                }
+              }
+            },
+            {
+              path: "partyledgerreport",
+              menuType: [],
+              data: {
+                menu: {
+                  title: "Party Ledger Report",
+                  selected: false,
+                  expanded: false
+                }
+              }
+            },
+          ]
+          },
+          {
+            path: "voucher-register",
+            data: {
+              menu: {
+                title: "Voucher Register",
+                selected: false,
+                expanded: false
+              }
+            }
+          },
+          {
+            path: "",
+            data: {
+              menu: {
+                title: "Account Book",
+                selected: false,
+                expanded: false
+              }
+            },
+            children: [
+              {
+                path: "day-book",
+                menuType: [],
+                data: {
+                  menu: {
+                    title: "Day Book",
+                    selected: false,
+                    expanded: false
+                  }
+                }
+              },
+              {
+                path: "cash-book",
+                menuType: [],
+                data: {
+                  menu: {
+                    title: "Cash Book",
+                    selected: false,
+                    expanded: false
+                  }
+                }
+              },
+              {
+                path: "bank-book",
+                menuType: [],
+                data: {
+                  menu: {
+                    title: "Bank Book",
+                    selected: false,
+                    expanded: false
+                  }
+                }
+              }
+            ]
+          },
+
+          {
+            path: "additionalreport",
+            data: {
+              menu: {
+                title: "Additional Report",
+                selected: false,
+                expanded: false
+              }
+            },
+            children: [
+              {
+                path: "accountreceivablereport",
+                menuType: [],
+                data: {
+                  menu: {
+                    title: "Account Receivable Report ",
+                    selected: false,
+                    expanded: false
+                  }
+                }
+              },
+              {
+                path: "accountpayablereport",
+                menuType: [],
+                data: {
+                  menu: {
+                    title: "Account Payable Report ",
+                    selected: false,
+                    expanded: false
+                  }
+                }
+              },
+              {
+                path: "gstsalessummary",
+                menuType: [],
+                data: {
+                  menu: {
+                    title: "GST Sales Summary Report ",
+                    selected: false,
+                    expanded: false
+                  }
+                }
+              },
+              {
+                path: "gstpurchasesummary",
+                menuType: [],
+                data: {
+                  menu: {
+                    title: "GST Purchase Report ",
+                    selected: false,
+                    expanded: false
+                  }
+                }
+              },
+              {
+                path: "agingpayable",
+                menuType: [],
+                data: {
+                  menu: {
+                    title: "Aging payable Report ",
+                    selected: false,
+                    expanded: false
+                  }
+                }
+              },
+              {
+                path: "agingreceivable",
+                menuType: [],
+                data: {
+                  menu: {
+                    title: "Aging Receivable Report",
+                    selected: false,
+                    expanded: false
+                  }
+                }
+              },
+
+              {
+                path: "purchasebookreport",
+                menuType: [],
+                data: {
+                  menu: {
+                    title: "Purchase Book Report",
+                    selected: false,
+                    expanded: false
+                  }
+                }
+              },
+              {
+                path: "cashbookreport",
+                menuType: [],
+                data: {
+                  menu: {
+                    title: "Cash Book Report",
+                    selected: false,
+                    expanded: false
+                  }
+                }
+              },
+              {
+                path: "salesbookreport",
+                menuType: [],
+                data: {
+                  menu: {
+                    title: "Sales Book Report",
+                    selected: false,
+                    expanded: false
+                  }
+                }
+              },
+              {
+                path: "journalbook",
+                menuType: [],
+                data: {
+                  menu: {
+                    title: "Journal Book Report",
+                    selected: false,
+                    expanded: false
+                  }
+                }
+              },
+              {
+                path: "duevoucherreport",
+                menuType: [],
+                data: {
+                  menu: {
+                    title: "Due Voucher Report",
+                    selected: false,
+                    expanded: false
+                  }
+                }
+              },
+              {
+                path: "debtorsreport",
+                menuType: [],
+                data: {
+                  menu: {
+                    title: "Debtors Report",
+                    selected: false,
+                    expanded: false
+                  }
+                }
+              },
+              {
+                path: "creditorsreport",
+                menuType: [],
+                data: {
+                  menu: {
+                    title: "Creditors Report",
+                    selected: false,
+                    expanded: false
+                  }
+                }
+              },
+<<<<<<< HEAD
+              {
+                path: "PartyLedger",
+                menuType: [],
+                data: {
+                  menu: {
+                    title: "Party Ledger Report",
+                    selected: false,
+                    expanded: false
+                  }
+                }
+              },
+              {
+                path: "debtorsagingreport",
+                menuType: [],
+                data: {
+                  menu: {
+                    title: "Debtors Aging Report",
+                    selected: false,
+                    expanded: false
+                  }
+                }
+              },
+              {
+                path: "creditorsagingreport",
+                menuType: [],
+                data: {
+                  menu: {
+                    title: "Creditors Aging Report",
+                    selected: false,
+                    expanded: false
+                  }
+                }
+              },
+              {
+                path: "debtorsoutstandingreport",
+                menuType: [],
+                data: {
+                  menu: {
+                    title: "Debtors Outstanding  Report",
+                    selected: false,
+                    expanded: false
+                  }
+                }
+              },
+              {
+                path: "creditorsoutstandingreport",
+                menuType: [],
+                data: {
+                  menu: {
+                    title: "Creditors Outstanding  Report",
+                    selected: false,
+                    expanded: false
+                  }
+                }
+              }
+              
+              
+
+          
+=======
+              // {
+              //   path: "PartyLedger",
+              //   menuType: [],
+              //   data: {
+              //     menu: {
+              //       title: "Party Ledger Report",
+              //       selected: false,
+              //       expanded: false
+              //     }
+              //   }
+              // },                                                   
+>>>>>>> 9d6fc9544166c8b06a52412b5e535bc79e2833fa
+            ]
+          },
+
+
+          {
+            path: "trial-balance",
+            data: {
+              menu: {
+                title: "Trial Balance",
+                selected: false,
+                expanded: false
+              }
+            }
+          },
+          {
+            path: "profit-loss",
+            data: {
+              menu: {
+                title: "Profit & Loss",
+                selected: false,
+                expanded: false
+              }
+            }
+          },
+          {
+            path: "balance-sheet",
+            data: {
+              menu: {
+                title: "Balance Sheet",
+                selected: false,
+                expanded: false
+              }
+            }
+          },
+          {
+            path: "openingbalance",
+            data: {
+              menu: {
+                title: "Opening Balance",
+                selected: false,
+                expanded: false
+              }
+            }
+          },
+          // {
+          //   path: "accountpayablereport",
+          //   data: {
+          //     menu: {
+          //       title: "Account Payable Report",
+          //       selected: false,
+          //       expanded: false
+          //     }
+          //   }
+          // },
+          // {
+          //   path: "accountreceivablereport",
+          //   data: {
+          //     menu: {
+          //       title: "Account Receivable Report",
+          //       selected: false,
+          //       expanded: false
+          //     }
+          //   }
+          // }
+          {
+            path: "vatsalesreport",
+            data: {
+              menu: {
+                title: "VAT Sales Report",
+                selected: false,
+                expanded: false
+              }
+            },
+            children: [
+              {
+                path: "abbreviated-sales-report",
+                menuType: [],
+                data: {
+                  menu: {
+                    title: "Abbreviated Sales Report ",
+                    selected: false,
+                    expanded: false
+                  }
+                }
+              },
+           
+            
+         
+              
+          
+          
+            ]
+          },
+        ]
+      },
+
+
+    ]
+  }
+];

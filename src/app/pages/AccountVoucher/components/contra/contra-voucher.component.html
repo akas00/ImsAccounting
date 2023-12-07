@@ -1,0 +1,62 @@
+﻿<style>
+   .sectionWrapper{
+      display: flex;
+      flex-direction: column;
+      height: 94vh;
+    }
+
+    /* .topWwrapper {
+  background: tomato;
+} */
+ .midTableWrapper{
+  flex: 1; /* or flex-grow: 1  */;
+  overflow: auto;
+  /* background: gold; */
+  overflow-x:hidden;
+}
+.footer-wrapper {
+  background: lightgreen;
+  min-height: 87px;
+}
+
+</style>
+ <div class="sectionWrapper">
+    <div class="topWwrapper">
+      <div class="sticky-top">
+  <div class="clearfix">
+    <div class="col-md-1">
+      <voucher-master-toggler></voucher-master-toggler>
+    </div>
+    <div class="col-md-4">
+      <label style="font-family: Segoe UI Light;font-weight: bold;font-size: 20px;padding-left: 5%;padding-top: 1%;">{{
+        _trnMainService.pageHeading }}</label>
+      <label style="font-size: 14px;">&nbsp;>> {{ _trnMainService.TrnMainObj?.Mode | titlecase}} Voucher</label>
+    </div>
+    <div class="col-md-7">
+      <account-master-action></account-master-action>
+    </div>
+  </div>
+</div>
+<div class="main-container" style="margin-bottom: 0 !important;">
+  <div class="clearfix">
+    <trnmain-voucher-entry></trnmain-voucher-entry>
+  </div>
+
+</div>
+
+    </div>
+    <div class="midTableWrapper">
+        <div class="clearfix" style="margin-top: 5px">
+    <trntran-voucher-entry></trntran-voucher-entry>
+  </div>
+
+    </div>
+
+    <div class="footer-wrapper" style="background: gray;">
+  <account-voucher-summary></account-voucher-summary>
+</div>
+
+ </div>
+
+
+<multiple-series [voucherType]="voucherType"></multiple-series>

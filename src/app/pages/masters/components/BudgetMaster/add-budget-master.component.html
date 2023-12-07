@@ -1,0 +1,1059 @@
+<style>
+  .sectionWrapper {
+    display: flex;
+    flex-direction: column;
+    height: 83vh;
+  }
+
+  .midTableWrapper {
+    flex: 1;
+    overflow: auto;
+    overflow-x: hidden;
+  }
+
+  .footer-wrapper {
+    background: lightgreen;
+    min-height: 87px;
+  }
+
+  td {
+    border: 1px solid #e6e6e6;
+    height: 24px;
+
+  }
+
+  input, select {
+    /* padding: 8px; */
+    border: 0px;
+    width: 88%;
+    margin: 1.5% 2%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+
+  th {
+    font-weight: bold;
+    font-family: Roboto, Arial, sans-serif;
+
+  }
+
+  thead th {
+    color: #fff !important;
+    padding-left: 10px;
+  }
+
+  .input_hight {
+    height: 24px;
+  }
+
+  select {
+    margin: 5px 0;
+    margin-left: 2%;
+  }
+
+  select label {
+    margin-top: 9px;
+  }
+
+  .totalvalue {
+    align-items: center;
+  }
+
+  .totalvalue label {
+    white-space: nowrap;
+    margin-bottom: 0 !important;
+    padding: 0 10px;
+
+  }
+
+  .totalvalue input {
+    height: 25px;
+  }
+
+  .radioBUttons input {
+    margin-left: -40%;
+  }
+
+  .radioBUttons .form-check+.form-check {
+    margin-top: 0;
+  }
+
+  .radioBUttons .form-check {
+    margin-right: 10px;
+  }
+
+  .radioBUttons {
+    margin-left: 140px;
+    margin-top: 5px;
+  }
+
+  .radioBUttons .form-check-label {
+    padding-left: 1.25rem;
+    margin-bottom: 0;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  .sectionWrapper button {
+    background-color: #4472C4;
+  }
+  .form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+    color: #000 !important;
+  }
+
+
+thead th{
+  text-align: center;
+    border: 1px solid #fff;
+    padding: 4px;
+    vertical-align: middle;
+    font-weight: normal    ;
+}
+.table > tbody > tr > td {
+  text-align: center;
+}
+</style>
+
+
+<!-- <for-account-group-popup-grid #acPopupGrid (onItemDoubleClick)="onItemDoubleClick($event)" [Prefix]="Prefix">
+</for-account-group-popup-grid> -->
+<div class="sectionWrapper">
+  <div class="clearfix">
+    <div class="topWrapper">
+      <div class="sticky-top" style="top: 65px;">
+
+        <div class="col-md-1">
+          <voucher-master-toggler></voucher-master-toggler>
+        </div>
+        <div class="col-md-6">
+          <label
+            style="font-family: Segoe UI Light;font-weight: bold;font-size: 20px;padding-left: 5%;padding-top: 1%;">{{BudgetObj.MODE}}
+            BUDGET</label>
+
+        </div>
+       
+
+        <div class="col-md-5">
+          <button class="btn btn-info pull-right" style="margin-right : 10px;"
+            routerLink="/pages/account/AccountLedger/budget-master" >
+            Back
+          </button>
+          <button type="button " class="btn btn-info pull-right" style="margin-right : 10px;" (click)="saveClick()"
+          [disabled]="BudgetObj.MODE=='VIEW'">
+            Save
+          </button>
+
+          <button type="button " class="btn btn-info pull-right" style="margin-right : 10px;" (click)="reset()"
+          [disabled]="BudgetObj.MODE=='VIEW' || BudgetObj.MODE=='EDIT'">
+            Reset
+          </button>
+
+          <!-- <voucher-master-action></voucher-master-action> -->
+        </div>
+      </div>
+    </div>
+    <div class="main-container"  style="margin-bottom: 0  !important; height:100%">
+      <div class="clearfix" *ngIf="masterService.ShowMore">
+
+        <!-- <trnmain-voucher-entry></trnmain-voucher-entry> -->
+
+        <div class="col-md-12" style="border-bottom: 1px solid #828080;
+      margin-top:14px;
+      margin-bottom: 5px;
+      padding-bottom: 10px;
+      background: #e2eaea; padding-top: 9px;
+      width: 100%;
+     ">
+          <div style="display: flex;">
+          </div>
+          <!-- <div class="row">
+            <div class="col-md-3">
+              <label>Voucher No :</label>
+              <b>{{BudgetObj.BUDGET_NUMBER}}</b>
+            </div>
+          </div> -->
+          <div class="row">
+            <div class="col-lg-7">
+              <div class="budgetName" style="display: flex; align-items: center;">
+
+                <label style="flex: 0 0 15%; margin-top: 9px;">Budget Name :</label>
+                <input type="text" style="height:24px;width: 95% !important; margin-top: 5px; margin-bottom: 5px;"
+                  [(ngModel)]="BudgetObj.BUDGET_NAME" autocomplete="off" [disabled]="BudgetObj.MODE=='VIEW'">
+              </div>
+
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="Interval" style="display: flex;">
+                    <label style="flex: 0 0 34%; margin-top: 9px;">Interval :</label>
+                    <select style="flex: 0 0 33%" class="form-select form-control"
+                      [(ngModel)]="BudgetObj.BUDGET_INTERVAL" (change)="ChooseInterval($event)"
+                      [disabled]="BudgetObj.MODE=='VIEW'">
+                      <option value="YEARLY">Yearly</option>
+                      <option value="QUARTERLY">Quarterly</option>
+                      <option value="MONTHLY">Monthly</option>
+                    </select>
+                    <div class="Datetype" style="    display: flex;
+                    align-items: center;
+                    flex: 0 0 36%;">
+                      <div class="form-check" style="margin-bottom: 0;
+                      font-size: 11px;">
+                        <input  [disabled]="BudgetObj.MODE=='VIEW'" class="form-check-input" type="radio" name="interval" id="bsInterval" checked
+                          (change)="ChooseBsInterval($event)" value="BSINTERVAL"
+                          [(ngModel)]="BudgetObj.INTERVAL_ON_AD_OR_BS">
+                        <label class="form-check-label" for="bsInterval" style="padding-left: 2.25rem;">
+                          B.S
+                        </label>
+                      </div>
+                      <div class="form-check" style="margin-bottom: 0; margin-top: 0;
+                      font-size: 11px;">
+                        <input  [disabled]="BudgetObj.MODE=='VIEW'" class="form-check-input" type="radio" name="interval" id="adInterval"
+                          (change)="ChooseAdInterval($event)" value="ADINTERVAL"
+                          [(ngModel)]="BudgetObj.INTERVAL_ON_AD_OR_BS">
+                        <label class="form-check-label" for="adInterval" style="padding-left: 2.25rem;">
+                          A.D
+                        </label>
+                      </div>
+                    </div>
+
+
+                  </div>
+                  <!-- <div class="fromdate" style="display: flex; align-items: center;">
+                    <label style="flex: 0 0 34%;">From:</label>
+                    <input style="flex: 0 0 28%; height: 24px; 
+                font-size: 12px;" placeholder="Year Start Date" (change)="changeFromDate($event.target.value,'AD')"
+                      [(ngModel)]="BudgetObj.FROM_DATE" type="date" disabled>
+                    <label style="flex: 0 0 8%; margin-left: 0%;  font-size: 11px;"> (A.D)</label>
+
+                    <div style="flex: 0 0 28%; height: 24px;
+          font-size: 12px;">
+                      <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDatefrom'"
+                        (change)="changeFromDate($event.detail.value,'BS')" [(ngModel)]="BudgetObj.FROM_BSDATE">
+                      </nepali-date-picker>
+                    </div>
+                    <label style=" flex: 0 0 8%;
+            margin-left: 0%; font-size: 11px;"> (B.S)</label>
+                  </div>
+
+                  <div class="todate" style="display: flex; align-items: center;">
+                    <label style="flex: 0 0 34%;">To:</label>
+                    <input style="flex: 0 0 28%; height: 24px;
+          font-size: 12px;" placeholder="Year Start Date" [(ngModel)]="BudgetObj.TO_DATE"
+                      (change)="changeToDate($event.target.value,'AD')" type="date" disabled>
+                    <label style="flex: 0 0 8%; margin-left: 0%;  font-size: 11px;"> (A.D)</label>
+
+                    <div style="flex: 0 0 28%; height: 24px;
+          font-size: 12px;">
+                      <nepali-date-picker name="nepaliDateTo" [id]="'nepaliDateTo'"
+                        (change)="changeToDate($event.detail.value,'BS')" [(ngModel)]="BudgetObj.TO_BSDATE">
+                      </nepali-date-picker>
+                    </div>
+                    <label style=" flex: 0 0 8%;
+                    margin-left: 0%; font-size: 11px;"> (B.S)</label>
+
+                  </div> -->
+                </div>
+                <div class="col-lg-6">
+                  <div class=" Pre-FillData" style="display: flex; align-items: center;">
+
+                    <label style="flex: 0 0 30%; margin-top: 9px;">Pre-Fill Data :</label>
+                    <input type="text" style="font-weight: bold; height:24px;width: 95% !important;"
+                      class="form-control accountLedger" [(ngModel)]="BudgetObj.PREFILL_DATA"
+                      placeholder="Press Enter or Tab for Pre-Fill Data List" (keydown.Tab)="PreFillDataClicked($event)"
+                      (keydown.enter)="PreFillDataClicked($event)" [disabled]="BudgetObj.MODE=='VIEW'"
+                      (keydown)="preventInput($event)">
+                  </div>
+                 
+           
+
+
+                </div>
+
+
+              </div>
+
+            </div>
+
+            <div class="col-lg-4">
+              <!-- <div class="  TypeofBudget" style="display: flex;align-items: center; ">
+
+                <label style="flex: 0 0 30%; margin-top: 9px;">Type of Budget :</label>
+
+                <select style="flex: 0 0 65%" class="form-select form-control" [(ngModel)]="BudgetObj.BUDGET_TYPE"
+                  [disabled]="BudgetObj.MODE=='VIEW'">
+                  <option value="ON_NET_TRANSACTION">On Net Transaction</option>
+                  <option value="ON_CLOSING_BALANCE">On Closing Balance</option>
+                </select>
+              </div> -->
+
+             
+              <div class="SubDivided" style="display: flex;align-items: center; ">
+
+                <label style="flex: 0 0 30%; margin-top: 9px;">Sub divided by :</label>
+
+                <select style="flex: 0 0 65%" class="form-select form-control" [(ngModel)]="BudgetObj.SUBDIVIDED_BY"
+                  [disabled]="BudgetObj.MODE=='VIEW'">
+                  <option value="DONOT_SUBDIVIDE">Donot sub divide</option>
+                  <!-- <option value="DEPARTMENT">Department</option> -->
+                  <option  *ngIf="userSetting.EnableCompulsoryCostCategory==1" value="COSTCENTER">Cost Center</option>
+                </select>
+              </div>
+
+              <div class=" Action " style="display: flex;">
+
+                <label style="flex: 0 0 19%;
+                margin-top: 9px;
+                margin-left: 11%;">Action :</label>
+                <select style="flex: 0 0 65%" class="form-select form-control" (change)="SelectionAction($event)"
+                  [(ngModel)]="BudgetObj.ACTION" [disabled]="BudgetObj.MODE=='VIEW'">
+                  <option selected value="IGNORE">Ignore</option>
+                  <option value="WARN">Warn</option>
+                  <option value="STOP">Stop</option>
+                </select>
+
+
+              </div>
+              <div class="radioBUttons" *ngIf="showActionCheckBox==true"
+              style="display: flex; align-items: center;">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="Monthly"
+                  [(ngModel)]="BudgetObj.ACTION_TYPE" value="MONTHLY" [disabled]="BudgetObj.MODE=='VIEW'">
+                <label class="form-check-label" for="Monthly">
+                  Monthly
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="Quaterly"
+                  [(ngModel)]="BudgetObj.ACTION_TYPE" value="QUATERLY" [disabled]="BudgetObj.MODE=='VIEW'">
+                <label class="form-check-label" for="Quaterly">
+                  Quaterly
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="Annually"
+                  [(ngModel)]="BudgetObj.ACTION_TYPE" value="ANNUALLY" [disabled]="BudgetObj.MODE=='VIEW'">
+                <label class="form-check-label" for="Annually">
+                  Annually
+                </label>
+              </div>
+
+            </div>
+
+            </div>
+
+          </div>
+
+
+
+        </div>
+      </div>
+      <div class="row" style="margin: 0;" >
+        <ul class="nav nav-tabs" style="background-color:#CFD5EA ;">
+          <li class="nav-item">
+            <a class="nav-link active" href="#budgetEntry" data-toggle="tab" style="color:#000">Budget Entry</a>
+          </li>
+         
+         
+          <li class="nav-item">
+            <a class="nav-link" href="#costCenterdetails"  data-toggle="tab" style="color:#000">Cost Center Details</a>
+          </li>
+        </ul>
+         
+        
+        <!-- <div class="titleWrapper" style="background-color:#CFD5EA ; padding: 10px;">
+          <h6 style="margin: 0;">ACCOUNT LIST</h6>
+        </div> -->
+
+        <div class="tab-content">
+          <div class="tab-pane active" id="budgetEntry">
+             <div class="row" style="position: relative; height:30px" *ngIf="BudgetObj.SUBDIVIDED_BY=='COSTCENTER'">
+          <div *ngIf="userSetting.EnableCompulsoryCostCategory==1 && BudgetObj.SUBDIVIDED_BY=='COSTCENTER'"
+            
+            class="CostCenterCategory col-md-4" style="display: flex;">
+            <label style="flex: 0 0 35%; margin-top: 9px;">Cost Center Category:</label>
+
+            <select [disabled]="BudgetObj.MODE=='VIEW'" class="form-select" aria-label="Default select example" [(ngModel)]="BudgetObj.COSTCENTER_CATEGORYID" (change)="showCostCenterGroupChange($event)">
+              <option selected value="%"> </option>
+              <option *ngFor="let i of costCenterCategoryList" value={{i.ccgid}}>{{i.COSTCENTERGROUPNAME}}
+              </option>
+           
+            </select>
+            <!-- <input type="text" style="font-weight: bold; height:24px;width: 95% !important;"
+              class="form-control accountLedger" [(ngModel)]="BudgetObj.COSTCENTER_CATEGORYNAME"
+              placeholder="Press Enter or Tab for Cost Center Category List"
+              (keydown.Tab)="showCostCenterGroupList($event)" (keydown.enter)="showCostCenterGroupList($event)"
+              [disabled]="BudgetObj.MODE=='VIEW'" (keydown)="preventInput($event)"> -->
+          </div>
+          <div class="CostCenter col-md-4" style="display: flex;" *ngIf="BudgetObj.SUBDIVIDED_BY=='COSTCENTER'">
+            <label style="flex: 0 0 21%; margin-top: 9px;">Cost Center :</label>
+
+            <select [disabled]="BudgetObj.MODE=='VIEW'" class="form-select" aria-label="Default select example" [(ngModel)]="BudgetObj.CCID" (change)="onCostCenterSelect($event)">
+              <option selected value="%"> </option>
+              <option *ngFor="let i of costCenterList" value={{i.CCID}}>{{i.COSTCENTERNAME}}
+              </option>
+           
+            </select>
+            <!-- <input type="text" style="font-weight: bold; height:24px;width: 95% !important;"
+              class="form-control accountLedger" [(ngModel)]="BudgetObj.COSTCENTER_NAME"
+              placeholder="Press Enter or Tab for Cost Center List" (keydown.Tab)="showCostCenterList($event)"
+              (keydown.enter)="showCostCenterList($event)" [disabled]="BudgetObj.MODE=='VIEW'"
+              (keydown)="preventInput($event)"> -->
+          </div>
+          <div *ngIf="BudgetObj.SUBDIVIDED_BY=='COSTCENTER'">
+            <button class="btn btn-info pull-right" (click)="Apply()" style="    color: #fff;
+            margin-left: 20px;
+            margin-top: 5px;
+            position: absolute;
+            right: 21px;
+            margin-top: 10px;
+            border: none;
+            padding: 6px;
+            top: -5px;;" [disabled]="BudgetObj.MODE=='VIEW'">Apply</button>
+          </div>
+
+             </div>
+             <!-- <div class="midTableWrapper"> -->
+              <div class="clearfix" style="margin-top: 5px">
+          
+          
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div style="padding-right: 0px !important; padding-left: 0px !important;">
+                      <div style="height:auto; overflow-y: scroll">
+                        <table style="margin-bottom: 5px;font-size: 13px;width: 100%;">
+                          <thead>
+                            <tr style=" border-bottom: 2px solid #E6E6E6;
+                                                    border-top: 2px solid #E6E6E6;
+                                                    height: 30px;
+                                                    background: #4472C4;
+                                                    color: #fff;">
+                              <!-- <th style="width: 2%;">SNo.</th> -->
+                              <ng-container *ngFor="let column of genericTableList; let i = index">
+          
+                                <th *ngIf="!column.hidden" [ngStyle]="column.headerNgStyle">
+                                  {{column.header}}
+                                </th>
+                              </ng-container>
+                              <!-- <th style="width: 11%;padding-left: 1%;">
+                                Account Ledger
+                              </th>
+                              <th style="width: 11%;padding-left: 1%;">
+                                Amount
+                              </th> -->
+          
+                            </tr>
+                          </thead>
+                          <tbody *ngFor="let t of temp_DetailList; let i = index" (click)="rowClick(i)">
+                            <!-- <ng-container > -->
+          
+                            <tr style="border: 1px solid #e6e6e6;max-height:25px;">
+                              <!-- <ng-container *ngIf="!col.hidden"> -->
+          
+          
+                              <td style="line-height:21px; text-align:center">
+                                {{i+1}}
+                              </td>
+                              <td style="line-height:21px; text-align:center">
+                                <input type="text" style="height:24px;width: 95% !important;" placeholder="Press Enter to select"
+                                  (keydown.Enter)="AccountGroupClick()" [(ngModel)]="t.ACCOUNTGROUP_NAME"
+                                  (keydown)="preventInput($event)" autocomplete="off" [disabled]="BudgetObj.MODE=='VIEW'"
+                                  (keydown.Shift.Delete)="clearRow($event,i,t);">
+                              </td>
+          
+                              <td style="line-height:21px; text-align:center">
+                                <input type="text" style="font-weight: bold; height:24px;width: 95% !important;"
+                                  class="form-control accountLedger" [(ngModel)]="t.ACNAME" autocomplete="off"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown)="preventInput($event)"
+                                  (keydown.Shift.Delete)="clearRow($event,i,t);">
+                              </td>
+          
+                              <!-- quarterly in bs-interval starts -->
+                              <td *ngIf="is_quaterly && BudgetObj.INTERVAL_ON_AD_OR_BS=='BSINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.SHRAWAN_ASHOJ"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_quaterly && BudgetObj.INTERVAL_ON_AD_OR_BS=='BSINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.KARTIK_POUSH"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_quaterly && BudgetObj.INTERVAL_ON_AD_OR_BS=='BSINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.MAGH_CHAITRA"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_quaterly && BudgetObj.INTERVAL_ON_AD_OR_BS=='BSINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.BAISAKH_ASAR"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (change)="CalculateSum()"
+                                  (keydown.Shift.Delete)="clearRow($event,i,t);"(keydown.enter)="nextrow(i,t)">
+                              </td>
+                              <!-- quarterly in bs-interval ends -->
+          
+                              <!-- quarterly in ad-interval starts -->
+                              <td *ngIf="is_quaterly && BudgetObj.INTERVAL_ON_AD_OR_BS=='ADINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.JULY_SEPTEMBER"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (change)="CalculateSum()"
+                                  (keydown.Shift.Delete)="clearRow($event,i,t);">
+                              </td>
+                              <td *ngIf="is_quaterly && BudgetObj.INTERVAL_ON_AD_OR_BS=='ADINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.OCTOBER_DECEMBER"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (change)="CalculateSum()"
+                                  (keydown.Shift.Delete)="clearRow($event,i,t);">
+                              </td>
+                              <td *ngIf="is_quaterly && BudgetObj.INTERVAL_ON_AD_OR_BS=='ADINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.JANUARY_MARCH"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (change)="CalculateSum()"
+                                  (keydown.Shift.Delete)="clearRow($event,i,t);">
+                              </td>
+                              <td *ngIf="is_quaterly && BudgetObj.INTERVAL_ON_AD_OR_BS=='ADINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.APRIL_JUNE"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (change)="CalculateSum()"
+                                  (keydown.Shift.Delete)="clearRow($event,i,t);"(keydown.enter)="nextrow(i,t)">
+                              </td>
+                              <!-- quarterly in ad-interval ends -->
+          
+                              <!-- monthly in bs-interval starts -->
+                              <td *ngIf="is_monthly && BudgetObj.INTERVAL_ON_AD_OR_BS=='BSINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.BAISAKH"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_monthly && BudgetObj.INTERVAL_ON_AD_OR_BS=='BSINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.JESTHA"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_monthly && BudgetObj.INTERVAL_ON_AD_OR_BS=='BSINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.ASAR"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_monthly && BudgetObj.INTERVAL_ON_AD_OR_BS=='BSINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.SHRAWAN"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_monthly && BudgetObj.INTERVAL_ON_AD_OR_BS=='BSINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.BHADRA"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_monthly && BudgetObj.INTERVAL_ON_AD_OR_BS=='BSINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.ASHOJ"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_monthly && BudgetObj.INTERVAL_ON_AD_OR_BS=='BSINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.KARTIK"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_monthly && BudgetObj.INTERVAL_ON_AD_OR_BS=='BSINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.MANGSIR"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_monthly && BudgetObj.INTERVAL_ON_AD_OR_BS=='BSINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.POUSH"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_monthly && BudgetObj.INTERVAL_ON_AD_OR_BS=='BSINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.MAGH"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_monthly && BudgetObj.INTERVAL_ON_AD_OR_BS=='BSINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.FALGUN"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_monthly && BudgetObj.INTERVAL_ON_AD_OR_BS=='BSINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.CHAITRA"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (change)="CalculateSum()"
+                                  (keydown.Shift.Delete)="clearRow($event,i,t);"(keydown.enter)="nextrow(i,t)">
+                              </td>
+                              <!-- monthly in bs-interval ends -->
+          
+                              <!-- monthly in ad-interval starts -->
+                              <td *ngIf="is_monthly && BudgetObj.INTERVAL_ON_AD_OR_BS=='ADINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.JANUARY"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_monthly && BudgetObj.INTERVAL_ON_AD_OR_BS=='ADINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.FEBRUARY"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_monthly && BudgetObj.INTERVAL_ON_AD_OR_BS=='ADINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.MARCH"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_monthly && BudgetObj.INTERVAL_ON_AD_OR_BS=='ADINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.APRIL"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_monthly && BudgetObj.INTERVAL_ON_AD_OR_BS=='ADINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.MAY"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_monthly && BudgetObj.INTERVAL_ON_AD_OR_BS=='ADINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.JUNE"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_monthly && BudgetObj.INTERVAL_ON_AD_OR_BS=='ADINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.JULY"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_monthly && BudgetObj.INTERVAL_ON_AD_OR_BS=='ADINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.AUGUST"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_monthly && BudgetObj.INTERVAL_ON_AD_OR_BS=='ADINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.SEPTEMBER"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_monthly && BudgetObj.INTERVAL_ON_AD_OR_BS=='ADINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.OCTOBER"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_monthly && BudgetObj.INTERVAL_ON_AD_OR_BS=='ADINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.NOVEMBER"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (keydown.Shift.Delete)="clearRow($event,i,t);"
+                                  (change)="CalculateSum()">
+                              </td>
+                              <td *ngIf="is_monthly && BudgetObj.INTERVAL_ON_AD_OR_BS=='ADINTERVAL'"
+                                style="line-height:21px; text-align:center">
+                                <input type="number" style="height:24px;width: 95% !important;" [(ngModel)]="t.DECEMBER"
+                                  [disabled]="BudgetObj.MODE=='VIEW'" (change)="CalculateSum()"
+                                  (keydown.Shift.Delete)="clearRow($event,i,t);"(keydown.enter)="nextrow(i,t)">
+                              </td>
+                              <!-- monthly in ad-interval ends -->
+          
+                              <td>
+                                <input type="number" class="input_hight Amount" [(ngModel)]="t.BUDGET"
+                                  [disabled]="BudgetObj.MODE=='VIEW' || is_monthly || is_quaterly" (keydown.Tab)="nextrow(i,t)"
+                                  (keydown.enter)="nextrow(i,t)" (keydown.Shift.Delete)="clearRow($event,i,t);" (change)="CalculateSum()">
+          
+          
+                              </td>
+          
+                            </tr>
+                         
+                          </tbody>
+          
+          
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+          
+              </div>
+
+            <div class="footer">
+              <div class="row" style="position: fixed;
+                   bottom: 20px; background-color: #fff;">
+          
+                <tr>
+                  <td style="width: 15%;"></td>
+                  <td style="width: 7%;">
+                    <div class="d-flex" style="display: flex; align-items: center;">
+                      <h5 style="font-weight: bold; margin: 0 ;padding-left:10px; flex: 0 0 5%;">Total:</h5>
+                      <input style="flex: 0 0 30%; padding: 5px;" type="text" placeholder="0.00:"
+                        [(ngModel)]="BudgetObj.TOTAL_BUDGET" disabled>
+                    </div>
+          
+                  </td>
+          
+                </tr>
+          
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane " id="costCenterdetails">
+           <table class="table table-striped" >
+            <thead style="background-color: #4472C4;">
+              <tr >
+                <th >S.N</th>
+                <th >Account Group</th>
+                <th >Account Ledger</th>
+                <th *ngIf="COSTCENTER_CATEGORYNAME!=null|| COSTCENTER_CATEGORYNAME!=''">Cost Center Category</th>
+                <th>Cost Center</th>
+                <th >Total</th>
+              </tr>
+            
+            </thead>
+            <tbody>
+
+             <ng-container *ngIf="DetailList">
+              <tr *ngFor="let entry of DetailList; let i = index">
+                <td > {{ i+1 }}</td>
+                <td>{{ entry.ACCOUNTGROUP_NAME }}</td>
+                <td>{{ entry.ACNAME }}</td>
+                <td *ngIf="COSTCENTER_CATEGORYNAME!=null|| COSTCENTER_CATEGORYNAME!=''">{{ entry.COSTCENTER_CATEGORYNAME }}</td>
+                <td>{{ entry.COSTCENTER_NAME }}</td>
+                <td>{{ entry.BUDGET }}</td>
+               
+              </tr>
+
+             </ng-container>
+             <ng-container *ngIf="DetailList==null || DetailList=='' ">
+              <tr *ngFor="let entry of temp_DetailList; let i = index">
+                <td > {{ i+1 }}</td>
+                <td>{{ entry.ACCOUNTGROUP_NAME }}</td>
+                <td>{{ entry.ACNAME }}</td>
+                <td *ngIf="COSTCENTER_CATEGORYNAME!=null|| COSTCENTER_CATEGORYNAME!=''">{{ entry.COSTCENTER_CATEGORYNAME }}</td>
+                <td>{{ entry.COSTCENTER_NAME }}</td>
+                <td>{{ entry.BUDGET }}</td>
+               
+              </tr>
+
+             </ng-container>
+             
+           
+            
+            </tbody>
+          </table>
+        
+          <div class="footer">
+            <div class="row" style="position: fixed;
+                 bottom: 20px; background-color: #fff;">
+        
+              <tr>
+                <td  style="width: 10%;"></td>
+                <td style="width: 62%;">
+                 </td>
+                 <td style="width: 16%;">Total :</td>
+                 <td><input type="text" [(ngModel)]="costcenterDetailListTotal"> </td>
+        
+              </tr>
+        
+            </div>
+          </div>
+
+            
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+ 
+
+
+  
+
+
+
+</div>
+
+
+<div style="width:90%" class="reportpopup">
+  <generic-popup-grid #genericGridAccountLedger [popupsettings]="gridPopupSettingsForAccountLedgerList"
+    (onItemDoubleClick)="dblClickAccountSelect($event)">
+  </generic-popup-grid>
+  <generic-popup-grid #genericGridBudgetList [popupsettings]="gridPopupSettingsForBudgetList"
+    (onItemDoubleClick)="dblClickBudgetSelect($event)">
+  </generic-popup-grid>
+  <generic-popup-grid #genericGridCostCenterList [popupsettings]="gridCostCenterListPopupSettings"
+    (onItemDoubleClick)="onCostCenterSelect($event)"></generic-popup-grid>
+  <generic-popup-grid #genericGridCostCenterGroupList [popupsettings]="gridCostCenterGroupListPopupSettings"
+    (onItemDoubleClick)="onCostCenterGroupSelect($event)"></generic-popup-grid>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+<!-- importBudget PopUP -->
+
+<div class="modal fade" style="top:-222px !important" id="importBudget" tabindex="-1" role="dialog"
+  aria-labelledby="importBudgetlabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="importBudget">Import Budget</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style=" position: absolute;
+                top: 20px;
+                right: 30px;">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="upload-area container" style=" margin-top: -40px;">
+          <br />
+          <div class="file-upload-area">
+            <div class="row">
+              <div class=" offset-lg-2 col-md-8">
+
+                <div class="outerbox">
+                  <div class="upload-drop-zone" style="background-color: #fff;" id="drop-zone">
+                    <b>Drop Your File Here or </b> <span style="font-weight: 800; 
+                                  font-size: 16px; color: #2D94EC;">Browse.</span>
+
+                  </div>
+                </div>
+                <div class="input-group image-preview" style="justify-content: right;">
+                  <input placeholder="" type="text" class="form-control image-preview-filename" disabled="disabled"
+                    name="selectedfiles" style="display: none" />
+                  <!-- don't give a name === doesn't send on POST/GET -->
+                  <span class="input-group-btn">
+                    <!-- image-preview-clear button -->
+                    <button type="button" class="btn btn-default image-preview-clear" style="display:none;">
+                      <span class="glyphicon glyphicon-remove">Clear</span>
+                    </button>
+                    <!-- image-preview-input -->
+                    <div class="btn btn-info image-preview-input" style="margin-right: 5px; justify-content: right;">
+                      <span class="glyphicon glyphicon-folder-open"></span>
+                      <span class="image-preview-input-title">Browse</span>
+                      <input type="file" #fileSelect accept=".png, .jpg" name="input-file-preview" />
+                      <!-- rename it -->
+                    </div>
+                    <button style="
+                                    font-size: 14px;
+                                    line-height: 18px;
+                                    color: #FFFFFF;
+                                    background: #4472C4;
+                                     border-radius: 5px;
+                                    " type="button" data-dismiss="modal" class="btn btn-labeled btn-info">
+                      <span class="btn-label"><i class="glyphicon glyphicon-upload"></i>
+                      </span>Upload
+                    </button>
+                  </span>
+                </div>
+              </div>
+
+            </div>
+
+            <br />
+
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="offset-md-3 col-lg-9">
+            <p><b>Note :</b></p>
+            <p>You can Supply Dr and Cr Balance in a csv format for quick importing.</p>
+            <ul>
+              <li>Enter Dr or Cr balance Only.</li>
+              <li>Do not change the accounts name.</li>
+            </ul>
+            <p>Download the <b> sample template</b> to get started.</p>
+          </div>
+
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- p[pup] -->
+
+<!--  -->
+<style>
+  .acpopup.table>tbody>tr>td {
+    padding: 8px 6px 0px 8px;
+    line-height: 20px;
+
+  }
+</style>
+
+<div *ngIf="showPopup" class="poppWrapper" style=" position: absolute;
+right: 0;
+top: 200px;
+background: #fff;
+width: 51%;
+  overflow: scroll;">
+
+  <fieldset style="padding: 0; border-top-left-radius: 10px; border-top-right-radius: 10px;">
+    <header style="    background: #4472C4 !important;
+padding: 0 20px; border-top-left-radius: 10px; border-top-right-radius: 10px;
+">
+      <div class="row" style="display: flex;">
+        <h5 style="padding: 10px 0 0 10px; color: #fff;">ACCOUNT GROUP</h5>
+
+        <button  (keydown.esc)="Close()" (click)="Close()"  class="item-4 closeIcon" style="padding-top: 7px;"></button>
+        <!-- <div (click)="Close()" class="closeIcon" style="padding-top: 7px;">
+          <img src="../../../../../assets/icon/close.png" alt="">
+        </div> -->
+
+      </div>
+
+    </header>
+    <div class="row" style="margin: 0;">
+      <div class="col-lg-6" style="border:2px solid;border-color:#dcdcdc; width: 50%; padding: 10px 30px;">
+        <header
+          style="background: #4472C4 !important;
+           padding: 0 20px; margin: -7px -26px -7px -14px; border-top-left-radius: 10px; border-top-right-radius: 10px;">
+          <h5 style=" padding: 7px 0 6px 0px;; color: #fff; text-align: center;">GROUP SELECTION</h5>
+        </header>
+
+        <div class="row" style="margin-top: 20px;">
+          <label class="form-control-label col-md-4 " style="width: auto;">Main Group :</label>
+          <div class="col-md-7">
+            <hr>
+          </div>
+        </div>
+        <div class="row selectrow">
+          <select id="mainGroup" class="form-control" [(ngModel)]="masterService.groupSelectObj.MGROUP"
+            [ngModelOptions]="{standalone: true}" (change)="getSubgroupA($event)">
+            <!-- <option [value]="AL"></option> -->
+            <option *ngFor="let main of masterService.mainGroupList;let i=index" [value]="main.ACID">{{main?.ACNAME}}
+            </option>
+          </select>
+        </div>
+        <div class="row">
+          <label class="form-control-label col-md-4 " style="width: auto;">Sub Group (A) :</label>
+          <div class="col-md-7">
+            <hr>
+          </div>
+        </div>
+        <div class="row selectrow">
+          <select class="form-control" [(ngModel)]="masterService.groupSelectObj.SUBGROUP_A"
+            [disabled]="masterService.disableSubGroupA" [ngModelOptions]="{standalone: true}"
+            (change)="getSubgroupB($event)">
+            <option [value]=""></option>
+            <option *ngFor="let sub of masterService.subGroupAList;let i=index" [value]="sub.ACID">{{sub?.ACNAME}}
+            </option>
+          </select>
+        </div>
+        <div class="row">
+          <label class="form-control-label col-md-4 " style="width: auto;">Sub Group (B) :</label>
+          <div class="col-md-7">
+            <hr>
+          </div>
+        </div>
+        <div class="row selectrow">
+          <select class="form-control" [(ngModel)]="masterService.groupSelectObj.SUBGROUP_B"
+            [disabled]="masterService.disableSubGroupB" [ngModelOptions]="{standalone: true}"
+            (change)="getSubgroupC($event)">
+            <option [value]=""></option>
+            <option *ngFor="let sub of masterService.subGroupBList; let i=index" [value]="sub.ACID">{{sub?.ACNAME}}
+            </option>
+          </select>
+        </div>
+        <div class="row">
+          <label class="form-control-label col-md-4 " style="width: auto;">Sub Group (C) :</label>
+          <div class="col-md-7 pd0">
+            <hr>
+          </div>
+        </div>
+        <div class="row selectrow">
+          <select class="form-control" [(ngModel)]="masterService.groupSelectObj.SUBGROUP_C"
+            [disabled]="masterService.disableSubGroupC" [ngModelOptions]="{standalone: true}"
+            (change)="selectSubgroupC($event)">
+            <option *ngFor="let sub of masterService.subGroupCList; let i = index" [value]="sub.ACID">{{sub?.ACNAME}}
+            </option>
+          </select>
+        </div>
+
+      </div>
+      <div class="col-lg-6" style="height: 350px; overflow: scroll; padding-right: 0;">
+        <header style="
+        padding: 0 20px; position: sticky; top: 0; background-color: #fff !important; z-index: 9;">
+          <div class="row" style="display: flex;">
+            <h5 style="padding: 10px 0 0 0; color: #000; font-weight: bold;">Selected Group Lists</h5>
+            <div (click)="Close()" class="closeIcon" style="padding-top: 7px;">
+              <button class="btn btn-sm " style="background-color: #4472C4; color: #fff;"
+                (click)="method()">Apply</button>
+            </div>
+          </div>
+
+        </header>
+
+
+        <div class="SelectAll" style="display: flex; background-color: #E9EBF5;position: sticky;top:36px; z-index:9">
+          <input type="text" type="checkbox" style="width: auto; " (change)="handleChange($event)" id="selectAll">
+          <label style="margin-top: 8px;">Select All</label>
+
+        </div>
+
+
+        <table class="table table-striped acpopup">
+          <thead style="position: sticky;top:67px; z-index:9">
+            <tr style=" background: #FFF;
+            box-shadow: 2px 4px 4px 2px rgba(0, 0, 0, 0.25);
+            ">
+              <th style="width: 1%;"></th>
+              <th scope="col" style="width:2%; color:#000 !important">A/C Code</th>
+              <th scope="col" style="width:100%;color:#000 !important">A/C Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="this.AccountService.partyList && this.AccountService.partyList.length >0">
+              <tr *ngFor="let party of this.AccountService.partyList; let i=index">
+                <td style="line-height:21px; text-align:center">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" [(ngModel)]="party.IS_CHECKED">
+
+                  </div>
+                </td>
+                <td style="width:8%">{{party.ACCODE}}</td>
+                <td style="width:12%">{{party.ACNAME}}</td>
+
+
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+
+
+
+  </fieldset>
+
+</div>

@@ -1,0 +1,435 @@
+<div class="page-top clearfix" baScrollPosition maxHeight="50" (scrollChange)="scrolledChanged($event)"
+  [ngClass]="{ scrolled: isScrolled }">
+  <div  class="logo-wrapper" style="position: absolute;top:0; cursor: pointer;" routerlink="#/pages/dashboard/dashboard" (click)="logoClickEvent()"> 
+    <img   style="    position: relative;
+    height: inherit;
+    width: 62px;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    margin-top: 2px;
+    margin-left: -24px;
+    margin-right: 15px;" tabindex="0" src="../../../../assets/iimslogo.png">
+  </div>
+  <div class="menu-area master-menu hidedropbtn" style="margin-left: 60px;">
+    <!-- <div style="float: left;">
+        <img  src="{{ icon }}" style="height: 50px;" (click)="logoClickEvent()">
+    </div> -->
+
+    <div class="dropdown" *ngFor="let menuItem of menuItems">
+
+      <a *ngIf="!menuItem.children && menuItem.url && isShowPageMenu(menuItem)" (mouseenter)="onHoverItem($event, item)"
+        [href]="menuItem.url" [target]="menuItem.target" class="main-menu-button">
+
+        <i *ngIf="menuItem.icon" class="{{ menuItem.icon }}"></i><span>{{ menuItem.title }}</span>
+      </a>
+      <a *ngIf="!menuItem.children && !menuItem.url && isShowPageMenu(menuItem)"
+        (mouseenter)="onHoverItem($event, item)" [ngClass]="{ selected: menuItem.title == selectedMenuItems.title }"
+        class="main-menu-button" [routerLink]="menuItem.route.paths" [title]="menuItem.title">
+        <i *ngIf="menuItem.icon" class="{{ menuItem.icon }}"></i><span>{{ menuItem.title }}</span>
+      </a>
+      <a *ngIf="menuItem.children && isShowPageMenu(menuItem)" (click)="setSelectedMenu(menuItem)"
+        [ngClass]="{ selected: menuItem.title == selectedMenuItems.title }" class="main-menu-button"
+        [title]="menuItem.title">
+
+         <i *ngIf="menuItem.icon && menuItem.title !='IMSPOS'" class="{{ menuItem.icon }}"></i>
+        <span *ngIf="menuItem.title !='IMSPOS'">{{ menuItem.title }}</span>
+        <div style="float: left;">
+          <span *ngIf="menuItem.title =='IMSPOS'">HamroSDS</span>
+          <div style="float: left;"></div>
+          <img style="position: relative;bottom:16px;height: 60px;" *ngIf="menuItem.title =='IMSPOS'"
+            src="{{ icon }}" (click)="logoClickEvent()">
+            <img style="position: relative;bottom:6px;height: 30px;" *ngIf="menuItem.title =='HamroSDS'"
+            src="{{ icon }}" (click)="logoClickEvent()">
+        </div>
+
+
+      </a>
+    </div>
+
+  </div>
+
+
+  <div class="main-menu-inner menu-area master-menu" style="float: right;margin-left: 10px">
+    <div class="dropdown">
+      <a class="dropbtn">
+        <i class="fa fa-user-circle-o" aria-hidden="true" style="font-size: 20px;color:#616363">
+        </i><i class="ion-arrow-down-b" style="color: #616363"></i>
+      </a>
+      <div class="dropdown-content" style="min-width: 100px !important">
+        <a title="log out" (click)="changePassword()" style="cursor:pointer;">
+          <span>Change Password</span>
+        </a>
+        <a title="log out" class="signout" (click)="TakeBackup()" style="cursor:pointer;">
+          <i class="fa fa-power-off"></i><span>Sign Out</span>
+        </a>
+
+        <!-- <a href="./../../../assets/help.pdf" target="_blank">
+          <i class="fa fa-question-circle" aria-hidden="true"></i><span>Help</span>
+        </a> -->
+
+      </div>
+    </div>
+  </div>
+
+   <button class="sidebar-open btnsidebar" (click)="sidebarShow = !sidebarShow">
+  <span></span>
+    <span></span>
+    <span></span>
+</button>
+<div class="sidebar-slider sidebar-menu" [class.sidebar-slide-in]="sidebarShow">
+  <button class="sidebar-close" (click)="sidebarShow = !sidebarShow">x</button>
+  <nav id="site-navigation" class="main-navigation">
+     <div class="dropdown" *ngFor="let menuItem of menuItems">
+
+      <a *ngIf="!menuItem.children && menuItem.url && isShowPageMenu(menuItem)" (mouseenter)="onHoverItem($event, item)"
+        [href]="menuItem.url" [target]="menuItem.target" class="main-menu-button">
+
+        <i *ngIf="menuItem.icon" class="{{ menuItem.icon }}"></i><span>{{ menuItem.title }}</span>
+      </a>
+      <a *ngIf="!menuItem.children && !menuItem.url && isShowPageMenu(menuItem)"
+        (mouseenter)="onHoverItem($event, item)" [ngClass]="{ selected: menuItem.title == selectedMenuItems.title }"
+        class="main-menu-button" [routerLink]="menuItem.route.paths" [title]="menuItem.title">
+        <i *ngIf="menuItem.icon" class="{{ menuItem.icon }}"></i><span>{{ menuItem.title }}</span>
+      </a>
+      <a *ngIf="menuItem.children && isShowPageMenu(menuItem)" (click)="setSelectedMenu(menuItem)"
+        [ngClass]="{ selected: menuItem.title == selectedMenuItems.title }" class="main-menu-button"
+        [title]="menuItem.title">
+
+         <i *ngIf="menuItem.icon && menuItem.title !='IMSPOS'" class="{{ menuItem.icon }}"></i>
+        <span *ngIf="menuItem.title !='IMSPOS'">{{ menuItem.title }}</span>
+        <div style="float: left;">
+          <span *ngIf="menuItem.title =='IMSPOS'">HamroSDS</span>
+          <div style="float: left;"></div>
+          <img style="position: relative;bottom:16px;height: 60px;" *ngIf="menuItem.title =='IMSPOS'"
+            src="{{ icon }}" (click)="logoClickEvent()">
+            <img style="position: relative;bottom:6px;height: 30px;" *ngIf="menuItem.title =='HamroSDS'"
+            src="{{ icon }}" (click)="logoClickEvent()">
+        </div>
+
+
+      </a>
+    </div>
+
+    <div class="main-menu clearfix">
+  <div class="main-menu-inner">
+    <div class="dropdown" *ngFor="let menuItem of selectedMenuItems.children" >
+
+      <a *ngIf="!menuItem.children && isShowPageMenu(menuItem)" [ngClass]="{ 'dropbtn-selected': menuItem.selected }"
+        class="dropbtn" [routerLink]="menuItem.route.paths" [title]="menuItem.title">
+        <i *ngIf="menuItem.icon" class="{{ menuItem.icon }}"></i>
+        <span>{{ menuItem.title }}</span>
+      </a>
+      <a *ngIf="menuItem.children && isShowPageMenu(menuItem)" class="dropbtn" [title]="menuItem.title">
+        <i *ngIf="menuItem.icon" class="{{ menuItem.icon }}"></i>
+        <span>{{ menuItem.title }}</span> <i class="ion-arrow-down-b"></i>
+      </a>
+      <div class="dropdown-content" *ngIf="menuItem.children && isShowPageMenu(menuItem)">
+        <ng-container *ngFor="let childrenItem of menuItem.children">
+          <a (click)="sidebarShow = !sidebarShow" [ngClass]="{ 'dropbtn-selected': menuItem.selected }" [routerLink]="childrenItem.route.paths"
+            *ngIf="!childrenItem.children && isShowPageMenu(childrenItem)">
+            <i *ngIf="childrenItem.icon" class="{{ childrenItem.icon }}"></i>
+            <span>{{ childrenItem.title }}</span>
+          </a>
+
+          <!-- more level down to menu -->
+          <div class="dropdown-inner" >
+            <a *ngIf="childrenItem.children && isShowPageMenu(childrenItem)" class="dropbtn-inner"
+              [title]="childrenItem.title">
+              <i *ngIf="childrenItem.icon" class="{{ childrenItem.icon }}"></i>
+              <span>{{ childrenItem.title }}</span>
+              <i class="ion-arrow-right-b" style="float:right"></i>
+            </a>
+            <div class="dropdown-content-inner" *ngIf="childrenItem.children && isShowPageMenu(childrenItem)">
+              <ng-container *ngFor="let childrenChildrenItem of childrenItem.children">
+                <a [ngClass]="{ 'dropbtn-selected': menuItem.selected }" [routerLink]="childrenChildrenItem.route.paths"
+                  *ngIf="isShowPageMenu(childrenChildrenItem)">
+                  <i *ngIf="childrenChildrenItem.icon" class="{{ childrenChildrenItem.icon }}"></i>
+                  <span>{{ childrenChildrenItem.title }}</span>
+                </a>
+              </ng-container>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+   
+    
+     <!-- <ul class="menu">
+      <li class="menu-item-has-children">
+       <a href="#">Master</a> 
+       <ul class="sub-menu">
+       
+        <li><a href="#" class="has-childern" (click)="dropdownShow = !dropdownShow" >Master</a>
+          <ul class="sub-menu"  [class.dropdownShowFull]="dropdownShow">
+            <li><a href="#">Product Master</a></li>
+              <li><a href="#">Brand Master</a></li>
+                <li><a href="#">Category Master</a></li>
+                  <li><a href="#">Warehouse Master</a></li>
+                    <li><a href="#">Point Master</a></li>
+                      <li><a href="#">Sales-man Master</a></li>
+                        <li><a href="#">Route Master</a></li>
+                          <li><a href="#">Route Coverage Master</a></li>
+                            <li><a href="#">Scheme Master</a></li>
+                              <li><a href="#">Primary Scheme</a></li>
+                                <li><a href="#">Secondary Scheme</a></li>
+                                  <li><a href="#">Outlet Mapping </a></li>
+                                    <li><a href="#">Product Master</a></li>
+                                      <li><a href="#">Product Master</a></li>
+                                        <li><a href="#">Product Master</a></li>
+          </ul>
+        </li>
+        <li><a href="#" class="has-childern"  (click)="dropdownShow = !dropdownShow">Inventory Info</a>
+         <ul class="sub-menu"  [class.dropdownShowFull]="dropdownShow">
+            <li><a href="#">Product Master</a></li>
+              <li><a href="#">Brand Master</a></li>
+                <li><a href="#">Category Master</a></li>
+                  <li><a href="#">Warehouse Master</a></li>
+                    <li><a href="#">Point Master</a></li>
+                      <li><a href="#">Sales-man Master</a></li>
+                        <li><a href="#">Route Master</a></li>
+                          
+          </ul>
+        
+        </li>
+          <li><a href="#" id="coolbutton">Others</a>
+         <ul class="sub-menu">
+            <li><a href="#">Product Master</a></li>
+              <li><a href="#">Brand Master</a></li>
+                <li><a href="#">Category Master</a></li>
+                  <li><a href="#">Warehouse Master</a></li>
+                    <li><a href="#">Point Master</a></li>
+                      
+                          
+          </ul>
+        
+        </li>
+       </ul>
+      </li>
+      <li class="menu-item-has-children">
+        <a href="#">Report</a>
+      </li> <li class="menu-item-has-children">
+        <a href="#">Configuration</a>
+      </li>
+    </ul>  -->
+  </nav>
+</div>
+  <!-- <div class="main-menu-inner menu-area master-menu" style="float: right;margin-left: 10px;margin-top: 10px">
+     <a (click)="downloadPrintService()" title="configure printer" style="cursor: pointer">
+      <i class="fa fa-print" aria-hidden="true" style="font-size: 20px;color:#616363"></i>
+    </a>
+  </div>  -->
+
+    <div class="main-menu-inner menu-area master-menu" style="margin-left: 10px;margin-top: 10px;float: right">
+      <i class="glyphicon glyphicon-list-alt" (click)="ChangeFY('changeFY')" style="filter: invert();"></i>
+      <label style="font-size: 15px;border: none;cursor: pointer;font-weight: 600;color: #fff;font-weight: bold;">@ F/Y : </label>
+      <!-- <select style="width: 84px;padding-left: 8px;background-color: #8cccfb;border-radius: 20px;font-size: 12px;/* border: none; */cursor: pointer;font-weight: 600;color: #656c67;"
+      (change)="ChangeFY($event.target.value)" [(ngModel)]="FY" disabled>
+        <option *ngFor = "let a of FYLIST" [value] = a.PhiscalID>{{a.PhiscalID}}</option>
+        <option value = 'changeFY'>Change FY</option>
+      </select>
+       -->
+       <a style="font-weight: bold; color: #fff;">{{PhiscalObj.PhiscalName}}</a>
+    </div>
+
+    <div class="main-menu-inner menu-area master-menu divisionName" style="margin-left: 10px;margin-top: 10px;float: right;margin-right: 40px">
+      <i class="glyphicon glyphicon-refresh" (click)="ClickDivPopup('changeDiv')"></i>
+      <label style="font-size: 15px;border: none;cursor: pointer;font-weight: 600;color: #fff;font-weight: bold;"> Div : </label>
+      <a style="color:#fff">{{PhiscalObj.DivisionName}}</a>
+    </div>
+
+    <!-- Menu search suggestions start -->
+    <div class="main-menu-inner menu-area master-menu simpleSelectWrapper" style="float: right;">
+      <div class="simpleSelect" [ngStyle]="{'text-align':textAlign}"
+        [ngClass]="{'down':align.toUpperCase()==='DOWN','top':align.toUpperCase()==='TOP'}" (click)="clickedInside($event)">
+    
+        <input type="text" autocomplete="off" id="ngx-simple-suggest" (input)="filterWord($event.target.value)" tabindex="0"
+          (focus)="expand=true" (keypress)="expand=true" (keydown.arrowup)="keyUp()" (keydown.arrowdown)="keyDown()"
+          (keydown.enter)="setSearchKeyword();expand=false" class=" simplesuggestformControl" [formControl]="search"
+          [ngClass]="{'expanded':suggestions?.length && expand}" placeholder="{{default}}" (change)="changeInInput($event)">
+        <div class="optionsContainer" *ngIf="suggestions?.length && expand">
+          <ul class="options"
+            [ngStyle]="((this.urlPath == 'stock-ledger-report' ) ? {'height':'165px'}:null) || ((this.urlPath == 'stock-abcanalysis-report' ) ? {'height':'245px'}:null) || ((this.urlPath == 'openingstock-report' ) ? {'height':'275px'}:null)">
+            <li *ngFor="let option of suggestions; let i = index" [ngClass]="{'active':selectedIndex==i}" tabindex="0"
+              (click)="setSearch(option);expand=false" (keypress)="search.setValue(option);expand=true">
+              {{option[labelKey]}}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- Menu search suggestions end -->
+
+
+
+</div>
+<div class="main-menu clearfix">
+  <div class="main-menu-inner">
+    <div class="dropdown hidedropbtn" *ngFor="let menuItem of selectedMenuItems.children">
+
+      <a *ngIf="!menuItem.children && isShowPageMenu(menuItem)" [ngClass]="{ 'dropbtn-selected': menuItem.selected }"
+        class="dropbtn" [routerLink]="menuItem.route.paths" [title]="menuItem.title">
+        <i *ngIf="menuItem.icon" class="{{ menuItem.icon }}"></i>
+        <span>{{ menuItem.title }}</span>
+      </a>
+      <a *ngIf="menuItem.children && isShowPageMenu(menuItem)" class="dropbtn" [title]="menuItem.title">
+        <i *ngIf="menuItem.icon" class="{{ menuItem.icon }}"></i>
+        <span>{{ menuItem.title }}</span> <i class="ion-arrow-down-b"></i>
+      </a>
+      <div class="dropdown-content" *ngIf="menuItem.children && isShowPageMenu(menuItem)">
+        <ng-container *ngFor="let childrenItem of menuItem.children">
+          <a [ngClass]="{ 'dropbtn-selected': menuItem.selected }" [routerLink]="childrenItem.route.paths"
+            *ngIf="!childrenItem.children && isShowPageMenu(childrenItem)">
+            <i *ngIf="childrenItem.icon" class="{{ childrenItem.icon }}"></i>
+            <span>{{ childrenItem.title }}</span>
+          </a>
+
+          <!-- more level down to menu -->
+          <div class="dropdown-inner">
+            <a *ngIf="childrenItem.children && isShowPageMenu(childrenItem)" class="dropbtn-inner"
+              [title]="childrenItem.title">
+              <i *ngIf="childrenItem.icon" class="{{ childrenItem.icon }}"></i>
+              <span>{{ childrenItem.title }}</span>
+              <i class="ion-arrow-right-b" style="float:right"></i>
+            </a>
+            <div class="dropdown-content-inner" *ngIf="childrenItem.children && isShowPageMenu(childrenItem)">
+              <ng-container *ngFor="let childrenChildrenItem of childrenItem.children">
+                <a [ngClass]="{ 'dropbtn-selected': menuItem.selected }" [routerLink]="childrenChildrenItem.route.paths"
+                  *ngIf="isShowPageMenu(childrenChildrenItem)">
+                  <i *ngIf="childrenChildrenItem.icon" class="{{ childrenChildrenItem.icon }}"></i>
+                  <span>{{ childrenChildrenItem.title }}</span>
+                </a>
+              </ng-container>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-sticky" *ngIf="_service.showchangePasswordPopUp" style="display : block; padding: 0px;  margin-bottom: 25px;height: 500px;
+  position: absolute;right: 35%;top: 5px;width: 450px;z-index: 9999999">
+
+  <div class="modal-content modal-content-main-area">
+    <div class="modal-header">
+      <h3 class="modal-title" id="myModalLabel">Change Password</h3>
+    </div>
+    <div class="modal-body">
+      <div class="row" style="margin-top: 8px;">
+        <div class="col-sm-4">
+          <label class="form-control-label">Username</label>
+        </div>
+        <div class="col-sm-5">
+          <input class="form-control" type="text" [(ngModel)]="userData.username">
+        </div>
+        <div class="col-sm-3">
+        </div>
+      </div>
+      <div class="row" style="margin-top: 8px;">
+        <div class="col-sm-4">
+          <label class="form-control-label">Current Password</label>
+        </div>
+        <div class="col-sm-5">
+          <input class="form-control" type="password" [(ngModel)]="userData.password" required>
+        </div>
+        <div class="col-sm-3">
+        </div>
+      </div>
+      <div class="row" style="margin-top: 8px;">
+        <div class="col-sm-4">
+          <label class="form-control-label">New Password</label>
+        </div>
+        <div class="col-sm-5">
+          <input class="form-control" type="password" [(ngModel)]="userData.newPassword">
+        </div>
+        <div class="col-sm-3">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="onClickUpdatePassword()">Update</button>
+      <button type="button" class="btn btn-default" (click)="onClickCancelPassword()">Cancel</button>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- change PhiscalYear -->
+<div class="modal-sticky" *ngIf="showFiscalYearPopUp" style="display : block; padding: 0px;  margin-bottom: 25px;height: 500px;
+  position: absolute;right: 35%;top: 300%;width: 450px;z-index: 9999999">
+
+  <div class="modal-content modal-content-main-area">
+    <div class="modal-header" style="background-color: #8cccfb;height: 52px;">
+      <h3 class="modal-title" id="myModalLabel">Change Fiscal Year</h3>
+    </div>
+    <div class="modal-body">
+      <div class="row" style="margin-top: 8px;">
+        <div class="col-sm-4">
+          <label class="form-control-label">FiscalYear :</label>
+        </div>
+        <div class="col-sm-5">
+         <select class="form-control" [(ngModel)] = 'NewPhiscalYear' (change)="changeFY($event.target.value)">
+           <option *ngFor ="let fy of PhiscalYearList" [value]= 'fy.PhiscalID'>{{fy.PhiscalID}}</option>
+
+         </select>
+        </div>
+        <div class="col-sm-3">
+        </div>
+      </div>
+      <!-- <div class="row" style="margin-top: 8px;">
+        <div class="col-sm-4">
+          <label class="form-control-label">isBookClosed : </label>
+        </div>
+        <div class="col-sm-5">
+          <input class="form-control" type="text" [(ngModel)]='FYClose' style="color:black" readonly>
+        </div>
+        <div class="col-sm-3">
+        </div>
+      </div> -->
+
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="onClickChangeFY()">Change</button>
+      <button type="button" class="btn btn-default" (click)="onClickCancelFY()">Cancel</button>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- Select Division -->
+
+<div class="modal-sticky" *ngIf="showDivisionPopUp" style="display : block; padding: 0px;  margin-bottom: 25px;height: 500px;
+  position: absolute;right: 35%;top: 300%;width: 450px;z-index: 9999999">
+
+  <div class="modal-content modal-content-main-area">
+    <div class="modal-header" style="background-color: #8cccfb;height: 52px;">
+      <h3 class="modal-title" id="myModalLabel">Change Division</h3>
+    </div>
+    <div class="modal-body">
+      <div class="row" style="margin-top: 8px;">
+        <div class="col-sm-4">
+          <label class="form-control-label">New Division :</label>
+        </div>
+        <div class="col-sm-5">
+
+         <select class="form-control" [(ngModel)]="NewDivision"
+          (change)="divisionChanged()">
+          <option *ngFor="let divs of division;let i=index" value="{{divs.INITIAL}}">{{divs.NAME}}</option>
+        </select>
+        </div>
+        <div class="col-sm-3">
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="onClickChangeDivision()">Change Division</button>
+      <button type="button" class="btn btn-default" (click)="onClickCancelDiv()">Cancel</button>
+    </div>
+  </div>
+
+</div>

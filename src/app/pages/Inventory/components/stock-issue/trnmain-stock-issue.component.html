@@ -1,0 +1,39 @@
+
+
+<form [formGroup]="TrnMainForm">
+<div *ngIf="masterService.ShowMore==true" class="row plainBackGround">
+        <div class="row">
+            <div class="col-md-6">
+                <label style="width:105.5px;">From Warehouse :</label>
+                <select style="width:78%;" formControlName="BILLTO">
+                    <option *ngFor="let w of masterService.warehouseList$ | async" [ngValue]="w.NAME">{{w.NAME}}</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label style="width:101.5px;">To Warehouse :</label>
+                <select style="width:78%;" formControlName="BILLTOADD">
+                    <option *ngFor="let w of masterService.warehouseList$ | async" [ngValue]="w.NAME">{{w.NAME}}</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- <div *ngIf="AppSettings.enableCostCenter!=0" class="row">
+            <div class="col-md-6">
+                <label style="width:105.5px;">CostCenter :</label>
+                <select *ngIf="AppSettings.enableCostCenter!=0" style="width:78%;" formControlName="COSTCENTER"><option *ngFor="let c of masterService.costCenterList$ | async" [ngValue]="c.CostCenterName">{{c.CostCenterName}}</option></select>
+            </div>
+        </div> -->
+        <!--<div class="row">
+            
+        </div>-->
+        <div class="row">
+            <div class="col-md-12">
+                <label style="width:105.5px;">Remarks :</label>
+                <input type="text" style="min-width:89%;" formControlName="REMARKS" (change)="formValidCheck">
+            </div>
+        </div>
+
+
+
+    </div>
+</form>

@@ -1,0 +1,281 @@
+<style>
+    .input-text {
+       width: 100%;
+       /* height: 30px !important; */
+       font-weight: bold;
+    }
+    label{
+        font-size: 12px;
+        margin: 0;
+    }
+
+    .td-class {
+       border: none !important;
+    }
+ 
+    .date-input {
+       width: 93%;
+       font-size: 12px !important;
+       height: 30px !important;
+    }
+      @media screen and (max-width:991px) {
+          .report-container{
+            width: 100% !important;
+     }
+     .report-height{
+         height:52vh; 
+         overflow:auto;
+     }
+     }
+          @media screen and (max-width:767px) {
+             .smallBoldLabel{
+                   width: auto !important;
+             }
+             
+         
+     }
+ </style>
+ <div class="container report-container" style="background-color : #ffffff; padding :1%; height : auto;  ">
+    <div class="row">
+       <div class="modal-header" style="width : 97%; margin : 0px auto;">
+          <button type="button" class="close" data-dismiss="modal" (click)="closeReportBox()" >&times;</button>
+          <h4 class="modal-title">Actual Vs Budget Report</h4>
+       </div>
+       <div class="col-md-12 report-height" style="padding-top: 2%;">
+          <!-- Left Column -->
+          <div class="col-md-6">
+              <fieldset>
+                <legend style="font-size:11px;font-weight: bold; width:auto;margin-bottom: -4px;">Date Range Selection :
+                </legend>
+                <table>
+                   <tr>
+                      <td class="td-class"><label class="smallBoldLabel">From:(AD)</label></td>
+                      <td class="td-class"><label class="smallBoldLabel">To:(AD)</label></td>
+                   </tr>
+                   <tr>
+                     <td class="td-class">
+                        <input type="date" class="date-input form-control" placeholder="Year Start Date"
+                           [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_DATE1"
+                           (change)="changestartDate($event.target.value,'AD')"
+                           max="{{masterService.date1 | date:'yyyy-MM-dd'}}"
+                           min="{{masterService.date2 | date:'yyyy-MM-dd'}}">
+                     </td>
+                     <td class="td-class">
+                        <input type="date" class="date-input form-control" placeholder="Year Start Date"
+                           [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_DATE2"
+                           (change)="changeEndDate($event.target.value,'AD')"
+                           max="{{masterService.date1 | date:'yyyy-MM-dd'}}"
+                           min="{{masterService.date2 | date:'yyyy-MM-dd'}}">
+                     </td>
+                   </tr>
+                   <tr>
+                     <td class="td-class">
+                        <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDatefrom'"
+                        (change)="changestartDate($event.detail.value,'BS')"
+                        [label]="'From'"
+                        [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_BSDATE1">
+                      </nepali-date-picker>
+                   
+  
+                       </td>
+                       <td class="td-class">
+                        <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDateTo'"
+                        (change)="changeEndDate($event.detail.value,'BS')"
+                        [label]="'To'"
+                        [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_BSDATE2">
+                      </nepali-date-picker>
+                        
+                       </td>
+                   </tr>
+                </table>
+             </fieldset> 
+             <fieldset>
+               <legend>Budget Selection :</legend>
+              <input type="text" class="form-control" placeholder="Press Enter or Tab for Budget List"   [(ngModel)]=" this._reportFilterService.ActualVsBudgetObj.ActualVsBudget_Budget_Name"
+              (keydown.enter)="BudgetSelectionClicked($event)"
+              >
+            </fieldset>
+
+             <!-- <fieldset>
+                <legend>Division Selection:</legend>
+                <select [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_DIV"
+                style="height: 30px !important;" class="form-control input-text">
+                <option value="%" *ngIf="masterService.userSetting.userwisedivision==0 ||  masterService.showAll">ALL</option>
+                <option *ngFor="let div of division" value="{{ div.INITIAL }}">
+                   {{ div.NAME }}
+                </option>
+             </select>
+             </fieldset> -->
+             <fieldset>
+                <legend>Cost Center:</legend>
+                <select [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_CostCenter"
+                style="height: 30px !important;" class="form-control input-text">
+                <option value="%"> </option>
+                <option *ngFor="let i of CostcenterList" value={{i.CCID}}>{{i.COSTCENTERNAME}}
+                </option>
+             </select>
+             </fieldset>
+             <label class=""><input type="radio" name="showCred" 
+               [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_CheckOption" value="0"
+               >&nbsp;All </label><br>
+
+             <label class=""><input type="radio" name="showCred" 
+               [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_CheckOption"  value="3"
+               >&nbsp;Show Zero Variance
+             Only </label><br>
+             <!-- <label class=""><input type="radio" name="showCred"
+               [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_ShowInPercent"
+               >&nbsp;Show in Percentage</label><br> -->
+ 
+             <!-- <label class=""><input type="radio" name="showCred"
+               [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_ShowInAmount"
+            >&nbsp;Show in Amount
+             </label><br> -->
+
+             <label class=""><input type="radio" name="showCred"
+               [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_CheckOption"  value="1"
+                >&nbsp;Over Budget
+                 </label><br>
+                 <label class=""><input type="radio" name="showCred"
+                  [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_CheckOption"  value="2"
+                    >&nbsp;Under Budget
+                     </label><br>
+ 
+
+             
+         
+          </div>
+          <!-- Right Column -->
+          <div class="col-md-6">
+           
+            <fieldset>
+               <legend>Account Selection :</legend>
+               <input type="text" style="font-weight: bold;" class="form-control" [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_AccLedger_ACCNAME"
+                   placeholder="Press Enter or Tab for Account List" (keydown.Tab)="AccountEnterClicked($event)"
+                   (keydown.enter)="AccountEnterClicked($event)">
+           </fieldset>
+
+             <fieldset>
+                <legend>Report Type :</legend>
+                <div class="row">
+                   <div class="col-sm-4">
+                      <label class=""><input type="radio" name="reportType"
+                        [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_OVERVIEWREPORT" value=0
+                        (change)="overViewSelect($event)"
+                           >&nbsp;Overview</label>
+                   </div>
+                
+                   <div class="col-sm-8">
+                      <label class="" style="margin-left: -33px;"><input type="radio" name="reportType"
+                        [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_OVERVIEWREPORT" value=1
+                        (change)="ActualVSbudgetSelect($event)">&nbsp;Actual Vs Budget
+                         </label>
+                   </div>
+                </div>
+               
+             </fieldset>
+             <fieldset>
+               <legend>Date Type :</legend>
+               <div class="row">
+                  <div class="col-sm-4">
+                     <label class=""><input type="radio" name="dateType"
+                       [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_DATETYPE" value=0
+                          >&nbsp;All</label>
+                  </div>
+                  <div class="col-sm-4">
+                     <label class=""><input type="radio" name="dateType"
+                       [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_DATETYPE" value=1
+                          >&nbsp;AD</label>
+                  </div>
+               
+                  <div class="col-sm-4">
+                     <label class="" style="margin-left: -33px;"><input type="radio" name="dateType"
+                       [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_DAETYPE" value=2
+                       >&nbsp;BS
+                        </label>
+                  </div>
+               </div>
+              
+            </fieldset>
+
+             <fieldset>
+                <legend>Report Option :</legend>
+                <div class="row">
+                  
+               
+                   <div class="col-sm-2" *ngIf="ReportOptionAll">
+                      <label class=""><input type="radio" name="reportOption"
+                        [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_REPORTOPTION" value=0
+                           >All</label>
+                   </div>
+
+                   <div class="col-sm-3">
+                     <label class=""><input type="radio" name="reportOption"
+                       [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_REPORTOPTION" value=1
+                          >Monthly</label>
+                  </div>
+                
+                   <div class="col-sm-3">
+                      <label class="" style="margin-left: -33px;"><input type="radio" name="reportOption"
+                        [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_REPORTOPTION" value=2
+                            >&nbsp;Quaterly
+                         </label>
+                   </div>
+                   <div class="col-sm-3">
+                    <label class="" style="margin-left: -33px;"><input type="radio" name="reportOption"
+                     [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_REPORTOPTION" value=3
+                          >&nbsp;Annually
+                       </label>
+                 </div>
+                </div>
+               
+             </fieldset>
+
+             <fieldset>
+                <legend>Budget  Selection :</legend>
+                <div class="row">
+                   <div class="col-sm-4">
+                      <label class=""><input type="radio" name="budgetSelection"
+                        [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_BUDGETSELECTION" value=0
+                           >&nbsp;All</label>
+                   </div>
+                
+                   <div class="col-sm-4">
+                      <label class="" style="margin-left: -33px;"><input type="radio" name="budgetSelection"
+                        [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_BUDGETSELECTION" value=1
+                            >&nbsp;Active
+                         </label>
+                   </div>
+                   <div class="col-sm-4">
+                    <label class="" style="margin-left: -33px;"><input type="radio" name="budgetSelection"
+                     [(ngModel)]="_reportFilterService.ActualVsBudgetObj.ActualVsBudget_BUDGETSELECTION" value=2
+                          >&nbsp;Inactive 
+                       </label>
+                 </div>
+                </div>
+               
+             </fieldset>
+
+          </div>
+        
+       </div>
+ 
+       <div class="modal-footer" style="width : 97%; margin : 0px auto;">
+          <button class="btn btn-info confirm-btn" type="button"  (click)=onload() >RUN</button>
+          <button type="button"  title="Cancel" class="btn btn-info" (click)="closeReportBox()">Close</button>
+       </div>
+ 
+    </div>
+ 
+
+
+    <div style="width:90%" class="reportpopup">
+      <generic-popup-grid #genericGridAccountLedger [popupsettings]="gridPopupSettingsForAccountLedgerList"
+      (onItemDoubleClick)="dblClickAccountSelect($event)">
+  </generic-popup-grid>
+  </div>
+
+  <generic-popup-grid #genericGridBudgetList [popupsettings]="gridPopupSettingsForBudgetList"
+  (onItemDoubleClick)="dblClickBudgetSelect($event)">
+</generic-popup-grid>
+  

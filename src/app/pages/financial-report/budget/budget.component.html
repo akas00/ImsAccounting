@@ -1,0 +1,76 @@
+<style>
+  td {
+    padding: 5px !important;
+  }
+
+  .border-bottom {
+    border-bottom: 1px solid !important;
+    width: 100%;
+    float: right;
+  }
+
+  .white-space {
+    white-space: pre !important
+  }
+
+  thead {
+    background: #c5e3ed;
+  }
+
+
+
+  .selected-row {
+    background-color: #787878 !important;
+    color: white;
+    font-size: 14px;
+  }
+
+  .text-bold {
+    font-weight: bold
+  }
+
+</style>
+
+
+
+
+
+<div class="modal-sticky" 
+  style="overflow: auto;right: 40%;width: 30%;z-index: 9999999">
+
+  <div class="modal-content modal-content-main-area">
+    <div style="height: 28px; margin-top: 5px; ">
+      <div class="col-md-12">
+        <h4 class="modal-title" id="myModalLabel">Loaded Report List</h4>
+      </div>
+
+    </div>
+    <div class="table-responsive">
+
+      <table class="table" style="display: grid;">
+        <thead>
+          <tr>
+            <th style="width: 1%; ">SI NO </th>
+            <th style="width: 8%; ">Report Name</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          <!-- <tr *ngFor=" let column of previouslyLoadedReportsList; let i= index ;">
+            <td style="width: 1%; ">{{i+1}}</td>
+            <td style="width: 8%; " [routerLink]="column.activeurlpath">{{column.reportname}}</td>
+          </tr> -->
+
+        </tbody>
+      </table>
+
+    </div>
+
+    <!-- <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="CancelReportList()">Cancel</button>
+    </div> -->
+  </div>
+
+</div>
+
+<report-filter #reportFilter (filterEmiiter)="applyFilter($event)" [reportType]="reportType"></report-filter>

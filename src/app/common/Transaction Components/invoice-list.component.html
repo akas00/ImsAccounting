@@ -1,0 +1,80 @@
+<style>
+    .table tr th {
+        text-align: center !important;
+        vertical-align: middle;
+
+    }
+
+    table {
+        width: 100%;
+    }
+
+    .custom-td {
+        border: 1px solid #e6e6e6;
+        width: 20px;
+        text-align: center !important;
+    }
+
+    .row-even {
+        background-color: #E6E6E6
+    }
+
+    .row-odd {
+        background-color: rgb(197, 197, 196)
+    }
+</style>
+
+
+<div class="row">
+  <div class="col-md-12" *ngIf="listSetting">
+        <table>
+      <tr style="border-bottom: 2px solid #E6E6E6; border-top: 2px solid #E6E6E6;    height: 30px;
+            background: silver; 
+            color: black;">
+        <th class="text-center">
+          <input type="checkbox" [(ngModel)]="selectAll"  (click)="checkedAll($event)">
+        </th>
+        <ng-container *ngFor="let col of listSetting.columns;let i=index">
+          <th class="text-center">{{col.title}}</th>
+        </ng-container>
+
+      </tr>
+
+
+
+
+
+      <tbody *ngFor="let itm of this._transactionService.voucherPostingObj.invoiceList| paginate
+            : {
+                id: tabindex,
+                itemsPerPage: pageSize,
+                currentPage: pageNumber,
+                totalItems: totalItems
+              };
+        let i = index;">
+        <tr [ngClass]="{'row-even':i%2==0,'row-odd':i%2!=0}" style=" border: 1px solid #e6e6e6;max-height:25px;">
+          <td class="custom-td" style="border: 1px solid #e6e6e6;width:20px;">
+            <input [(ngModel)]="itm.checked" type="checkbox" (click)="itemChecked($event,i)">
+          </td>
+          <ng-container>
+            <td *ngFor="let col of listSetting.columns" class="text-center">
+              {{itm[col.key]}}
+            </td>
+          </ng-container>
+                </tr>
+            </tbody>
+
+    </table>
+  </div>
+</div>
+
+<div class="sticky-bottom">
+  <div class="row clearfix sticky-bottom" style="float: center; margin : 4px 0px;">
+    <div class="col-md-12" style="width:100%;margin-top: 10px;" *ngIf="itemList.length">
+      <pagination-controls [id]="tabindex" (pageChange)="onPageChange($event)" maxSize="9" directionLinks="true"
+        autoHide="true" responsive="true" previousLabel="Previous" nextLabel="Next"
+        screenReaderPaginationLabel="Pagination" screenReaderPageLabel="page" screenReaderCurrentLabel="You're on page">
+      </pagination-controls>
+    </div>
+
+  </div>

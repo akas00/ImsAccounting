@@ -1,0 +1,1014 @@
+﻿<style>
+  .PrintDone {
+    cursor: pointer;
+    margin: 0px 4px;
+  }
+
+  .PrintPending {
+    cursor: progress;
+    margin: 0px 4px;
+  }
+</style>
+<button #back (click)="onBackClicked()" class="btn btn-info pull-right" *ngIf="!showSecondaryButtons"
+  style="margin-left: 8px;">
+  F10 BACK
+</button>
+<button #cancel (click)="onCancelClicked()" style="margin-left: 5px;" class="btn btn-info pull-right"
+  *ngIf="!showSecondaryButtons &&(_trnMainService.TrnMainObj.VoucherType!= 15 || _trnMainService.TrnMainObj.VoucherType!= 16)"
+  [disabled]="this._trnMainService.TrnMainObj.Mode !='VIEW'">
+  Cancel
+</button>
+
+<button *ngIf="_trnMainService.TrnMainObj.Mode == 'VIEW' &&
+!showSecondaryButtons && _trnMainService.TrnMainObj.VoucherType==18" (click)="onPrintReceiptClicked()"
+  class="btn btn-info pull-right">
+  RECEIPT
+</button>
+
+<button *ngIf="_trnMainService.TrnMainObj.Mode == 'VIEW' &&
+!showSecondaryButtons && _trnMainService.TrnMainObj.VoucherType==17" (click)="onPrintPayslipClicked()"
+  class="btn btn-info pull-right">
+  PAYSLIP
+</button>
+
+<button
+  *ngIf="_trnMainService.TrnMainObj.Mode == 'VIEW'  &&
+!showSecondaryButtons && _trnMainService.TrnMainObj.VoucherType==12 && _trnMainService.TrnMainObj.VoucherType==15|| _trnMainService.TrnMainObj.VoucherType==16 || _trnMainService.TrnMainObj.VoucherType!=3 "
+  [ngClass]="changeCursor==true?'PrintPending':'PrintDone'" (click)="onPrintClicked()" class="btn btn-info pull-right"
+  [disabled]="_trnMainService.TrnMainObj.Mode == 'NEW' || _trnMainService.TrnMainObj.Mode == 'EDIT'">
+  F8 PRINT
+</button>
+
+<button *ngIf="(_trnMainService.TrnMainObj.VoucherType==18 || _trnMainService.TrnMainObj.VoucherType==17 ) && userSetting.ENABLEBILLTRACKING==1"
+  style="margin: 0px 4px;" (click)="BillTrack()" class="btn btn-info pull-right">
+  F7 BILL TRACK
+</button>
+
+
+
+<button #save
+  *ngIf="(_trnMainService.TrnMainObj.Mode != 'VIEW' || !_trnMainService.showPerformaApproveReject) && !showSecondaryButtons"
+  style="margin: 0px 4px;" (click)="onSaveClicked()" class="btn btn-info pull-right"
+  [disabled]="this._trnMainService.TrnMainObj.Mode =='VIEW' || _trnMainService.disableSaveButton">
+  F6 SAVE
+</button>
+<button #view
+  *ngIf="(!_trnMainService.showPerformaApproveReject && _trnMainService.TrnMainObj.VoucherType !=58) && !showSecondaryButtons"
+  (click)="onViewClicked()" style="margin: 0px 4px;" class="btn btn-info pull-right">
+  F4 VIEW
+</button>
+<!-- <button #view
+  *ngIf="(!_trnMainService.showPerformaApproveReject && _trnMainService.TrnMainObj.VoucherType !=58) &&  !showSecondaryButtons &&(_trnMainService.TrnMainObj.VoucherType!= 15 ||_trnMainService.TrnMainObj.VoucherType!= 16)"
+  (click)="onEditClicked()" style="margin: 0px 4px;" class="btn btn-info pull-right">
+  F5 EDIT
+</button> -->
+
+  <button #view
+  *ngIf="(!_trnMainService.showPerformaApproveReject && _trnMainService.TrnMainObj.VoucherType !=58) &&  !showSecondaryButtons && (_trnMainService.TrnMainObj.VoucherType!= 15 && _trnMainService.TrnMainObj.VoucherType!= 16)"
+  (click)="onEditClicked()" style="margin: 0px 4px;" class="btn btn-info pull-right">
+  F5 EDIT
+</button>
+
+
+<button #reset style="margin: 0px 4px;" (click)="onNewClick()" class="btn btn-info pull-right"
+  *ngIf="!showSecondaryButtons">
+  F3 RESET
+</button>
+<button #reset style="margin: 0px 4px;" (click)="onReplicateClick()" class="btn btn-info pull-right"
+  *ngIf="!showSecondaryButtons && this._trnMainService.TrnMainObj.VoucherPrefix == 'JV' && showVoucherReplicateButton">
+  Voucher Replicate
+</button>
+<!-- <button style="margin: 0px 4px;" (click)="SelectDate()" class="btn btn-info pull-right"
+  *ngIf="this._trnMainService.TrnMainObj.VoucherType == 18 && showSecondaryButtons">
+  Load Collection
+</button> -->
+<!-- <button style="margin: 0px 4px;" (click)="ClickOpeningBalance()" class="btn btn-info pull-right"
+*ngIf="showSecondaryButtons">
+  Load Account Opening Balance
+</button> -->
+<button style="margin: 0px 4px;" (click)="clickPostDate()" class="btn btn-info pull-right"
+  *ngIf="(this._trnMainService.TrnMainObj.VoucherType == 18 || this._trnMainService.TrnMainObj.VoucherType == 17) && showSecondaryButtons">
+  Post-Dated
+</button>
+<!-- <button style="margin: 0px 4px;" (click)="LoadCashCollection()" class="btn btn-info pull-right"
+  *ngIf="userSetting.SHOW_CASHCOLLECTION_MENU==1 && (this._trnMainService.TrnMainObj.VoucherType == 18 ) && showSecondaryButtons">
+  Load Cash Collection
+</button> -->
+<!-- <button
+  *ngIf="_trnMainService.TrnMainObj.Mode == 'EDIT'  && showSecondaryButtons && _trnMainService.TrnMainObj.VoucherType==66"
+  [ngClass]="changeCursor==true?'PrintPending':'PrintDone'" (click)="onReworkClicked()" class="btn btn-info pull-right">
+  Rework
+</button> -->
+<!-- 17 || 18 (Payment and Receipt) -->
+<button
+  *ngIf="showSecondaryButtons && (_trnMainService.TrnMainObj.VoucherType==17 || _trnMainService.TrnMainObj.VoucherType==18) "
+  [ngClass]="changeCursor==true?'PrintPending':'PrintDone'" (click)="viaCellPayClick()" class="btn btn-info pull-right">
+  via CellPay
+</button>
+
+
+<button *ngIf="(_trnMainService.TrnMainObj.VoucherType == 15) && _trnMainService.TrnMainObj.Mode == 'VIEW' && showSecondaryButtons"
+(click)="onReverseEntry()"
+style="margin:0px 4px;"
+class="btn btn-info pull-right">
+Reverse Entry
+</button> 
+
+<button
+  *ngIf="
+   (_trnMainService.TrnMainObj.VoucherType == 15) &&
+    showSecondaryButtons
+  "
+  (click)="onViewReverseClick()"
+  style="margin: 0px 4px"
+  class="btn btn-info pull-right"
+>
+  View Reverse
+</button>
+
+
+<button
+type="file"
+  *ngIf="
+showSecondaryButtons &&(_trnMainService.TrnMainObj.VoucherType==12||_trnMainService.TrnMainObj.VoucherType==62||_trnMainService.TrnMainObj.VoucherType==17||_trnMainService.TrnMainObj.VoucherType==18||_trnMainService.TrnMainObj.VoucherType==72)
+"
+(click)="onLoadJsonClicked()"
+  
+  style="margin: 0px 4px"
+  class="btn btn-info pull-right"
+>
+Load Json
+</button>
+
+<button style="margin: 0px 4px;" (click)="ExcelUpload()" class="btn btn-info pull-right" 
+*ngIf="showSecondaryButtons && (_trnMainService.TrnMainObj.VoucherType==12 || _trnMainService.TrnMainObj.VoucherType==62 || _trnMainService.TrnMainObj.VoucherType==17 || _trnMainService.TrnMainObj.VoucherType==18 || _trnMainService.TrnMainObj.VoucherType==72)"
+[disabled]="this._trnMainService.TrnMainObj.Mode =='VIEW' || _trnMainService.disableSaveButton">
+  Load From Excel
+</button>
+
+<button style="margin: 0px 4px;" (click)="LoadOriginalPIData()" class="btn btn-info pull-right" 
+*ngIf="_trnMainService.TrnMainObj.VoucherType==66"
+[disabled]="this._trnMainService.TrnMainObj.Mode =='NEW' || _trnMainService.disableSaveButton">
+  Load From PI
+</button>
+
+<button style="margin: 0px 4px;" (click)="showCostDetailsPopup()" class="btn btn-info pull-right" 
+*ngIf="_trnMainService.TrnMainObj.VoucherType==66 && masterService.showLoadAllocationbutton && userSetting.ENABLELOCALPURCHASE==1">
+  Load from Allocation
+</button>
+
+<!-- <button #gstsetup style="margin: 0px 4px;" (click)="onGstSetUpClick()" class="btn btn-info pull-right"
+  *ngIf="!showSecondaryButtons && (  _trnMainService.TrnMainObj.VoucherType==12)">
+  GST ENTRY
+</button>
+<button #gstITCReversal style="margin: 0px 4px;" (click)="onGstItcReversal()" class="btn btn-info pull-right"
+  *ngIf="!showSecondaryButtons && (  _trnMainService.TrnMainObj.VoucherType==12)">
+  GST REVERSAL
+</button> -->
+
+<generic-popup-grid #genericGrid [popupsettings]="gridPopupSettings" (onItemDoubleClick)="onItemDoubleClick($event)">
+</generic-popup-grid>
+
+
+  <generic-popup-grid #genericGridPartyLedger [popupsettings]="gridPopupSettingsForPartyLedgerList"
+      (onItemDoubleClick)="dblClickAccountSelect($event)">
+  </generic-popup-grid>
+
+<generic-popup-grid #genericGridReverse [popupsettings]="gridPopupReverseSettings" (onItemDoubleClick)="onItemDoubleClick($event)">
+</generic-popup-grid>
+
+<file-uploader-popup #fileUploadPopup [popupsettings]="fileUploadPopupSettings"
+(onUploaded)="fileUploadSuccess($event)">
+</file-uploader-popup>
+<reverse-entry-dialog 
+(onClickReverse)="onClickReverseSave()"
+#reverseEntryConfirm ></reverse-entry-dialog>
+
+<div class="print-modal-sticky" *ngIf="promptPrintDevice" style="display : block; padding: 0px;  margin-bottom: 25px;height: auto;
+  position: absolute;right: 65%;top: 5px;width: 50%;z-index: 9999999">
+
+  <div class="modal-content modal-content-main-area">
+    <div class="modal-header">
+      <h4 class="modal-title" id="myModalLabel">Available Printing Device Supported</h4>
+    </div>
+    <div class="modal-body">
+      <form>
+        <input type="radio" [formControl]="printControl" name="printOption" value=1 checked>Laser printer [A4]<br>
+        <ng-container *ngIf="_trnMainService.TrnMainObj.VoucherType==12">
+          <input type="radio" [formControl]="printControl" name="printOption" value=2 checked>Laser printer(Self
+          Invoice) [A4]<br>
+        </ng-container>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancelprint()">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)="setPrinterAndprint()">Print</button>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+<div class="print-modal-sticky" *ngIf="promptPrintDeviceAfterSave" style="display : block; padding: 0px;  margin-bottom: 25px;height: auto;
+  position: absolute;right: 65%;top: 5px;width: 50%;z-index: 9999999">
+
+  <div class="modal-content modal-content-main-area">
+    <div class="modal-header">
+      <h4 class="modal-title" id="myModalLabel">Available Printing Device Supported</h4>
+    </div>
+    <div class="modal-body">
+      <form>
+        <input type="radio" [formControl]="printControl" name="printOption" value=1 checked>Laser printer [A4]<br>
+        <ng-container *ngIf="_trnMainService.TrnMainObj.VoucherType==12">
+          <input type="radio" [formControl]="printControl" name="printOption" value=2 checked>Laser printer(Self
+          Invoice) [A4]<br>
+        </ng-container>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancelprint()">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)="setPrinterAndprintAfterSave()">Print</button>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+<div class="modal-sticky" *ngIf="showgstsetuponAccount" style="display : block; padding: 0px;  margin-bottom: 25px;height: auto;
+  position: absolute;right: 20%;top: 5px;width: 1000px;z-index: 9999999">
+
+  <div class="modal-content modal-content-main-area">
+    <div class="modal-header">
+      <h4 class="modal-title" id="myModalLabel">GST ENTRY</h4>
+    </div>
+    <div class="modal-body clearfix">
+      <div class="col-md-4">
+
+
+        <div class="row">
+          <label style="width: 30%;">GST :</label>
+          <input type="number" style="width:60%;" [(ngModel)]="_trnMainService.GSTSETUPOBJ.GST"
+            (change)="gstchange()" />
+        </div>
+        <div class="row">
+          <label style="width: 30%;">GST RATE(%):</label>
+          <input type="number" style="width:60%;" [(ngModel)]="_trnMainService.GSTSETUPOBJ.GSTRATE"
+            (change)="gstchange()" />
+        </div>
+        <div class="row">
+          <label style="width: 30%;">Expenses A/c:</label>
+          <select style="width:60%;" [(ngModel)]="_trnMainService.GSTSETUPOBJ.REFTRNAC">
+            <option *ngFor="let i of _trnMainService.EnteredExpensesAcList" [value]="i.ACID">{{i.ACNAME}}</option>
+
+          </select>
+        </div>
+        <div class="row">
+          <label style="width: 30%;">Assessable value:</label>
+          <input type="number" style="width:60%;" [(ngModel)]="_trnMainService.GSTSETUPOBJ.AMOUNT" />
+        </div>
+
+        <div class="row">
+          <label style="width: 30%;">ITC ELIGIBILITY:</label>
+          <select style="width:60%;" [(ngModel)]="_trnMainService.GSTSETUPOBJ.ITC_ELIGIBILITY">
+            <option value="Ineligible under section 17(5)"> Ineligible under section 17(5)</option>
+            <option value="Ineligible under other section">Ineligible under other section</option>
+            <option value="Inputs">Inputs</option>
+            <option value="Capital goods">Capital goods</option>
+            <option value="Input Services">Input Services</option>
+          </select>
+        </div>
+
+        <div class="row">
+          <label style="width: 30%;">Exemption Type:</label>
+          <select style="width:60%;" [(ngModel)]="_trnMainService.GSTSETUPOBJ.GSTMODE">
+            <option value=2>Zero Rated</option>
+            <option value=3>Nil Rated</option>
+            <option value=0>Non GST</option>
+
+          </select>
+        </div>
+        <div class="row">
+          <button type="button" class="btn btn-info" (click)="AddGstObj()"
+            style="float: right;margin-right: 30px;">ADD</button>
+        </div>
+        <div class="row">
+          <label style="width: 30%;">Supplier A/c:</label>
+          <select style="width:60%;" [(ngModel)]="_trnMainService.TrnMainObj.gstInfoOfAccount.PARAC">
+            <option *ngFor="let i of _trnMainService.EnteredSupplierAcList" [value]="i.ACID">{{i.ACNAME}}</option>
+
+          </select>
+        </div>
+        <div class="row">
+          <label style="width: 30%;">Total Voucher Amnt:</label>
+          <input type="number" style="width:60%;" [(ngModel)]="_trnMainService.TrnMainObj.gstInfoOfAccount.NETAMNT" />
+        </div>
+
+        <div class="row">
+          <label style="width: 30%;">Trn Type:</label>
+          <input readonly style="width:60%;" [(ngModel)]="_trnMainService.TrnMainObj.gstInfoOfAccount.TRNTYPE">
+          <!-- <option value="interstate">Interstate</option>
+              <option value="local">Local</option> -->
+
+        </div>
+        <div class="row">
+          <label style="width: 50%;">Reverse Charge Applicable:</label>
+          <input type="checkbox" (change)="ReverseChargeApplicablecheck($event)"
+            [checked]="_trnMainService.TrnMainObj.REVCHARGE=='Y'">
+        </div>
+
+      </div>
+      <div class="col-md-8">
+
+
+        <div class="col-md-12" style="    height: 200px;">
+          <table class="table" style="margin-bottom: 5px; font-size: 12.5px;">
+            <thead>
+              <tr style="border-bottom: 2px solid #E6E6E6; border-top: 2px solid #E6E6E6;    height: 30px;
+                            background:#2dacd1;
+                            color: black;">
+                <th><span class="texttitle" style="color: black">GST AMNT </span></th>
+                <th><span class="texttitle" style="color: black">GST RATE </span></th>
+                <th><span class="texttitle" style="color: black">ACCOUNT NAME</span></th>
+                <th><span class="texttitle" style="color: black">AMOUNT </span></th>
+                <th><span class="texttitle" style="color: black">ITC ELIGIBILITY </span></th>
+                <th><span class="texttitle" style="color: black">EXEMPTION</span></th>
+              </tr>
+            </thead>
+            <tbody style="border: 1px;">
+              <tr *ngFor="let item of _trnMainService.TrnMainObj.gstInfoOfAccount.GSTLIST; let in=index">
+                <td style="width: 55px;">
+                  {{item.GST}}
+                </td>
+                <td style="width: 55px;">
+                  {{item.GSTRATE}}
+                </td>
+                <td style="width: 55px;">
+                  {{item.REFTRNAC_NAME}}
+                </td>
+                <td style="width: 55px;">
+                  {{item.AMOUNT}}
+                </td>
+                <td style="width: 55px;">
+                  {{item.ITC_ELIGIBILITY}}
+                </td>
+                <td style="width: 55px;">
+                  {{item.GSTMODE}}
+                </td>
+
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" style="margin-top: 20px;" class="btn btn-info" data-dismiss="modal"
+        (click)="cancelGstSetUp()">Clear</button>
+      <button type="button" style="margin-top: 20px;" class="btn btn-info" (click)="OkGstSetUp()">Done</button>
+    </div>
+  </div>
+
+</div>
+<div class="modal-sticky" *ngIf="showgstItcReversalPopup" style="display : block; padding: 0px;  margin-bottom: 25px;height: auto;
+  position: absolute;right: 15%;top: 5px;width: 1100px;z-index: 9999999">
+
+  <div class="modal-content modal-content-main-area">
+    <div class="modal-header">
+      <h4 class="modal-title" id="myModalLabel">Input Tax credit Reversal/Reclaim</h4>
+    </div>
+    <div class="modal-body">
+
+
+      <div class="col-md-12" style="    height: 350px; overflow-y: auto;">
+        <table class="table" style="margin-bottom: 5px; font-size: 12.5px;">
+          <thead>
+            <tr style="border-bottom: 2px solid #E6E6E6; border-top: 2px solid #E6E6E6;    height: 30px;
+                            background:#2dacd1;
+                            color: black;">
+              <th><span class="texttitle" style="color: black">SNO</span></th>
+              <th style="width: 150px;"><span class="texttitle" style="color: black">Description for Reversal of
+                  ITC</span></th>
+              <th><span class="texttitle" style="color: black">Output Liability Mode</span></th>
+              <th><span class="texttitle" style="color: black">ITC Integrated Tax Amnt </span></th>
+              <th><span class="texttitle" style="color: black">ITC Central Tax Amnt </span></th>
+              <th><span class="texttitle" style="color: black">ITC State/UT Tax Amnt </span></th>
+              <th><span class="texttitle" style="color: black">ITC Cess Amnt </span></th>
+
+            </tr>
+          </thead>
+          <tbody style="border: 1px;">
+            <tr *ngFor="let item of _trnMainService.TrnMainObj.gstItcReversalList; let in=index">
+              <td style="width: 55px;">
+                {{item.SNO}}
+              </td>
+              <td style="width: 55px;">
+                {{item.DECSRIPTION}}
+              </td>
+              <td style="width: 55px;">
+                <select [(ngModel)]="item.MODE" style="width: 100%;">
+                  <option value="add">To be added</option>
+                  <option value="reduce">To be reduced</option>
+
+
+                </select>
+
+              </td>
+              <td style="width: 55px;">
+                <input style="width: 100%;" type="number" [(ngModel)]="item.ITC_INTEGRATED">
+
+              </td>
+              <td style="width: 150px;">
+                <input style="width: 100%;" type="number" [(ngModel)]="item.ITC_CENTRAL">
+
+              </td>
+              <td style="width: 55px;">
+                <input style="width: 100%;" type="number" [(ngModel)]="item.ITC_STATE">
+
+              </td>
+              <td style="width: 55px;">
+                <input style="width: 100%;" type="number" [(ngModel)]="item.ITC_CESS">
+
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" style="margin-top: 20px;" class="btn btn-default" data-dismiss="modal"
+        (click)="cancelGstItcReversal()">Clear</button>
+      <button type="button" style="margin-top: 20px;" class="btn btn-primary" (click)="OkGstItcReversal()">Done</button>
+    </div>
+  </div>
+
+</div>
+
+
+<div>
+  <div class="modal fade" bsModal #DeleteAcc="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog"
+    aria-labelledby="mySmallModalLabel" aria-hidden="true" style="margin:-100px;height:460px">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content" style="width: 420px;">
+        <div class="modal-header">
+          <button class="close" aria-label="Close" (click)="PrintNo()">
+            <span aria-hidden="true">&times;</span>
+
+          </button>
+          <!-- <h4 class="modal-title">Delete Account</h4> -->
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12" style="margin-top: -10px;margin-bottom: 12px;">
+              Are you sure you want to Print this Voucher?
+            </div>
+            <div class="col-md-12">
+              <button (click)="PrintYes()" style="margin-right: 4px;" class="btn btn-danger ">Yes</button>
+              <button (click)="PrintNo()" type="button " class="btn btn-warning">No</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div>
+  <div class="modal fade" bsModal #ShowDate="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog"
+    aria-labelledby="mySmallModalLabel" aria-hidden="true" style="margin:-100px;height:5000px">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content" style="width: 500px;">
+        <div class="modal-header">
+          <button class="close" aria-label="Close" (click)="ShoWdateClose()">
+            <span aria-hidden="true">&times;</span>
+
+          </button>
+          <h4 class="modal-title">Date Info:</h4>
+        </div>
+        <div class="modal-body" style="height: 104px;">
+          <div class="row">
+            <div class="col-md-12" style="margin-top: -10px;margin-bottom: 12px;">
+              Please select Date:
+              <input type="date" [(ngModel)]="SelectedPopupDate">
+            </div>
+            <div class="col-md-12" style="margin-top: -10px;margin-bottom: 12px;">
+              Payment Mode :
+              <select [(ngModel)]="paymentmode" style="margin-left: 19px;width: 31%;">
+                <option>Cash</option>
+                <option>Cheque</option>
+                <option>Demand Draft</option>
+                <option>E-Payment</option>
+              </select>
+            </div>
+            <!-- <div class="col-md-12" style="margin-top: -10px;margin-bottom: 12px;">
+              VoucherType
+              <input type="date" [(ngModel)]="SelectedPopupDate">
+            </div> -->
+            <div class="col-md-12">
+              <button (click)="ShowDateOk()" style="margin-right: 4px;" class="btn btn-danger ">Yes</button>
+              <button (click)="ShoWdateClose()" type="button " class="btn btn-warning">No</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<voucherTracking #voucherTrack></voucherTracking>
+
+
+<!-- Post Dated Start -->
+<div class="modal-content" [class.modal-sticky-hide]="!isActive" style="background-color: #f1f1f1; width:110% !important;height: 450px;
+border: 1px solid;right: 45%;">
+  <div class="modal-header" style="padding: 0px;background: #f1f1f1;;">
+
+    <h4 class="modal-title" style="text-align: center;    background-color: #8cccfb;">
+      Post-Dated
+    </h4>
+  </div>
+
+
+  <div class="col-md-12">
+    <table style="width: 99.3%;margin-bottom: 10px;">
+      <tr>
+        <td style="font-size: 12px;border: 1px solid #f1f1f1;width: 10%;">Cheque Date:</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td *ngIf="_trnMainService.TrnMainObj.VoucherType==17" style="border: 1px solid #f1f1f1;">Supplier :</td>
+          <td *ngIf="_trnMainService.TrnMainObj.VoucherType==18" style="border: 1px solid #f1f1f1;">Customer :</td>          
+        <td style="border: 1px solid #f1f1f1;">
+          <button style="float: right;height: 30px;width: 100px;" class="btn btn-info" (click)="resetall()">Reset
+            All</button>
+          <button style="float: right;margin-right: 10px;height: 30px;width: 100px;" class="btn btn-info"
+            (click)="LoadPostDateData()">Load</button>
+        </td>
+      </tr>
+      <tr>
+        <td style="font-size: 12px;border: 1px solid #f1f1f1;">From :</td>
+        <td style="border: 1px solid #f1f1f1;">
+          <input type="date" style="width:90%;text-align: right;height: 23px;font-size: 12px;border: #e2eaea;"
+              [(ngModel)]="this.FromPostDate">
+          </td>
+          <td style="font-size: 12px;border: 1px solid #f1f1f1;">To :</td>
+          <td style="border: 1px solid #f1f1f1;">
+            <input type="date" style="width:90%;text-align: right;height: 23px;font-size: 12px;border: #e2eaea;"
+              [(ngModel)]="this.ToPostDate">
+          </td>
+          <td>
+            <input type="text" style="font-weight: bold;" class="form-control"
+            [(ngModel)]="this.PartyName"
+            placeholder="Press Enter or Tab for Account List"
+            (keydown.Tab)="AccountEnterClicked($event)"
+            (keydown.enter)="AccountEnterClicked($event)">
+           </td>
+           <td></td>
+        </tr>
+
+        <tr *ngIf="_trnMainService.TrnMainObj.VoucherType==17">
+          <td style="font-size: 12px;border: 1px solid #f1f1f1;width: 10%;">Voucher Type:</td>
+          <td style="font-size: 12px;border: 1px solid #f1f1f1;">
+            <select style="width:90%;height: 23px;font-size: 12px;border: #e2eaea;" [(ngModel)]="this.Voucher_Type" (change)="changeVoucherType()">
+              <option value="Party Payment">Party Payment</option>
+              <option value="Expenses Voucher">Expenses Voucher</option>
+            </select>
+          </td>
+       
+          <td></td>
+          <td></td>
+          <!-- <td></td>
+          <td></td> -->
+          <td style="float: right;
+          padding-top: 3%;">Search :</td>
+          <td>  <input type="text" name="search" [(ngModel)]="filter" #searchFilter="ngModel" class="form-control" placeholder="Search By ChequeNo" autocomplete="off"></td>
+        <!-- <td style="text-align: center;"><input type="checkbox" [(ngModel)]="this.checkbox"
+            (click)="clickCheckBox(index)"></td>
+          <td>Show All</td> -->
+          <!-- <td>Bank:</td> -->
+          
+       
+        </tr>
+        <!-- <tr>
+          <td>
+
+          </td>
+          <td></td>
+          <td>
+
+          </td>
+          <td></td>
+          <td>
+            <input type="text" style="font-weight: bold;" class="form-control" class="form-control" 
+            placeholder="Press Enter to Select" [(ngModel)]="this.BankName"  (keydown.Enter)="showBankPopup()">
+           </td>
+        </tr> -->
+    </table>
+  </div>
+
+
+  <div class="col-md-12" style="overflow: scroll;max-height: 300px;height:280px;">
+    <table style="width:100%" *ngIf="isValueLoaded">
+      <tr style="background-color:#8cccfb;    font-size: 13px;
+    font-weight: bolder;
+    height: 25px;">
+        <th style="width: 1.5% !important;"></th>
+        <th>Party Name</th>
+        <th>Amount</th>
+        <th>Cheque No</th>
+        <th>Cheque Date</th>
+        <th>Bank Name</th>
+        <th>Entry No</th>
+        <th>Entry Date</th>
+      </tr>
+      <tbody *ngFor="let i of (BillList_1| searchData:filter); let index = index">
+        <tr style="font-size: 12px;">
+          <td style="text-align: center;"><input type="checkbox" [(ngModel)]="i.checkbox"
+              (click)="clickCheckBox(index)"></td>
+          <td style="text-align: left">{{i.ACNAME}}</td>
+          <td style="text-align: right">{{i.AMOUNT}}</td>
+          <td style="text-align: center">{{i.ChequeNo}}</td>
+          <td>{{i.ChequeDate}}</td>
+          <td>{{i.BANK}}</td>
+          <td>{{i.VCHRNO}}</td>
+          <td>{{i.ENTRYDATE}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <table style="width:100%" *ngIf="!isValueLoaded">
+      <tr style="background-color:#8cccfb;    font-size: 13px;
+    font-weight: bolder;
+    height: 25px;">
+        <th style="width: 1.5% !important;"></th>
+        <th>Party Name</th>
+        <th>Amount</th>
+        <th>Cheque No</th>
+        <th>Cheque Date</th>
+        <th>Bank Name</th>
+        <th>Entry No</th>
+        <th>Entry Date</th>
+      </tr>
+      <td colspan="9">
+        <div style="text-align: center;"><b>{{gettingMessage}}</b></div>
+      </td>
+    </table>
+  </div>
+  <div class="col-md-12">
+    <table style="width:100%">
+      <tr style="font-size: 14.5px;
+    font-weight: bolder;
+    height: 25px;">
+        <td colspan="6" style="width: 71.5%;border: 1px solid #f1f1f1;">
+          <button style="height: 30px;width: 100px;" class="btn btn-info" (click)="okClick()">OK</button>
+          <button style="height: 30px;width: 100px;" (click)="HidePostDate()" class="btn btn-info">Cancel</button>
+
+        </td>
+        <!--      
+      <td style="width: 14%;border: 1px solid #f1f1f1;text-align: right;
+      /* margin-left: 20px; */
+      padding-right: 20px;">Total</td>
+      <td style="border: 1px solid #f1f1f1;"><input type="text" style="width: 130px;
+        text-align: right;border: #e2eaea;"  readonly></td> -->
+      </tr>
+
+
+
+    </table>
+
+  </div>
+</div>
+
+<!-- CashCollection -->
+<div class="modal-content" [class.modal-sticky-hide]="!CashCollActive" style="background-color: #f1f1f1; width:110% !important;height: 450px;
+border: 1px solid;right: 45%;">
+  <div class="modal-header" style="padding: 0px;background: #f1f1f1;;">
+
+    <h4 class="modal-title" style="text-align: center;    background-color: #8cccfb;">
+      Cash Collection
+    </h4>
+  </div>
+
+
+  <div class="col-md-12">
+    <table style="width: 99.3%;margin-bottom: 10px;">
+      <tr>
+       
+          <td style="font-size: 12px;border: 1px solid #f1f1f1;">From :</td>
+           <td style="border: 1px solid #f1f1f1;">
+             <input type="date" style="width:90%;text-align: right;height: 23px;font-size: 12px;border: #e2eaea;"
+                 [(ngModel)]="this.FromCashCollectionDate">
+             </td>
+             <td style="font-size: 12px;border: 1px solid #f1f1f1;">To :</td>
+             <td style="border: 1px solid #f1f1f1;">
+               <input type="date" style="width:90%;text-align: right;height: 23px;font-size: 12px;border: #e2eaea;"
+                 [(ngModel)]="this.ToCashCollectionDate">
+             </td>
+    
+        
+        
+        <td>
+          <button style="float: right;height: 30px;width: 100px;" class="btn btn-info" (click)="resetall()">Reset
+            All</button>
+          <button style="float: right;margin-right: 10px;height: 30px;width: 100px;" class="btn btn-info"
+            (click)="LoadCashCollectionDateData()">Load</button>
+          </td>
+      </tr>
+  
+   
+       
+    </table>
+  </div>
+
+
+  <div class="col-md-12" style="overflow: scroll;max-height: 300px;height:280px;">
+    <table style="width:100%" *ngIf="isCashCollecValueLoaded">
+      <tr style="background-color:#8cccfb;    font-size: 13px;
+    font-weight: bolder;
+    height: 25px;">
+        <th style="width: 1.5% !important;"></th>
+        <th>Customer Name</th>
+        <th>Bill No</th>
+        <th>Bill Date </th>
+        <th>Due Amount</th>
+        <th>Bill Amount</th>
+        <th>Balance</th>
+        <th>Cash Collection</th>
+        <th>Receipt No</th>
+      </tr>
+      <tbody *ngFor="let i of CashCollectionList; let index = index">
+        <tr style="font-size: 12px;">
+          <td style="text-align: center;"><input type="checkbox" [(ngModel)]="i.checkbox"
+              (click)="clickCheckBox(index)"></td>
+          <td style="text-align: left">{{i.CUSTOMER_ACNAME}}</td>
+          <td >{{i.BILL_NO}}</td>
+          <td style="text-align: center">{{i.BILL_DATE}}</td>
+          <td>{{i.DUE_AMOUNT}}</td>
+          <td>{{i.BILL_AMOUNT}}</td>
+          <td>{{i.BALANCE}}</td>
+          <td>{{i.CASH_COLLECTION}}</td>
+          <td>{{i.RECEIPT_NO}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <table style="width:100%" *ngIf="!isCashCollecValueLoaded">
+      <tr style="background-color:#8cccfb;    font-size: 13px;
+    font-weight: bolder;
+    height: 25px;">
+        <th style="width: 1.5% !important;"></th>
+        <th>Customer Name</th>
+        <th>Bill No</th>
+        <th>Bill Date </th>
+        <th>Due Amount</th>
+        <th>Bill Amount</th>
+        <th>Balance</th>
+        <th>Cash Collection</th>
+        <th>Receipt No</th>
+      </tr>
+      <td colspan="9">
+        <div style="text-align: center;"><b>{{gettingMessage}}</b></div>
+      </td>
+    </table>
+  </div>
+  <div class="col-md-12">
+    <table style="width:100%">
+      <tr style="font-size: 14.5px;
+    font-weight: bolder;
+    height: 25px;">
+        <td colspan="6" style="width: 71.5%;border: 1px solid #f1f1f1;">
+          <button style="height: 30px;width: 100px;" class="btn btn-info" (click)="okClickCashCollection()">OK</button>
+          <button style="height: 30px;width: 100px;" (click)="HidePostDate()" class="btn btn-info">Cancel</button>
+
+        </td>
+      
+      </tr>
+
+
+
+    </table>
+
+  </div>
+</div>
+
+<generic-popup-grid #genericGridRefBill [popupsettings]="gridPopupSettingsForRefBill"
+  (onItemDoubleClick)="onRefBillSelected($event)"></generic-popup-grid>
+
+<div *ngIf="showTDSDetailPopup" style="display : block; padding: 0px;  margin-bottom: 25px;height: auto;
+  position: absolute;right: 52%;top: 5px;width: 61%;z-index: 9999999">
+
+  <div class="modal-content modal-content-main-area">
+    <div class="modal-header">
+      <h4 class="modal-title" id="myModalLabel">TDS Summary</h4>
+     
+      <!-- <div style="float:right;    margin-right: -1%;">
+        <label style="width: 49% !important">
+          TDS Receivable :
+        </label>
+        <label><b style="font-size: 20px;">Rs. {{FinalCrTDSObj.DRAMNT}}</b></label>
+      </div>
+      <div style="float:right;    margin-right: -1%;">
+        <label>
+          TDS Payable :
+        </label>
+        <label><b style="font-size: 20px;">Rs. {{FinalDrTDSObj.CRAMNT}}</b></label>
+      </div> -->
+    </div>
+    <div class="modal-body">
+      <div class="main-container" style="padding-top : 10px; margin-bottom: 0px; margin-top: 0px !important;">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="tabbable" id="warehouse-tabs">
+              <ul class="nav nav-tabs">
+                <li class="nav-item">
+                  <a class="nav-link active" href="#TDSPayable" data-toggle="tab" (click)="activeTabForTds(true)">TDS Payable Details</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#TDSReceivable" data-toggle="tab" (click)="activeTabForTds(false)">TDS Receivable Details</a>
+                </li>
+              </ul>
+              <div class="tab-content" style="height: 265px;">
+                <div class="tab-pane active" id="TDSPayable">
+                  <table>
+                    <tr>
+                      <th style="width: 8%;"></th>
+                      <th style="border-bottom: 1px solid;width: 15%;">Sno</th>
+                      <th style="width: 86%;border-bottom: 1px solid;">Ledger A/C</th>
+                      <th style="width: 35%;border-bottom: 1px solid;">Amount</th>
+
+                    </tr>
+                    
+                      <tbody *ngFor="let x of this.finalDebitList;let i=index" (click)="DrRowClick(i)">
+                        <tr (click)="CrRowClick(i)" style="height: 38px;">
+                        <td><input type="checkbox" [(ngModel)]="x.isCheck" (click)="ClickDrList(i)"></td>
+                        <td>{{i+1}}</td>
+                        <td>{{x.ACNAME}}</td>
+                        <td>{{x.DRAMNT}}</td>
+                      </tr>
+                      </tbody>
+
+                  
+
+
+                  </table>
+
+                </div>
+                <div class="tab-pane" id="TDSReceivable">
+                  <table>
+                    <tr>
+                      <th style="width: 8%;"></th>
+                      <th style="border-bottom: 1px solid;width: 15%;">Sno</th>
+                      <th style="width: 86%;border-bottom: 1px solid;">Ledger A/C</th>
+                      <th style="width: 35%;border-bottom: 1px solid;">Amount</th>
+
+                    </tr>
+                    
+                      <tbody *ngFor="let x of this.finalCreditList;let i=index" (click)="CrRowClick(i)">
+                        <tr (click)="CrRowClick(i)" style="height: 38px;">
+                        <td><input type="checkbox" [(ngModel)]="x.isCheck" (click)="ClickCrList(i)"></td>
+                        <td>{{i+1}}</td>
+                        <td>{{x.ACNAME}}</td>
+                        <td>{{x.CRAMNT}}</td>
+                      </tr>
+                      </tbody>
+
+                  
+
+
+                  </table>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal"
+        (click)="cancelTDSDetailPopup()">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)="saveTdsPopup()">Save</button>
+    </div>
+  </div>
+
+</div>
+
+<div *ngIf="showPrintReceipt" style="display : block; padding: 0px;  margin-bottom: 25px;height: auto;
+  position: absolute;right: 52%;top: 5px;width: 61%;z-index: 9999999">
+  <div class="modal-content modal-content-main-area">
+    <div class="modal-header">
+      <button class="close" aria-label="Close" (click)="PrintReceiptNo()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-12" style="margin-top: -10px;margin-bottom: 12px;">
+          Do you want to Print the Receipt?
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button (click)="PrintReceiptYes()" style="margin-right: 4px;" class="btn btn-danger ">Yes</button>
+      <button (click)="PrintReceiptNo()" type="button " class="btn btn-warning">No</button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="showPrintPayslip" style="display : block; padding: 0px;  margin-bottom: 25px;height: auto;
+  position: absolute;right: 52%;top: 5px;width: 61%;z-index: 9999999">
+  <div class="modal-content modal-content-main-area">
+    <div class="modal-header">
+      <button class="close" aria-label="Close" (click)="PrintPayslipNo()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-12" style="margin-top: -10px;margin-bottom: 12px;">
+          Do you want to Print the Payslip?
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button (click)="PrintPayslipYes()" style="margin-right: 4px;" class="btn btn-danger ">Yes</button>
+      <button (click)="PrintPayslipNo()" type="button " class="btn btn-warning">No</button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="showReverseEntryAuth">
+  <div class="modal-sticky" style="display : block; padding: 0px;  margin-bottom: -4rem;margin-right: 27rem;">
+      <div class="modal-content modal-content-main-area" style="width: 70%; height: auto;">
+          <div class="modal-header" style="padding: 0px;background: #c0c0c0;">
+              <h5 class="modal-title" style="padding-left: 5px;">Reverse Entry authorization</h5>
+              <button class="close" aria-label="Close" (click)="closeReverseEntryAuthPopup()">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+
+
+          <div class="modal-body">
+              <div class="form-group row" style="margin: 0.5rem;">
+                  <label class="col-sm-4 form-control-label" style="font-size: 13px;">User Name:</label>
+                  <div class="col-sm-7" style="padding: 0px;">
+                      <input type="text" id="Parent" class="form-control" [(ngModel)]="reverseEntryAuthObj.username"
+                          style="height: 4vh; font-size: 13px;" autocomplete="off">
+                  </div>
+              </div>
+
+              <div class="form-group row" style="margin: 0.5rem;">
+                  <label class="col-sm-4 form-control-label" style="font-size: 13px;">Password:</label>
+                  <div class="col-sm-7" style="padding: 0px;">
+                      <input type="password" id="Parent" class="form-control" [(ngModel)]="reverseEntryAuthObj.password"
+                          style="height: 4vh; font-size: 13px;" autocomplete="off">
+                  </div>
+              </div>
+          </div>
+
+          <div class="modal-footer">
+              <button type="submit" class="btn btn-sm btn-info" style="font-size: 12px;"
+                  (click)="reverseEntryAuthConfirm()">Confirm</button>
+          </div>
+      </div>
+  </div>
+</div>
+<generic-popup-grid #genericGridBankList [popupsettings]="gridBankPopupSettings" (onItemDoubleClick)="onBankSelect($event)"
+ ></generic-popup-grid>
+
+
+<!-- **********************************FOR REMARKS********************************** -->
+
+<div *ngIf="addNewUnit">
+  <div class="modal-sticky" style="display : block; padding: 0px;  margin-bottom: 20px;margin-right: 8rem;">
+    <div class="modal-content modal-content-main-area" style="width: 70%;">
+      <div class="modal-header" style="padding: 0px;background: #c0c0c0;">
+        <h5 class="modal-title" style="text-align: center; height: 5px; font-weight: bold;font-size: 15px;">
+          Remarks Details </h5>
+        <button class="close" aria-label="Close" (click)=" closeModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="form-group row" style="margin-top: 1rem;">
+            <label class="col-sm-4 form-control-label" style="margin-left: -12px;">Remarks:</label>
+              <div class="col-sm-8">
+                <input type="text"  class="form-control" [(ngModel)]="remarksfordeleteObj.remarks"
+                style="height: 4vh; font-size: 13px;" autocomplete="off" >
+              </div>
+          
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-info" style="font-size: 12px;" (click)=" SaveRemarksDetails()">Save</button>
+      </div>
+
+    </div>
+  </div>
+</div>

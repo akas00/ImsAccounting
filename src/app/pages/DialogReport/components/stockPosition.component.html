@@ -1,0 +1,27 @@
+<style>
+legend.scheduler-border {
+    width:inherit; /* Or auto */
+    padding:0 10px; /* To give a bit of padding on the left and right */
+    border-bottom:none;
+}
+
+</style>
+
+
+<div class="row" class="form-horizontal">	
+<ba-card [title]="modeTitle" baCardClass="with-scroll"> 
+                  
+<warehouse  class="col-md-12"></warehouse><br />
+<div class="col-md-5">
+<DateSelection></DateSelection>
+<ReportFilter></ReportFilter> 
+
+</div>
+<div class="col-md-4">
+<ReportTypeSelect></ReportTypeSelect><br />
+<ReportOptSelect></ReportOptSelect></div>
+
+<Division class="col-md-9" ></Division>
+
+</ba-card>
+</div>

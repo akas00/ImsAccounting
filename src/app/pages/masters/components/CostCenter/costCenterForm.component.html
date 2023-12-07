@@ -1,0 +1,75 @@
+
+ <form class="row" class="form-horizontal" [formGroup]="form"  style="margin-top: 15px;">
+    <ba-card [title]="modeTitle" baCardClass="with-scroll">
+ <!-- <div class="form-group row">
+    <label  class="col-sm-2 form-control-label">Division:</label>
+   <div class="col-sm-5">
+       <select class="form-control"  id="Division" name="division" formControlName="DIVISION" >
+            <option *ngFor="let cc of masterService.divisionList$ | async" [ngValue]="cc.INITIAL">{{cc.NAME}}<option>
+        </select>
+     
+    </div> 
+  </div> -->
+  <!-- <div class="form-group row" >
+    <label  class="col-sm-2 form-control-label">Parent:</label>
+    <div class="col-sm-5">
+       <select  [disabled]="cc==false"  class="form-control" name="parent" formControlName="PARENT" id="Parent"  >
+            <option *ngFor="let cc of costCenterList" [ngValue]="cc.CostCenterName">{{cc.CostCenterName}}<option>
+        </select>
+     
+    </div> 
+    <button *ngIf="hideAddNewbttn!=false"  class="btn btn-success"  (click)="AddNewParent()"> Add</button>
+   <div *ngIf="hideparent!=false">
+     <div style="float: left;"><input class="form-control" formControlName="NewParent" type="text"> </div>
+      <div style="float: left; padding-left: 20px;"><button (click)="SaveNewParent()" class="btn btn-success"> Add</button>
+      <button (click)="CalcelNewPArent()"  class="btn btn-warning" > Hide</button>
+      
+      </div>
+    </div>
+  </div> -->
+  <div *ngIf="masterService.userSetting.EnableCompulsoryCostCategory==1"  class="form-group row">
+    <label  class="col-sm-2 form-control-label">CostCenter Category Name:</label>
+    <div class="col-sm-5">
+    <input  (keyup.Enter)="CostCenterEnterClicked()" type="text" id="ccgid" formControlName="COSTCENTERGROUPNAME"        class="form-control"   placeholder="Enter to select Cost center category" autocomplete="off" (keydown)="preventInput($event)"/>
+    </div>
+  </div>
+   <div class="form-group row">
+    <label  class="col-sm-2 form-control-label">Name:</label>
+    <div class="col-sm-5">
+    <input type="text" id="Parent" formControlName="CostCenterName"  class="form-control"   placeholder="Name" autocomplete="off">
+    </div>
+  </div>
+
+  <button type="button"(click)="onSave()" title="Save" class="btn btn-info" [disabled]="mode=='view'">Save</button>
+
+  <button type="button" (click)="cancel()" title="Cancel" class="btn btn-info">Back</button>
+     
+    </ba-card>
+     <div class="modal fade" bsModal #childModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" aria-label="Close" (click)="hideChildModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+                        <h4 class="modal-title">Information</h4>
+                    </div>
+                    <div class="modal-body">
+                        {{DialogMessage}}
+                    </div>
+                    <!--<div class="modal-footer">
+                        <button class="btn btn-info confirm-btn" (click)="hideChildModal()">Save changes</button>
+                        <button class="btn btn-info confirm-btn" type="button" (click)=onsubmit()>Save</button>
+                    </div>!-->
+                    
+                </div>
+            </div>
+        </div>
+
+
+             
+  </form>
+  <generic-popup-grid #genericCostCenter [popupsettings]="gridPopupSettingsForCostCenterList"
+  (onItemDoubleClick)="dblClickCostCenterSelect($event)">
+</generic-popup-grid>

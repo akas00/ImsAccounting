@@ -1,0 +1,154 @@
+<style>
+    .input-text {
+       width: 100%;
+       /* height: 30px !important; */
+       font-weight: bold;
+    }
+ 
+    .td-class {
+       border: none !important;
+    }
+ 
+    .date-input {
+       width: 93%;
+       font-size: 12px !important;
+       height: 30px !important;
+    }
+ 
+    .ageing {
+       width: 15%;
+       float: left;
+       margin-right: 5%;
+       font-weight: bold;
+       font-size: 14px !important;
+    }
+      @media screen and (max-width:991px) {
+         .report-container{
+           width: 100% !important;
+    }
+    .report-height{
+        height:52vh; 
+        overflow:auto;
+    }
+    }
+         @media screen and (max-width:767px) {
+            .smallBoldLabel{
+                  width: auto !important;
+            }
+            
+        
+    }
+ </style>
+ <div class="container report-container" style="background-color : #ffffff; padding :1%; height : auto;  ">
+    <div class="row report-height">
+       <div class="modal-header" style="width : 97%; margin : 0px auto;">
+          <button type="button" class="close" data-dismiss="modal" (click)="closeReportBox()">&times;</button>
+          <h4 class="modal-title">Additional Cost Voucherwise Report</h4>
+       </div>
+       <!-- Left Column -->
+       <div class="col-md-6 " style="padding-top: 2%;">
+         <fieldset>
+            <legend style="font-size:11px;font-weight: bold; width:auto;margin-bottom: -4px;">Date Range Selection :</legend>
+            <table>
+                <tr>
+                    <td class="td-class"><label class="smallBoldLabel">From:(AD)</label></td>
+                    <td class="td-class"><label class="smallBoldLabel">To:(AD)</label></td>
+                </tr>
+                <tr>
+                    <td class="td-class">
+                            <input type="date"
+                         class="date-input form-control" placeholder="Year Start Date"
+                                [(ngModel)]="_reportFilterService.AdditionalCostSummaryObj.AdditionalCostSummary_DATE1"
+                                (change)="changestartDate($event.target.value,'AD')" max="{{masterService.date1 | date:'yyyy-MM-dd'}}" min="{{masterService.date2 | date:'yyyy-MM-dd'}}">
+                    </td>
+                    <td class="td-class">
+                            <input type="date"
+                         class="date-input form-control" placeholder="Year Start Date"
+                                [(ngModel)]="_reportFilterService.AdditionalCostSummaryObj.AdditionalCostSummary_DATE2"
+                                (change)="changeEndDate($event.target.value,'AD')" max="{{masterService.date1 | date:'yyyy-MM-dd'}}" min="{{masterService.date2 | date:'yyyy-MM-dd'}}">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-class">
+                     <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDatefrom'"
+                     (change)="changestartDate($event.detail.value,'BS')"
+                     [label]="'From'"
+                     [(ngModel)]="_reportFilterService.AdditionalCostSummaryObj.AdditionalCostSummary_BSDATE1">
+                     </nepali-date-picker>
+
+                            <!-- <input id="nepaliDate"
+                                style="text-align:center;"
+                                class="nepali-calendar ndp-nepali-calendar date-input form-control"
+                                [(ngModel)]="_reportFilterService.AdditionalCostSummaryObj.AdditionalCostSummary_BSDATE1" type="text"
+                                (change)="changeEntryDate($event.target.value,'BS')"
+                                placeholder="yyyy-mm-dd" />            -->
+                    </td>
+                    <td class="td-class">
+                     <nepali-date-picker name="nepaliDateTo" [id]="'nepaliDateTo'"
+                     (change)="changeEndDate($event.detail.value,'BS')"
+                     [label]="'To'"
+                     [(ngModel)]="_reportFilterService.AdditionalCostSummaryObj.AdditionalCostSummary_BSDATE2">
+                     </nepali-date-picker>
+                            <!-- <input id="nepaliDate" style="text-align:center;"
+                            class="nepali-calendar ndp-nepali-calendar date-input form-control"
+                                [(ngModel)]="_reportFilterService.AdditionalCostSummaryObj.AdditionalCostSummary_BSDATE2" type="text"
+                                (change)="changeEndDate($event.target.value,'BS')"
+                                placeholder="yyyy-mm-dd" /> -->
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+ 
+          <fieldset>
+             <legend>Division Selection:</legend>
+             <select [(ngModel)]="_reportFilterService.AdditionalCostSummaryObj.AdditionalCostSummary_DIV"
+                style="height: 30px !important;" class="form-control input-text">
+                <option value="%" *ngIf="masterService.userSetting.userwisedivision==0 ||  masterService.showAll">ALL</option>
+                <option *ngFor="let div of division" value="{{ div.INITIAL }}">
+                   {{ div.NAME }}
+                </option>
+             </select>
+          </fieldset>
+ 
+        
+ 
+       </div>
+       <!-- Right Column -->
+       <div class="col-md-6" style="padding-top: 2%;">
+         <fieldset>
+            <legend>Report Style:</legend>
+            <label class="smallBoldLabel" style="padding-right:15px;"><input type="radio" name="BalViewOpt"
+                  [(ngModel)]="_reportFilterService.AdditionalCostSummaryObj.AdditionalCostSummary_ISSUMMARY" value=1>&nbsp;Summary
+               Report</label>
+            <label class="smallBoldLabel"><input type="radio" name="BalViewOpt"
+                  [(ngModel)]="_reportFilterService.AdditionalCostSummaryObj.AdditionalCostSummary_ISSUMMARY" value=0>&nbsp;Detail Report</label>
+         </fieldset>
+         <fieldset>
+            <legend>Supplier Selection: </legend>
+            <input type="text" style="font-weight: bold;" class="form-control"
+                [(ngModel)]="_reportFilterService.AdditionalCostSummaryObj.AdditionalCostSummary_ACNAME" placeholder="Press Enter or Tab for Supplier"
+                (keydown.Tab)="AccountEnterClicked($event)" (keydown.enter)="AccountEnterClicked($event)">
+        </fieldset>
+         <fieldset>
+            <legend>Voucher No Selection: </legend>
+            <input type="text" style="font-weight: bold;" class="form-control"
+                [(ngModel)]="_reportFilterService.AdditionalCostSummaryObj.AdditionalCostSummary_VOUCHERNO" placeholder="Press Enter or Tab for Voucher No"
+                (keydown.Tab)="VoucherNoEnterClicked($event)" (keydown.enter)="VoucherNoEnterClicked($event)">
+        </fieldset>
+
+ 
+       </div>
+       <div class="btn" style="float : right;">
+          <button class="btn btn-info confirm-btn" type="button" (click)=onload()>RUN</button>
+          <button type="button" title="Cancel" class="btn btn-info" (click)="closeReportBox()">Close</button>
+       </div>
+ 
+    </div>
+
+    <generic-popup-grid #genericGridVoucherNo [popupsettings]="gridPopupSettingsForVoucherList"
+    (onItemDoubleClick)="dblClickVoucherSelect($event)">
+</generic-popup-grid>
+
+<generic-popup-grid #genericGridAccount [popupsettings]="gridPopupSettingsForAccountList"
+(onItemDoubleClick)="dblClickAccountSelect($event)">
+</generic-popup-grid>

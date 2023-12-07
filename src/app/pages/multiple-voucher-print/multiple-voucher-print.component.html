@@ -1,0 +1,108 @@
+<style>
+    .table tr th {
+      text-align: center;
+      vertical-align: middle;
+    }
+  
+    th {
+      height: 25px !important;
+    }
+  
+    tbody>tr:hover {
+      background-color: #f3f5f4;
+      cursor: pointer;
+    }
+  
+    tr {
+      font-size: 11px;
+    }
+  
+    .selected-row {
+      background-color: #ced6d3 !important;
+    }
+  
+    .table>tbody>tr>td {
+      line-height: 30px !important;
+    }
+  
+    .table>thead>tr>th {
+      line-height: 5px !important;
+    }
+  
+    .table>tbody>tr>td:first-child {
+      text-align: left !important;
+      padding: 0px 0px 0px 11px !important;
+    }
+  
+    td {
+      padding: 5px;
+    }
+  
+  </style>
+<div class="sticky-top">
+  <div class="clearfix">
+    <div class="col-md-3">
+      <h3>Multiple VoucherPrint </h3>
+    </div>
+    <div class="col-md-2">
+      <select name="multiple-print" class="form-control" [(ngModel)]="voucherType" (change)="voucherChanged($event)">
+        <option value="">Select Transaction Type</option>
+        <option value="JV">Journal</option>
+        <option value="CE">Contra</option>
+        <option value="PV">Expense Voucher</option>
+        <option value="RV">Income Voucher</option>
+        <option value="DN">Debit Note</option>
+        <option value="CN">Credit Note</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+        <input class="form-control" type="text" ngxDaterangepickerMd [(ngModel)]="selectedDate"
+        [showDropdowns]="true" [showCustomRangeLabel]="true" [alwaysShowCalendars]="true" [locale]="locale"
+        [ranges]="ranges" [linkedCalendars]="true" [showCancel]="true" placeholder="Date Range..."
+        (ngModelChange)="dateChanged($event)" />
+        
+    </div>
+    <div class="col-md-5">
+      <button class="btn btn-info pull-right" style="margin-left: 5px;" (click)="showList()">Show List</button>
+      <button class="btn btn-info pull-right" (click)="print()">Print</button>
+    </div>
+  </div>
+</div>
+<div class="row" style="margin-top: 25px;;">
+  <div class="col-md-6">
+    <div class="col-md-12"
+      style="background:white;margin-top:10px;min-height:500px;max-height: 500px;overflow-y: scroll;padding-left: 0px;padding-right: 0px;">
+      <table style="table-layout: fixed;width:100%;position: sticky;top:0;">
+        <thead>
+          <tr style="border-bottom:1px solid #f1efef;background: #e3e3e3;">
+            <th colspan="3" style="text-align: center">Selected Invoice List</th>
+          </tr>
+          <tr style="background: #e3e3e3;">
+            <th>Invoice No</th>
+            <th>Customer</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+      </table>
+      <table style="width: 100%;table-layout:fixed;">
+        <tbody>
+          <ng-container *ngIf="selectedVoucherList.length">
+            <tr *ngFor="let itm of selectedVoucherList;let i=index">
+              <td>
+                {{itm?.VCHRNO}}
+              </td>
+              <td>
+                {{itm?.BILLTO}}
+              </td>
+              <td><i class="fa fa-trash" (click)="removeFromSelectedList(i)"></i></td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<generic-popup-grid #genericGrid [popupsettings]="gridPopupSettings" (onItemDoubleClick)="onItemDoubleClick($event)">
+</generic-popup-grid>

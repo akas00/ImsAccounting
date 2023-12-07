@@ -1,0 +1,117 @@
+﻿<div class="row">
+    <form [formGroup]="TrnMainForm">
+        <div class="plainBackGround">
+            <!--<label style="width:87px">Account Type:</label>
+                <select *ngIf="TrnMainObj.VoucherType == 16" style="width:200px" formControlName="RETTO">
+                    <option *ngFor="let ac of PurchaseAcList" [ngValue]="ac.ACID">{{ac.ACNAME}}</option>
+                </select>
+                <select *ngIf="TrnMainObj.VoucherType == 15" style="width:200px" formControlName="RETTO">
+                    <option *ngFor="let ac of SalesAcList" [ngValue]="ac.ACID">{{ac.ACNAME}}</option>
+                </select>-->
+
+            <!--<label style="width: 60px;">Tran Mode :</label>
+                <label style="width:60px"><input type="radio" value="credit" formControlName="TRNMODE" style="height:13px" (change)="radioTrnModeChange($event.target.value)">Credit</label>
+                <label style="width:60px"><input type="radio" value="cash" formControlName="TRNMODE" style="height:13px" (change)="radioTrnModeChange($event.target.value)">Cash</label>
+          
+        
+                <label style="width:60px; margin-left:5px;">Ac Code:</label>
+                <select style="width:150px;" formControlName="TRNAC" (change)="acChange()">
+                    <option *ngFor="let s of AccountList" [ngValue]="s.ACID">{{s.ACCODE}}</option>
+                </select>   
+                <label style="width:60px; margin-left:5px;">Account :</label>
+                <select style="width:440px;" formControlName="TRNAC" (change)="acChange()">
+                    <option *ngFor="let s of AccountList" [ngValue]="s.ACID">{{s.ACNAME}}</option>
+                </select>
+                <input type="text" formControlName="referenceNo">
+                <button [disabled]="argument == null && _transactionService.PMode=='p'" style="margin-left: -5px; padding-bottom: 1.5px; background-color: #90B900; color: white; border-color: #90B900;"
+                    (click)="openDispatchDialog()">{{dispatchNo}}</button>
+                
+                <div class="form-inline">
+                    <label *ngIf="AppSettings.enableCostCenter!=0" style="width:87px">CostCenter :</label>
+                    <select *ngIf="AppSettings.enableCostCenter!=0" style="width:200px;" formControlName="COSTCENTER">
+                        <option *ngFor="let c of CostCenterList" [ngValue]="c.CostCenterName">{{c.CostCenterName}}</option>
+                    </select>
+
+                    <label style="width:60px;  margin-left:5px;">Remarks :</label>
+                    <input type="text" style="width:686px;" formControlName="REMARKS">
+                </div>-->
+            <div class="row ">
+                <!--<div class="col-md-5">
+                <label style="width:85.5px;" *ngIf="AppSettings.GblShowPurchaseTypeAccount!=0">Purchase A/c:</label>
+                <select style="width:78%;" *ngIf="AppSettings.GblShowPurchaseTypeAccount!=0" formControlName="RETTO">
+                    <option *ngFor="let ac of PurchaseAcList" [ngValue]="ac.ACID">{{ac.ACNAME}}</option>
+                </select>
+            </div>-->
+                <div class="col-md-7">
+                    <label style="width: 15%;">Tran Mode :</label>
+                    <!--<section style="border:1px solid #808080;margin:5px;padding:5px;height:32px;width:200px">-->
+                    <label style="width:60px"><input type="radio" value="credit" formControlName="TRNMODE" style="height:13px" (change)="radioTrnModeChange($event.target.value)">Credit</label>
+                    <label style="width:60px"><input type="radio" value="cash" formControlName="TRNMODE" style="height:13px" (change)="radioTrnModeChange($event.target.value)">Cash</label>
+                    <!-- <label style="width:60px"><input type="radio" value="bank" formControlName="TRNMODE" style="height:13px" (change)="radioTrnModeChange($event.target.value)">Bank</label> -->
+                    <!--</section>-->
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-5">
+
+                    <label *ngIf="_transactionService.TrnMainObj.TRNMODE=='credit'" style="width:85.5px;">Party :</label>
+                    <label *ngIf="_transactionService.TrnMainObj.TRNMODE=='cash'" style="width:85.5px;">Cash A/c :</label>
+                    <!-- <label *ngIf="_transactionService.TrnMainObj.TRNMODE=='bank'" style="width:85.5px;">Bank A/c :</label> -->
+
+                    <select style="width:78%;" formControlName="TRNAC" (change)="accountChange()"><option *ngFor="let al of AccountList | async " [ngValue]="al.ACID">{{al.ACNAME}}</option></select>
+                </div>
+
+                <div class="col-md-7">
+
+                    <label *ngIf="_transactionService.TrnMainObj.TRNMODE!='credit' && TrnMainObj.VoucherType==15 " style="width:85.5px">Customer :</label>
+                    <select *ngIf="_transactionService.TrnMainObj.TRNMODE!='credit' && TrnMainObj.VoucherType==15" style="width:40%;" formControlName="TRNAC"><option *ngFor="let s of CustomerList " [ngValue]="s.ACID">{{s.ACNAME}}</option></select>
+                    <label *ngIf="_transactionService.TrnMainObj.TRNMODE!='credit' && TrnMainObj.VoucherType==16" style="width:85.5px">Supplier :</label>
+                    <select *ngIf="_transactionService.TrnMainObj.TRNMODE!='credit' && TrnMainObj.VoucherType==16" style="width:40%;" formControlName="TRNAC"><option *ngFor="let s of SupplierList " [ngValue]="s.ACID">{{s.ACNAME}}</option></select>
+                    <input *ngIf="RefNoVisible" type="text" placeholder="Ref No" formControlName="referenceNo"  (keydown.enter)="getVoucherNoWiseData()">
+                    <!-- <button [disabled]=" _transactionService.cnMode=='cash'" *ngIf="TrnMainObj.VoucherType==15 || TrnMainObj.VoucherType==16"
+                        style="margin-left: -5px; padding-bottom: 1.5px; background-color: #90B900; color: white; border-color: #90B900;"
+                        (click)="openDispatchDialog()">{{dispatchNo}}</button> -->
+                    <!-- <input *ngIf="_transactionService.TrnMainObj.TRNMODE=='bank'" placeholder="Cheque No." type="text" style="width:20%;" formControlName="CHEQUENO">
+                    <input *ngIf="_transactionService.TrnMainObj.TRNMODE=='bank'" placeholder="Cheque Date:" type="date" style="width:21.5%;"
+                        formControlName="CHEQUEDATE"> -->
+
+                </div>
+            </div>
+            <div class="row" *ngIf="AppSettings.ENABLEMULTICURRENCY==1">
+                <div class="col-md-5">
+                    <label style="width:85.5px;">Currency :</label>
+                    <select style="width:78%;" formControlName="FCurrency" (change)="CurrencyChange()">
+                    <option *ngFor="let c of  masterService.Currencies" [ngValue]="c.CURNAME" >{{c.CURNAME}}</option>
+                </select>
+
+                </div>
+                <div class="col-md-5">
+                    <label style="width:100px;">Exchange Rate :</label>
+                    <input type="text" width="110" formControlName="EXRATE" readonly>
+                </div>
+            </div>
+            <!--<div class="row">
+            
+        </div>-->
+            <div class="row">
+                <div class="col-md-11">
+                    <label style="width:85.5px;">*Remarks :</label>
+                    <input type="text" style="min-width:81%;" formControlName="REMARKS" (change)="formValidCheck">
+                </div>
+            </div>
+            <!-- <div class="row">
+                <div *ngIf="AppSettings.enableCostCenter!=0" class="col-md-5">
+                    <label *ngIf="AppSettings.enableCostCenter!=0" style="width:85.5px;">CostCenter :</label>
+                    <select *ngIf="AppSettings.enableCostCenter!=0" style="width:78%;" formControlName="COSTCENTER"><option *ngFor="let c of masterService.costCenterList$ | async" [ngValue]="c.CostCenterName">{{c.CostCenterName}}</option></select>
+                </div>
+                <div class="col-md-5">
+                    <label style="width:85.5px;">Warehouse :</label>
+                    <select style="width:78%;" formControlName="WAREHOUSE">
+                    <option *ngFor="let w of masterService.warehouseList$ | async" [ngValue]="w.NAME">{{w.NAME}}</option>
+                </select>
+                </div>
+            </div> -->
+        </div>
+    </form>
+</div>

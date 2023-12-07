@@ -1,0 +1,124 @@
+<style>
+  .modal-content {
+    padding: 1px;
+    margin: 0px;
+    float: right;
+  }
+  .table-scroll {
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+
+  tbody > tr:hover {
+    background-color: #f3f5f4;
+    cursor: pointer;
+  }
+  tr {
+    font-size: 11px;
+  }
+  .selected-row {
+    background-color: #ced6d3 !important;
+  }
+
+  ul.table {
+    padding: 0px;
+    max-height : 450px;
+    overflow-y: scroll;
+  }
+
+  li.highlight.item {
+    text-decoration: none;
+    list-style: none;
+    padding: 0px;
+    margin: 5px 0px;
+    cursor: pointer;
+  } 
+   
+  p.date {
+    font-size: 9px;
+    color: gray;
+    float: right; 
+    margin-top: -10px;
+}
+
+  .message {
+    text-transform: capitalize;
+  }
+
+  .selected-row{
+    background-color: #efefef !important;
+  }
+
+</style>
+<div
+  class="notification-modal-sticky"
+  [class.modal-sticky-hide]="!isActive"
+  style="display : block; padding: 0px;"
+>
+  <!-- Modal content -->
+  <div
+    class="modal-content"
+    style="box-shadow: -10px 0px 10px 1px #aaaaaa;"
+    *ngIf="popupsettings"
+  >
+    <div class="modal-header" style="padding: 0px;background: #8cccfb;">
+      <button class="close" aria-label="Close" (click)="hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <h4 class="modal-title" style="text-align: center;">
+        {{ popupsettings.title }}
+      </h4>
+    </div>
+    <div class="col-md-12 table-scroll" style="height: 30%; padding-right: 0px;">
+      <ul class="table">
+        <li
+          class="highlight item" 
+          [class.selected-row]="!itemObj.ISSEEN"
+          *ngFor="
+            let itemObj of itemList
+              | paginate
+                : {
+                    id: tabindex,
+                    itemsPerPage: pageSize,
+                    currentPage: pageNumber,
+                    totalItems: totalItems
+                  };
+            let i = index
+          "
+          (dblclick)="doubleClick(itemObj)"
+          (click)="markAsRead(itemObj)"
+          title="double click for detail view"
+        >
+          <div class="notification-card">
+            <div class="notification-card-inside">
+              <p class="message">
+                {{itemObj.MESSAGE}} 
+              </p>
+              <p class="date">{{itemObj.TIMESTAMP | date:'medium'}}</p>
+            </div>
+          </div>
+        </li> 
+      </ul> 
+      <div class="row clearfix" style="float: center; margin : 4px 0px;">
+        <div class="col-md-12" style="width:100%" *ngIf="itemList.length">
+          <pagination-controls
+            [id]="tabindex"
+            (pageChange)="onPageChange($event)"
+            maxSize="9"
+            directionLinks="true"
+            autoHide="true"
+            responsive="true"
+            previousLabel="Previous"
+            nextLabel="Next"
+            screenReaderPaginationLabel="Pagination"
+            screenReaderPageLabel="page"
+            screenReaderCurrentLabel="You're on page"
+          ></pagination-controls>
+        </div>
+        <div  style="width:100%; text-align: center" *ngIf="!itemList.length">
+            No notifications
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

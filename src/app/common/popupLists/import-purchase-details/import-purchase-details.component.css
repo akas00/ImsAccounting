@@ -1,0 +1,55 @@
+.importdetail_container {
+    position: fixed !important;
+    transform: translate(-50px, -50px);
+    /* min-height: calc(100vh - 60px); */
+    background: #ffffff;
+    z-index: 99999;
+    width: 80%;
+    top: 20.5%;
+    left: 14%;
+  }
+  
+  .page-title {
+    text-align: center;
+  }
+  
+  .form-control {
+    font-size: 12px;
+    height: 25px;
+  }
+  
+  .button-group {
+    position: absolute;
+    right: 3%;
+    top: 3%;
+  }
+  
+  .card-body {
+    line-height: 0.4rem;
+    padding: 0px 10px;
+  }
+  
+  .table td,
+.table th {
+    padding: 2px 4px 5px 4px !important;
+}
+
+tbody td{
+    border: 1px solid #e6e6e6;
+    padding-left: 2px;
+}
+
+  th {
+    font-size: 13px;
+    padding-left: 2px;
+}
+
+td {
+    font-size: 13px;
+}
+
+table
+input,select{
+  width: 95%;
+  margin-left: 2px;
+}

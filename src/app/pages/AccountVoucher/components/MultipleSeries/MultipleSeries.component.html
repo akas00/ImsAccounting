@@ -1,0 +1,14 @@
+<div class="modal fade" bsModal #childModal="bs-modal" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel">
+
+    <div class="modal-dialog modal-lg" role="document" style="padding: 0px 100px; padding-left: 300px; top: 25%;margin-top: -200px;
+    margin-right: 400px;">
+        <div class="modal-content" style="width:500px; height:300px">
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <SeriesDialog #seriesDialog [voucherType]="voucherType" (sendPrefix)="prefixChanged($event)"
+                        (closepopup)="ClosePop()"></SeriesDialog>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

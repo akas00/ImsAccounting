@@ -1,0 +1,176 @@
+<style>
+   .input-text {
+      width: 100%;
+      /* height: 30px !important; */
+      font-weight: bold;
+   }
+
+   .td-class {
+      border: none !important;
+   }
+
+   .date-input {
+      width: 93%;
+      font-size: 12px !important;
+      height: 30px !important;
+   }
+    @media screen and (max-width:991px) {
+         .report-container{
+           width: 100% !important;
+    }
+    .report-height{
+        height:52vh; 
+        overflow:auto;
+    }
+    }
+         @media screen and (max-width:767px) {
+            .smallBoldLabel{
+                  width: auto !important;
+            }
+            
+        
+    }
+</style>
+<div class="container report-container" style="background-color : #ffffff; padding :1%; height : auto;  ">
+   <div class="row">
+      <div class="modal-header" style="width : 97%; margin : 0px auto;">
+         <button type="button" class="close" data-dismiss="modal" (click)="closeReportBox()">&times;</button>
+         <h4 class="modal-title">Profit & Loss Report</h4>
+      </div>
+      <div class="col-md-12 report-height" style="padding-top: 2%;">
+         <!-- Left Column -->
+         <div class="col-md-6">
+            <fieldset>
+               <legend style="font-size:11px;font-weight: bold; width:auto;margin-bottom: -4px;">Date Range Selection :
+               </legend>
+               <table>
+                  <tr>
+                     <td class="td-class"><label class="smallBoldLabel">From:(AD)</label></td>
+                     <td class="td-class"><label class="smallBoldLabel">To:(AD)</label></td>
+                  </tr>
+                  <tr>
+                     <td class="td-class">
+                        <input type="date" class="date-input form-control" placeholder="Year Start Date"
+                           [(ngModel)]="_reportFilterService.ProfitLossObj.ProfitLoss_DATE1"
+                           (change)="changeEntryDate($event.target.value,'AD')"
+                           max="{{masterService.date1 | date:'yyyy-MM-dd'}}"
+                           min="{{masterService.date2 | date:'yyyy-MM-dd'}}">
+                     </td>
+                     <td class="td-class">
+                        <input type="date" class="date-input form-control" placeholder="Year Start Date"
+                           [(ngModel)]="_reportFilterService.ProfitLossObj.ProfitLoss_DATE2"
+                           (change)="changeEndDate($event.target.value,'AD')"
+                           max="{{masterService.date1 | date:'yyyy-MM-dd'}}"
+                           min="{{masterService.date2 | date:'yyyy-MM-dd'}}">
+                     </td>
+                  </tr>
+                  <tr>
+                     <td class="td-class">
+                        <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDatefrom'"
+                           (change)="changeEntryDate($event.detail.value,'BS')" [label]="'From'"
+                           [(ngModel)]="_reportFilterService.ProfitLossObj.ProfitLoss_BSDATE1">
+                        </nepali-date-picker>
+                     </td>
+                     <td class="td-class">
+                        <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDateTo'"
+                           (change)="changeEndDate($event.detail.value,'BS')" [label]="'To'"
+                           [(ngModel)]="_reportFilterService.ProfitLossObj.ProfitLoss_BSDATE2">
+                        </nepali-date-picker>
+                     </td>
+                  </tr>
+               </table>
+            </fieldset>
+
+            <fieldset *ngIf="masterService.userSetting.EnableManualStockValuation==1" style="margin-top: 10px;">
+               <legend style="font-size:11px;font-weight: bold; width:auto">Stock
+                 Valuation :</legend>
+               <div class="col-md-12" style="margin-top:5px;">
+                  <div class="opening">
+                     <div class="col-md-4" style="padding: 0px;">
+                        <label class="smallBoldLabel"
+                           style="margin-left: 0px;padding-top:5px;margin-top: -10px;">Opening Stock:</label>
+                     </div>
+                     <div class="col-md-8" style="padding: 0px;">
+                        <input type="number" class="form-control" style="height: 25px;margin-top: -10px;"
+                           [(ngModel)]=_reportFilterService.ProfitLossObj.ProfitLoss_OSTOCK>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-md-12" style="margin-top:5px;">
+                  <div class="closing">
+                     <div class="col-md-4" style="padding: 0px;">
+                        <label class="smallBoldLabel" style="margin-left: 0px; padding-top:5px;">Closing Stock:</label>
+                     </div>
+                     <div class="col-md-8" style="padding: 0px;">
+                        <input type="number" class="form-control" style="height: 25px;"
+                           [(ngModel)]=_reportFilterService.ProfitLossObj.ProfitLoss_CSTOCK>
+                     </div>
+                  </div>
+               </div>
+               <!-- <div class="col-md-12" style="margin-top:10px; ">
+                  <div class="pl-action">
+                     <div class="cal-btn col-md-4" style="padding: 0px; float:right;">
+                        <button class="btn btn-info" style=" float:right;" (click)="calcStock()" disabled>Calculate</button>
+                     </div>
+                  </div>
+               </div> -->
+            </fieldset>
+
+
+
+         </div>
+         <!-- Right Column -->
+         <div class="col-md-6">
+            <fieldset *ngIf="userSetting.IS_NESTLE==1">
+               <legend style="font-size:11px;font-weight: bold; width:auto">Company Selection:</legend>
+               <select [(ngModel)]="_reportFilterService.ProfitLossObj.ProfitLoss_COMPANYTYPE"
+                  style="height: 30px !important;" class="form-control input-text">
+                  <option value="DMS">DMS</option>
+                  <option value="NONDMS">NON DMS</option>
+               </select>
+            </fieldset>
+
+            <fieldset>
+               <legend style="font-size:11px;font-weight: bold; width:auto">Division Selection:</legend>
+               <select [(ngModel)]="_reportFilterService.ProfitLossObj.ProfitLoss_DIV" style="height: 30px !important;"
+                  class="form-control input-text" (change)="changeDivision()">
+                  <option value="%" *ngIf="masterService.userSetting.userwisedivision==0 ||  masterService.showAll">ALL
+                  </option>
+                  <option *ngFor="let div of division" value="{{ div.INITIAL }}">
+                     {{ div.NAME }}
+                  </option>
+               </select>
+            </fieldset>
+            <fieldset *ngIf="userSetting.ENABLECCENTER_INFINALREPORT==1">
+               <legend>Cost Center:</legend>
+               <select [(ngModel)]="_reportFilterService.ProfitLossObj.ProfitLoss_CostCenter"
+                   style="height: 30px !important;" class="form-control input-text">
+                   <option value="%"> </option>
+                   <option *ngFor="let i of CostcenterList" value={{i.CCID}}>{{i.COSTCENTERNAME}}
+                   </option>
+               </select>
+           </fieldset>
+            <fieldset style="padding-bottom: 5px;">
+               <legend style="font-size:11px;font-weight: bold; width:auto">Report Format :</legend>
+               <label class="smallBoldLabel"><input type="radio" name="reportmode"
+                     [(ngModel)]="_reportFilterService.ProfitLossObj.ProfitLoss_VERTICALFORMAT" value=1>&nbsp;Vertical
+                  Format </label>&nbsp;&nbsp;&nbsp;
+               <label class="smallBoldLabel" style="clear : both;"><input type="radio" name="reportmode"
+                     [(ngModel)]="_reportFilterService.ProfitLossObj.ProfitLoss_VERTICALFORMAT" value=0>&nbsp;Horizontal
+                  Format
+               </label>
+            </fieldset>
+
+            <label class="smallBoldLabel"><input type="checkbox"
+                  [(ngModel)]="_reportFilterService.ProfitLossObj.ProfitLoss_SHOWSUBLEDGER">&nbsp;Show Sub Ledger In
+               Profit & Loss A/C</label>
+
+         </div>
+      </div>
+
+      <div class="modal-footer" style="width : 97%; margin : 0px auto;">
+         <button class="btn btn-info confirm-btn" type="button" (click)=onload()>RUN</button>
+         <button type="button" (click)="closeReportBox()" title="Cancel" class="btn btn-info">Close</button>
+      </div>
+
+   </div>

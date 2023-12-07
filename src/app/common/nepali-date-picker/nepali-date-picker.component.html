@@ -1,0 +1,21 @@
+<div class="dateRangeFrom" style="position: relative;">
+  <i class="fa fa-calendar" aria-hidden="true"  id="{{id}}" style="position: absolute;
+  cursor: pointer;
+  font-size: 15px;
+  top: 8px;
+  right: 15px;"></i>
+
+  <input type="text" class="form-control custom-form-control" [formControl]="dateControl" placeholder="{{label}}" id="{{id}}Picker"
+    (mouseover)="$event.preventDefault()" (keydown)="$event.preventDefault()" style="display: block;
+    width: 93%;
+    height: 30px !important;
+    padding: 5px 15px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;">
+</div>

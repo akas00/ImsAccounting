@@ -1,0 +1,105 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgaModule } from '../../theme/nga.module';
+import { CanActivateTeam } from '../../common/services/permission/guard.service'
+import { ModalModule } from 'ng2-bootstrap';
+import { NguiAutoCompleteModule } from '@ngui/auto-complete';
+import { AutoCompleteModule } from 'primeng/components/autocomplete/autocomplete';
+import { Ng2SearchPipeModule } from '../../node_modules/ng2-search-filter';
+import { routing } from './Reports.routing';
+import { ReportsComponent } from './Reports.component';
+import { ReportMain } from './components/ReportMain/ReportMain';
+import { MasterDialogReport } from '../ReportDialogs/MasterDialogReport/MasterDialogReport';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
+import { GenericPopupGridModule } from '../../common/popupLists/generic-grid/generic-popup-grid.module';
+import { GstSalesSummary } from '../ReportDialogs/GST-Sales-Summary/gst-sales-summary.component';
+import { GstPurchaseSummary } from '../ReportDialogs/GST-Purchase-Summary/gst-purchase-summary.component';
+import { AgingPayableReport } from '../ReportDialogs/aging-payable/aging-payable.component';
+import { AgingReceivableReport } from '../ReportDialogs/aging-receivable/aging-receivable.component';
+import { AccountPayableReport } from '../ReportDialogs/account-payable/account-payable.component';
+import { AccountReceivableReport } from '../ReportDialogs/account-receivable/account-receivable.component';
+import { PurchaseBookReport } from '../ReportDialogs/PurchaseBookReport/PurchaseBookReport';
+import { CashBookReport } from '../ReportDialogs/CashBookReport/cashbookreport.component';
+import { SalesBookReport } from '../ReportDialogs/SalesBookReport/salesbookreport';
+import { JournalBook } from '../ReportDialogs/JournalBook/journalbook.component';
+import { DueVoucherReport } from '../ReportDialogs/DueVoucherReport/duevoucherreport';
+import { CreditorsReport } from '../ReportDialogs/Creditors Report/creditorsreport.component';
+import { DebtorsReport } from '../ReportDialogs/Debtors Report/debtorsreport.component';
+import { PartyLedger } from '../ReportDialogs/PartyLedger/partyLedger.component';
+<<<<<<< HEAD
+import { DebtorsAgingReport } from '../ReportDialogs/debotrs-aging-report/debtors-aging-report.component';
+import { CreditorsAgingReport } from '../ReportDialogs/creditors-aging-report/creditors-aging-report.component';
+import { DebtorsOutstandingReport } from '../ReportDialogs/debtors-outstanding-report/debtors-outstanding-report.component';
+import { CreditorsOutstandingReport } from '../ReportDialogs/creditors-outstanding-report/creditors-outstanding-report.component';
+=======
+import { SummaryPartyLedger } from '../ReportDialogs/SummaryPartyLedger/summary-party-ledger.component';
+import TreeModule from 'angular-tree-component';
+import { SummaryLedgerReport } from '../ReportDialogs/SummaryLedgerReport/summaryledgerreport.component';
+import { ContextMenuModule } from 'ngx-contextmenu';
+import { DateFilters } from '../ReportDialogs/DateFilters/date-filters.component';
+import { AccountLedgerReport } from '../ReportDialogs/AccountLedgerReport/account-ledger-report.component';
+import { PartyLedgerReport } from '../ReportDialogs/PartyLedgerReport/party-ledger-report.component';
+import { CostcenterFilters } from '../ReportDialogs/costcenter-filter/costcenter-filters.component';
+>>>>>>> 9d6fc9544166c8b06a52412b5e535bc79e2833fa
+
+@NgModule({
+  imports: [
+    CommonModule,
+    FormsModule,
+    NgaModule,
+    routing,
+    ReactiveFormsModule,
+    NguiAutoCompleteModule,
+    ModalModule.forRoot(),
+    NgxPaginationModule,
+    AutoCompleteModule,
+    Ng2SearchPipeModule,
+    NgxDaterangepickerMd.forRoot(),
+    GenericPopupGridModule.forRoot(),
+    TreeModule,
+    ContextMenuModule
+    ],
+  declarations:
+    [ReportsComponent,
+      ReportMain,
+      MasterDialogReport,
+      AccountPayableReport,
+      AccountReceivableReport,
+      GstSalesSummary,
+      GstPurchaseSummary,
+      AgingPayableReport,
+      AgingReceivableReport,
+      PurchaseBookReport,
+      CashBookReport,
+      SalesBookReport,
+      JournalBook,
+      DueVoucherReport,
+      CreditorsReport,
+      DebtorsReport,
+      PartyLedger,
+<<<<<<< HEAD
+      DebtorsAgingReport,
+      CreditorsAgingReport,
+      DebtorsOutstandingReport,
+      CreditorsOutstandingReport
+=======
+      SummaryLedgerReport,
+      AccountLedgerReport,
+      SummaryPartyLedger,
+      PartyLedgerReport,
+      DateFilters,
+      CostcenterFilters
+>>>>>>> 9d6fc9544166c8b06a52412b5e535bc79e2833fa
+      
+    ],
+  providers: [
+    CanActivateTeam
+  ],
+  exports: [],
+  entryComponents:
+    [MasterDialogReport],
+})
+export class ReportModule {
+}

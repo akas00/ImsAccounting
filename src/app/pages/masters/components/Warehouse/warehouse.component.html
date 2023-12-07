@@ -1,0 +1,127 @@
+<div class="sticky-top">
+  <div class="row clearfix" style=" padding: 0px 20px;">
+    <div class="col-md-6">
+      <h3 class="page-title">{{ modeTitle }}</h3>
+    </div>
+    <div class="col-md-6" style="float: right;">
+      <button type="button " class="btn btn-info pull-right" (click)="cancel()" style="margin-right : 10px;">
+        Back
+      </button>
+      <button *ngIf="viewMode == false" (click)="onSave()" class="btn btn-info pull-right" style="margin-right : 10px;"
+        [disabled]="!form.valid">
+        Save
+      </button>
+    </div>
+  </div>
+</div>
+<div class="main-container" style="padding-top : 10px; margin-bottom: 0px">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="tabbable" id="warehouse-tabs">
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a class="nav-link active" href="#general-info" data-toggle="tab">General Info</a>
+          </li>
+
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="general-info">
+            <form class="row" class="form-horizontal" [formGroup]="form">
+              <div class="col-md-12">
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label class="col-sm-3 form-control-label">Name:</label>
+                    <div class="col-sm-9">
+                      <input type="text" [style.background-color]="disabled()" [style.background-color]="editDisabled()"
+                        style="color:black" class="form-control" [readOnly]="mode == 'edit' ? true : false"
+                        id="warehouseName" name="warehouseName" formControlName="NAME" placeholder="Name" />
+                      <div *ngIf="
+                          !form.controls['NAME'].valid &&
+                          form.controls['NAME']?.touched
+                        " class="text-danger">
+                        <span *ngIf="form.get('NAME').hasError('required')">
+                          Warehouse name is required.
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 form-control-label">Division:</label>
+                    <div class="col-sm-9">
+                      <select class="form-control" id="Division" name="division" formControlName="DIVISION">
+                        
+                        <option *ngFor="let cc of divisonList "   [ngValue]="cc.INITIAL">
+                          {{ cc.NAME }} </option>
+                        <option> </option>
+                      </select>
+                      <div *ngIf="
+                          !form.controls['DIVISION'].valid &&
+                          form.controls['DIVISION']?.touched
+                        " class="text-danger">
+                        <span *ngIf="form.get('DIVISION').hasError('required')">
+                          Division is required.
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 form-control-label">Address:</label>
+                    <div class="col-sm-9">
+                      <input type="text" [style.background-color]="disabled()" style="color:black" class="form-control"
+                        id="Address" name="Address" formControlName="ADDRESS" placeholder="Address" />
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 form-control-label">Phone:</label>
+                    <div class="col-sm-9">
+                      <input type="text" [style.background-color]="disabled()" style="color:black" class="form-control"
+                        id="phone" name="phone" formControlName="PHONE" placeholder="Phone" />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group row">
+                    <label class="col-sm-3 form-control-label">Type:</label>
+                    <div class="col-sm-9">
+                      <select class="form-control" style="color:black" [style.background-color]="disabled()" name="Type"
+                        id="Type" formControlName="WarehouseType">
+                        <option value="sellable">Sellable</option>
+                        <option value="nonsellable">Non-Sellable</option>
+                        <option value="free">free</option>
+                      </select>
+                      <div *ngIf="
+                          !form.controls['WarehouseType'].valid &&
+                          form.controls['WarehouseType']?.touched
+                        " class="text-danger">
+                        <span *ngIf="form.get('WarehouseType').hasError('required')">
+                          Warehouse type is required.
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 form-control-label">Remarks:</label>
+                    <div class="col-sm-9">
+                      <textarea class="form-control" [style.background-color]="disabled()" style="color:black"
+                        id="Remarks" name="Remarks" formControlName="REMARKS" placeholder="Remarks"></textarea>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3">Is Active </label>
+                    <div class="col-sm-9">
+                      <select formControlName="STATUS" class="form-control">
+                        <option value=0>Inactive</option>
+                        <option value=1>Active</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

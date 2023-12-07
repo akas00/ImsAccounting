@@ -1,0 +1,572 @@
+import { Component, Inject, Output, EventEmitter, ViewChild, OnInit } from '@angular/core';
+import { MasterRepo } from '../../../common/repositories';
+import { Division } from '../../../common/interfaces';
+import { TREE_ACTIONS, KEYS, IActionMapping, TreeNode, TreeComponent } from 'angular-tree-component';
+import { LocalDataSource } from 'ng2-smart-table';
+import { AuthService } from '../../../common/services/permission/authService.service';
+import { Subscription } from 'rxjs/Subscription';
+import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Observable';
+import { SpinnerService } from '../../../common/services/spinner/spinner.service';
+import { PLedgerComponent } from '../../masters/components/PLedger/PLedger.component';
+import { ContextMenuComponent } from 'ngx-contextmenu';
+import * as _ from 'lodash';
+import { TreeViewPartyervice } from '../../masters/components/party-ledger/partyledger.service';
+import { ReportMainService } from '../../Reports/components/ReportMain/ReportMain.service';
+import { AlertService } from '../../../common/services/alert/alert.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ReportFilterService } from '../../../common/popupLists/report-filter/report-filter.service';
+
+const actionMapping: IActionMapping = {
+
+    mouse: {
+        contextMenu: (tree, node, $event) => {
+            $event.preventDefault();
+            alert(`context menu for ${node.data.name}`);
+        },
+        dblClick: (tree, node, $event) => {
+            if (node.hasChildren) TREE_ACTIONS.TOGGLE_EXPANDED(tree, node, $event);
+        },
+        click: (tree, node, $event) => {
+            $event.shiftKey
+                ? TREE_ACTIONS.TOGGLE_SELECTED_MULTI(tree, node, $event)
+                : TREE_ACTIONS.TOGGLE_SELECTED(tree, node, $event)
+        }
+    },
+    keys: {
+        [KEYS.ENTER]: (tree, node, $event) => node.setActiveAndVisible()
+        //[KEYS.ENTER]: (tree, node, $event) =>  alert(`This is ${node.data.name}`)
+    }
+};
+
+
+@Component({
+    selector: 'summary-party-ledger',
+    templateUrl: './summary-party-ledger.component.html',
+    styleUrls: ["../../modal-style.css", "../../Reports/reportStyle.css"],
+    // styleUrls:['../MasterDialogReport/Report.css']
+    providers: [TreeViewPartyervice]
+})
+
+export class SummaryPartyLedger  implements OnInit{
+    showTree: boolean;
+    showCCtable: boolean;
+    PARENTacid: any;
+    showAreaTable: boolean;
+    reportNameFormatWise:string;
+    userProfile:any;
+    isUserwiseDivision:boolean;
+
+    @ViewChild("PLedgerChild") PLedgerChild: PLedgerComponent;
+    @ViewChild(ContextMenuComponent) public contextMenu: ContextMenuComponent;
+
+    source: LocalDataSource = new LocalDataSource();
+    busy: Subscription;
+    loadListSubject: Subject<any> = new Subject<any>();
+    loadList$: Observable<any> = this.loadListSubject.asObservable();
+    public nodes: any[] = [];
+    public mode: string;
+    public tree: TreeComponent;
+    public selectedNode: any;
+    root: string;
+    division: any[] = [];
+    CostcenterList: any[] = [];
+    showMultipleCC: boolean;
+    AreaList:any[]=[];
+    instanceWiseRepName:string='Summary Party Ledger Report';
+
+    @Output() reportdataEmit = new EventEmitter();
+    constructor(public masterService: MasterRepo, private _authService: AuthService,
+        private partyservice: TreeViewPartyervice, private _reportFilterService: ReportMainService,
+        private alertService: AlertService,private arouter: Router,public _ActivatedRoute: ActivatedRoute,
+        public reportService: ReportFilterService,
+    ) {
+        this.reportNameFormatWise = 'Summary Party Ledger Report';
+        
+        this.mode = "add";
+        this.busy = this.masterService.getpartyListTree().map(x => { return x })
+            .subscribe(res => {
+                //console.log(res);
+                this.nodes = res;
+                //console.log(this.nodes);
+                if (this.tree != null) {
+                    this.tree.treeModel.update();
+                }
+                //console.log(this.tree);
+            }, error => {
+                this.masterService.resolveError(error, "partyLedger - PartyLedger");
+            });
+
+           
+   this.division = [];
+   this.division=[];
+   //let data: Array<IDivision> = [];
+   if(this.masterService.userSetting.userwisedivision == 1){
+     this.masterService.getDivisionFromRightPrivelege().subscribe(res=>{
+         if(res.status == 'ok'){
+             this.division = res.result;
+         }
+     })
+   }
+   else{
+    this.masterService.getAllDivisions()
+    .subscribe(res => {
+      //////console.log("div" + JSON.stringify(res));
+      this.division.push(<Division>res);                
+    }, error => {
+      this.masterService.resolveError(error, "divisions - getDivisions");
+    });
+   } 
+
+            this.masterService.getCostcenter().subscribe(res => {
+                this.CostcenterList = res;
+            })
+            this.masterService.getAreaList().subscribe(res => {
+                this.AreaList = res.result;
+            })
+            
+            this.showMultipleCC = true;
+            // this.masterService.getAccDivList();
+    }
+
+    ngOnInit(){
+        this.userProfile = this._authService.getUserProfile();
+        this.isUserwiseDivision = this.masterService.userSetting.UserwiseDivision
+        this._ActivatedRoute.queryParams.subscribe(params => {
+            const mode = params.mode;
+            // ////console.log("@@this.reportMasterService.drillParam.returnUrl",params.mode,this.reportService.drillParam.returnUrl);
+            // ////console.log("@@this.reportMasterService.drillParam",this.reportService.drillParam)
+            if (mode == "DRILL" && this.reportService.drillParam.returnUrl && this.reportService.drillParam.reportname=='Summary Party Ledger Report' && this._reportFilterService.SummaryPartyLedgerObj.assignPrevioiusDate != true) {
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DATE1=this.reportService.drillParam.reportparam.DATE1;
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DATE2=this.reportService.drillParam.reportparam.DATE2;
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DIV=this.reportService.drillParam.reportparam.DIV;
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_CostCenter=this.reportService.drillParam.reportparam.COSTCENTER;
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_ReportType =2;
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_ReportType = 0;
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_selectedNode=this.reportService.drillParam.reportparam.PARENT;
+            this.checkValue();
+            
+            this.changeEntryDate(this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DATE1, "AD");
+            this.changeEndDate(this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DATE2, "AD");
+            }else{
+                if(this._reportFilterService.SummaryPartyLedgerObj.assignPrevioiusDate != true){
+                    this.masterService.getAccDivList();
+                    this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DATE1=this.masterService.PhiscalObj.BeginDate.split('T')[0];
+                    this.changeEntryDate(this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DATE1, "AD");
+                    if (this.userProfile.CompanyInfo.ActualFY == this.masterService.PhiscalObj.PhiscalID) {
+                        this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DATE2 = new Date().toJSON().split('T')[0];
+                        this.changeEndDate(this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DATE2, "AD");
+                      }
+                      else {
+                        
+                            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DATE2 = this.masterService.PhiscalObj.EndDate.split('T')[0];
+                            this.changeEndDate(this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DATE2, "AD");  
+              
+                        
+                    }
+                    this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DIV=this.masterService.userProfile.CompanyInfo.INITIAL;
+                    this.masterService.viewDivision.subscribe(() => {
+                        if(this.masterService.userSetting.userwisedivision==0 ||  this.masterService.showAll == true){ //ALL OPTION SELECTION IN DIVISION IN REPORT DIALOG BOX
+                          this._reportFilterService.SummaryPartyLedgerObj.SummaryLedger_DIV='%';
+                      }else{
+                        if(this.masterService.userSetting.userwisedivision==1 && this.division.length ==1){
+                            this._reportFilterService.SummaryPartyLedgerObj.SummaryLedger_DIV=this.division[0].INITIAL;
+                          }else{
+                            this._reportFilterService.SummaryPartyLedgerObj.SummaryLedger_DIV=this.masterService.userProfile.CompanyInfo.INITIAL;
+                        }
+                      }
+                      })
+                    this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_CostCenter ='%'
+                    this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_ReportType = 0;
+                    }
+            
+                  
+
+                    if(params.instancename){
+                        // ////console.log("@@[Summary Party Ledger Report0]",params.instancename,this._reportFilterService.reportDataStore[params.instancename])
+                        this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DATE1=this._reportFilterService.reportDataStore[params.instancename].param.reportparam.DATE1;
+                        this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DATE2=this._reportFilterService.reportDataStore[params.instancename].param.reportparam.DATE2;
+                        this.changeEntryDate(this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DATE1, "AD");
+                        this.changeEndDate(this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DATE2, "AD");  
+                        this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DIV=this._reportFilterService.reportDataStore[params.instancename].param.reportparam.DIV;
+                        this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_CostCenter=this._reportFilterService.reportDataStore[params.instancename].param.reportparam.CCENTER;
+                        this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_ReportType =this._reportFilterService.reportDataStore[params.instancename].param.reportparam.REPORTTYPE;
+                        this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_selectedNode=this._reportFilterService.reportDataStore[params.instancename].param.reportparam.PARENT;
+                        this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_AreaWise=this._reportFilterService.reportDataStore[params.instancename].param.reportparam.AREA;
+                    }
+                    this.checkValue();
+
+            }
+        })
+        // this._reportFilterService.SummaryPartyLedgerObj.loadedTimes =0;
+        this.changeEntryDate(this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DATE1, "AD");
+        this.changeEndDate(this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DATE2, "AD");
+    }
+
+    
+
+    changeEntryDate(value, format: string) {
+        var adbs = require("ad-bs-converter");
+        if (format == "AD") {
+            var adDate = (value.replace("-", "/")).replace("-", "/");
+            var bsDate = adbs.ad2bs(adDate);
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_BSDATE1 = (bsDate.en.day == '1' || bsDate.en.day == '2' || bsDate.en.day == '3' || bsDate.en.day == '4' || bsDate.en.day == '5' || bsDate.en.day == '6' || bsDate.en.day == '7' || bsDate.en.day == '8' || bsDate.en.day == '9' ? '0' + bsDate.en.day : bsDate.en.day) + '/'+ bsDate.en.month + '/' + bsDate.en.year;
+        } 
+        else if (format == "BS") {
+            var datearr = value.split('/');
+            const bsDate = datearr[2]+"/"+datearr[1]+"/"+datearr[0];
+              // var bsDate = (value.replace("-", "/")).replace("-", "/");
+              var adDate = adbs.bs2ad(bsDate);
+              var Engdate = (adDate.year + '-' + ((adDate.month).toString().length == 1 ? '0' + adDate.month : adDate.month) + '-' + ((adDate.day).toString().length == 1 ? '0' + adDate.day : adDate.day));
+              const Validatedata = this.masterService.ValidateNepaliDate(Engdate)
+              if(Validatedata == true){
+                const bsDate1 = datearr[2]+"/"+datearr[1]+"/"+datearr[0];
+                var adDate1 = adbs.bs2ad(bsDate1);
+                this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DATE1= (adDate1.year + '-' + ((adDate1.month).toString().length == 1 ? '0' + adDate1.month : adDate1.month) + '-' + ((adDate1.day).toString().length == 1 ? '0' + adDate1.day : adDate1.day));
+              }else{
+                  this.alertService.error("Cannot Change the date");
+                return;
+              }
+            // this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DATE1 = (adDate.year + '-' + ((adDate.month).toString().length == 1 ? '0' + adDate.month : adDate.month) + '-' + ((adDate.day).toString().length == 1 ? '0' + adDate.day : adDate.day));
+        }
+    }
+
+    changeEndDate(value, format: string) {
+        var adbs = require("ad-bs-converter");
+        if (format == "AD") {
+            var adDate = (value.replace("-", "/")).replace("-", "/");
+            var bsDate = adbs.ad2bs(adDate);
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_BSDATE2 = (bsDate.en.day == '1' || bsDate.en.day == '2' || bsDate.en.day == '3' || bsDate.en.day == '4' || bsDate.en.day == '5' || bsDate.en.day == '6' || bsDate.en.day == '7' || bsDate.en.day == '8' || bsDate.en.day == '9' ? '0' + bsDate.en.day : bsDate.en.day) + '/'+ bsDate.en.month + '/' + bsDate.en.year;
+        }
+        else if (format == "BS") {
+            var datearr = value.split('/');
+            const bsDate = datearr[2]+"/"+datearr[1]+"/"+datearr[0];
+              // var bsDate = (value.replace("-", "/")).replace("-", "/");
+              var adDate = adbs.bs2ad(bsDate);
+              var Engdate = (adDate.year + '-' + ((adDate.month).toString().length == 1 ? '0' + adDate.month : adDate.month) + '-' + ((adDate.day).toString().length == 1 ? '0' + adDate.day : adDate.day));
+              const Validatedata = this.masterService.ValidateNepaliDate(Engdate)
+              if(Validatedata == true){
+                const bsDate1 = datearr[2]+"/"+datearr[1]+"/"+datearr[0];
+                var adDate1 = adbs.bs2ad(bsDate1);
+                this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DATE2= (adDate1.year + '-' + ((adDate1.month).toString().length == 1 ? '0' + adDate1.month : adDate1.month) + '-' + ((adDate1.day).toString().length == 1 ? '0' + adDate1.day : adDate1.day));
+              }else{
+                  this.alertService.error("Cannot Change the date");
+                return;
+              }
+            
+            // this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DATE2 = (adDate.year + '-' + ((adDate.month).toString().length == 1 ? '0' + adDate.month : adDate.month) + '-' + ((adDate.day).toString().length == 1 ? '0' + adDate.day : adDate.day));
+        }
+    }
+
+
+    onload() {
+        if (this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_ReportType == 0 && (this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_selectedNode  === undefined || this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_selectedNode =='')){
+            this.alertService.info("Please Select a Party Group");
+            return
+        } else if (this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_ReportType == 1 && (this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_multipleAreas === undefined || this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_multipleAreas.length==0)) {
+            this.alertService.info("Please Select Area");
+            return;
+        }else if (this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_ReportType == 2 && (this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_multipleCostcenter === undefined || this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_multipleCostcenter.length==0)) {
+            this.alertService.info("Please Select Costcenter");
+            return;
+        }else {
+            this.DialogClosedResult("ok");
+        }
+    }
+
+    public DialogClosedResult(res) {
+        // ////console.log("@@this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_AreaWise",this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_AreaWise)
+        let multipleSelectedCC = [];
+        let SelectedCC = '';
+        if (this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_multipleCostcenter === undefined) {
+            SelectedCC = this._reportFilterService.SummaryPartyLedgerObj.CCENTER;
+        } else {
+            if (this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_multipleCostcenter.length != 0) {
+                this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_multipleCostcenter.forEach(COSTCENTER => {
+                    multipleSelectedCC.push(COSTCENTER.CCID)
+                    SelectedCC += `${multipleSelectedCC},`
+                });
+            } else {
+                SelectedCC = this._reportFilterService.SummaryPartyLedgerObj.CCENTER
+            }
+        }
+
+        let multipleSelectedArea = [];
+        let SelectedArea = '';
+        if (this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_multipleAreas === undefined) {
+            SelectedArea = this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_AreaWise
+        } else {
+            if (this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_multipleAreas.length != 0) {
+                this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_multipleAreas.forEach(Area => {
+                    multipleSelectedArea.push(Area.AREA_ID)
+                    SelectedArea += `${multipleSelectedArea},`
+                });
+            } else {
+                SelectedArea = this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_AreaWise
+            }
+        }
+
+        if (this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_ReportType == 0) {
+            this.PARENTacid = this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_selectedNode ? this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_selectedNode : '%';
+        } else {
+            this.PARENTacid = '%';
+        }
+
+        if (this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_ReportType != 2) {
+            SelectedCC = this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_CostCenter
+        }
+        if(this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_ReportType != 1){
+            SelectedArea='%';
+        }
+
+        if (this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DIV && this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DIV == '%') {
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DIVISIONNAME = 'All';
+          }else if( this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DIV && this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DIV!= '%'){
+            let abc = this.division.filter(x=>x.INITIAL == this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DIV);
+              if(abc && abc.length>0 && abc[0]){
+                this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DIVISIONNAME = abc[0].NAME;
+              }else{
+                this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DIVISIONNAME = '';
+              }
+          }else{
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DIVISIONNAME = '';
+          }
+
+          if (this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_CostCenter && this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_CostCenter == '%') {
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_COSTCENTERDISPLAYNAME = 'All';
+          }else if (this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_CostCenter != '%') {
+            let abc = this.CostcenterList.filter(x=>x.CCID == this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_CostCenter);
+            if(abc && abc.length>0 && abc[0]){
+              this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_COSTCENTERDISPLAYNAME = abc[0].COSTCENTERNAME;
+            }else{
+              this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_COSTCENTERDISPLAYNAME = '';
+            }
+          } else {
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_COSTCENTERDISPLAYNAME = '';
+          }
+
+        if(res == "ok"){
+        this._reportFilterService.SummaryPartyLedgerObj.assignPrevioiusDate = true;
+        let routepaths = this.arouter.url.split('/');
+        let activeurlpath2;
+              if(routepaths&& routepaths.length){
+                activeurlpath2=routepaths[routepaths.length-1]
+              } 
+              if(this._reportFilterService.SummaryParty_loadedTimes == 0){
+                this._reportFilterService.previouslyLoadedReportList.push(
+                    {reportname: 'Party Group Ledger Report',
+                    activeurlpath: this.arouter.url,
+                    activerurlpath2: activeurlpath2,
+                    instanceWiseRepName:this.instanceWiseRepName +this._reportFilterService.SummaryParty_loadedTimes
+                });
+            }else{
+                this._reportFilterService.previouslyLoadedReportList.push(
+                    {reportname: 'Party Group Ledger Report'+'_'+this._reportFilterService.SummaryParty_loadedTimes,
+                    activeurlpath: this.arouter.url,
+                    activerurlpath2: activeurlpath2,
+                    instanceWiseRepName:this.instanceWiseRepName +this._reportFilterService.SummaryParty_loadedTimes
+                });
+            }
+       
+        }
+        
+        this.reportdataEmit.emit({
+            status: res, data: {
+                REPORTDISPLAYNAME : 'Party Group Ledger',
+                reportname: this.reportNameFormatWise,
+                instanceWiseRepName:this.instanceWiseRepName+this._reportFilterService.SummaryParty_loadedTimes, 
+                reportparam: {
+                    PARTYGROUPDISPLAYNAME : this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_GROUPDISPLAYNAME?this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_GROUPDISPLAYNAME:'',
+                    REPORTOPTIONDISPLAYNAME: this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_REPORTOPTIONDISPLAYNAME?this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_REPORTOPTIONDISPLAYNAME:'',
+                    DATE1: this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DATE1,
+                    DATE2: this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DATE2,
+                    BSDATE1: this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_BSDATE1,
+                    BSDATE2: this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_BSDATE2,
+                    DIV: this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DIV ? this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DIV : '%',
+                    PARENT: this.PARENTacid,
+                    CCENTER: SelectedCC ? SelectedCC : '%',
+                    AREA: SelectedArea ? SelectedArea : '%',
+                    COMID: this.masterService.userProfile.CompanyInfo.COMPANYID,
+                    ISPARTYGROUPLEDGER: '1',
+                    REPORTTYPE: this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_ReportType,
+                    PHISCALID: this.masterService.PhiscalObj.PhiscalID,
+                    DIVISIONNAME : this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DIVISIONNAME ? this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_DIVISIONNAME : '',
+                    COSTCENTERDISPLAYNAME: this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_COSTCENTERDISPLAYNAME?this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_COSTCENTERDISPLAYNAME:'',
+                    
+                }
+            }
+        });
+        if(res == "ok"){
+            this._reportFilterService.SummaryParty_loadedTimes = this._reportFilterService.SummaryParty_loadedTimes+1;
+        }
+    }
+
+    // Close Method
+
+    closeReportBox() {
+        this.DialogClosedResult("cancel");
+    }
+
+    checkValue() {
+        if (this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_ReportType == 0) {
+            this.showTree = true;
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_multipleAreas = [];
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_multipleAreas = [];
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_multipleCostcenter = [];
+            this.reportNameFormatWise = 'Summary Party Ledger Report';
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_REPORTOPTIONDISPLAYNAME = '';
+        } else {
+            this.showTree = false;
+        }
+        if (this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_ReportType == 1) {
+            this.showAreaTable = true;
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_selectedNode ='';
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_multipleCostcenter = [];
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_multipleCostcenter = [];
+            this.reportNameFormatWise = 'Summary Party Ledger Report_1';
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_REPORTOPTIONDISPLAYNAME = 'Area Wise Report';
+
+        } else {
+            this.showAreaTable = false;
+        }
+        if (this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_ReportType == 2) {
+            this.showCCtable = true;
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_multipleAreas = [];
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_selectedNode ='';
+            this.reportNameFormatWise = 'Summary Party Ledger Report_2';
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_REPORTOPTIONDISPLAYNAME = 'Cost Center Wise Report';
+
+        } else {
+            this.showCCtable = false;
+        }
+    }
+
+    //Tree Part
+
+    getChildren(node: any) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => resolve(this.asyncChildren.map((c) => {
+                return Object.assign({}, c, {
+                    hasChildren: node.level < 5
+                });
+            })), 1000);
+        });
+    }
+
+    asyncChildren = [
+        {
+            name: 'child2.1',
+            subTitle: 'new and improved'
+        }, {
+            name: 'child2.2',
+            subTitle: 'new and improved2'
+        }
+    ];
+
+    customTemplateStringOptions = {
+        displayField: 'ACNAME',
+        isExpandedField: 'expanded',
+        idField: 'uuid',
+        getChildren: this.getChildren.bind(this),
+        actionMapping,
+        allowDrag: false
+    }
+
+    onEvent($event) {
+        // //console.log.bind(console);
+    }
+
+    addNode(addednode) {
+        this.tree.treeModel.getFocusedNode().data.children.push(addednode);
+        this.tree.treeModel.update();
+    }
+
+    onselect(tree, $event) {
+        this.source = new LocalDataSource();
+        this.selectedNode = tree.treeModel.getFocusedNode().data;
+        this.getRootParent(this.selectedNode, this.nodes);
+        this.loadListSubject.next(this.selectedNode);
+        this.partyservice.ParentInfo = this.selectedNode;
+        this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_selectedNode = this.selectedNode.ACID;
+        this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_GROUPDISPLAYNAME = this.selectedNode.ACNAME?this.selectedNode.ACNAME:'';
+    }
+
+    getRootParent(node, list) {
+        if (node.PARENTID == "PA") { this.root = node.ACID; return; }
+        for (let t of list) {
+            if (node.PARENTID != t.ACID) { this.loopingChild(node, t.children, t) }
+            else { this.root = t.ACID; }
+        }
+    }
+
+    loopingChild(node, cList, root) {
+        for (let c of cList) {
+            if (c != node) { this.loopingChild(node, c.children, root); }
+            else { this.root = root.ACID; }
+        }
+    }
+
+    childrenCount(node: TreeNode): string {
+        return node && node.children ? `(${node.children.length})` : '';
+    }
+
+    filterNodes(text, tree) {
+        try {
+            tree.treeModel.filterNodes(text, true);
+        } catch (ex) {
+            //console.log(ex);
+            alert(ex);
+        }
+    }
+
+    addAreaToList() {
+        const areaData = this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_AreaWise;
+        this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_AreaWise = areaData && areaData.AREA_ID ? areaData.AREA_ID : '';
+        let selectAreaList = this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_multipleAreas.filter(areaList => areaList.AREA_NAME == areaData.AREA_NAME)
+        if (
+            areaData.AREA_NAME === "" ||
+            areaData.AREA_NAME === null ||
+            areaData.AREA_NAME === undefined
+        ) {
+            return;
+        }
+
+        if (selectAreaList.length === 0) {
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_multipleAreas.push({ AREA_ID: areaData.AREA_ID, AREA_NAME: areaData.AREA_NAME })
+        }
+    }
+
+    deleteArea(index) {
+        this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_multipleAreas.splice(index, 1)
+    }
+    
+    checkCostCenterValue() {
+        if (this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_showAllContacts == true) {
+            this.showMultipleCC = false;
+        } else {
+            this.showMultipleCC = true;
+        }
+    }
+
+    addCostcenterToList() {
+        const ccData = this._reportFilterService.SummaryPartyLedgerObj.CCENTER;
+        this._reportFilterService.SummaryPartyLedgerObj.CCENTER = ccData && ccData.CCID ? ccData.CCID : '';
+        let selectCCenterList = this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_multipleCostcenter.filter(centerList => centerList.COSTCENTERNAME == ccData.COSTCENTERNAME)
+        if (
+            ccData.COSTCENTERNAME === "" ||
+            ccData.COSTCENTERNAME === null ||
+            ccData.COSTCENTERNAME === undefined
+        ) {
+            return;
+        }
+
+        if (selectCCenterList.length === 0) {
+            this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_multipleCostcenter.push({ CCID: ccData.CCID, COSTCENTERNAME: ccData.COSTCENTERNAME })
+        }
+
+    }
+
+    deleteCostcenter(index) {
+        this._reportFilterService.SummaryPartyLedgerObj.SummaryPartyLedger_multipleCostcenter.splice(index, 1)
+    }
+}

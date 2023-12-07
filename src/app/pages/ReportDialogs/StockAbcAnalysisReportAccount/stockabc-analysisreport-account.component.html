@@ -1,0 +1,167 @@
+<div class="container">
+    <div class="row">
+        <!-- Filter Starts -->
+        <div class="col-12 col-md-12">
+            <div style="background-color : #ffffff;width: 105%;">
+
+                <div class="row">
+                    <div class="modal-header" style="border:0px;">
+                        <button type="button" class="close" data-dismiss="modal" (click)="hide()">&times;</button>
+                        <h4 class="modal-title" style="padding-left: 20px;">Stock ABC Analysis Report</h4>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top: -2%;">
+                    <div class="row col-md-12" style="padding-top: 2%;">
+                        <!-- Left Column -->
+                        <div class="col-md-6" style="padding-left: 30px;">
+                            <fieldset>
+                                <legend style="font-size:11px;font-weight: bold; width:auto">Date Range Selection :
+                                </legend>
+                                <table>
+                                    <tr>
+                                        <td><label class="smallBoldLabel">From:(AD)</label></td>
+                                        <td><label class="smallBoldLabel">To:(AD)</label></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label class="smallBoldLabel"><input type="date"
+                                                    style="width:152px; min-width:50%;" placeholder="Year Start Date"
+                                                    [(ngModel)]="_reportFilterService.StockAbcAnalysisAccountObj.StockAbcAnalysisAccount_DATE1"
+                                                    (change)="changeEntryDate($event.target.value,'AD')"></label>
+                                        </td>
+                                        <td>
+                                            <label class="smallBoldLabel"><input type="date"
+                                                    style="width:152px; min-width:50%;" placeholder="Year Start Date"
+                                                    [(ngModel)]="_reportFilterService.StockAbcAnalysisAccountObj.StockAbcAnalysisAccount_DATE2"
+                                                    (change)="changeEndDate($event.target.value,'AD')"></label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <nepali-date-picker name="nepaliDatefrom" [id]="'nepaliDatefrom'"
+                                                (change)="changeEntryDate($event.detail.value,'BS')" [label]="'From'"
+                                                [(ngModel)]="_reportFilterService.StockAbcAnalysisAccountObj.StockAbcAnalysisAccount_BSDATE1">
+                                            </nepali-date-picker>
+                                        </td>
+                                        <td>
+                                            <nepali-date-picker name="nepaliDateto" [id]="'nepaliDateto'"
+                                                (change)="changeEndDate($event.detail.value,'BS')" [label]="'To'"
+                                                [(ngModel)]="_reportFilterService.StockAbcAnalysisAccountObj.StockAbcAnalysisAccount_BSDATE2">
+                                            </nepali-date-picker>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </fieldset>
+
+                            <fieldset>
+                                <legend class="legend-class">Report Type Selection :</legend>
+                                <div>
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <input type="radio" name="reportType"
+                                                [(ngModel)]="_reportFilterService.StockAbcAnalysisAccountObj.StockAbcAnalysisAccount_REPORTTYPE"
+                                                value=0>
+                                        </div>
+                                        <div calss="col">
+                                            <label style="width: 178px;" class="smallBoldLabel">Item Wise Stock
+                                                Report</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <input type="radio" name="reportType"
+                                                [(ngModel)]="_reportFilterService.StockAbcAnalysisAccountObj.StockAbcAnalysisAccount_REPORTTYPE"
+                                                value=1>
+                                        </div>
+                                        <div calss="col">
+                                            <label style="width: 178px;" class="smallBoldLabel">Item Group Wise Stock
+                                                Report</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <input type="radio" name="reportType"
+                                                [(ngModel)]="_reportFilterService.StockAbcAnalysisAccountObj.StockAbcAnalysisAccount_REPORTTYPE"
+                                                value=2>
+                                        </div>
+                                        <div calss="col">
+                                            <label style="width: 178px;" class="smallBoldLabel">Item Category Wise Stock
+                                                Report</label>
+                                        </div>
+                                    </div>
+                                    <div class="row"
+                                        *ngIf="_reportFilterService.StockAbcAnalysisAccountObj.StockAbcAnalysisAccount_REPORTTYPE!=0">
+                                        <div class="col-md-1">
+                                            <input type="checkbox"
+                                                [(ngModel)]="_reportFilterService.StockAbcAnalysisAccountObj.StockAbcAnalysisAccount_ShowItemInGroupWiseReport "
+                                                (change)="$event.target.checked?(_reportFilterService.StockAbcAnalysisAccountObj.StockAbcAnalysisAccount_ShowItemInGroupWiseReport =1):(_reportFilterService.StockAbcAnalysisAccountObj.StockAbcAnalysisAccount_ShowItemInGroupWiseReport =0)"
+                                                [checked]="_reportFilterService.StockAbcAnalysisAccountObj.StockAbcAnalysisAccount_ShowItemInGroupWiseReport ==1">
+                                        </div>
+                                        <div calss="col">
+                                            <label style="width: 220px;" class="smallBoldLabel"
+                                                *ngIf="_reportFilterService.StockAbcAnalysisAccountObj.StockAbcAnalysisAccount_REPORTTYPE == 1">Show
+                                                Item In Group Wise Stock Report</label>
+                                            <label style="width: 220px;" class="smallBoldLabel"
+                                                *ngIf="_reportFilterService.StockAbcAnalysisAccountObj.StockAbcAnalysisAccount_REPORTTYPE == 2">Show
+                                                Item In Category Wise Stock Report</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                        </div>
+                        <!-- Left column-->
+
+                        <!-- Right column-->
+                        <div class="col-md-6">
+                            <fieldset>
+                                <legend>Product:</legend>
+                                <input type="text" class="form-control"
+                                    [(ngModel)]="_reportFilterService.StockAbcAnalysisAccountObj.StockAbcAnalysisAccount_ITEM"
+                                    placeholder="Press Enter or Tab for Product"
+                                    (keydown.Tab)="ProductEnterClicked($event)"
+                                    (keydown.enter)="ProductEnterClicked($event)">
+
+                            </fieldset>
+
+                            <!-- <fieldset>
+                                <legend>Brand:</legend>
+                                <input type="text" class="form-control"
+                                    [(ngModel)]="_reportFilterService.StockAbcAnalysisAccountObj.StockAbcAnalysisAccount_BRANDNAME"
+                                    placeholder="Press Enter or Tab for Brand" (keydown.Tab)="BrandEnterClicked($event)"
+                                    (keydown.enter)="BrandEnterClicked($event)">
+                            </fieldset> -->
+
+                            <fieldset>
+                                <legend>Supplier :</legend>
+                                <input type="text" class="form-control"
+                                    [(ngModel)]="_reportFilterService.StockAbcAnalysisAccountObj.StockAbcAnalysisAccount_SUPPLIER"
+                                    placeholder="Press Enter or Tab for Supplier"
+                                    (keydown.Tab)="SupplierEnterClicked($event)"
+                                    (keydown.enter)="SupplierEnterClicked($event)">
+                            </fieldset>
+                        </div>
+                        <!-- Right column-->
+
+                    </div>
+                </div>
+
+                <div class="modal-footer" style="width : 97%; margin : 0px auto;">
+                    <button class="btn btn-info confirm-btn" type="button" (click)=onload()>RUN</button>
+                    <button type="button" (click)="closeReportBox()" title="Cancel" class="btn btn-info">Close</button>
+                </div>
+            </div>
+            <!-- Filter Ends -->
+            <!-- Modal Ends -->
+        </div>
+    </div>
+</div>
+
+<generic-popup-grid #genericGridProduct [popupsettings]="gridPopupSettingsForProduct"
+    (onItemDoubleClick)="dblClickProductSelect($event)">
+</generic-popup-grid>
+
+<generic-popup-grid #genericGridSupplier [popupsettings]="gridPopupSettingsForSupplier"
+    (onItemDoubleClick)="dblClickSupplierSelect($event)">
+</generic-popup-grid>

@@ -1,0 +1,39 @@
+<div
+  class="modal fade"
+  bsModal
+  #alertModeal="bs-modal"
+  [config]="{ backdrop: 'static' }"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="mySmallModalLabel"
+  aria-hidden="true" 
+>
+  <div class="modal-dialog modal-sm" *ngIf="message">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" aria-label="Close" (click)="close()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" *ngIf="displayHeading">
+            <i *ngIf="message.type == 'success'" class="fa fa-check" aria-hidden="true" style="color: green"></i> 
+            <i *ngIf="message.type == 'warning'" class="fa fa-warning" aria-hidden="true" style="color: yellow"></i>
+            <i *ngIf="message.type == 'error'" class="fa fa-warning" aria-hidden="true" style="color: rgb(212, 149, 149)"></i>
+            <i *ngIf="message.type == 'info'" class="fa fa-warning" aria-hidden="true" style="color: rgb(169, 195, 233)"></i>
+            {{ displayHeading }}
+        </h4>
+      </div>
+      <div class="modal-body">
+        <p *ngIf="displayMessage">{{ displayMessage }}</p>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-success"
+          (click)="close()"
+        >
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

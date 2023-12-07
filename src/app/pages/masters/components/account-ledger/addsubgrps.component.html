@@ -1,0 +1,73 @@
+<form [formGroup]='AddACGrpForm'>
+    <div class="row" class="form-horizontal">
+        <ba-card [title]="modeTitle" baCardClass="with-scroll">
+            <div class="form-group row">
+                <label class="col-sm-2 form-control-label">Group Name:</label>
+                <div class="col-sm-2">
+                    <select style="width:130px; height:28px;" formControlName="majorparent">
+       <option *ngFor="let code of ParentAcList" [ngValue]="code.ACID">{{code.ACNAME}}</option>
+      </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 form-control-label">New Group:</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control" formControlName="ACNAME">
+                    <div class="alert alert-danger" *ngIf="AddACGrpForm.controls['ACNAME'].touched && !AddACGrpForm.controls['ACNAME'].valid">New Group is Required.</div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 form-control-label">Has Subledger:</label>
+                <div class="col-sm-2">
+                    <input [value]=1 formControlName="hasSub" type="checkbox" (change)="changehassubEvent(1)">
+
+                </div>
+            </div>
+           <fieldset style="border:1px solid black; margin-top:30px;">
+                <label style="background-color:white; position: absolute; margin-top:-17px; margin-left: 20px; padding:5px;">PType</label>
+
+                <table>
+                    <tr>
+                        <td> <label style="width:200px; padding:5px; margin-top:10px; margin-left:50px;">Assets: </label><input  [value]="A" type="radio" (change)="changePtype('A')" formControlName="Ptype">
+                        <td> <label style="width:200px; padding:5px; margin-top:10px; margin-left:30px;">Liabilities: </label><input  type="radio" [value]="L"  (change)="changePtype('L')" formControlName="Ptype">
+                    </tr>
+                    <tr>
+                        <td> <label style="width:200px; padding:5px; margin-top:10px; margin-left:50px;">Direct Income: </label><input  [value]="D" type="radio"  (change)="changePtype('D')" formControlName="Ptype">
+                         <td> <label style="width:200px; padding:5px; margin-top:10px; margin-left:30px;">Indirect Income: </label><input  [value]="I" type="radio"  (change)="changePtype('I')" formControlName="Ptype">   
+                    </tr>
+
+                </table>
+
+            </fieldset>
+
+        </ba-card>
+    </div>
+
+    <button type="button" (click)="onSave()" title="Save" class="btn btn-info">Save</button>
+
+    <button type="button" (click)="cancel()" title="Cancel" class="btn btn-info">Back</button>
+</form>
+
+<div class="modal fade" bsModal #childModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" aria-label="Close" (click)="hideChildModal()">
+          <span aria-hidden="true">&times;</span>
+          
+        </button>
+                <h4 class="modal-title">Information</h4>
+            </div>
+            <div class="modal-body">
+                {{DialogMessage}}
+            </div>
+            <!--<div class="modal-footer">
+                        <button class="btn btn-info confirm-btn" (click)="hideChildModal()">Save changes</button>
+                        <button class="btn btn-info confirm-btn" type="button" (click)=onsubmit()>Save</button>
+                    </div>!-->
+
+        </div>
+    </div>
+</div>
+<div>

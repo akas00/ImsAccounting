@@ -1,0 +1,202 @@
+<style>
+   .input-text {
+      width: 100%;
+      /* height: 30px !important; */
+      font-weight: bold;
+   }
+
+   .td-class {
+      border: none !important;
+   }
+
+   .date-input {
+      width: 93%;
+      font-size: 12px !important;
+      height: 30px !important;
+   }
+
+   .modal-part {
+      overflow-y: scroll;
+      height: 500px;
+      padding-top: 25px;
+   }
+    @media screen and (max-width: 991px){ .report-container{ width: 100% !important; } }
+</style>
+<div class="container report-container">
+   <div class="row">
+      <!-- Filter Starts -->
+      <div class="col-12 col-md-12 col-lg-6">
+         <div style="background-color : #ffffff; padding :1%; height : auto;">
+            <div class="row">
+               <div class="modal-header" style="width : 97%; margin : 0px auto;">
+                  <button type="button" class="close" data-dismiss="modal" (click)="closeReportBox()">&times;</button>
+                  <h4 class="modal-title">Sales Return Summary Retailer Report</h4>
+               </div>
+               <!-- Left Column -->
+               <div class="col-md-12" style="padding-top: 2%;">
+                  <fieldset>
+                     <legend style="font-size:11px;font-weight: bold; width:auto;margin-bottom: -4px;">Date Range
+                        Selection :
+                     </legend>
+                     <table>
+                        <tr>
+                           <td class="td-class"><label class="smallBoldLabel">From:(AD)</label></td>
+                           <td class="td-class"><label class="smallBoldLabel">To:(AD)</label></td>
+                        </tr>
+                        <tr>
+                           <td class="td-class">
+                              <input type="date" class="date-input form-control" placeholder="Year Start Date"
+                                 [(ngModel)]="_reportFilterService.SalesReturnSummaryRetailerObj.SalesReturnSummaryRetailer_DATE1"
+                                 (change)="changestartDate($event.target.value,'AD')"
+                                 max="{{masterService.date1 | date:'yyyy-MM-dd'}}"
+                                 min="{{masterService.date2 | date:'yyyy-MM-dd'}}">
+                           </td>
+                           <td class="td-class">
+                              <input type="date" class="date-input form-control" placeholder="Year Start Date"
+                                 [(ngModel)]="_reportFilterService.SalesReturnSummaryRetailerObj.SalesReturnSummaryRetailer_DATE2"
+                                 (change)="changeEndDate($event.target.value,'AD')"
+                                 max="{{masterService.date1 | date:'yyyy-MM-dd'}}"
+                                 min="{{masterService.date2 | date:'yyyy-MM-dd'}}">
+                           </td>
+                        </tr>
+                        <tr>
+                           <td class="td-class">
+                              <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDatefrom'"
+                                 (change)="changestartDate($event.detail.value,'BS')" [label]="'From'"
+                                 [(ngModel)]="_reportFilterService.SalesReturnSummaryRetailerObj.SalesReturnSummaryRetailer_BSDATE1">
+                              </nepali-date-picker>
+                           </td>
+                           <td class="td-class">
+                              <nepali-date-picker name="nepaliDateTo" [id]="'nepaliDateTo'"
+                                 (change)="changeEndDate($event.detail.value,'BS')" [label]="'To'"
+                                 [(ngModel)]="_reportFilterService.SalesReturnSummaryRetailerObj.SalesReturnSummaryRetailer_BSDATE2">
+                              </nepali-date-picker>
+                           </td>
+                        </tr>
+                     </table>
+                  </fieldset>
+                   
+           <fieldset>
+              <legend>Division Selection:</legend>
+              <select [(ngModel)]="_reportFilterService.SalesReturnSummaryRetailerObj.SalesReturnSummaryRetailer_DIV"
+                 style="height: 30px !important;" class="form-control input-text">
+                 <option value="%" *ngIf="masterService.userSetting.userwisedivision==0 ||  masterService.showAll">ALL</option>
+                 <option *ngFor="let div of division" value="{{ div.INITIAL }}">
+                    {{ div.NAME }}
+                 </option>
+              </select>
+           </fieldset>
+  
+
+                  <fieldset>
+                     <legend>Salesman:</legend>
+                     <!-- <div class="checkbox" style="width:200px;">
+                        <label class="smallBoldLabel">
+                           <input type="checkbox"
+                              [(ngModel)]="_reportFilterService.SalesReturnSummaryRetailerObj.SalesReturnSummaryRetailer_EnableSalesman"
+                              (change)="checkValue()">
+                           Choose Multiple Salesman</label>
+                     </div> -->
+                     <input type="text" class="form-control"
+                        [(ngModel)]="_reportFilterService.SalesReturnSummaryRetailerObj.SalesReturnSummaryRetailer_Salesman"
+                        placeholder="Press Enter or Tab for Salesman" (keydown.Tab)="SalesmanEnterClicked($event)"
+                        (keydown.enter)="SalesmanEnterClicked($event)">
+                     <!-- <button type="button" *ngIf="_reportFilterService.showMultipleSalesman"
+                        (click)="addSalesmanToList()" class="btn btn-info" style="float: right;">Add</button> -->
+                  </fieldset>
+
+                  <fieldset>
+                     <legend>Retailer :</legend>
+                     <!-- <div class="checkbox" style="width:200px;">
+                        <label class="smallBoldLabel">
+                           <input type="checkbox"
+                              [(ngModel)]="_reportFilterService.SalesReturnSummaryRetailerObj.SalesReturnSummaryRetailer_EnableRetailer"
+                              (change)="checkValue()">
+                           Choose Multiple Retailer</label>
+                     </div> -->
+                     <input type="text" class="form-control"
+                        [(ngModel)]="_reportFilterService.SalesReturnSummaryRetailerObj.SalesReturnSummaryRetailer_RetailerName"
+                        placeholder="Press Enter or Tab for Retailer" (keydown.Tab)="RetailerEnterClicked($event)"
+                        (keydown.enter)="RetailerEnterClicked($event)">
+                     <!-- <button type="button" *ngIf="_reportFilterService.showMultipleRetailer"
+                        (click)="addRetailerToList()" class="btn btn-info" style="float: right;">Add</button> -->
+                  </fieldset>
+
+
+               </div>
+
+               <div class="btn" style="float : right;">
+                  <button class="btn btn-info confirm-btn" type="button" (click)=onload()>RUN</button>
+                  <button type="button" title="Cancel" class="btn btn-info" (click)="closeReportBox()">Close</button>
+               </div>
+
+            </div>
+         </div>
+      </div>
+
+      <!-- Modal Starts -->
+      <div class="col-12 col-md-12 col-lg-6">
+         <div class="modal-part"
+            *ngIf="_reportFilterService.showMultipleSalesman || _reportFilterService.showMultipleRetailer">
+
+            <div *ngIf="_reportFilterService.showMultipleSalesman">
+               <div class="modal-content modal-content-main-area">
+                  <div class="modal-header" style="padding: 5px;">
+                     <button type="button" class="close" data-dismiss="modal"
+                        (click)="hideSalesmanTable()">&times;</button>
+                     <h4 class="modal-title" id="myModalLabel">Selected Salesmen</h4>
+                  </div>
+                  <table style="height:200px;">
+                     <tr>
+                        <th style="width:3px;">S.No.</th>
+                        <th style="width:15px;">Salesman</th>
+                        <th style="width:4px;">Action</th>
+                     </tr>
+                     <tr
+                        *ngFor="let data of _reportFilterService.SalesReturnSummaryRetailerObj.SalesReturnSummaryRetailer_MultipleSalesman;let i = index">
+                        <td style="width:3px;">{{ i + 1 }}</td>
+                        <td style="width:15px;">{{data.SalesmanName}}</td>
+                        <td style="width:4px;"> <button type="button" class="btn btn-info" style="float: right;"
+                              (click)="deleteSalesman(i)">Delete</button></td>
+                     </tr>
+                  </table>
+               </div>
+            </div>
+
+            <div *ngIf="_reportFilterService.showMultipleRetailer">
+               <div class="modal-content modal-content-main-area">
+                  <div class="modal-header" style="padding: 5px;">
+                     <button type="button" class="close" data-dismiss="modal"
+                        (click)="hideRetailerTable()">&times;</button>
+                     <h4 class="modal-title" id="myModalLabel">Selected Retailers</h4>
+                  </div>
+                  <table style="height:200px;">
+                     <tr>
+                        <th style="width:3px;">S.No.</th>
+                        <th style="width:15px;">Retailer</th>
+                        <th style="width:4px;">Action</th>
+                     </tr>
+                     <tr
+                        *ngFor="let data of _reportFilterService.SalesReturnSummaryRetailerObj.SalesReturnSummaryRetailer_MultipleRetailer;let i = index">
+                        <td style="width:3px;">{{ i + 1 }}</td>
+                        <td style="width:15px;">{{data.RETAILER}}</td>
+                        <td style="width:4px;"> <button type="button" class="btn btn-info" style="float: right;"
+                              (click)="deleteRetailer(i)">Delete</button></td>
+                     </tr>
+                  </table>
+               </div>
+            </div>
+
+         </div>
+      </div>
+   </div>
+</div>
+<!-- Modal Ends -->
+
+<generic-popup-grid #genericGridSalesman [popupsettings]="gridPopupSettingsForSalesman"
+   (onItemDoubleClick)="dblClickSalesmanSelect($event)">
+</generic-popup-grid>
+
+<generic-popup-grid #genericGridRetailer [popupsettings]="gridPopupSettingsForRetailerListBySalesman"
+   (onItemDoubleClick)="dblClickRetailerPopup($event)">
+</generic-popup-grid>

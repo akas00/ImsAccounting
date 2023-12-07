@@ -1,0 +1,32 @@
+<div class="clearfix">
+    <div class="col-md-12" style="padding-left: 0;padding-right: 0px">
+      <div class="col-md-1" style="padding: 0;width: 30px !important">
+        <table>
+          <tr style="height:30px;width:30px">
+            <td style="border: 1pt solid black;">
+              <i (click)="loadFilter()" tooltip-placement="right" tooltip="Main filters" style="margin:5px"><span
+                  class="glyphicon glyphicon-filter" tooltip="Main filters"></span></i>
+            </td>
+          </tr>
+          <tr>
+            <td style="border: 1pt solid black;">
+              <i (click)="ExportReportInExcel()" style="margin:5px"> <span
+                      class="glyphicon glyphicon-export"></span></i>
+          </td>
+          </tr>
+        </table>
+      </div>
+      <div class="col-md-11" style="padding: 0;width:96.66% !important">
+        <report-body *ngIf="ReportDataObj.particularsRow" [listSetting]="listSetting" [reportType]="reportType" [voucherName]="filterObj.VOUCHERNAME"
+          [particularsRow]="ReportDataObj.particularsRow" [totalRow]="ReportDataObj.totalRow" [ACNAME]="filterObj.ACNAME" [DATE1]="filterObj.DATE1" [DATE2]="filterObj.DATE2"></report-body>
+  
+          
+      </div>
+    </div>
+  </div>
+  
+  
+  
+  
+  <report-filter #reportFilter (filterEmiiter)="applyFilter($event)" [reportType]="reportType"></report-filter>
+  

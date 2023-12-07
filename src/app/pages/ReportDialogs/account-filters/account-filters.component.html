@@ -1,0 +1,63 @@
+<fieldset>
+    <legend><label class="smallBoldLabel">&nbsp;Ledger Wise</label></legend>
+    <div>
+        <div class="col-md-10">
+            <table>
+                <tr>
+                    <td colspan='2'><label class="smallBoldLabel">ACCODE</label></td>
+                    <td colspan='5'><label class="smallBoldLabel">ACNAME</label></td>
+                </tr>
+                <tr>
+                    <td colspan='2'>
+                        <label class="smallBoldLabel">
+                            <input tabindex="2" type="text" class="form-control input-sm"
+                                style="height: 26px;"
+                                
+                                (keydown.enter)="accodeMultipleChanged($event.target.value)"
+                                [(ngModel)]="_reportFilterService.ReportFilterObject.multipleACCODE"
+                                max="{{masterService.date1 | date:'yyyy-MM-dd'}}" min="{{masterService.date2 | date:'yyyy-MM-dd'}}">
+                        </label>
+                    </td>
+                    <td colspan='5'>
+                        <div style="position: absolute; top: 34px;width: 152px;">
+                            <label class="smallBoldLabel">
+                                <input autocomplete="off" tabindex="2" ngui-auto-complete
+                                    class="form-control input-sm"
+                                    
+                                    [source]="dropListItem.bind(this)" max-num-list="25"
+                                    [(ngModel)]="_reportFilterService.ReportFilterObject.multipleACNAME" list-formatter="ACNAME"
+                                    style="height: 26px;"
+                                    (keydown.enter)="onEnterMulAcnameChange($event)"
+                                    (ngModelChange)="itemMultipleChanged($event)"
+                                    name="AcName" display-property-name="ACNAME"
+                                    max="{{masterService.date1 | date:'yyyy-MM-dd'}}" min="{{masterService.date2 | date:'yyyy-MM-dd'}}">
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-info"
+                (click)="addAccountToList()">Add</button>
+        </div>
+        <div class="col-md-12">
+            <table style="height:175px;">
+                <tr class="smallBoldLabel">
+                    <th style="width:3px;">S.No.</th>
+                    <th style="width:10px;">Account</th>
+                    <th style="width:4px;">Action</th>
+                </tr>
+                <tr *ngFor="let data of _reportFilterService.ReportFilterObject.multipleAccounts;let i = index"
+                    class="smallBoldLabel">
+                    <td style="width:3px;">{{ i + 1 }}</td>
+                    <td style="width:10px;">{{data.ACNAME}}</td>
+                    <td style="width:4px;">
+                        <button type="button" class="btn btn-info action-btn"
+                            (click)="deleteAccount(i)">Delete</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</fieldset>

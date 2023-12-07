@@ -1,0 +1,74 @@
+<account-payable-report *ngIf="activeurlpath=='accountpayablereport'" (reportdataEmit)="reportdataEmit($event)">
+</account-payable-report>
+<account-receivable-report *ngIf="activeurlpath=='accountreceivablereport'" (reportdataEmit)="reportdataEmit($event)">
+</account-receivable-report>
+<gst-sales-summary *ngIf="activeurlpath=='gstsalessummary'" (reportdataEmit)="reportdataEmit($event)">
+</gst-sales-summary>
+<result-purchasebookreport-dialog  *ngIf="activeurlpath=='purchasebookreport'" (reportdataEmit)="reportdataEmit($event)"></result-purchasebookreport-dialog>
+<result-cashbookreport-dialog (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='cashbookreport'"></result-cashbookreport-dialog>
+<result-salesbookreport-dialog (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='salesbookreport'"></result-salesbookreport-dialog>
+<result-journalbook-dialog (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='journalbook'"></result-journalbook-dialog>
+<result-duevoucherreport-dialog (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='duevoucherreport'"></result-duevoucherreport-dialog>
+<result-debtorsreport-dialog  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='debtorsreport'"></result-debtorsreport-dialog>
+<result-creditorsreport-dialog  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='creditorsreport'"></result-creditorsreport-dialog>
+<result-partyledger-dialog  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='PartyLedger'"></result-partyledger-dialog>
+<result-debtors-aging-report-dialog  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='debtorsagingreport'"  ></result-debtors-aging-report-dialog>
+<result-creditros-aging-report-dialog (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='creditorsagingreport'" ></result-creditros-aging-report-dialog>
+<result-debtors-outstanding-report-dialog (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='debtorsoutstandingreport'" ></result-debtors-outstanding-report-dialog>
+<result-creditors-outstanding-report-dialog (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='creditorsoutstandingreport'"  ></result-creditors-outstanding-report-dialog>
+<summary-ledger-report  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='summaryledgerreport'"></summary-ledger-report>
+<account-ledger-report  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='accountledgerreport'"></account-ledger-report>
+<summary-party-ledger  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='summarypartyledger'"></summary-party-ledger>
+<party-ledger-report  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='partyledgerreport'"></party-ledger-report>
+
+
+<debitnote-register-report *ngIf="activeurlpath=='debit-note-register-report'"
+  (reportdataEmit)="reportdataEmit($event)"></debitnote-register-report>
+<vat-purchase-register-report *ngIf="activeurlpath=='vat-purchase-register-report'"
+  (reportdataEmit)="reportdataEmit($event)"></vat-purchase-register-report>
+<one-lakh-above-purchase-report *ngIf="activeurlpath=='one-lakh-above-purchase-report'"
+  (reportdataEmit)="reportdataEmit($event)"></one-lakh-above-purchase-report>
+<one-lakh-above-SALES-report *ngIf="activeurlpath=='one-lakh-above-sales-report'"
+  (reportdataEmit)="reportdataEmit($event)"></one-lakh-above-SALES-report>
+ <voucher-registor-dialog  *ngIf="activeurlpath=='voucher-regeister-report'"  (reportdataEmit)="reportdataEmit($event)"  >   
+ </voucher-registor-dialog> 
+ <cash-bank-book  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='cash-bank-book-report'"></cash-bank-book>
+ <day-book-report  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='day-book-report'"></day-book-report>
+ <sub-ledger-report  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='sub-ledger-report'"></sub-ledger-report>
+ <sub-ledger-acbase-report  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='sub-ledger-report-acbase'"></sub-ledger-acbase-report>
+ <trial-balance-report  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='trial-balance-report'"></trial-balance-report>
+ <additionalcost-itemwise-report  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='additionalcost-itemwise-report'"></additionalcost-itemwise-report>
+ <additionalcost-voucherwise-report  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='additionalcost-voucherwise-report'"></additionalcost-voucherwise-report>
+ <salesreturn-summary-report (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='salesreturnsummary-report'"></salesreturn-summary-report>
+ <salesreturnsummary-retailerreport (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='salesreturnsummaryretailer-report'"></salesreturnsummary-retailerreport>
+ <sales-return-reportdetail (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='salesreturn-reportdetail'"></sales-return-reportdetail>
+ <stock-valuation-report (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='stockvaluation-reportdms'" ></stock-valuation-report>
+ <stock-ledger-report-account (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='stockledger-reportdms'"></stock-ledger-report-account>
+ <stocksummary-reportaccount (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='stocksummary-reportdms'"></stocksummary-reportaccount>
+ <currentstock-warehousewise-account (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='currentstock-warehousewise-reportdms'"></currentstock-warehousewise-account>
+ <stockabc-analysis-account (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='stockabc-analysis-reportdms'"></stockabc-analysis-account>
+ <consolidated-trial-balance-report (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='consolidated-trialbalance-report'"></consolidated-trial-balance-report>
+ 
+ <actual-vs-budget-report (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='actual-vs-budget-report'"></actual-vs-budget-report>
+ <profitloss-report  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='profit-loss-report'"></profitloss-report>
+ <balancesheet-report  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='balance-sheet-report'"></balancesheet-report>
+
+ <tds-report (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='tds-report'"></tds-report>
+ <consolidated-balance-sheet-report  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='consolidated-balance-sheet-report'"></consolidated-balance-sheet-report>
+ <consolidated-profit-loss-report  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='consolidated-profit-loss-report'"></consolidated-profit-loss-report>
+ <billtracking-report-selector (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='bill-tracking-report'"></billtracking-report-selector>
+ <creditorsbilltracking-report-selector (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='creditorsbill-tracking-report'"></creditorsbilltracking-report-selector>
+ <postdated-report-selector (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='postdated-chequevoucher-report'"></postdated-report-selector>
+ <monthly-sales-payment (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='monthly-sales-payment-report'"></monthly-sales-payment>
+<localpurchasecost-allocation-report (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='local-purchase-cost-allocation-report'"></localpurchasecost-allocation-report>
+ 
+
+
+
+
+
+
+
+
+
+

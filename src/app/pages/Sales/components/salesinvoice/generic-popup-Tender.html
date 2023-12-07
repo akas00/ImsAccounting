@@ -1,0 +1,386 @@
+<style>
+  .modal-content {
+    padding: 1px;
+    margin: 0px;
+    float: right;
+  }
+
+  .table-scroll {
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+
+  tbody>tr:hover {
+    background-color: #f3f5f4;
+    cursor: pointer;
+  }
+
+  tr {
+    font-size: 11px;
+  }
+
+  .selected-row {
+    background-color: #ced6d3 !important;
+  }
+
+  td {
+    padding: 2px
+  }
+
+  .modal-sticky {
+    position: fixed;
+    bottom: 45px;
+    right: 25%;
+    width: 80%;
+    height: 78%;
+    z-index: 2;
+  }
+
+  .input {
+    width: 80%
+  }
+
+  td {
+    line-height: 0px !important
+  }
+
+  .table>tbody>tr>td {
+    border-top: 0px solid gainsboro !important;
+  }
+
+  .TopMargin {
+    Margin-Top: 10px
+  }
+
+  .table>tbody>tr>td:first-child {
+    text-align: left !important;
+  }
+
+  input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+  label {
+    height: 21px;
+    font-weight: normal;
+    width: 100px;
+    margin: 2px;
+    vertical-align: middle;
+    font-size: 13px;
+    padding-top: 6px;
+  }
+</style>
+<div class="modal-sticky" [class.modal-sticky-hide]="!isActive" style="display : block; padding: 0px;">
+  <!-- Modal content -->
+  <div class="modal-content" style="background-color: #f1f1f1; width:60% !important">
+    <div class="modal-header" style="padding: 0px;background: #f1f1f1;;">
+
+      <h4 class="modal-title" style="text-align: center;">
+        Tender
+      </h4>
+    </div>
+    <form class="row" class="form-horizontal" [formGroup]="form">
+      <div class="col-md-6 plainBackGround"
+        style="height:178px;margin : 0px;  border-bottom: 1px solid silver;padding-top: 0px;">
+        <table class="table table-summary TopMargin" style="text-align: left">
+          <tr>
+            <td><label>Cash</label></td>
+            <td>
+              <input type="number" formControlName="CASH" readonly=true />
+            </td>
+          </tr>
+          <tr>
+            <td><label>Credit </label></td>
+            <td>
+              <input type="number" formControlName="CREDIT" readonly=true />
+            </td>
+          </tr>
+          <tr>
+            <td><label>Cheque</label></td>
+
+            <td>
+              <input type="number" formControlName="CHEQUE" readonly=true />
+            </td>
+
+          </tr>
+          <tr>
+            <td><label>Wallet</label>
+            <td>
+              <input type="number" formControlName="WALLET" readonly=true />
+            </td>
+          </tr>
+          <tr>
+            <td><label>Card</label></td>
+            <td>
+              <input type="number" formControlName="CARD" readonly=true />
+            </td>
+          </tr>
+          <tr>
+            <td><label>Coupon</label></td>
+            <td>
+              <input type="number" formControlName="COUPON" />
+            </td>
+          </tr>
+
+        </table>
+      </div>
+      <!-- Cash -->
+      <div *ngIf="PaymentMode=='cash' || PaymentMode=='cash'" class="col-md-6 plainBackGround"
+        style="height:178px; overflow: scroll; margin : 0px;border-bottom: 1px solid silver;">
+        <table class="table table-summary TopMargin" style="text-align: left">
+
+          <tr>
+            <td><label>Cash Amount</label> </td>
+            <td>
+              <input #CASHAMT_Native type="number" formControlName="CASHAMT" (keyup.enter)="EnterAmt()"
+                (keyup)="changeCashAmt($event.target.value)" />
+            </td>
+          </tr>
+
+
+        </table>
+      </div>
+      <!-- Credit  -->
+      <!-- <div *ngIf="PaymentMode=='credit'" class="col-md-6 plainBackGround"
+        style="height:178px; overflow: scroll; margin : 0px;border-bottom: 1px solid silver;padding-top: 0px;">
+        <table class="table table-summary TopMargin" style="text-align: left">
+
+          <tr>
+            <td><label>Credit Amount</label> </td>
+            <td>
+              <input type="number" formControlName="CREDITAMT" (keyup)="changeCreditAmt($event.target.value)" />
+            </td>
+          </tr>
+
+
+        </table>
+      </div> -->
+      <!-- Cheque -->
+      <div *ngIf="PaymentMode=='cheque'" class="col-md-6 plainBackGround"
+        style="height:178px; overflow: scroll; margin : 0px;border-bottom: 1px solid silver;padding-top: 0px;">
+        <table class="table table-summary TopMargin" style="text-align: left">
+
+          <tr>
+            <td><label>Cheque Amount</label></td>
+            <td>
+              <input #CHEQUEAMT_Native type="number" formControlName="CHEQUEAMT" (keyup.enter)="EnterAmt()"
+                (keyup)="changeChequeAmt($event.target.value)" />
+            </td>
+          </tr>
+          <tr>
+            <td><label>ChequeNo</label></td>
+            <td>
+              <input type="text" formControlName="CHEQUENO" />
+            </td>
+          </tr>
+          <tr>
+            <td><label>Bank</label></td>
+            <td>
+              <input type="text" formControlName="BANK" />
+            </td>
+          </tr>
+          <tr>
+            <td><label>Date</label></td>
+
+            <td>
+              <input style="height:30px" type="date" formControlName="DATE" />
+            </td>
+            
+
+          </tr>
+
+
+        </table>
+      </div>
+
+      <!-- Card  -->
+      <div *ngIf="PaymentMode=='card'" class="col-md-6 plainBackGround"
+        style="height:178px; overflow: scroll; margin : 0px;border-bottom: 1px solid silver;padding-top: 0px;">
+        <table class="table table-summary TopMargin" style="text-align: left">
+
+          <tr>
+            <td><label>Card Amount</label></td>
+            <td>
+              <input #CARDAMT_Native type="number" formControlName="CARDAMT" (keyup.enter)="EnterAmt()"
+                (keyup)="changeCardAmt($event.target.value)" />
+            </td>
+          </tr>
+          <tr>
+            <td><label>Card No</label></td>
+            <td>
+              <input type="text" formControlName="CARDNO" />
+            </td>
+          </tr>
+          <tr>
+            <td><label>Card Name</label></td>
+            <td>
+              <!-- <div
+                class="row"
+                *ngIf="
+                  (_trnMainService.TrnMainObj.VoucherType == 1 ||
+                    _trnMainService.TrnMainObj.VoucherType == 14) &&
+                  _trnMainService.paymentAccountList.length > 0
+                "
+              >
+                <label style="width: 25%;">Card Name :</label>
+                <select
+                  style="width:70%;"
+                  [(ngModel)]="_trnMainService.TrnMainObj.TRNAC"
+                  [ngModelOptions]="{standalone:true}"
+                >
+                  <option
+                    *ngFor="let p of _trnMainService.paymentAccountList"
+                    [ngValue]="p.ACID"
+                    >{{ p.ACNAME }}
+                  </option>
+                </select>
+              </div> -->
+              <select name="cardtype" formControlName="CARDNAME" style="width:99%">
+                <option *ngFor="let i of cardList" value="{{i.PAYMENTMODENAME}}">{{i.PAYMENTMODENAME}}</option>
+
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><label>Approval Code</label></td>
+            <td>
+              <input type="text" formControlName="APPROVALCODE" />
+            </td>
+          </tr>
+          <tr>
+            <td><label>Card Holder Name</label></td>
+            <td>
+              <input type="text" formControlName="CARDHOLDERNAME" />
+            </td>
+          </tr>
+
+        </table>
+      </div>
+
+      <!-- Coupon -->
+      <div *ngIf="PaymentMode=='coupon'" class="col-md-6 plainBackGround"
+        style="height:178px; overflow: scroll; margin : 0px;border-bottom: 1px solid silver;padding-top: 0px;">
+        <table class="table table-summary TopMargin" style="text-align: left">
+
+          <tr>
+            <td><label>Coupon Amount</label> </td>
+            <td>
+              <input #COUPONAMT_Native type="number" formControlName="COUPONAMT" (keyup.enter)="EnterAmt()"
+                (keyup)="changeCouponAmt($event.target.value)" />
+            </td>
+          </tr>
+          <tr>
+            <td><label>Coupon Name</label> </td>
+            <td>
+              <select name="CoutonType" id="Type" formControlName="COUPONNAME" style="width:99%">
+                <option *ngFor="let i of couponList" value="{{i.PAYMENTMODENAME}}">{{i.PAYMENTMODENAME}}</option>
+
+              </select>
+            </td>
+          </tr>
+
+        </table>
+      </div>
+
+      <!-- Wallet -->
+      <div *ngIf="PaymentMode=='wallet'" class="col-md-6 plainBackGround"
+        style="height:178px; overflow: scroll; margin : 0px;border-bottom: 1px solid silver;padding-top: 0px;">
+        <table class="table table-summary TopMargin" style="text-align: left">
+
+          <tr>
+            <td><label>Wallet Amount</label> </td>
+            <td>
+              <input #WALLETAMT_Native type="number" formControlName="WALLETAMT" (keyup.enter)="EnterAmt()"
+                (keyup)="changeWalletAmt($event.target.value)" />
+            </td>
+          </tr>
+          <tr>
+            <td><label>Wallet Type</label> </td>
+            <td>
+              <select name="wallettype" id="Type" formControlName="WALLETTYPE" style="width:99%">
+                <option *ngFor="let i of walletList" value="{{i.PAYMENTMODENAME}}">{{i.PAYMENTMODENAME}}</option>
+
+              </select>
+
+            </td>
+          </tr>
+          <tr>
+            <td><label>Card No</label> </td>
+            <td>
+              <input type="text" formControlName="WALLETCARDNO" />
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="col-md-12 plainBackGround" style="margin : 0px;   border-bottom: 1px solid silver;padding-top: 0px;
+    background-color: white;">
+        <table class="table table-summary TopMargin" style="text-align: left">
+          <!-- Total -->
+          <tr>
+            <td><label>Total</label></td>
+            <td style="width: 20%">
+              <input type="number" style="width:80%" formControlName="TOTAL" readonly=true />
+            </td>
+          </tr>
+          <tr>
+            <td><label>Out Standing </label></td>
+            <td>
+              <input type="text" style="width:80%" formControlName="OUTSTANDING" readonly=true />
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 5%"><label>Advance</label></td>
+
+            <td>
+              <input type="text" style="width:80%" formControlName="ADVANCE" readonly=true />
+            </td>
+
+          </tr>
+          <tr>
+            <td><label>Tender Amount</label></td>
+            <td>
+              <input type="number" style="width:80%" formControlName="TENDERAMT" readonly=true />
+            </td>
+          </tr>
+          <tr>
+            <td><label>Balance</label></td>
+            <td>
+              <input type="number" style="width:80%" formControlName="BALANCE" readonly=true />
+            </td>
+          </tr>
+          <tr>
+            <td><label>Loyalty Amount</label></td>
+
+            <td>
+              <input type="number" style="width:80%" formControlName="LOYALTYAMT" readonly=true />
+            </td>
+
+          </tr>
+
+        </table>
+      </div>
+    </form>
+    <div class="Col-md-12" style="border-bottom: 1px solid silver;padding-top:10px">
+      <button type="button" class="btn btn-outline-info TopMargin" style="margin-right:10px"
+        (click)="Cash()">Cash [A]</button>
+      <button type="button" class="btn btn-outline-info TopMargin" style="margin-right:10px"
+        (click)="Card()">Card [S]</button>
+      <!-- <button type="button" class="btn btn-outline-info TopMargin" style="margin-right:10px"
+        (click)="Credit()">Credit</button> -->
+      <button type="button" class="btn btn-outline-info TopMargin" style="margin-right:10px"
+        (click)="Cheque()">Cheque [D]</button>
+      <button type="button" class="btn btn-outline-info TopMargin" style="margin-right:10px"
+        (click)="Coupon()">Coupon [F]</button>
+      <button type="button" class="btn btn-outline-info TopMargin" style="margin-right:10px"
+        (click)="Wallet()">Wallet [G]</button>
+    </div>
+    <div class="Col-md-12">
+      <button type="button" class="btn btn-info TopMargin" style="width:80px" (click)="OK()">OK</button>
+      <button type="button" class="btn btn-warning TopMargin" style="margin-right:10px;"
+        (click)="hide()">Cancel [C]</button>
+
+    </div>
+  </div>

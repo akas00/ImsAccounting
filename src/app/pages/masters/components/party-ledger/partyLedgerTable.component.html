@@ -1,0 +1,344 @@
+<div class="row">
+  <!-- <ba-card style="background-color: #6b5656;max-height: 650px !important;" baCardClass="with-scroll"> -->
+
+  <div [ngBusy]="busy">
+    <div class="sticky-top">
+      <div class="row clearfix" style=" padding: 0px 20px;">
+        <div class="col-md-6">
+          <label
+            style="font-family: Segoe UI Light;font-weight: bold;font-size: 18px;padding-top: 3px;width:117px !important;">PARTY
+            MASTER</label>
+          <label *ngIf="this.partyservice.subTitle"
+            style="font-family: Segoe UI Light;font-weight: bold;font-size: 17px;padding-top: 3px;width:190px !important;">
+            {{this.partyservice.subTitle}}</label>
+
+
+        </div>
+        <div class="col-md-1"></div>
+
+        <div class="col-md-5" style="float: right;">
+          <button type="button " class="btn btn-info pull-right" (click)="backToDashboard()"
+            style=" margin-bottom: 10px;  margin-left: 10px;">
+            F10 Back
+          </button>
+          <button *ngIf="userSetting.enableMaster_AddEdit==1" [disabled]="addMode || this.selectedNode==undefined" type="button" class="btn btn-info pull-right"
+            (click)="AddLedger()" style=" margin-bottom: 10px;  margin-left: 10px;">Add Party</button>
+          <button *ngIf="userSetting.enableMaster_AddEdit==1" [disabled]="addMode" type="button" class="btn btn-info pull-right" (click)="AddGroup(Tree)"
+            style="margin-bottom: 10px;">Add Group</button>
+          <button [disabled]="addMode" type="button" class="btn btn-info pull-right" (click)="ExportPartyLedger()"
+            style="margin-bottom: 10px;margin-right: 11px;">Export Party</button>
+            <button [disabled]="addMode" type="button" class="btn btn-info pull-right" (click)="ExcelUploadPartyLedger()"
+            style="margin-bottom: 10px;margin-right: 11px;">Excel Upload</button>
+        </div>
+
+
+
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 " style="padding-top: 40px; ">
+    <div class="col-md-12" style="padding: 0px">
+      <!-- <button [disabled]="addMode" type="button" class="btn btn-info right" (click)="AddGroup(Tree)" style="margin-bottom: 10px;">Add Group</button>
+                <button [disabled]="addMode || this.selectedNode==undefined" type="button" class="btn btn-info right" (click)="AddLedger()" style=" margin-bottom: 10px;  margin-left: 10px;">Add Party</button> -->
+
+    </div>
+    <div class="plainBackGround">
+      <form>
+        <fieldset [class.disabledbutton]="addMode" [disabled]="addMode"
+          style="border:0px solid;border-color:#dcdcdc; margin-top: -10px;" *ngIf="mode != 'add' && mode != 'edit'">
+          <input name="filter" #filter (keyup)="filterNodes(filter.value, tree)" placeholder="&nbsp; Search Party"
+            class="filterclass" />
+          <div id=treediv>
+            <div
+              style="overflow: auto; border: black;border-width: 2px;height: 500px;background:white;font-size:12px; margin-left: -8px; width: 106%;">
+              <Tree #tree [nodes]="nodes" [focused]="true" [options]="customTemplateStringOptions"
+                (onEvent)="onEvent($event)" (onActivate)="onselect(tree,$event)">
+                <ng-template #treeNodeTemplate let-node>
+                  <!-- <span title="{{node.data.subTitle}}" [contextMenu]="myContextMenu" [contextMenuSubject]="node.data">{{ node.data.ACNAME }}{{ childrenCount(node) }}</span> -->
+                  <span title="{{node.data.subTitle}} " [contextMenu]="myContextMenu" [contextMenuSubject]="node.data "
+                    style="margin-left:24px"><img src="../../../assets/img/Folder.jpg" alt="Group" height="20"
+                      width="20" style="margin-top:-2px">
+                    {{ node.data.ACNAME }}
+                  </span>
+                </ng-template>
+                <ng-template #loadingTemplate>Loading, please hold....</ng-template>
+              </Tree>
+
+            </div>
+            <br>
+          </div>
+        </fieldset>
+
+        <!--select field-->
+        <fieldset 
+          style="border:2px solid;border-color:#dcdcdc; padding: 5px 5px; height:77vh"
+           *ngIf="mode == 'add' || mode == 'edit'">
+          
+          <div class="row">
+            <label class="form-control-label col-md-4 " style="width: auto;">Main Group :</label>
+            <div class="col-md-7">
+                <hr>
+            </div>
+        </div>
+        <div class="row selectrow">
+            <select id="mainGroup" class="form-control" [(ngModel)]="masterService.groupSelectObj.MGROUP" [ngModelOptions]="{standalone: true}" (change)="getSubPartyA($event)">
+                <option [value]=""></option>
+                <option *ngFor="let main of masterService.partyGroupList;let i=index" [value]="main.ACID">{{main?.ACNAME}}</option>
+            </select>
+        </div>
+        <div class="row">
+            <label class="form-control-label col-md-4 " style="width: auto;">Sub Group (A) :</label>
+            <div class="col-md-7">
+                <hr>
+            </div>
+        </div>
+        <div class="row selectrow">
+            <select class="form-control" [(ngModel)]="masterService.groupSelectObj.SUBGROUP_A" [disabled]="masterService.disableSubPartyA" [ngModelOptions]="{standalone: true}" (change)="getSubPartyB($event)" >
+                <option [value]=""></option>
+                <option *ngFor="let sub of masterService.subPartyAList;let i=index" [value]="sub.ACID">{{sub?.ACNAME}}</option>
+            </select>
+        </div>
+        <div class="row">
+            <label class="form-control-label col-md-4 " style="width: auto;" >Sub Group (B) :</label>
+            <div class="col-md-7">
+                <hr>
+            </div>
+        </div>
+        <div class="row selectrow">
+            <select class="form-control" [(ngModel)]="masterService.groupSelectObj.SUBGROUP_B" [disabled]="masterService.disableSubPartyB" [ngModelOptions]="{standalone: true}" (change)="getSubPartyC($event)">
+                <option [value]=""></option>
+                <option *ngFor="let sub of masterService.subPartyBList; let i=index" [value]="sub.ACID">{{sub?.ACNAME}}</option>
+            </select>
+        </div>
+        <div class="row">
+            <label class="form-control-label col-md-4 " style="width: auto;" >Sub Group (C) :</label>
+            <div class="col-md-7 pd0">
+                <hr>
+            </div>
+        </div>
+        <div class="row selectrow">
+            <select class="form-control"  [(ngModel)]="masterService.groupSelectObj.SUBGROUP_C" [disabled]="masterService.disableSubPartyC" [ngModelOptions]="{standalone: true}" (change)="selectSubPartyC($event)" >
+              <option [value]=""></option>
+              <option *ngFor="let sub of masterService.subPartyCList; let i = index" [value]="sub.ACID">{{sub?.ACNAME}}</option>
+            </select>
+        </div>
+        </fieldset>
+      </form>
+    </div>
+
+  </div>
+
+
+  <!-- </ba-card> -->
+
+  <div *ngIf="!addMode" class="col-md-9" style="padding-left: 5px;padding-top: 40px;background-color: white;">
+    <!-- <ng2-smart-table [settings]="settings" [source]="source" (edit)="onEditClick($event)" (delete)="onDeleteConfirm($event)"
+          (view)="onViewClick($event)"></ng2-smart-table> -->
+    <div class="row" style="margin:10px 12px">
+      <div class="col-md-4" style="margin-top: 3px;">
+        <input type="radio" name="item" [(ngModel)]="searchParty" #searchPartyByName="ngModel"
+          value="searchByName">&nbsp; Search By Name &nbsp;&nbsp;
+        <input type="radio" name="item" [(ngModel)]="searchParty" #searchPartyByVat="ngModel" value="searchByVat">&nbsp;
+        Search By VAT No. &nbsp;&nbsp;
+        
+      </div>
+      <div class="col-md-4" style="padding-left: 0px;">
+        <input type="text" name="search" [(ngModel)]="partyFilter" #searchFilter="ngModel" class="form-control"
+          placeholder="Search..." style="width: 95%; height: 1.7rem; padding: 0px 6px;">
+      </div>
+      <div class="col-md-4" style="padding-left: 0px;">
+      <input type="radio" name="sortItem" [(ngModel)]="partyservice.sortParty"   value="sortByName" (change)="sortPartyListByName()">&nbsp;
+        Sort By Name
+        <input type="radio" name="sortItem" [(ngModel)]="partyservice.sortParty"  value="sortByDate" (change)="sortPartyListByDate()">&nbsp;
+        Sort By Date
+      </div>
+
+    </div>
+
+    <div class="row">
+      <table class="table table-striped" style="margin-left: 1rem; width: 97%;">
+        <thead>
+          <tr style="position: sticky; top:0;line-height: 2.4rem;">
+            <th scope="col" style="width:3%">S.N</th>
+            <th scope="col" style="width:18%">Party Name</th>
+            <th scope="col" style="width:12%">Address</th>
+            <th scope="col" style="width:8%">VAT No.</th>
+            <th scope="col" style="width:7%">Party Type</th>
+            <th scope="col" style="width:6%">Category</th>
+            <th scope="col" style="width:10%">Party Group</th>
+            <th scope="col" style="width:10%; text-align: center;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngIf="this.partyservice.partyList && this.partyservice.partyList.length >0">
+            <tr
+              *ngFor="let party of (this.partyservice.partyList|searchData:partyFilter:searchParty|paginate:{itemsPerPage:itemsPerPage,currentPage: currentPage,totalItems: totalCount}); let i=index">
+              <td style="width:3%">{{i+1}}</td>
+              <td style="width:18%">{{party.ACNAME}}</td>
+              <td style="width:12%">{{party.ADDRESS}}</td>
+              <td style="width:8%">{{party.VATNO}}</td>
+              <td style="width:7%">{{party.PARTYTYPE}}</td>
+              <td style="width:6%">{{party.CATEGORY}}</td>
+              <td style="width:10%">{{party.PARENT}}</td>
+              <td style="width:10%; text-align: center;">
+
+                <a data-toggle="modal" (click)="onViewClick(party)">View&nbsp;&nbsp;</a>
+                <a  *ngIf="userSetting.enableMaster_AddEdit==1"  data-toggle="modal" (click)="onEditClick(party)">Edit</a>
+
+              </td>
+            </tr>
+          </ng-container>
+
+          <ng-container *ngIf="this.partyservice.partyList && (this.partyservice.partyList|searchData:partyFilter:searchParty).length === 0">
+            <tr>
+              <td colspan="8">
+                <div class="font-weight-bold">Party Ledger Information are unavailable.</div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+      <div class="pagination"
+        *ngIf="this.partyservice.partyList && (this.partyservice.partyList|searchData:partyFilter:searchParty).length > itemsPerPage">
+        <div style="margin-left: 18rem;">
+          <pagination-controls (pageChange)="partyPagination($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="addMode" class="col-md-9" style="padding-left: 5px;padding-top: 30px;overflow: scroll;height: 600px;">
+    <addPartyLedgerSelector [Title]="modeTitle" [acid]="selectedNode?.ACID" [PARENTID]="selectedNode?.PARENT"
+      [parent]="selectedNode?.ACNAME" [rootID]="root" (onClose)="onAddClose($event)" [mode]="mode" [grp]="grp"
+      (EditPartyEmit)="EditPartyEmit()" (SavePartyEmit)="SavePartyEmit($event)" [parentPartyID] = "parentPartyID" [mainGroupID]="mainGroupID" [parentIdOnEdit]="selectedNode?.PARENT_CODE"></addPartyLedgerSelector>
+  </div>
+  <context-menu #myContextMenu>
+    <ng-template *ngFor="let action of contextMenuActions" contextMenuItem let-item [visible]="action.visible"
+      [enabled]="action.enabled" [divider]="action.divider" (execute)="contextMenuClick($event.item,action)">
+      {{ action.html(item) }}
+    </ng-template>
+  </context-menu>
+</div>
+
+
+
+<div>
+  <div class="modal fade" bsModal #DeleteAcc="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog"
+    aria-labelledby="mySmallModalLabel" aria-hidden="true" style="margin:-10rem;height:34rem">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content" style="width: 420px;">
+        <div class="modal-header">
+          <button class="close" aria-label="Close" (click)="onClickNo()">
+            <span aria-hidden="true">&times;</span>
+
+          </button>
+          <h4 class="modal-title">Delete Party</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12" style="margin-top: -10px;margin-bottom: 12px;">
+              Are you sure you want to delete this party?
+            </div>
+            <div class="col-md-12">
+              <button (click)="DeleteYes()" style="margin-right: 4px;" class="btn btn-danger ">Yes</button>
+              <button (click)="DeleteNo()" type="button " class="btn btn-warning">No</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<style>
+  .filterclass {
+    margin: 10px;
+    margin-left: -8px;
+    height: 28px;
+    width: 284px;
+    color: #666666;
+    border: 1px solid #cbcbcb;
+    border-radius: 5px;
+    background-color: #ffffff;
+    box-shadow: none;
+    font-size: 14px;
+  }
+</style>
+<div class="modal-sticky" *ngIf="showPartyLedgerFilterpopUp" style="display: block;
+padding: 0px;
+margin-bottom: 159px;
+height: 241px;
+position: absolute;
+right: 30%;
+/* top: 5px; */
+width: 550px;
+z-index: 9999999;
+border: 1px solid;background: white;">
+
+  <div class="modal-content modal-content-main-area">
+    <div class="modal-header" style="height: 40px;padding-bottom: 6%;">
+      <h4 class="modal-title" id="myModalLabel">Ledger filter </h4>
+    </div>
+
+    <div class="col-md-12" style="height: 226px; margin-top : 10px;    margin-left: 3%;">
+
+      <div class="row" style="margin-top: 8px;">
+        <div class="col-sm-4">
+          <label class="form-control-label">Party Group : </label>
+        </div>
+
+        <select class="col-sm-8" style="width: 56%;" [(ngModel)] = "LedgerFilterObj.type" (change)="changeType()">
+          <option value ="Customer">Customer</option>
+          <option value ="Supplier">Supplier</option>
+        </select>
+      </div>
+
+      <div class="row" style="margin-top: 8px;">
+        <div class="col-sm-4">
+          <label class="form-control-label">Party Type : </label>
+        </div>
+
+
+        <select class="col-sm-8" style="width: 56%;" [(ngModel)] = "LedgerFilterObj.accountType">
+          <option *ngFor="let i of GeoList" value="{{i.OrgTypeCode}}" >{{
+            i.OrgTypeName
+            }}</option>
+        </select>
+      </div>
+
+      <div class="row" style="margin-top: 8px;">
+        <div class="col-sm-4">
+          <label class="form-control-label">Party Name : </label>
+        </div>
+        <div class="col-sm-8">
+          <input type="text" [(ngModel)]="LedgerFilterObj.accountName" style="height:24px;width: 92% !important;margin-left: -5%;"
+          (keydown.Enter)="showAcList(i);"
+           placeholder="Press Enter to select" autocomplete="off">
+
+        </div>
+      </div>
+      <div style="float: right;
+      margin-top: 14px;
+      margin-right: 9%;">
+        <button type="button" class="btn btn-primary" style="background: #3caed0;border-color: #2dacd1;" (click)="OkCommand()">Apply</button>
+        <button type="button" class="btn btn-primary" style="background: #3caed0;border-color: #2dacd1;" (click)="ExportAll()">Export
+          All</button>
+        <button type="button" class="btn btn-primary" style="background: #3caed0;border-color: #2dacd1;" (click)="CancelCommand()">Cancel</button>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+</div>
+
+<generic-popup-grid #genericGridACList [popupsettings]="gridACListPopupSettings"
+  (onItemDoubleClick)="onAcSelect($event)"></generic-popup-grid>
+
+  <file-uploader-popup #fileUploadPopup [popupsettings]="fileUploadPopupSettings"
+    (onUploaded)="fileUploadSuccess($event)">
+  </file-uploader-popup>

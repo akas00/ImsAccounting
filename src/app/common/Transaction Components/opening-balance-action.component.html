@@ -1,0 +1,137 @@
+﻿<!-- <button  #DOWNLOADacopeing
+style="margin: 0px 4px;"
+(click)="downloadAccountsForOpeningBalance()"
+class="btn btn-info pull-right"
+*ngIf="showSecondaryButtons"
+>
+DOWNLOAD A/C OPENING CSV
+</button>  -->
+<button #importacopeing style="margin: 0px 4px;" (click)="importAcOpeningBalance()" class="btn btn-info pull-right"
+  *ngIf="showSecondaryButtons">
+  IMPORT A/C OPENING B/L
+</button>
+<button #importacopeing style="margin: 0px 4px;" (click)="ClickOpeningBalance()" class="btn btn-info pull-right"
+  *ngIf="showSecondaryButtons">
+  Load Account Opening Balance
+</button>
+
+<button #cancel style="margin: 0px 4px;" (click)="onCancelClicked()" class="btn btn-info pull-right"
+  *ngIf="!showSecondaryButtons" [disabled]="this._trnMainService.TrnMainObj.Mode !='VIEW'">
+  DELETE
+</button>
+
+
+
+
+<button *ngIf="!showSecondaryButtons" (click)="onBackClicked()" class="btn btn-info pull-right" #back>
+  F10 Back
+</button>
+<button #save
+  *ngIf="(_trnMainService.TrnMainObj.Mode != 'VIEW' || !_trnMainService.showPerformaApproveReject) && !showSecondaryButtons"
+  style="margin: 0px 4px;" (click)="onSaveClicked()" class="btn btn-info pull-right"
+  [disabled]="this._trnMainService.TrnMainObj.Mode =='VIEW' || _trnMainService.disableSaveButton">
+  F6 SAVE
+</button>
+<button #view *ngIf="!showSecondaryButtons" (click)="onEditClicked()" style="margin: 0px 4px;"
+  class="btn btn-info pull-right">
+  EDIT
+</button>
+<button #view *ngIf="!showSecondaryButtons" (click)="onViewClicked()" style="margin: 0px 4px;"
+  class="btn btn-info pull-right">
+  F4 VIEW
+</button>
+<button #reset style="margin: 0px 4px;" (click)="onNewClick()" class="btn btn-info pull-right"
+  *ngIf="!showSecondaryButtons">
+  F3 RESET
+</button>
+
+
+
+<generic-popup-grid #genericGrid [popupsettings]="gridPopupSettings" (onItemDoubleClick)="onItemDoubleClick($event)">
+</generic-popup-grid>
+<file-uploader-popup #fileUploadPopup [popupsettings]="fileUploadPopupSettings"
+  (onUploaded)="fileUploadSuccess($event)">
+</file-uploader-popup>
+
+<div class="modal fade" bsModal #ShowOpeningBalance="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1"
+  role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" style="margin:-100px;height:5000px">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content" style="width: 580px; height: 260px;">
+      <div class="modal-header">
+        <button class="close" aria-label="Close" (click)="ShoWdateClose()">
+          <span aria-hidden="true">&times;</span>
+
+        </button>
+        <div *ngIf='_trnMainService.TrnMainObj.VoucherType == 22'>
+          <h4 class="modal-title">Account Opening Balance Carried Down:</h4>
+        </div>
+        <div *ngIf='_trnMainService.TrnMainObj.VoucherType == 23'>
+          <h4 class="modal-title">Party Opening Balance Carried Down:</h4>
+        </div>
+
+      </div>
+      <div class="modal-body" style="height: 104px;height:260px">
+        <div class="row">
+          <div class="col-md-12" style="margin-top: -10px;margin-bottom: 12px; display:flex">
+            <label style="margin-left: 3%;">AC Type:</label>
+            <!-- Ledger Opening Balance -->
+            <div *ngIf='_trnMainService.TrnMainObj.VoucherType == 22'>
+              <select class="form-control" [(ngModel)]='OpeningObj.actype' style="width:200px">
+                <option value='%'>All</option>
+                <option value='AT'>Assets</option>
+                <option value='LB'>Liabilities</option>
+              </select>
+            </div>
+            <!-- Party Opening Balance -->
+            <div *ngIf='_trnMainService.TrnMainObj.VoucherType == 23'>
+              <select class="form-control" [(ngModel)]='OpeningObj.actype' style="width:200px">
+                <option value='%'>All</option>
+                <option value='C'>Customer</option>
+                <option value='V'>Suppliers</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-12" style="margin-top: -10px;margin-bottom: 12px;display:flex">
+            <label style="margin-left: 3%;">Fiscal Id:</label>
+            <select class="form-control" [(ngModel)]='OpeningObj.PhiscalID' style="width:200px">
+              <option *ngFor ="let fy of PhiscalYearList" [value]= 'fy.PhiscalID'>{{fy.PhiscalID}}</option>
+            </select>
+          </div>
+          <div class="col-md-12" style="margin-top: -10px;margin-bottom: 12px; display:flex">
+            <div class="col-md-6" style="display: flex;">
+              <label>Division:</label>
+              <select class="form-control" [(ngModel)]='OpeningObj.div' style="width:140px" [disabled]='isDisableDiv == true'>
+                <option *ngFor="let divs of divisionList;let i=index" value="{{divs.INITIAL}}">{{divs.NAME}}</option>
+              </select>
+            </div>
+            <div class="col-md-6" *ngIf="userSetting.DIVISIONWISE_OPENING==0">
+              <input type="checkbox" [(ngModel)]="CheckObjObj.Div" (change)="changeDiv($event.target.value)"> <label style="width: 195px; padding-top: 7px;">Division Wise B/L Carried Down</label>
+              
+            </div>
+          </div>
+          <div class="col-md-12" style="margin-top: -10px;margin-bottom: 12px; display:flex">
+            <div class="col-md-6">
+              <!-- <label>CostCenter:</label>
+              <select class="form-control" [(ngModel)]='OpeningObj.CostCenter' style="width:200px">
+                <option value="%">All</option>
+                <option *ngFor="let i of CostcenterList" value={{i.CCID}}>{{i.COSTCENTERNAME}}
+              </select> -->
+            </div>
+            <div class="col-md-6">
+              <input type="checkbox"  [(ngModel)]="CheckObjObj.CostCenter" (change)="changeCC($event.target.value)"> <label style="width: 220px; padding-top: 7px;">CostCenter Wise B/L Carried Down</label>
+              
+            </div>
+          </div>
+
+         
+
+          <div class="col-md-12">
+            <button (click)="LoadOpeningValue()" style="margin-right: 4px;" class="btn btn-danger" *ngIf= 'isvalidate'>Load</button>
+            <button  style="margin-right: 4px;" class="btn btn-danger" disabled *ngIf= '!isvalidate'>Load</button>
+            <button (click)="ShoWdateClose()" type="button " class="btn btn-warning">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

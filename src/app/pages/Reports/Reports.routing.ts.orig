@@ -1,0 +1,44 @@
+import { Routes, RouterModule, CanActivate } from '@angular/router';
+import { ReportsComponent } from './Reports.component';
+import { CanActivateTeam } from "../../common/services/permission/guard.service";
+import { ReportMain } from './components/ReportMain/ReportMain';
+import { DebitNote } from '../ReportDialogs/DebitNote/debitnote.component';
+
+const routes: Routes = [
+    {
+        path: '',
+        component: ReportsComponent,
+        children: [
+            {path:'reportmain',component:ReportMain,canActivate: [CanActivateTeam]},
+            {path: 'accountpayablereport',component:ReportMain,canActivate:[CanActivateTeam]},  
+            {path: 'accountreceivablereport',component:ReportMain,canActivate:[CanActivateTeam]},  
+            {path: 'gstsalessummary',component:ReportMain,canActivate:[CanActivateTeam]},  
+            {path: 'gstpurchasesummary',component:ReportMain,canActivate:[CanActivateTeam]},            
+            {path: 'agingpayable',component:ReportMain,canActivate:[CanActivateTeam]},            
+            {path: 'agingreceivable',component:ReportMain,canActivate:[CanActivateTeam]}, 
+            { path: 'purchasebookreport', component: ReportMain, canActivate: [CanActivateTeam] },          
+            { path: 'cashbookreport', component: ReportMain, canActivate: [CanActivateTeam] }, 
+            { path: 'salesbookreport', component: ReportMain, canActivate: [CanActivateTeam] }, 
+            { path: 'journalbook', component: ReportMain, canActivate: [CanActivateTeam] }, 
+            { path: 'duevoucherreport', component: ReportMain, canActivate: [CanActivateTeam] }, 
+            { path: 'debtorsreport', component: ReportMain, canActivate: [CanActivateTeam] }, 
+            { path: 'creditorsreport', component: ReportMain, canActivate: [CanActivateTeam] }, 
+            { path: 'PartyLedger', component: ReportMain, canActivate: [CanActivateTeam] }, 
+<<<<<<< HEAD
+            { path: 'debtorsagingreport', component: ReportMain, canActivate: [CanActivateTeam] }, 
+            { path: 'creditorsagingreport', component: ReportMain, canActivate: [CanActivateTeam] }, 
+            { path: 'debtorsoutstandingreport', component: ReportMain, canActivate: [CanActivateTeam] },
+            { path: 'creditorsoutstandingreport', component: ReportMain, canActivate: [CanActivateTeam] }
+=======
+            { path: 'summaryledgerreport', component: ReportMain, canActivate: [CanActivateTeam] }, 
+            { path: 'accountledgerreport', component: ReportMain, canActivate: [CanActivateTeam] }, 
+            { path: 'summarypartyledger', component: ReportMain, canActivate: [CanActivateTeam] }, 
+            { path: 'partyledgerreport', component: ReportMain, canActivate: [CanActivateTeam] }, 
+
+            
+>>>>>>> 9d6fc9544166c8b06a52412b5e535bc79e2833fa
+        ]
+    }
+];
+
+export const routing = RouterModule.forChild(routes);

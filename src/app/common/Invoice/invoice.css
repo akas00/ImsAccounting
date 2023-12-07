@@ -1,0 +1,38 @@
+.modal{
+                padding-top:0px;
+            }
+            .InvoiceHeader{
+                text-align:center;
+            }
+            p
+            {
+                height:5px;
+            }
+            table{
+                margin:5px
+            }
+            .summaryTable{
+                float: left;
+                text-align:left;
+                padding:0px;
+            }
+
+            .summaryTable  td{
+                text-align:right;
+                }
+
+            .itemtable{
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+            .itemtable th{                
+                height:30px;
+                font-weight:bold;
+            }
+            .itemtable th, td {               
+                border: 1px solid black;
+                padding:2px;
+
+            }
+
+     

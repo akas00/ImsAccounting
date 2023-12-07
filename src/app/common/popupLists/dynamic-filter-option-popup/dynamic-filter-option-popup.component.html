@@ -1,0 +1,183 @@
+<style>
+  .modal-content {
+    padding: 1px;
+    margin: 0px;
+    float: right;
+  }
+
+  tbody>tr:hover {
+    background-color: #f3f5f4;
+    cursor: pointer;
+  }
+
+  tr {
+    font-size: 11px;
+  }
+
+  .selected-row {
+    background-color: #ced6d3 !important;
+  }
+
+  .table>tbody>tr>td {
+    line-height: 30px !important;
+  }
+
+  .table>thead>tr>th {
+    line-height: 5px !important;
+  }
+
+  .table>tbody>tr>td:first-child {
+    text-align: left !important;
+    padding: 0px 0px 0px 11px !important;
+  }
+
+  .modal-content {
+    box-shadow: -10px 0px 10px 1px #aaaaaa;
+  }
+
+  .modal-content-main-area {
+    max-height: 100%;
+    height: 100%;
+    overflow: auto;
+    overflow-x: hidden;
+  }
+
+  .modal-content-summary-area {
+    max-height: 20%;
+    height: 20%;
+    overflow: auto;
+    overflow-x: hidden;
+  }
+
+  .ellipsis {
+    /* width: 220px;
+    text-overflow: ellipsis;
+    overflow: hidden; */
+    white-space: nowrap;
+  }
+</style>
+<div [class.modal-sticky-hide]="!isActive" style="display : block; padding: 0px;position: fixed;
+top: 85px ;
+left: -5%;
+width: 90%;
+height: auto;
+z-index: 9999999;
+max-height: 500px;
+overflow-y: auto;">
+  <!-- Modal content -->
+  <div class="modal-content modal-content-main-area">
+    <div *ngIf="dynamicFilterSettings">
+      <div class="modal-header" style="padding: 0px;background: #8cccfb;">
+        <button class="close" aria-label="Close" (click)="hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" style="text-align: center;">
+          {{ dynamicFilterSettings.title }}
+        </h4>
+      </div>
+      <hr />
+      <div class="clearfix">
+        <div class="col-md-12">
+          <div class="col-md-3" style="margin: 2px 0px;">
+            <select style="width: 100%;" name="filterOptions" class="form-control"
+             [formControl]="key" (change)="onFilterOptionChanged($event.target.value)">
+
+              <ng-container *ngFor="let item of dynamicFilterSettings.filterOptions">
+                <option *ngIf="!item.isSelected" value="{{item.key}}">{{
+                        item.title
+                      }}</option>
+              </ng-container>
+            </select>
+          </div>
+
+          <div class="col-md-3" style="margin: 2px 0px;">
+            <select #filterOperatorKey style="width: 100%;" name="filterOperatorKey"  class="form-control"
+              [(ngModel)]="currentFilterOption.filterOperatorDefaultValue">
+              <ng-container *ngFor="let item of currentFilterOption.filterOperatorOptions">
+                <option [ngValue]="item.value">{{
+                          item.title
+                        }}</option>
+              </ng-container>
+            </select>
+          </div>
+
+          <div class="col-md-3" style="margin: 2px 0px;">
+            <ng-container *ngIf="currentFilterOption.filterType.type=='dropdown'">
+              <select #filterValue style="width: 100%;" name="filterValue"  class="form-control"
+                [(ngModel)]="currentFilterOption.filterType.value">
+                <ng-container *ngFor="let item of currentFilterOption.filterType.options">
+                  <option [ngValue]="item.value">{{
+                                item.title
+                              }}</option>
+                </ng-container>
+              </select>
+            </ng-container>
+
+
+            <ng-container #filterValue *ngIf="currentFilterOption.filterType.type=='text'">
+              <input type="text" name="filterValue" class="form-control"
+                [(ngModel)]="currentFilterOption.filterType.value" />
+            </ng-container>
+          </div>
+          <div class="col-md-3">
+            <button class="btn btn-info" (click)="addFilterOption()">Add</button>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix">
+        <hr>
+        <div class="col-md-12" *ngFor="let filterOption of dynamicFilterSettings.filterOptions;let i=index">
+          <ng-container *ngIf="filterOption.isSelected">
+
+            <div class="col-md-3" style="margin: 2px 0px;">
+              <label>
+                <strong>
+                  {{filterOption?.title}}
+                </strong>
+              </label>
+            </div>
+
+            <div class="col-md-3" style="margin: 2px 0px;">
+              <select style="width: 100%;" [(ngModel)]="filterOption.filterOperatorDefaultValue"  class="form-control"
+                name="filterOperatorKey">
+                <ng-container *ngFor="let item of filterOption.filterOperatorOptions">
+                  <option [value]="item.value">{{
+                              item.title
+                            }}</option>
+                </ng-container>
+              </select>
+            </div>
+
+            <div class="col-md-3" style="margin: 2px 0px;">
+              <ng-container *ngIf="filterOption.filterType.type=='dropdown'">
+                <select [(ngModel)]="filterOption.filterType.value" style="width: 100%;" name="filterValue"  class="form-control">
+                  <ng-container *ngFor="let item of filterOption.filterType.options">
+                    <option [value]="item.value">{{
+                                    item.title
+                                  }}</option>
+                  </ng-container>
+                </select>
+              </ng-container>
+
+              <ng-container #filterValue *ngIf="filterOption.filterType.type=='text'">
+                <input type="text" name="filterValue" class="form-control" [value]="filterOption.filterType.value" />
+              </ng-container>
+
+            </div>
+
+            <div class="col-md-3" style="margin: 2px 0px;">
+              <button class="btn btn-info" *ngIf="!filterOption.isDefaultFixed" (click)="deletFilterOption(i)">
+                <i class="fa fa-times"></i>
+              </button>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <hr style="margin-bottom: 0px !important">
+      <div class="clearfix" style="padding: 10px;">
+        <button class="btn btn-info pull-right" style="margin-left: 10px;" (click)="popupClose()">Cancel</button>
+        <button class="btn btn-info pull-right" (click)="applyClicked()">Apply</button>
+      </div>
+    </div>
+  </div>
+</div>

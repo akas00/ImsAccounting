@@ -1,0 +1,260 @@
+<style>
+  td,
+  th {
+    border: 1px solid #e5e7e7 !important;
+  }
+
+  th {
+    font-weight: bold;
+  }
+
+  .table {
+    background: #ffffff;
+  }
+
+  thead {
+    background: #C5E3ED;
+  }
+
+  tbody {
+    background: #ffffff;
+  }
+
+  th {
+    padding: 5px !important;
+  }
+
+</style>
+
+
+<div *ngIf="_gstrService.gstMain.isGstReport" style="height: 500px !important;overflow-y:scroll">
+  <div id="usere-profile">
+    <div class="clearfix">
+      <div class="table-responsive">
+        <table class="table">
+          <tr>
+            <td>GSTN</td>
+            <td>{{userProfile?.CompanyInfo?.GSTNO}}</td>
+            <td>Year</td>
+            <td>{{_gstrService.gstMain.startDate | date:'yyyy'}}-{{_gstrService.gstMain.endDate | date:'yy'}}</td>
+            <td rowspan="2" style="vertical-align: middle !important">Sheet Status</td>
+            <td rowspan="2" style="vertical-align: middle !important"></td>
+          </tr>
+          <tr>
+            <td>Legal name of the registered person</td>
+            <td>{{userProfile?.CompanyInfo?.NAME}}</td>
+            <td>Month</td>
+            <td>{{_gstrService.gstMain.startDate | date:'MMM'}}-{{_gstrService.gstMain.endDate | date:'MMM'}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div id="outward-inward-supplies">
+    <div class="clearfix">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th colspan="6">3.1 Details of outward Supplies and inward supplies liable to reverse charge</th>
+            </tr>
+            <tr>
+              <th>Nature Of Supplies</th>
+              <th class="text-right">Total Taxable Value</th>
+              <th class="text-right">Integrated Tax</th>
+              <th class="text-right">Central Tax</th>
+              <th class="text-right">State/UT Tax</th>
+              <th class="text-right">Cess</th>
+            </tr>
+            <tr>
+              <th>1</th>
+              <th>2</th>
+              <th>3</th>
+              <th>4</th>
+              <th>5</th>
+              <th>6</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let detail of _gstrService.gstMain.detailOfOutwaredSupplies;let i=index">
+              <td style="text-align: justify !important">{{detail?.NATURE_OF_SUPPLIER}}</td>
+              <td class="text-right">{{detail?.TOTAL_TAXABLE_VALUE|currency:'INR':true}}</td>
+              <td class="text-right">{{detail?.INTEGRATED_TAX|currency:'INR':true}}</td>
+              <td class="text-right">{{detail?.CENTRAL_TAX|currency:'INR':true}}</td>
+              <td class="text-right">{{detail?.STATE_TAX|currency:'INR':true}}</td>
+              <td class="text-right">{{detail?.CESS|currency:'INR':true}}</td>
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div id="eligible-itc">
+    <div class="clearfix">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th colspan="5">4. Eligible ITC</th>
+            </tr>
+            <tr>
+              <th>Details</th>
+              <th class="text-right">Integrated Tax</th>
+              <th class="text-right">Central Tax</th>
+              <th class="text-right">State/UT Tax</th>
+              <th class="text-right">Cess</th>
+            </tr>
+            <tr>
+              <th>1</th>
+              <th>2</th>
+              <th>3</th>
+              <th>4</th>
+              <th>5</th>
+
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let detail of _gstrService.gstMain.eligibleTax;let i=index">
+              <td style="text-align: justify !important">{{detail?.DESCRIPTION}}</td>
+              <td class="text-right">{{detail?.INTEGRATED|currency:'INR':true}}</td>
+              <td class="text-right">{{detail?.CENTRAL|currency:'INR':true}}</td>
+              <td class="text-right">{{detail?.STATE|currency:'INR':true}}</td>
+              <td class="text-right">{{detail?.CESS|currency:'INR':true}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="exempted">
+    <div class="clearfix">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th colspan="3">5. Values of exempt, Nil-rated and non-GST inward supplies</th>
+            </tr>
+            <tr>
+              <th>Nature of supplies</th>
+              <th class="text-right">Inter-state supplies</th>
+              <th class="text-right">Intra-state supplies</th>
+
+            </tr>
+            <tr>
+              <th>1</th>
+              <th>2</th>
+              <th>3</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let detail of _gstrService.gstMain.exempted">
+              <td style="text-align: justify !important">{{detail?.DESCRIPTION}}</td>
+              <td class="text-right">{{detail?.INTERSTATE|currency:'INR':true}}</td>
+              <td class="text-right">{{detail?.INTRASTATE|currency:'INR':true}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="late-fee-payable">
+    <div class="clearfix">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th colspan="5">5. Interest and late fee payable</th>
+            </tr>
+            <tr>
+              <th>Description</th>
+              <th class="text-right">Integrated Tax</th>
+              <th class="text-right">Central Tax</th>
+              <th class="text-right">State/UT Tax</th>
+              <th class="text-right">Cess</th>
+            </tr>
+            <tr>
+              <th>1</th>
+              <th>2</th>
+              <th>3</th>
+              <th>4</th>
+              <th>5</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let detail of _gstrService.gstMain.lateFeePayable">
+              <td style="text-align: justify !important">{{detail?.DESCRIPTION}}</td>
+              <td class="text-right">{{detail?.INTEGRATED|currency:'INR':true}}</td>
+              <td class="text-right">{{detail?.CENTRAL|currency:'INR':true}}</td>
+              <td class="text-right">{{detail?.STATE|currency:'INR':true}}</td>
+              <td class="text-right">{{detail?.CESS|currency:'INR':true}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="intr-state-supplies-detail">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <td colspan="7">3.2 Of the Supplies shown in 3.1(a),details of inter-state supplies made to unregistered
+              persons, composition taxable person and UIN holders</td>
+          </tr>
+          <tr>
+            <th rowspan="2" style="vertical-align: middle">Place of supply (state/UT)</th>
+            <th colspan="2" style="vertical-align: middle">Supplies made to Unregistered persons</th>
+            <th colspan="2" style="vertical-align: middle">Supplies made to composition Taxable persons</th>
+            <th colspan="2" style="vertical-align: middle">Supplies made to UIN holders</th>
+          </tr>
+          <tr>
+            <th class="text-right">total Taxable Value</th>
+            <th class="text-right">Amount of Integrated Tax</th>
+            <th class="text-right">Total Taxable Value</th>
+            <th class="text-right">Amount of Integrated Tax</th>
+            <th class="text-right">Total Taxable Value</th>
+            <th class="text-right">Amount of INtegrated Tax</th>
+          </tr>
+          <tr>
+            <th>1</th>
+            <th>2</th>
+            <th>3</th>
+            <th>4</th>
+            <th>5</th>
+            <th>6</th>
+            <th>7</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let detail of _gstrService.gstMain.interIntraState">
+            <td class="text-center">{{detail?.STATE}}</td>
+            <td class="text-right">{{detail?.UNREGISTERED_TAXABLE_PERSON|currency:'INR':true}}</td>
+            <td class="text-right">{{detail?.UNREGISTERED_PERSON_GST|currency:'INR':true}}</td>
+            <td class="text-right">{{detail?.COMPOSITE_PERSON_TAXABLE|currency:'INR':true}}</td>
+            <td class="text-right">{{detail?.COMPOSITE_PERSON_GST|currency:'INR':true}}</td>
+            <td class="text-right">{{detail?.UIN_HOLDER_PERSON_TAXABLE|currency:'INR':true}}</td>
+            <td class="text-right">{{detail?.UIN_HOLDER_PERSON_GST|currency:'INR':true}}</td>
+          </tr>
+        </tbody>
+
+
+
+      </table>
+    </div>
+  </div>
+
+</div>

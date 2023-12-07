@@ -1,0 +1,625 @@
+﻿<style>
+  .table tr th {
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .col1 {
+    position: absolute;
+    width: 10em;
+    left: 0em;
+    top: auto;
+  }
+
+  .col2 {
+    position: absolute;
+    width: 5em;
+    left: 10em;
+    top: auto;
+  }
+
+  .modal-content {
+    padding: 1px;
+    margin: 0px;
+    float: right;
+  }
+
+  tbody>tr:hover {
+    background-color: #f3f5f4;
+    cursor: pointer;
+  }
+
+  tr {
+    font-size: 13px;
+  }
+
+  .selected-row {
+    background-color: #ced6d3 !important;
+  }
+
+  .table>tbody>tr>td {
+    line-height: 30px !important;
+    padding: 3px;
+  }
+
+  .table>thead>tr>th {
+    line-height: 5px !important;
+  }
+
+  .table>tbody>tr>td:first-child {
+    text-align: left !important;
+    padding: 0px 0px 0px 11px !important;
+  }
+
+  .modal-content {
+    box-shadow: -10px 0px 10px 1px #aaaaaa;
+  }
+
+  .modal-content-main-area {
+    max-height: 100%;
+    height: 94%;
+    overflow: auto;
+    overflow-x: hidden;
+  }
+
+  .modal-content-summary-area {
+    max-height: 20%;
+    height: 20%;
+    overflow: auto;
+    overflow-x: hidden;
+  }
+
+  .ellipsis {
+    white-space: nowrap;
+  }
+
+  .close {
+    margin: -9px 0px -9px 0px;
+  }
+  
+    .add{
+  color: #04AA6D;
+  border: 2px solid #04AA6D;
+  margin-top: 5px;
+}
+span.add p{
+  position: absolute;
+  left: 50%;
+  top:50%;
+  transform: translate(-50%, -50%);
+
+}
+  span.add{
+   display: inline-block;
+    width: 22px;
+    height: 22px;
+    text-align: center;
+    font-size: 20px;
+    font-family: "Roboto";
+    border-radius: 50%;
+    background: #FFF;
+    position: relative;
+    cursor: pointer;
+}
+</style>
+<div *ngIf="this.masterService.PCL_VALUE == 1">
+  <div class="col-md-12" #prodlistTable id="prodlistTable"
+    style="background-color: #FFFFFF;overflow-x: scroll;padding-left: 0px; padding-right: 3px;height: 600px;">
+    <table class="table" style="margin-bottom: 5px; font-size: 12.5px;overflow: scroll;">
+      <tr id="prodlistTableheader" style="border-bottom: 2px solid #E6E6E6; border-top: 2px solid #E6E6E6;    height: 30px;
+                              background: silver;
+                              color: black;">
+        <th>S.No.</th>
+        <th>Code</th>
+        <th>Description</th>
+        <th *ngIf="ShowProductInsertTableColumns('BATCH_HEADER',0) ">BatchNo
+        </th>
+        <!-- <th *ngIf="_trnMainService.TrnMainObj.AdditionalObj.INVOICETYPE == 'NewBill'">
+                BatchNO
+              </th> -->
+        <th *ngIf="ShowProductInsertTableColumns('EXPDATE_HEADER',0)">Exp Date
+        </th>
+        <th
+          *ngIf="(_trnMainService.TrnMainObj.VoucherType==14 || _trnMainService.TrnMainObj.VoucherType==57 || _trnMainService.TrnMainObj.VoucherType==61
+            || _trnMainService.TrnMainObj.VoucherType==3 || _trnMainService.TrnMainObj.VoucherType==15 || _trnMainService.TrnMainObj.VoucherType==16
+            || _trnMainService.TrnMainObj.VoucherType==65 || _trnMainService.TrnMainObj.VoucherType==38) 
+            && _trnMainService.TrnMainObj.AdditionalObj.BILLUNITS=='CASE' && masterService.disableQuantityEdit!= true ">
+          Case</th>
+        <!-- <th>UOM</th> -->
+        <th
+          *ngIf="(_trnMainService.TrnMainObj.VoucherType==14 || _trnMainService.TrnMainObj.VoucherType==57 || _trnMainService.TrnMainObj.VoucherType==61
+            || _trnMainService.TrnMainObj.VoucherType==3 || _trnMainService.TrnMainObj.VoucherType==15 || _trnMainService.TrnMainObj.VoucherType==16
+            || _trnMainService.TrnMainObj.VoucherType==65 || _trnMainService.TrnMainObj.VoucherType==38)
+             && _trnMainService.TrnMainObj.AdditionalObj.BILLUNITS=='EACH' && masterService.disableQuantityEdit!= true ">
+          Each</th>
+        <!-- for other except Tax Invoice & proforma invoice -->
+        <th
+          *ngIf="(_trnMainService.TrnMainObj.VoucherType!=14 && _trnMainService.TrnMainObj.VoucherType!=57 && _trnMainService.TrnMainObj.VoucherType!= 61
+          && _trnMainService.TrnMainObj.VoucherType!=3 && _trnMainService.TrnMainObj.VoucherType!=15 && _trnMainService.TrnMainObj.VoucherType!=16
+          && _trnMainService.TrnMainObj.VoucherType!=65 && _trnMainService.TrnMainObj.VoucherType!=38) && masterService.disableQuantityEdit!= true ">
+          Case</th>
+        <th
+          *ngIf="(_trnMainService.TrnMainObj.VoucherType!=14 && _trnMainService.TrnMainObj.VoucherType!=57 && _trnMainService.TrnMainObj.VoucherType!=61
+          && _trnMainService.TrnMainObj.VoucherType!=3 && _trnMainService.TrnMainObj.VoucherType!=15 && _trnMainService.TrnMainObj.VoucherType!=16
+          && _trnMainService.TrnMainObj.VoucherType!=65 && _trnMainService.TrnMainObj.VoucherType!=38) && masterService.disableQuantityEdit!= true ">
+          Each</th>
+        <th
+          *ngIf="masterService.disableQuantityEdit == true && _trnMainService.TrnMainObj.AdditionalObj.BILLUNITS == 'CASE'">
+          Case</th>
+        <th
+          *ngIf="masterService.disableQuantityEdit == true && _trnMainService.TrnMainObj.AdditionalObj.BILLUNITS == 'EACH'">
+          Each</th>
+
+        <th>Rate</th>
+        <th>Amt</th>
+
+        <th *ngIf="ShowProductInsertTableColumns('DISCOUNT_PER_HEADER',0)">Dis%</th>
+        <th *ngIf="ShowProductInsertTableColumns('DISCOUNT_AMT_HEADER',0)">Dis Amt</th>
+        <th *ngIf="ShowProductInsertTableColumns('SUPPLIER_HEADER',0)">Supplier</th>
+
+        <th
+          *ngIf="ShowProductInsertTableColumns('PRIMARY_DIS_HEADER',0) && this._trnMainService.userProfile.CompanyInfo.ORG_TYPE=='distributor'">
+          F. Dis</th>
+        <th
+          *ngIf="ShowProductInsertTableColumns('SECONDARY_DIS_HEADER',0) && this._trnMainService.userProfile.CompanyInfo.ORG_TYPE=='distributor'">
+          S. Dis</th>
+        <th
+          *ngIf="ShowProductInsertTableColumns('OTHER_DIS_HEADER',0) && this._trnMainService.userProfile.CompanyInfo.ORG_TYPE=='distributor'">
+          R. Dis</th>
+        <th>MRP</th>
+        <th *ngIf="_trnMainService.TrnMainObj.VoucherType!=14">VAT</th>
+        <th>Net Amt</th>
+        <th *ngIf="approvalFlag">Approval Flag</th>
+        <th *ngIf="_trnMainService.TrnMainObj.VoucherType == 65 || activeurlpath == 'add-stock-issue-approval'   ">
+          Approval</th>
+        <th>Remarks</th>
+        <th *ngIf="_trnMainService.showAddCosting"></th>
+      </tr>
+      <tbody *ngFor="let tList of _trnMainService.TrnMainObj.ProdList;let i=index" style="border: 1px;">
+        <tr style="border: 1px solid #e6e6e6;max-height:25px;" (click)="RowClick(i)"
+          [class.selected]="isTableRowSelected(i)" [class.highlighted]="i==activerowIndex"
+          (keydown.delete)="deleteRow()" [style.background]="_trnMainService.rowBackGrounColor(i)">
+          <td id="sno{{i}}" style="border: 1px solid #e6e6e6;width:20px;">{{i+1}}</td>
+          <!-- ProductCode -->
+          <td style="height:23px;border: 1px solid #e6e6e6; width:120px;">
+            {{tList.MENUCODE?tList.MENUCODE:tList.MCODE}}
+
+          </td>
+
+          <td class="CellWithComment" style="height:23px;border: 1px solid #e6e6e6; width:23%;"
+            *ngIf="tList.inputMode==true">
+            <input id="menucode{{i}}" type="text" style="width: 100%" [(ngModel)]="tList.ITEMDESC"
+              (keydown.Tab)="ItemkeyEvent(i,$event)" (keydown.enter)="ItemkeyEvent(i,$event)"
+              [disabled]="_trnMainService.TrnMainObj.Mode == 'VIEW'" (keyup)="ItemkeyEvent(i,$event)" autocomplete="off"
+              (click)="onClicked()" ngDefaultControl>
+            <span contenteditable="false" class="CellComment">Press ENTER or TAB to
+              Select Item and Add Alphabet to Search</span>
+          </td>
+          <td *ngIf="!tList.inputMode" style="height:23px;border: 1px solid #e6e6e6;width:80px;width:300px">
+            {{tList.ITEMDESC}}
+          </td>
+
+          <td *ngIf="ShowProductInsertTableColumns('BATCH_EDITABLE',i)" class="CellWithComment"
+            style="height:23px;border: 1px solid #e6e6e6;width:140px">
+            <input type="text" id="batch{{i}}" class="CellWithComment" [(ngModel)]="tList.BATCH" style="width:100%"
+              (keydown.Tab)="BatchTabClick(i,$event)" (keydown)="onKeydownOnBatch($event)"
+              (keydown.enter)="BatchEnter(i,$event)" autocomplete="off" #focusBatch ngDefaultControl/>
+
+            <span contenteditable="false" class="CellComment">press ENTER or TAB to
+              Select Batch</span>
+          </td>
+
+          <td
+            *ngIf=" (ShowProductInsertTableColumns('BATCH_NONEDITABLE',i) && _trnMainService.TrnMainObj.AdditionalObj.INVOICETYPE != 'NewBill' ) || (activeurlpath == 'add-stock-issue-approval' ||activeurlpath == 'add-stock-issue' )    "
+            style="height:23px;border: 1px solid #e6e6e6;width:100px">{{tList.BATCH}}</td>
+
+          <td *ngIf="ShowProductInsertTableColumns('EXPDATE_NONEDITABLE',i)"
+            style="height:23px;border: 1px solid #e6e6e6;width:6.5%">{{tList.EXPDATE | date: 'dd-MM-yyyy'}}</td>
+
+          <td
+            *ngIf="masterService.disableQuantityEdit == true && _trnMainService.TrnMainObj.AdditionalObj.BILLUNITS == 'CASE'"
+            style="height:23px;border: 1px solid #e6e6e6;width:6.5%">{{tList.ALTERNATEQUANTIY}}</td>
+
+          <td
+            *ngIf="ShowProductInsertTableColumns('QUANTITY_EDITABLE',i) && 
+              (_trnMainService.TrnMainObj.VoucherType==14 || _trnMainService.TrnMainObj.VoucherType==57 || _trnMainService.TrnMainObj.VoucherType==61
+              || _trnMainService.TrnMainObj.VoucherType==3 || _trnMainService.TrnMainObj.VoucherType==15 
+              || _trnMainService.TrnMainObj.VoucherType==16 || _trnMainService.TrnMainObj.VoucherType==65 || _trnMainService.TrnMainObj.VoucherType==38)
+                && _trnMainService.TrnMainObj.AdditionalObj.BILLUNITS == 'CASE' && masterService.disableQuantityEdit!= true "
+            style="height:23px;border: 1px solid #e6e6e6;width:4%">
+            <input id="alternateqty{{i}}" style=" width: 100%" type="number" [(ngModel)]="tList.ALTERNATEQUANTIY"
+              (keydown.Tab)="AlternateQuantityEventClick(i,$event)" (keyup)="KeyupQty()"
+              (keydown.enter)="AlternateQuantityEventClick(i,$event)" ngDefaultControl>
+          </td>
+          <!-- for other except Tax Invoice & proforma -->
+          <td *ngIf="ShowProductInsertTableColumns('QUANTITY_EDITABLE',i) && 
+            (_trnMainService.TrnMainObj.VoucherType!=14 && _trnMainService.TrnMainObj.VoucherType!=57 && _trnMainService.TrnMainObj.VoucherType!=61
+            && _trnMainService.TrnMainObj.VoucherType!=3 && _trnMainService.TrnMainObj.VoucherType!=15 
+            && _trnMainService.TrnMainObj.VoucherType!=16 && _trnMainService.TrnMainObj.VoucherType!=65 && _trnMainService.TrnMainObj.VoucherType!=38)
+            && masterService.disableQuantityEdit !=true" style="height:23px;border: 1px solid #e6e6e6;width:4%">
+            <input id="alternateqty{{i}}" style=" width: 100%" type="number" [(ngModel)]="tList.ALTERNATEQUANTIY"
+              [disabled]="this._trnMainService.TrnMainObj.Mode == 'VIEW'"
+              (keydown.Tab)="AlternateQuantityEventClick(i,$event)" (keyup)="KeyupQty()"
+              (keydown.enter)="AlternateQuantityEventClick(i,$event)" ngDefaultControl>
+          </td>
+
+          <td
+            *ngIf="masterService.disableQuantityEdit== true && _trnMainService.TrnMainObj.AdditionalObj.BILLUNITS == 'EACH'"
+            style="height:23px;border: 1px solid #e6e6e6;width:6.5%">{{tList.BASEQUANTITY}}</td>
+          <td
+            *ngIf="ShowProductInsertTableColumns('QUANTITY_EDITABLE_BASE',i) && 
+              (_trnMainService.TrnMainObj.VoucherType==14 || _trnMainService.TrnMainObj.VoucherType==57 || _trnMainService.TrnMainObj.VoucherType==61
+              || _trnMainService.TrnMainObj.VoucherType==3 || _trnMainService.TrnMainObj.VoucherType==15 
+              || _trnMainService.TrnMainObj.VoucherType==16 || _trnMainService.TrnMainObj.VoucherType==65 || _trnMainService.TrnMainObj.VoucherType==38) 
+              && _trnMainService.TrnMainObj.AdditionalObj.BILLUNITS == 'EACH' && masterService.disableQuantityEdit!= true"
+            style="height:23px;border: 1px solid #e6e6e6;width:70px">
+            <input id="basequantity{{i}}" style=" width: 100%" type="number" [(ngModel)]="tList.BASEQUANTITY"
+              (keyup)="KeyupQty()" (keydown.Tab)="BaseQuantityEventClick(i,$event)"
+              (keydown.enter)="BaseQuantityEventClick(i,$event)" ngDefaultControl>
+          </td>
+
+          <!-- for other except Tax Invoice & proforma -->
+          <td *ngIf="ShowProductInsertTableColumns('QUANTITY_EDITABLE_BASE',i) && 
+              (_trnMainService.TrnMainObj.VoucherType!=14 && _trnMainService.TrnMainObj.VoucherType!=57 && _trnMainService.TrnMainObj.VoucherType!=61
+              && _trnMainService.TrnMainObj.VoucherType!=3 && _trnMainService.TrnMainObj.VoucherType!=15 
+              && _trnMainService.TrnMainObj.VoucherType!=16 && _trnMainService.TrnMainObj.VoucherType!=65 && _trnMainService.TrnMainObj.VoucherType!=38)
+              && masterService.disableQuantityEdit !=true" style="height:23px;border: 1px solid #e6e6e6;width:80px">
+            <input id="basequantity{{i}}" [disabled]="this._trnMainService.TrnMainObj.Mode == 'VIEW'"
+              style=" width: 100%" type="number" [(ngModel)]="tList.BASEQUANTITY" (keyup)="KeyupQty()"
+              (keydown.Tab)="BaseQuantityEventClick(i,$event)" (keydown.enter)="BaseQuantityEventClick(i,$event)" ngDefaultControl>
+          </td>
+
+          <td style="height:23px;border: 1px solid #e6e6e6;width:60px;">
+            {{_trnMainService.nullToZeroConverter(tList.ALTRATE) | twoDigitNumber}}
+          </td>
+
+          <td style="height:23px;border: 1px solid #e6e6e6;width:100px;">
+            {{_trnMainService.nullToZeroConverter(tList.AMOUNT) | twoDigitNumber}}</td>
+
+          <td style="height:23px;border: 1px solid #e6e6e6;width:3%"
+            *ngIf="(ShowProductInsertTableColumns('DISCOUNT_PER_EDITABLE',i) || (this._trnMainService.TrnMainObj.AdditionalObj.INVOICETYPE == 'NewBill' && _trnMainService.userProfile.CompanyInfo.ORG_TYPE=='superdistributor') )&& masterService.disableQuantityEdit != true  ">
+            <input type="number" decimalPlacesRestriction="2" id="discount{{i}}" min="0" max="100" style="width: 100%;"
+              [(ngModel)]="tList.INDDISCOUNTRATE" (keydown.Tab)="discRateEnterClicked(i)"
+              (keydown.enter)="discRateEnterClicked(i)" #focusDiscount ngDefaultControl />
+          </td>
+
+          <td
+            *ngIf="(masterService.disableQuantityEdit == true || (_trnMainService.TrnMainObj.VoucherType==15 || _trnMainService.TrnMainObj.VoucherType==38))&&  this._trnMainService.TrnMainObj.AdditionalObj.INVOICETYPE != 'NewBill' "
+            style="height:23px;border: 1px solid #e6e6e6;width:6.5%">{{tList.INDDISCOUNTRATE}}</td>
+
+          <td style="height:23px;border: 1px solid #e6e6e6;width:5%"
+            *ngIf="(ShowProductInsertTableColumns('DISCOUNT_AMT_EDITABLE',i) ||  (this._trnMainService.TrnMainObj.AdditionalObj.INVOICETYPE == 'NewBill' && _trnMainService.userProfile.CompanyInfo.ORG_TYPE=='superdistributor') )&& masterService.disableQuantityEdit != true ">
+            <input type="number" decimalPlacesRestriction="2" id="discountAmt{{i}}" style="width: 100%;"
+              [ngModel]="_trnMainService.nullToZeroConverter(tList.INDDISCOUNT)  |twoDigitNumber" step="0.01"
+              (keydown.Tab)="discEnterClicked(i)" (keydown.enter)="discEnterClicked(i)" ngDefaultControl/>
+          </td>
+
+          <td
+            *ngIf="(masterService.disableQuantityEdit == true || _trnMainService.TrnMainObj.VoucherType == 15 || _trnMainService.TrnMainObj.VoucherType==38) &&  this._trnMainService.TrnMainObj.AdditionalObj.INVOICETYPE != 'NewBill'"
+            style="height:23px;border: 1px solid #e6e6e6;width:6.5%">{{tList.INDDISCOUNT |twoDigitNumber }}</td>
+
+
+          <td style="height:23px;border: 1px solid #e6e6e6;width:100px"
+            *ngIf="ShowProductInsertTableColumns('DISCOUNT_AMT_EDITABLE_VATINCLU',i)">
+            <input type="number" decimalPlacesRestriction="2" id="discountAmtVATInclusiveForretailer{{i}}"
+              style="width: 100%;"
+              [ngModel]="_trnMainService.nullToZeroConverter(tList.INDIVIDUALDISCOUNT_WITHVAT) |twoDigitNumber"
+              step="0.01" (keydown.Tab)="discEnterClicked(i)" (keydown.enter)="discEnterClicked(i)" ngDefaultControl/>
+          </td>
+          <td id="supplier{{i}}" (keydown.enter)="onKeydownPreventEdit($event)" contenteditable="true"
+            style="height:23px;border: 1px solid #e6e6e6;width:200px"
+            *ngIf="ShowProductInsertTableColumns('SUPPLIER_EDITABLE',i)">{{tList.ACNAME}}</td>
+          <td
+            *ngIf="ShowProductInsertTableColumns('PRIMARY_DIS_HEADER',i) && this._trnMainService.userProfile.CompanyInfo.ORG_TYPE=='distributor'"
+            style="height:23px;border: 1px solid #e6e6e6;width:90px;">
+            {{_trnMainService.nullToZeroConverter(tList.PrimaryDiscount)|twoDigitNumber}}</td>
+          <td
+            *ngIf="ShowProductInsertTableColumns('SECONDARY_DIS_HEADER',i) && this._trnMainService.userProfile.CompanyInfo.ORG_TYPE=='distributor'"
+            style="height:23px;border: 1px solid #e6e6e6;width:90px;">
+            {{_trnMainService.nullToZeroConverter(tList.SecondaryDiscount)|twoDigitNumber}}</td>
+          <td
+            *ngIf="ShowProductInsertTableColumns('OTHER_DIS_HEADER',i) && _trnMainService.userProfile.CompanyInfo.ORG_TYPE=='distributor'"
+            style="height:23px;border: 1px solid #e6e6e6;width:60px;">
+            {{_trnMainService.nullToZeroConverter(tList.LiquiditionDiscount) |twoDigitNumber}}
+          </td>
+
+          <td style="height:23px;border: 1px solid #e6e6e6;width:100px;">
+            {{tList.MRP|twoDigitNumber}}</td> 
+
+          <td
+            *ngIf="ShowProductInsertTableColumns('GST_AMT_NONEDITABLE',i) && _trnMainService.TrnMainObj.VoucherType!=14"
+            style="height:23px;border: 1px solid #e6e6e6;width:100px;">
+            {{_trnMainService.nullToZeroConverter(tList.VAT) |twoDigitNumber}}</td>
+
+
+          <td id="netamount{{i}}" style="height:23px;border: 1px solid #e6e6e6;width:100px">
+            {{_trnMainService.nullToZeroConverter(tList.NETAMOUNT)|twoDigitNumber}}</td>
+          <td style="height:23px;border: 1px solid #e6e6e6;width:100px"
+            *ngIf="_trnMainService.TrnMainObj.VoucherType == 65 ||  activeurlpath == 'add-stock-issue-approval'   ">
+            <select [(ngModel)]="tList.isApproved" [disabled]='value==1' ngDefaultControl>
+              <option [value]=1>Approved </option>
+              <option [value]=0>Not Approved</option>
+              <!-- <option [value]=2>Pending</option> -->
+            </select>
+          </td>
+
+
+          <td id="remarks{{i}}" class="CellWithComment" contenteditable="true"
+            style="height:23px;border: 1px solid #e6e6e6;width:70px" type="text" [(ngModel)]="tList.REMARKS"
+            (keydown.Tab)="RemarksEnterCommand($event,i)" (keydown.enter)="RemarksEnterCommand($event,i)" ngDefaultControl>
+          </td>
+          <td *ngIf="_trnMainService.showAddCosting" style="width: 5px;"><button (click)="showImporterPriceCalc(i)">+</button></td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+   
+  </div>
+</div>
+
+<pricecalc-selector #pricecalculator></pricecalc-selector>
+
+<div *ngIf="this.masterService.PCL_VALUE == 2">
+  <div>
+
+    <div class="col-md-12" #prodlistTable id="prodlistTable"
+      style="background-color: #FFFFFF;overflow-x: scroll;padding-left: 0px;padding-right: 3px; height:79vh">
+      <table class="table" style="margin-bottom: 5px; font-size: 12.5px;overflow: scroll;">
+        <tr id="prodlistTableheader" style="border-bottom: 2px solid #E6E6E6; border-top: 2px solid #E6E6E6;    height: 30px;
+                                background: silver;
+                                color: black;">
+          <th *ngIf="approvalFlag">Approval Flag</th>
+
+          <th>S.No.</th>
+
+          <th *ngIf="ShowProductInsertTableColumns('MENUCODE_HEADER',0)">Code</th>
+
+          <th *ngIf="ShowProductInsertTableColumns('BARCODE_HEADER',0)">Barcode</th>
+          <th
+            [ngStyle]="(_trnMainService.TrnMainObj.VoucherType==24 || 
+            _trnMainService.TrnMainObj.VoucherType==19 || _trnMainService.TrnMainObj.VoucherType ==5 )? {'width':'40%'}:null">
+            Description</th>
+
+          <th> Unit</th>
+          <th style="width: 50px;">
+            Quantity</th>
+
+          <!-- 3~Purchase && 24 ~ Opening -->
+
+          <th *ngIf="this._trnMainService.TrnMainObj.VoucherType == 24  || this._trnMainService.TrnMainObj.VoucherType == 14 || this._trnMainService.TrnMainObj.VoucherType == 15  || 
+            _trnMainService.TrnMainObj.VoucherType == 9 ||_trnMainService.TrnMainObj.VoucherType == 19 ||
+            _trnMainService.TrnMainObj.VoucherType == 5" style="width:100px"
+            [ngStyle]="_trnMainService.TrnMainObj.VoucherType==19? {'width':'15%'}:null">
+            Rate</th>
+
+          <th
+            *ngIf="this._trnMainService.TrnMainObj.VoucherType ==3 || this._trnMainService.TrnMainObj.VoucherType == 16"
+            style="width: 110px;">P.Rate</th>
+          <th style="width:70px"
+            *ngIf="_trnMainService.TrnMainObj.VoucherType==14 || _trnMainService.TrnMainObj.VoucherType===16 ">Amt</th>
+
+          <!--sus-->
+          <th
+            *ngIf="(this._trnMainService.TrnMainObj.VoucherType ==3 || this._trnMainService.TrnMainObj.VoucherType == 14 || this._trnMainService.TrnMainObj.VoucherType == 16) && this.userSetting.ENABLE_ECS == 1"
+            style="width: 110px;">ECS</th>
+
+          <th *ngIf="ShowProductInsertTableColumns('DISCOUNT_PER_HEADER',0)" style="width: 60px;">
+            Dis%</th>
+          <th *ngIf="ShowProductInsertTableColumns('DISCOUNT_AMT_HEADER',0)" style="width: 120px;">Dis Amt</th>
+
+          <th
+            *ngIf="ShowProductInsertTableColumns('PRIMARY_DIS_HEADER',0) && this._trnMainService.userProfile.CompanyInfo.ORG_TYPE=='distributor'">
+            F. Dis</th>
+          <th
+            *ngIf="ShowProductInsertTableColumns('SECONDARY_DIS_HEADER',0) && this._trnMainService.userProfile.CompanyInfo.ORG_TYPE=='distributor'">
+            S. Dis</th>
+
+          <th
+            *ngIf="ShowProductInsertTableColumns('OTHER_DIS_HEADER',0) && this._trnMainService.userProfile.CompanyInfo.ORG_TYPE=='distributor'">
+            R. Dis</th>
+
+
+          <!-- 3~Purchase && 24 ~ Opening -->
+          <th *ngIf="this._trnMainService.TrnMainObj.VoucherType ==3">Net Rate</th>
+          <th style="width:70px"
+            *ngIf="_trnMainService.TrnMainObj.VoucherType!=14 && _trnMainService.TrnMainObj.VoucherType!=16 ">Amt</th>
+          <th *ngIf="_trnMainService.TrnMainObj.VoucherType==14 &&  this.userSetting.EnableServiceCharge ==1"
+            style="width: 110px;">S.Charge</th>
+          <th
+            *ngIf="this._trnMainService.TrnMainObj.VoucherType != 24 && this._trnMainService.TrnMainObj.VoucherType !=19 && this._trnMainService.TrnMainObj.VoucherType !=5"
+            style="width: 110px;">VAT</th>
+          <th style="width: 140px;"
+            *ngIf="this._trnMainService.TrnMainObj.VoucherType!=24 && this._trnMainService.TrnMainObj.VoucherType != 19 && this._trnMainService.TrnMainObj.VoucherType != 5">
+            Net Amt</th>
+          <th *ngIf="approvalFlag">Approval Flag</th>
+          <th
+            *ngIf="activeurlpath == 'add-creditnote-itembase-approval' || activeurlpath == 'add-stock-issue-approval'   ">
+            Approval</th>
+          <th *ngIf="ShowProductInsertTableColumns('MFGDATE_HEADER',0)"
+            [ngStyle]="_trnMainService.TrnMainObj.VoucherType==24 ? {'width':'6.5%'}:null">Mfg Date
+          </th>
+          <th *ngIf="ShowProductInsertTableColumns('EXPDATE_HEADER',0)"
+            [ngStyle]="_trnMainService.TrnMainObj.VoucherType==24 ? {'width':'6.5%'}:null">Exp Date
+          </th>
+
+        </tr>
+        <tbody *ngFor="let tList of _trnMainService.TrnMainObj.ProdList;let i=index" style="border: 1px;">
+          <tr style="border: 1px solid #e6e6e6;max-height:25px;" (click)="RowClick(i)"
+            [class.selected]="isTableRowSelected(i)" [class.highlighted]="i==activerowIndex"
+            (keydown.Shift.delete)="deleteRow()">
+            <td id="sno{{i}}" style="border: 1px solid #e6e6e6;width:20px;">{{i+1}}</td>
+
+            <td style="width: 6%;" *ngIf="ShowProductInsertTableColumns('MENUCODE_HEADER',0)">
+              {{tList.MENUCODE}}
+            </td>
+
+            <td style="width: 10%;" *ngIf="ShowProductInsertTableColumns('BARCODE_HEADER',i)">
+              <input id="barcode{{i}}" autocomplete="off" style="width: 100%;border: 1px solid;" type="text"
+                [(ngModel)]="tList.BC">
+            </td>
+
+            <td class="CellWithComment" style="height:23px;border: 1px solid #e6e6e6;width: 20%;">
+              <input id="itemDesc{{i}}" type="text" style="width: 100%" [readonly]="true" [(ngModel)]="tList.ITEMDESC"
+                autocomplete="off" (click)="onClicked()" placeholder="Press ENTER to Select Item">
+              <span contenteditable="false" class="CellComment">Press ENTER to
+                Select Item</span>
+            </td>
+
+            <td *ngIf="ShowProductInsertTableColumns('UNIT_EDITABLE',i)"
+              style="height:23px;border: 1px solid #e6e6e6;width:5%">
+              <select style="width: 100%;" id="alternateunit{{i}}" [(ngModel)]="tList.ALTUNIT">
+                <ng-container *ngFor="let units of tList.Product?.AlternateUnits">
+                  <option value="{{units.ALTUNIT}}">{{units.ALTUNIT}}</option>
+                </ng-container>
+              </select>
+            </td>
+
+            <!-- [NESTLE] for other except Tax Invoice & proforma && SR,PI,PR-->
+            <td *ngIf="ShowProductInsertTableColumns('QUANTITY_EDITABLE',i)"
+              style="height:23px;border: 1px solid #e6e6e6;width:4%">
+              <input id="alternateqty{{i}}" style="width: 60px; text-align:right" type="number"
+                [(ngModel)]="tList.ALTERNATEQUANTIY">
+            </td>
+
+            <td style="height:23px;border: 1px solid #e6e6e6;background-color: #f9f9f9;">
+              <input id="rate{{i}}" style="width: 100%; text-align: right;" type="number"
+                [ngModel]="applyPipeInRate?(tList.ALTRATE |twoDigitNumber):tList.ALTRATE">
+            </td>
+
+            <td style="height:23px;border: 1px solid #e6e6e6;background-color: #f9f9f9; text-align: right;"
+              *ngIf="_trnMainService.TrnMainObj.VoucherType == 14 || _trnMainService.TrnMainObj.VoucherType == 16 ">
+              {{_trnMainService.nullToZeroConverter(tList.AMOUNT) | twoDigitNumber}}</td>
+
+            <td style="height:23px;border: 1px solid #e6e6e6;background-color: #f9f9f9; width: 7rem; text-align: right;"
+              *ngIf="(this._trnMainService.TrnMainObj.VoucherType ==3 || this._trnMainService.TrnMainObj.VoucherType == 14 || this._trnMainService.TrnMainObj.VoucherType == 16)&& this.userSetting.ENABLE_ECS == 1">
+              {{tList.ECSAMOUNT | twoDigitNumber}}
+            </td>
+
+            <td style="height:23px;border: 1px solid #e6e6e6"
+              *ngIf="ShowProductInsertTableColumns('DISCOUNT_PER_EDITABLE',i)">
+              <input type="number" decimalPlacesRestriction="2" id="discount{{i}}" min="0" max="100"
+                style="width: 100%;" [(ngModel)]="tList.INDDISCOUNTRATE" #focusDiscount />
+            </td>
+
+            <td style="height:23px;border: 1px solid #e6e6e6"
+              *ngIf="ShowProductInsertTableColumns('DISCOUNT_AMT_EDITABLE',i)">
+              <input type="number" decimalPlacesRestriction="2" id="discountAmt{{i}}" style="width: 100%;"
+                [ngModel]="_trnMainService.nullToZeroConverter(tList.INDDISCOUNT)  | twoDigitNumber " step="0.01" />
+            </td>
+            <td style="height:23px;border: 1px solid #e6e6e6;"
+              *ngIf="ShowProductInsertTableColumns('DISCOUNT_AMT_EDITABLE_VATINCLU',i)">
+              <input type="number" decimalPlacesRestriction="2" id="discountAmtVATInclusiveForretailer{{i}}"
+                style="width: 100%;"
+                [ngModel]="_trnMainService.nullToZeroConverter(tList.INDIVIDUALDISCOUNT_WITHVAT)  | number : '1.2-2'"
+                step="0.01" />
+            </td>
+
+            <td
+              *ngIf="ShowProductInsertTableColumns('PRIMARY_DIS_HEADER',i) && this._trnMainService.userProfile.CompanyInfo.ORG_TYPE=='distributor'"
+              style="height:23px;border: 1px solid #e6e6e6;width:90px;">
+              {{_trnMainService.nullToZeroConverter(tList.PrimaryDiscount)|twoDigitNumber}}</td>
+            <td
+              *ngIf="ShowProductInsertTableColumns('SECONDARY_DIS_HEADER',i) && this._trnMainService.userProfile.CompanyInfo.ORG_TYPE=='distributor'"
+              style="height:23px;border: 1px solid #e6e6e6;width:90px;">
+              {{_trnMainService.nullToZeroConverter(tList.SecondaryDiscount)|twoDigitNumber}}</td>
+            <td
+              *ngIf="ShowProductInsertTableColumns('OTHER_DIS_HEADER',i) && _trnMainService.userProfile.CompanyInfo.ORG_TYPE=='distributor'"
+              style="height:23px;border: 1px solid #e6e6e6;width:60px;">
+              {{_trnMainService.nullToZeroConverter(tList.LiquiditionDiscount) |twoDigitNumber}}
+            </td>
+            <!-- 3~Purchase && 24 ~ Opening -->
+            <td *ngIf="(this._trnMainService.TrnMainObj.VoucherType == 3)" id="mrp{{i}}"
+              style="height:23px;border: 1px solid #e6e6e6;width: 40px;">
+              <input type="text" style="width: 3.8rem" [ngModel]="tList.CRATE" [readonly]="true">
+            </td>
+
+
+            <td style="height:23px;border: 1px solid #e6e6e6;background-color: #f9f9f9; text-align: right;"
+              (change)="MRPChangeEvent(i)" (keydown.Tab)="mrpEnterEvent(i)" (keydown.enter)="mrpEnterEvent(i)"
+              *ngIf="_trnMainService.TrnMainObj.VoucherType !== 14 && _trnMainService.TrnMainObj.VoucherType !== 16 ">
+              {{_trnMainService.nullToZeroConverter(tList.AMOUNT) | twoDigitNumber}}</td>
+
+            <td style="height:23px;border: 1px solid #e6e6e6;background-color: #f9f9f9; text-align: right;"
+              *ngIf="pType === 6">
+              {{_trnMainService.nullToZeroConverter(tList.AMOUNT) | twoDigitNumber}}</td>
+
+            <td *ngIf="this._trnMainService.TrnMainObj.VoucherType == 14 && this.userSetting.EnableServiceCharge ==1 "
+              style="height:23px;border: 1px solid #e6e6e6;width:100px; text-align: right;">
+              {{_trnMainService.nullToZeroConverter(tList.SERVICETAX) |twoDigitNumber}}</td>
+
+              <td *ngIf="ShowProductInsertTableColumns('GST_AMT_NONEDITABLE',i)"
+              style="height:23px;border: 1px solid #e6e6e6;width:100px;text-align: right;">
+              {{_trnMainService.nullToZeroConverter(tList.VAT) |twoDigitNumber}}</td>
+
+
+            <td id="netamount{{i}}"
+              *ngIf="this._trnMainService.TrnMainObj.VoucherType != 24 && this._trnMainService.TrnMainObj.VoucherType != 19 && this._trnMainService.TrnMainObj.VoucherType !=5"
+              style="height:23px; border: 1px solid #e6e6e6; text-align: right;">
+              {{_trnMainService.nullToZeroConverter(tList.NETAMOUNT)|twoDigitNumber}}</td>
+
+            <td style="height:23px;border: 1px solid #e6e6e6;width:100px" *ngIf="approvalFlag">
+              <select [(ngModel)]="tList.IsApproveStockSettlement">
+                <option [value]=1>Approved </option>
+                <option [value]=0>Not Approved</option>
+              </select>
+            </td>
+
+            <td style="height:23px;border: 1px solid #e6e6e6;width:100px"
+              *ngIf="activeurlpath == 'add-creditnote-itembase-approval' || activeurlpath == 'add-stock-issue-approval'   ">
+              <select [(ngModel)]="tList.isApproved">
+                <option [value]=1>Approved </option>
+                <option [value]=0>Not Approved</option>
+                <option [value]=2>Pending</option>
+              </select>
+            </td>
+
+            <td style="border: 1px solid #e6e6e6;background-color: #f9f9f9;"
+              *ngIf="ShowProductInsertTableColumns('MFGDATE_EDITABLE',i)">
+              <input id="mfgdate{{i}}" type="month" [(ngModel)]="tList.MFGDATE" max="2999-12-31"
+                style="height:33px;border: 1px solid #e6e6e6;width: 9.35rem;">
+            </td>
+            <td style="border: 1px solid #e6e6e6;background-color: #f9f9f9;"
+              *ngIf="ShowProductInsertTableColumns('EXPDATE_EDITABLE',i)">
+              <input id="expdate{{i}}" type="month" [(ngModel)]="tList.EXPDATE" max="2999-12-31"
+                style="height:33px;border: 1px solid #e6e6e6;width: 9.35rem;">
+            </td>
+
+            <td *ngIf="ShowProductInsertTableColumns('MFGDATE_NONEDITABLE',i)"
+              style="height:23px;border: 1px solid #e6e6e6;width:6.5%">{{tList.MFGDATE | date: 'dd-MM-yyyy'}}</td>
+
+            <td
+              *ngIf="ShowProductInsertTableColumns('EXPDATE_NONEDITABLE',i) && this._trnMainService.TrnMainObj.VoucherType != 3 "
+              style="height:23px;border: 1px solid #e6e6e6;width:6.5%">{{tList.EXPDATE | date: 'dd-MM-yyyy'}}</td>
+          </tr>
+        </tbody>
+      </table>
+       
+    </div>
+  </div>
+</div>
+
+
+<!-- DialogMessage Popup section  -->
+<div class="modal fade" bsModal #childModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog"
+  aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content" style="height: 370px;left:70%;width: 435px;">
+      <div class="modal-header">
+        <button class="close" aria-label="Close" (click)="hidepopup()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Information</h4>
+      </div>
+      <div class="modal-body">
+        {{DialogMessage}}
+      </div>
+      <div *ngIf="lengths==true" class="modal-footer">
+        <button class="btn btn-info confirm-btn" (click)="onClickYes()">Yes</button>
+        <button class="btn btn-info confirm-btn" type="button" (click)=onClickNo()>No</button>
+      </div>
+
+    </div>
+  </div>
+</div>

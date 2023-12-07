@@ -1,0 +1,91 @@
+<style>
+th{
+        padding: 0px 5px;
+        font-family:  Roboto, Arial, sans-serif;
+        font-size: 13px;
+    }
+
+    td{
+        font-size: 12px;
+    }
+  
+</style>
+
+<form>
+    <div class="row">
+
+        <!--<div class="content ">
+            <div class="col col-md-9 left">-->
+
+        <div class="wrapper">
+            <div style="margin-left:0px; margin-right:0px;">
+                <!--<div class="col-md-9 plainBackGround " style="min-height: 300px;height:300px">-->
+                    <!-- style="background-color: #FFFFFF; overflow-x:scroll;overflow-x: scroll; display: block; position: relative;height: 54vh;"> -->
+                <div #prodlistTable id="prodlistTable" 
+                style="overflow-x:scroll; overflow-y: scroll; display: block; position: relative; height: 59vh;">
+                    <table id="fix" class="table" style="width:1500px;">
+                        <thead>
+                            <tr style="border-bottom: 10px solid #c0c0c0;
+                            border-top: 2px solid #c0c0c0;
+                            height: 30px;
+                            background: silver;
+                            color: black;
+                            position: sticky;">
+                                <th *ngFor="let head of _addionalcostService.header" [style.text-align]="head['Alignment']">{{head.TITLE}}
+                                  
+                                </th>
+                                <!--<th>Total
+                                  
+                                </th>
+                                <th>Cost Per Unit
+
+                                </th>
+                                <th *ngFor="let head of _additionalCostService.addtionalCostList" style="width:5%"></th> -->
+
+                            </tr>
+                        </thead>
+                        <!-- <tfoot>
+                            <tr>
+                                <td *ngFor="let head of source.footer">
+
+                                </td>
+                               
+                            </tr>
+                        </tfoot> -->
+                        <tbody style="background-color: #e9e9e9;">
+                            <!-- <ng-container *ngFor="let l of _addionalcostService.costList;let i=index" > -->
+                                <!-- <ng-container *ngFor="let l of _addionalcostService.addtionalCostList;let i=index">  -->
+                                    <tr *ngFor="let tbody of _additionalCostService.costdetail" >
+                                <td *ngFor="let head of _addionalcostService.header" [style.text-align]="head['Alignment']" class="tableBorder">
+                                    {{tbody[head.MAPPINGNAME]}}
+                                </td>
+                    
+                            </tr>
+
+                                 <!-- </ng-container> -->
+                            <!-- </ng-container> -->
+                            
+
+                        </tbody>
+                        <!-- <ng-container *ngFor="let l of _addionalcostService.addtionalCostList;let i=index">
+                                <tbody style="background-color: #e9e9e9;">
+                            <tr *ngFor="let tbody of _additionalCostService.costdetail" >
+                                 <td *ngFor="let head of _addionalcostService.header" [style.text-align]="head['Alignment']" class="tableBorder">
+                                    {{tbody[head.MAPPINGNAME]}}
+                                </td>
+                                
+                            </tr>
+                        </tbody>
+                        </ng-container> -->
+                     
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!--   </div>
+            </div>
+        </div>-->
+
+    </div>
+
+</form>

@@ -1,0 +1,819 @@
+
+
+<style>
+
+.nodata-bg {
+    /* background-image: url('assets/nodata.png'); */
+    background-size: cover;
+    background-position: center;
+    background-image: url("assets/nodata.png");
+  }
+  #no-data{
+  
+  display: none;
+  position: absolute;
+  padding: 90px 0;
+  top: 30%;
+  width: 100%;
+}
+  a:link {
+    color: #777A6F;
+    background-color: transparent;
+    text-decoration: none;
+  }
+
+  a:visited {
+    color: #339c91;
+    background-color: transparent;
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: #16448f;
+    background-color: transparent;
+    text-decoration: underline;
+  }
+
+  a:active {
+    color: yellow;
+    background-color: transparent;
+    text-decoration: underline;
+  }
+
+  .rTableHeading {
+    /* display: table-header-group; */
+    background-color: #ddd;
+    color: #009879;
+  }
+
+  .mainhead {
+    font-weight: bold;
+    background-color: #C5C5C5;
+  }
+  .nodata-bg{
+  /* background-image: url('assets/nodata.png'); */
+   background-size: cover;
+   background-position: center;
+   background-image: url('assets/nodata.png');
+  
+}
+
+  /* .border{
+    border-color: rgb(201, 76, 76);} */
+  .content-table {
+    border-collapse: collapse;
+    margin: 0px 0;
+    font-size: 0.9em;
+    width: 100%;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+
+  }
+
+  .content-table thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: left;
+    font-weight: bold;
+  }
+
+  .content-table th,
+  .content-table td {
+    padding: 5px 15px;
+  }
+  
+  .loginImage{
+    /* changed here for dashboard image to minified image  */
+    /* background-image: url('assets/inventoryPage.jpg'); */
+    background-image: url('../../../assets/img/dashboardbg.png');
+    background-size:cover;
+    height: 100vh;
+   }
+</style>
+
+
+
+
+<ng-container>
+  <div class="loginImage" *ngIf="showDashboard == 0" >
+
+  </div>
+
+</ng-container>
+<div *ngIf="showDashboard == 1" class="row" style="height: 90vh; overflow: scroll; background-color: #fff;">
+  <div  class="row dasboardtitle" style="margin: 0 12px;padding-top: 10px; margin-bottom: 10px;">
+    <div class="col-lg-12" style="width: 100%;">
+      <div class="dashboardTitle d-flex" style="justify-content:space-between;display: flex; align-items: center;">
+        <div class="title">
+          <h5>Dashboard</h5>
+        </div>
+        <div class="dateCard">
+          <span>Business Flash Card:</span>
+               <input class="date"
+                  type="date"
+                  id="Date" 
+                  style="margin-right:0;"
+                  [(ngModel)]="Currdate"
+                   (change)="getoverallchartapidata()"
+                  />
+        </div>
+      </div>
+    </div>
+  
+  </div>
+
+  <div class="dashboard-wrapper">
+
+
+    <div class="top-rectangles" >
+      <!-- <div class="row" style=" display:flex;">
+   
+          <div class="rectangle-item">
+            <div class="rectangle color-blue" >
+                <p> Total Income</p>
+       <p> Rs. {{totalIncome | number:'1.2-2'}} </p>
+       
+        <div class="icon">
+            
+             <img src="../../../assets/icon/dollar.png" alt="Group" >
+  
+        </div>
+     
+  
+            </div>
+  
+          </div>
+           <div class="rectangle-item">
+            <div class="rectangle color-blue">
+                <p>Total Expenses</p>
+       <p> Rs. {{totalexpenses | number:'1.2-2'}}</p>
+      
+        <div class="icon">
+               <img src="../../../assets/icon/payable.png" alt="Group" >
+  
+        </div>
+     
+  
+            </div>
+  
+          </div>
+           <div class="rectangle-item">
+            <div class="rectangle border-pink">
+                <p>Net Sales Value : {{netsalesamount | number:'1.2-2'}}</p>
+       <p> Sales : Rs.  {{salesamount | number:'1.2-2'}}</p>
+        <p> Sales Return : Rs.  {{salesreturnamount | number:'1.2-2'}}</p>
+       
+        <div class="icon">
+              <img src="../../../assets/icon/netsales.png" alt="Group" style="margin-top:-20px;">
+  
+        </div>
+     
+  
+            </div>
+  
+          </div>
+           <div class="rectangle-item">
+            <div class="rectangle color-pink">
+                <p>Net Purchase Value : .......</p>
+       <p> Purchase : Rs. </p>
+       <p>Purchase Return : Rs.</p>
+     
+        <div class="icon">
+         
+               <img src="../../../assets/icon/totalpurchase.png" alt="Group" style="margin-top:-20px;" >
+  
+        </div>
+     
+  
+            </div>
+  
+          </div>
+          <div class="rectangle-item">
+            <div class="rectangle border-green">
+                <p>Cash & Bank Position</p>
+        <p> Cash : Rs. {{cashinhand | number:'1.2-2'}} </p>
+        <p> Bank : Rs. {{cashatbank | number:'1.2-2'}}</p>
+        <div class="icon" >
+                  <img src="../../../assets/icon/money.png" alt="Group" style="margin-top: -20px;" >
+  
+        </div>
+     
+  
+            </div>
+  
+          </div>
+
+        </div> -->
+      <div class="row">
+        <div class="col-lg-7">
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="col-lg-12 pad-0">
+                <div class="rectangle-item">
+                  <div class="rectangle color-blue  ">
+                      <p>Total Receipt</p>
+             <p>Rs. {{receipt | number:'1.2-2'}}</p>
+              <div class="icon">
+                  
+                    <img src="../../../assets/icon/bill.png" alt="Group" >
+        
+              </div>
+           
+        
+                  </div>
+                
+              </div>
+              </div>
+           
+              <div class="col-lg-12 pad-0">
+                <div class="rectangle-item">
+                  <div class="rectangle color-pink">
+                      <p>Total Payment</p>
+              <p> Rs. {{payment  | number:'1.2-2'}}  </p>
+             
+              <div class="icon">
+                <img src="../../../assets/icon/cargo.png" alt="Group" >
+            
+        
+              </div>
+           
+        
+                  </div>
+        
+                </div>
+                
+              </div>
+              <div class="col-lg-12 pad-0">
+                <div class="rectangle-item">
+                  <div class="rectangle border-green">
+                      <p>VAT : Rs {{netvat | number:'1.2-2'}}</p>
+              <p> VAT Payable : Rs  {{vatpayable | number:'1.2-2'}} </p>
+              <p>VAT Receivable : Rs  {{vatreceivable | number:'1.2-2'}}</p>
+              <div class="icon">
+                 
+                          <img src="../../../assets/icon/money.png" alt="Group"  style="margin-top: -40px;" >
+        
+              </div>
+           
+        
+                  </div>
+    
+              </div>
+          
+            </div>
+            </div>
+            <div class="col-lg-4">
+             
+            
+              <div class="col-lg-12 pad-0">
+                <div class="rectangle-item">
+                  <div class="rectangle color-green">
+                      <p>Total Receivable</p>
+              <p>Rs. {{receivable | number:'1.2-2'}}  </p>
+              
+              <div class="icon">
+                  <img src="../../../assets/icon/dollar.png" alt="Group" >
+        
+              </div>
+           
+        
+                  </div>
+        
+                </div>
+                
+              </div>
+              <div class="col-lg-12 pad-0">
+                <div class="rectangle-item">
+                  <div class="rectangle">
+                      <p>Total Payable</p>
+              <p>Rs. {{payable | number:'1.2-2'}} </p>
+             
+              <div class="icon">
+                 <img src="../../../assets/icon/payable.png" alt="Group" >
+        
+              </div>
+           
+        
+                  </div>
+        
+                </div>
+                
+              </div>
+              <div class="col-lg-12 pad-0">
+                <div class="rectangle-item">
+                 
+                  <div class="rectangle color-yellow">
+                    <p>Total Income</p>
+            <p>Rs. {{totalIncome | number:'1.2-2'}}  </p>
+            
+            <div class="icon">
+                <img src="../../../assets/icon/netsales.png" alt="Group" >
+      
+            </div>
+         
+      
+                </div>
+    
+              </div>
+          
+            </div>
+            </div>
+            <div class="col-lg-4">
+             
+            
+              <div class="col-lg-12 pad-0">
+                <div class="rectangle-item">
+                  <div class="rectangle color-green">
+                      <p>Total Expenses</p>
+              <p>Rs. {{totalexpenses | number:'1.2-2'}}  </p>
+              
+              <div class="icon">
+                  <img src="../../../assets/icon/bill.png" alt="Group" >
+        
+              </div>
+           
+        
+                  </div>
+        
+                </div>
+                
+              </div>
+              <div class="col-lg-12 pad-0">
+                <div class="rectangle-item">
+                  <div class="rectangle">
+                      <p>Cash In Hand</p>
+              <p>Rs. {{cashinhand | number:'1.2-2'}} </p>
+             
+              <div class="icon">
+                 <img src="../../../assets/icon/money.png" alt="Group" >
+        
+              </div>
+           
+        
+                  </div>
+        
+                </div>
+                
+              </div>
+              <div class="col-lg-12 pad-0">
+                <div class="rectangle-item">
+
+                  <div class="rectangle color-green">
+                    <p>Cash At Bank</p>
+            <p>Rs. {{cashatbank | number:'1.2-2'}}  </p>
+            
+            <div class="icon">
+                <img src="../../../assets/icon/money.png" alt="Group" >
+      
+            </div>
+         
+      
+                </div>
+                 
+    
+              </div>
+          
+            </div>
+            </div>
+          </div>
+
+        </div>
+       
+        
+      
+          <div class="col-lg-5" style="margin-bottom: 15px;">
+            <!-- <div class="canvas-wrapper" style="width:100%; height: 100%;" >
+              <div class="canvas-title">
+                <h4 (click)="onclickfunction">Expenses Graph</h4>
+              </div>
+    
+            <canvas style="margin-top: 10px;"  id="donutchart" height="155"   #donutchart ></canvas>
+            <div id="no-data-stock" class="nodata-bg"></div>
+            </div> -->
+
+            <div class="canvas-wrapper " style="width: 100%; height: 100%;" >
+              <div class="canvas-title">
+             <h4>Debtors Vs Creditors  </h4>
+           </div>
+         
+         <div >
+         <canvas   id="chart4"  width="700" height="340" #chart4>
+         
+         
+         </canvas >
+         <div class="loadingGraphRight" *ngIf="this.stockGraph">
+          <img src="../../../assets/nodatapi.png" alt="loading" />
+          <!-- <p>Data is not Found</p> -->
+        </div>
+         <div id="no-data" class="nodata-bg"></div>
+         </div>
+         
+        
+          
+         </div>
+            
+    
+              </div>
+    
+      </div>
+      
+    
+        </div>
+
+
+        <div class="charts">
+          <div class="row" style="display: flex; flex-wrap: wrap;">
+       <div class="col-lg-6 pad">
+           <div class="canvas-wrapper"  style="width:100%;">
+             <div class="canvas-title">
+               <h4>Income & Expenses Graph </h4>
+             </div>
+         
+           
+    
+           <div class="toggle quantity_value_button incomeexpensesbtns">
+             <input class="dataType" type="checkbox" [(ngModel)]="incomeexpensereportmode" 
+      
+             (change)="$event.target.checked?(incomeexpensereportmode=1):(incomeexpensereportmode=0); IncomeExpensesAccounting()">
+   
+   
+         
+             
+             <label for="" class="monthlybtn">Monthly</label>
+             <label for="" class="yearlybtn">Yearly</label>
+           </div> 
+          
+             <canvas id="line" width="700" height="300" #line></canvas>
+   
+             
+             </div>
+       </div>
+   
+       <div class="col-lg-6 pad">
+           
+        <div class="canvas-wrapper"  style="width:100%; overflow: hidden;">
+          <div class="canvas-title">
+            <h4>Receive & Payment </h4>
+          </div>
+          
+          <div class="quantity_value_button">
+          <input class="dataType" type="checkbox" [(ngModel)]="receivepayementreportmode" 
+   
+          (change)="$event.target.checked?(receivepayementreportmode=1):(receivepayementreportmode=0); getReceivePaymentforchartata()">
+       
+          
+          <label for="" class="dailybtn">Daily</label>
+          <label for="" class="monthlybtn">Monthly</label>
+        </div>
+          
+        <canvas  width="700" height="300" id="bar"  #bar> </canvas>
+        <div class="loadingGraphbar" *ngIf="this.barGraph" style="position: absolute;
+        top: 36px;
+        /* width: 60%; */
+        left: 1%;">
+          <img  style="width: 100%;
+          height: 90%;" src="../../../assets/nodatabar.png" alt="loading" /> 
+          <!-- <p>Data is not Found</p> -->
+      </div>
+        
+          </div>
+   
+           </div>
+      
+     
+       </div>
+       <div class="row" style="padding-bottom:30px;">
+             <div class="col-lg-7 pad">
+           <!-- <div class="canvas-wrapper"  style="width:100%;">
+             <div class="canvas-title">
+               <h4>Receive & Payment </h4>
+             </div>
+             
+             <div class="quantity_value_button">
+             <input class="dataType" type="checkbox" [(ngModel)]="receivepayementreportmode" 
+      
+             (change)="$event.target.checked?(receivepayementreportmode=1):(receivepayementreportmode=0); getReceivePaymentforchartata()">
+          
+             
+             <label for="" class="dailybtn">Daily</label>
+             <label for="" class="monthlybtn">Monthly</label>
+           </div>
+             
+           <canvas  width="700" height="250" id="bar"  #bar> </canvas>
+           
+             </div> -->
+            </div>
+            
+       </div>
+       </div>
+     
+    
+    </div>
+
+
+    </div>
+
+    <div class="modal-sticky" *ngIf="authService.showfiscalPopup"
+  style="overflow: auto;right: 40%;width: 30%;z-index: 9999999">
+
+  <div class="modal-content modal-content-main-area">
+    <div style="height: 28px; margin-top: 5px; ">
+      <div class="col-md-12">
+        <h4 class="modal-title" id="myModalLabel">Fiscal Year Update Form</h4>
+      </div>
+
+    </div>
+      <div class="container">
+        <form [formGroup] ="fiscalForm" (ngSubmit) = "onSubmit()">
+
+      <div class="form-group row">
+        <label for="startDate" class="col-sm-3 col-form-label">Start Date</label>
+        <div class="col-sm-9">
+          <input type="date" class="form-control" id="startDate" formControlName="StartDate_AD">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="endDate" class="col-sm-3 col-form-label">End Date</label>
+        <div class="col-sm-9">
+          <input type="date" class="form-control" id="endDate" placeholder="End Date" formControlName="EndDate_AD">
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="fiscalID" class="col-sm-3 col-form-label">Fiscal ID</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="fiscalID" placeholder="Fiscal ID" formControlName="FiscalID" autocomplete="off">
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" [disabled]="fiscalForm.invalid">Save</button>
+        <!-- <button type="button" class="btn btn-primary" (click)="cancelFiscalForm()">Cancel</button> -->
+      </div>
+      </form>
+      </div>
+
+  </div>
+
+     </div>
+<!-- 
+<div class="print-modal-sticky modal-dialog" *ngIf="showPosPrinterPreview" style="display : block; padding: 0px;  margin-bottom: 25px;height: auto;
+  position: absolute;right: 30%;top: 5px;width: 30%;z-index: 9999999;   max-width: 300px;
+    position: absolute;
+    float: left;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);">
+  <div class="modal-content modal-content-main-area" style="width: 100%;">
+    <div class="modal-header">
+      <h4 class="modal-title" id="myModalLabel">Print Preview</h4>
+    </div>
+    <div class="modal-body" style="height:300px;overflow:scroll">
+      <pre style="overflow: hidden;">
+        {{printStringForPos}}
+      </pre>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-info" data-dismiss="modal" (click)="canclePreview()">Close</button>
+      <button type="button" class="btn btn-info" (click)="printDayEndBill()">Print</button>
+    </div>
+  </div>
+</div> -->
+
+<!-- <div class="modal-sticky" *ngIf="authService.showfiscalPopup"
+  style="overflow: auto;right: 40%;width: 40%;z-index: 9999999">
+
+  <div class="modal-content modal-content-main-area">
+    <div style="height: 28px; margin-top: 5px; ">
+      <div class="col-md-12">
+        <h6 class="modal-title" id="myModalLabel">
+         Current fiscal year has been completed,Please save the new Fiscal year.        
+        </h6>
+      </div>
+
+    </div>
+      <div class="container">
+        <form [formGroup] ="fiscalForm" (ngSubmit) = "onSubmit()">
+
+      <div style="display:flex;  margin-top:22px ;">
+        <label for="endDate" class="col-sm-3 col-form-label">Start Date</label>
+        <div class="col-sm-9">
+          <input type="date" class="form-control" 
+          [disabled]="true"
+          id="startDate" placeholder="Start Date" formControlName="StartDate_AD">
+        </div>
+      </div>
+
+      <div style="display:flex;  margin-top:22px ;">
+        <label for="endDate" class="col-sm-3 col-form-label">End Date</label>
+        <div class="col-sm-9">
+          <input type="date" 
+          [disabled]="true"
+          class="form-control" id="endDate" placeholder="End Date" formControlName="EndDate_AD">
+        </div>
+      </div>
+
+      
+
+      <div style="display:flex;  margin-top:22px ;">
+        <label for="fiscalID" class="col-sm-3 col-form-label">Fiscal ID</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" 
+          [disabled]="true"
+          id="fiscalID" placeholder="Fiscal ID" formControlName="FiscalID" autocomplete="off">
+        </div>
+      </div>
+
+      <div style="display:flex;  margin-top:22px ;">
+        <label for="carriedon" class="col-sm-10 col-form-label">Carried on Opening Stock</label>
+        <div class="col-sm-2">
+          <input type="checkbox" class="form-control" 
+          
+          id="carriedon"  formControlName="ISCarreidOn" >
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" [disabled]="fiscalForm.invalid" >Save</button>
+        <button type="button" class="btn btn-primary" (click)="cancelFiscalForm()">Cancel</button>
+      </div>
+      </form>
+      </div>
+
+  </div>
+
+</div> -->
+<!-- [disabled]="fiscalForm.invalid" -->
+
+
+<!--<div class="row">
+  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <pie-chart></pie-chart>
+  </div>
+</div>-->
+
+<!--<div class="row">
+  <ba-card class="col-xlg-6 col-xl-6 col-lg-12 col-sm-12 col-xs-12"
+                     title="Acquisition Channels" baCardClass="traffic-panel medium-card">
+    <traffic-chart></traffic-chart>
+  </ba-card>
+
+  <ba-card class="col-xlg-6 col-xl-6 col-lg-12 col-sm-12 col-xs-12"
+           title="Users by Country" baCardClass="medium-card">
+    <users-map></users-map>
+  </ba-card>
+</div>-->
+
+<!--<div class="row">
+  <div class="col-xlg-9 col-xl-6 col-lg-6  col-md-12 col-sm-12 col-xs-12">
+    <div class="row">
+      <ba-card class="col-xlg-8 col-xl-12 col-lg-12 col-md-7 col-sm-12 col-xs-12"
+               title="Revenue" baCardClass="medium-card">
+        <line-chart></line-chart>
+      </ba-card>
+      <ba-card class="col-xlg-4 col-xl-12 col-lg-12 col-md-5 col-sm-12 col-xs-12"
+               baCardClass="popular-app medium-card">
+        <popular-app></popular-app>
+      </ba-card>
+    </div>
+  </div>
+
+  <div class="col-xlg-3 col-xl-6 col-lg-6 col-md-12 col-sm-12 col-xs-12">
+    <ba-card title="Feed"
+             baCardClass="large-card with-scroll feed-panel">
+      <feed></feed>
+    </ba-card>
+  </div>
+
+</div>-->
+<!-- <div class="row shift-up"> -->
+<!-- <ba-card class="col-xlg-3 col-lg-6 col-md-12 col-sm-12 col-xs-12" style="height:50px"> -->
+<!-- <todo></todo> //Todolist -->
+<!-- <div class="col-md-3">Check Vehcile &nbsp;&nbsp;</div>
+    <div class="col-md-9"><td colspan="2" style="width: 253px;">
+      <input ngui-auto-complete class="form-control" [source]="dropListItem.bind(this)"
+          max-num-list="10" list-formatter="vehicleno" display-property-name="vehicleno"
+          style="margin-bottom:5px;width:234px" placeholder="BA 68 PA 96**" [(ngModel)]="selectedVehicle"
+           [ngModelOptions]="{standalone: true}" [disabled]="modeTitle=='View JobCard'"></td></div>
+   -->
+<!-- </ba-card> -->
+
+<!-- </div> -->
+<!-- <style>
+    a:link {
+      color:#777A6F;
+      background-color: transparent;
+      text-decoration: none;
+    }
+
+    a:visited {
+      color:#339c91;
+      background-color: transparent;
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: #16448f;
+      background-color: transparent;
+      text-decoration: underline;
+    }
+
+    a:active {
+      color: yellow;
+      background-color: transparent;
+      text-decoration: underline;
+    }
+    .responsive_image {
+      width: 100vw;
+      height: 88vh;
+      background-color: white;
+      position: absolute;
+      padding-top: 2px;
+    }
+    </style> -->
+    <!-- <ba-card>
+      <div class="row">
+        <div class="col-md-5 plainBackGround" style="height: 200px;border: 1px solid #c5c5c5;padding:0px;border-bottom-right-radius: 30px;">
+          <div class="col-md-12" style="background-color: #c5c5c5;height:30px;padding-top: 6px">
+            <i class="glyphicon glyphicon-link" style="color:#209e91;"></i>&nbsp;<a style="color: #209e91;;">Quick Access</a>
+          </div>
+          <div class="col-md-12" style="height:30px;padding-top: 6px">
+            <div class="row" style="padding-top:20px">
+              <div class="col-md-4"><a class="glyphicon glyphicon-open-file"> Product Master</a></div>
+              <div class="col-md-4"><a class="glyphicon glyphicon-plus-sign"> Purchase(PI)</a></div>
+              <div class="col-md-4"><a class="glyphicon glyphicon-minus-sign"> Sales(SI)</a></div>
+            </div>
+            <div class="row" style="padding-top:20px">
+              <div class="col-md-4"><a class="glyphicon glyphicon-open-file"> Branch In</a></div>
+              <div class="col-md-4"><a class="glyphicon glyphicon-plus-sign"> Branch-Out</a></div>
+              <div class="col-md-4"><a class="glyphicon glyphicon-minus-sign"> Stock Issue</a></div>
+            </div>
+            <div class="row" style="padding-top:20px">
+              <div class="col-md-4"><a class="glyphicon glyphicon-open-file"> Journal</a></div>
+              <div class="col-md-4"><a class="glyphicon glyphicon-plus-sign"> Income</a></div>
+              <div class="col-md-4"><a class="glyphicon glyphicon-minus-sign"> Expenses</a></div>
+            </div> -->
+            <!-- routerLink="/pages/masters/JobDescriptionList" -->
+
+
+          <!-- </div>
+        </div> -->
+        <!-- <div class="col-md-6 plainBackGround" style="height: 200px;border: 1px solid #c5c5c5;padding:0px;float:right;width:55.5%;border-bottom-left-radius: 30px;">
+          <div class="col-md-12" style="background-color: #c5c5c5;height:30px;padding-top: 6px">
+            <i class="glyphicon glyphicon-tasks" style="color:#209e91;"></i>&nbsp;<a style="color: #209e91;;">Details</a>
+          </div>
+          <div class="col-md-12">
+              <div class="row" style="padding:30px">
+
+                  <div class="col-md-4">
+                    <div class="col-md-12" style="padding:0px"><a style="color: #8cccfb; font-size:25px;">Purchase</a></div>
+                    <div class="col-md-12" style="padding-top:30px"><a style="color: #924a10; font-size:35px"><span>5000</span></a></div>
+
+                  </div>
+                  <div class="col-md-4">
+                      <div class="col-md-12" style="padding:0px"><a style="color: #8cccfb; font-size:25px;">Sales</a></div>
+                      <div class="col-md-12" style="padding-top:30px"><a style="color: #924a10; font-size:35px"><span>2890</span></a></div>
+
+                    </div>
+                    <div class="col-md-4">
+                        <div class="col-md-12" style="padding:0px"><a style="color: #8cccfb; font-size:25px">Stock</a></div>
+                        <div class="col-md-12" style="padding-top:30px"><a style="color: #924a10; font-size:35px"><span>32730</span></a></div>
+
+                      </div>
+
+              </div>
+            </div>
+        </div> -->
+      <!-- </div>
+      <div class="row" style="margin-top:60px">
+          <div class="col-md-12 plainBackGround" style="height: 300px;border: 1px solid #c5c5c5;padding:0px;border-bottom-right-radius:30px;border-bottom-left-radius:30px">
+              <div class="col-md-12" style="background-color: #c5c5c5;height:30px;padding-top: 6px">
+                <i class="glyphicon glyphicon-info-sign" style="color:#209e91;"></i>&nbsp;<a style="color: #209e91;;">Getting Started</a>
+              </div>
+              <div class="col-md-12" style="height:30px;padding-top: 6px"> -->
+                  <!-- <ng2-odometer [number]="number" [config]="{ }"></ng2-odometer> -->
+                  <!-- <div style="padding:10px"><p style="text-align: justify;"><span style="font-size: 11pt;">Quick Tips:</span></p>
+                    <ol>
+                    <li style="text-align: justify;"><span style="font-size: 11pt;">Product Master added new items</span></li>
+                    <li style="text-align: justify;"><span style="font-size: 11pt;">Define schedule for the scheme inside Configuration</span></li>
+                    <li style="text-align: justify;"><span style="font-size: 11pt;">Product Master added new items</span></li>
+                    <li style="text-align: justify;"><span style="font-size: 11pt;">Define schedule for the scheme inside Configuration</span></li>
+                    <li style="text-align: justify;"><span style="font-size: 11pt;">Product Master added new items</span></li>
+                    <li style="text-align: justify;"><span style="font-size: 11pt;">Define schedule for the scheme inside Configuration</span></li>
+                    <li style="text-align: justify;"><span style="font-size: 11pt;">Product Master added new items</span></li>
+                    <li style="text-align: justify;"><span style="font-size: 11pt;">Define schedule for the scheme inside Configuration</span></li>
+                   
+                    </ol></div>
+
+
+              </div>
+            </div>
+      </div>
+    </ba-card> -->
+
+
+    <!-- <div class="row">
+      <div class="col-md-12">
+          <img src="assets/img/DashBoard_A.jpg" class="responsive_image" alt="Dashboard">
+        </div>
+    </div> -->

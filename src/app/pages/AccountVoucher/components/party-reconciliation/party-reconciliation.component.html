@@ -1,0 +1,287 @@
+<style>
+  .table tr th {
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  tr {
+    border: 1px solid #e6e6e6;
+    max-height: 25px;
+  }
+
+  td {
+    height: 23px;
+    border: 1px solid #e6e6e6;
+
+  }
+
+  .bottom {
+    position: fixed;
+    bottom: 20px;
+    left: 0px;
+    width: 100%;
+    height: 135px;
+    z-index: 999997;
+    /* background: #e2eaea !important; */
+  }
+
+</style>
+
+
+<div class="sticky-top">
+  <div class="clearfix">
+    <div class="col-md-1">
+      <voucher-master-toggler></voucher-master-toggler>
+    </div>
+    <div class="col-md-4">
+      <!-- <h2 style="color: black;">Bank Reconciliation </h2> -->
+      <label style="font-family: Segoe UI Light;font-weight: bold;font-size: 20px;padding-left: 5%;padding-top: 1%;width: 100%;">PARTY RECONCILIATION</label>
+    </div>
+    <div class="col-md-7">
+      <button (click)="onLoadClick()" style="margin: 0px 4px;" class="btn btn-info pull-right">
+        LOAD
+      </button>
+      <button (click)="onSaveClick()" style="margin: 0px 4px;" class="btn btn-info pull-right">
+        SAVE
+      </button>
+
+    </div>
+  </div>
+</div>
+
+<div class="main-container">
+  <div [hidden]="!masterService.ShowMore" class="clearfix">
+
+    <div class="col-md-12" style="margin: 8px 15px ; border: 1px solid #e6e6e6; ">
+
+      <!-- <div class="col-md-4">
+        <div class="row">
+          <label style="width:30%">Date </label>
+          <input style="width:60%" type="text" ngxDaterangepickerMd [(ngModel)]="selectedDate" [showDropdowns]="true"
+            [showCustomRangeLabel]="true" [alwaysShowCalendars]="true" [locale]="locale" [ranges]="ranges"
+            [linkedCalendars]="true" [showCancel]="true" placeholder="Date Range..."
+            (ngModelChange)="dateChanged($event)" />
+        </div>
+      </div> -->
+
+      <div class="col-md-4">
+        <label>From:</label>
+        <input  placeholder="Year Start Date" style="width:128px; height: 30px;" type="date"
+        (change)="changeEntryDate($event.target.value,'AD')" [(ngModel)]="PartyReconciliationObj.DATE1">&nbsp;&nbsp;
+
+        <div style=" width: 134px;margin-left: 260px; margin-top: -29px;">
+          <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDatefrom'"
+            (change)="changeEntryDate($event.detail.value,'BS')"
+            [label]="'dd/mm/yyyy'"  [(ngModel)]="PartyReconciliationObj.BSDATE1">
+            </nepali-date-picker>
+        </div>
+      </div>
+      <div class="col-md-4" style="margin-top: 8px;">
+        <label><input type="radio" name="partytype" [(ngModel)]="PartyReconciliationObj.PARTYTYPE" value=C (change)="parttypeChange()">&nbsp;Customer</label>
+        <label><input type="radio" name="partytype" [(ngModel)]="PartyReconciliationObj.PARTYTYPE" value=V (change)="parttypeChange()">&nbsp;Supplier</label>
+      </div>
+     
+
+      <div class="col-md-4">
+        <div class="checkbox">
+          <label style="width:95%"><input type="checkbox" [(ngModel)]="PartyReconciliationObj.SHOWRECONSILLED"
+              name="ReconciledRecord">Show Reconciled Record Also </label>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="row col-md-12">
+      <div class="col-md-4" style="margin-left:30px;">
+        <label>To :</label>
+        <input   placeholder="Year End Date" type="date" style="width: 128px; height: 30px;"
+        (change)="changeEndDate($event.target.value,'AD')"  [(ngModel)]="PartyReconciliationObj.DATE2">&nbsp;&nbsp;
+
+        <div style=" width: 134px;margin-left: 260px; margin-top: -29px;">
+          <nepali-date-picker name="nepaliDateTo" [id]="'nepaliDateto'"
+            (change)="changeEndDate($event.detail.value,'BS')"
+            [label]="'dd/mm/yyyy'"  [(ngModel)]="PartyReconciliationObj.BSDATE2">
+            </nepali-date-picker>
+        </div>
+        &nbsp;
+      </div>
+
+      <div class="col-md-4">
+        <div class="row">
+          <label style="width:30%">Party Name </label>
+          <input type="text" style="width:60%" id="BankAccount" name="Bank_Acccount"
+            (keydown.tab)="onBankReconciliationPopUPTab()" (keydown.enter)="onBankReconciliationPopUPTab()"
+            [(ngModel)]="PartyReconciliationObj.ACNAME" placeholder="Press ENTER or TAB to Account Name" autocomplete="off" />
+        </div>
+      </div>
+
+      
+
+    </div>
+  </div>
+  <div class="clearfix" style="margin-top: 5px">
+    <div class="col-md-12" style="height:325px;overflow-y:scroll">
+      <div class="header" style="position: sticky;top:0">
+        <table style="width: 100%;table-layout: fixed">
+          <thead>
+            <tr style="border-bottom: 1px solid #E6E6E6; border-top: 1px solid #E6E6E6;    height: 25px;
+                            background:#C0C0C0;
+                            color: black;">
+              <th style="width:55px"></th>
+              <th style="width:108px">Date </th>
+              <th style="width:195px">Particular </th>
+              <th style="width:190px">Voucher Number </th>
+              <th style="width:192px">Voucher Type </th>
+              <th style="width:120px">REF No. </th>
+              
+              <th style="width:115px">Debit</th>
+              <th style="width:110px">Credit </th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      <table style="width: 100%;">
+
+        <tbody style="border: 1px;">
+          <tr *ngFor="let item of reconcileList; let in=index">
+            <td style="width: 55px;">
+              <input type="checkbox" #check id="checkBox{{in}}" (change)="itemChecked($event,in)">
+            </td>
+
+            <td style="width: 110px;">
+              {{item?.TRNDATE|date:'dd/MM/yyyy' }}
+            </td>
+
+
+
+            <td style="width: 195px;">
+              {{item?.PARTICULARS }}
+            </td>
+
+            <td style="width: 195px;">
+              {{item?.VNO }}
+            </td>
+
+            <td style="width: 195px;">
+              {{item?.VOUCHER_TYPE }}
+            </td>
+
+            <td style="width:120px;">
+              {{item?.REFNO  }}
+            </td>
+
+ 
+
+            <td style="width:115px;text-align: right">
+              {{item?.DRAMNT | twoDigitNumber}}
+            </td>
+
+            <td style="width:115px;text-align: right;">
+              {{item?.CRAMNT  | twoDigitNumber}}
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+  </div>
+</div>
+<div class="bottom">
+  <div class="col-md-12">
+
+    <table class="table" style="height: 100px; text-align:right; background:#C0C0C0;">
+      <thead style="border: 1px solid #e6e6e6; ">
+        <ng-container *ngIf="showCompanybook == true;">
+          <tr *ngFor="let item of balanceAsPerCompanyBook;">
+            <td style="padding: 5px 0px; text-align: right; font-size: 12px; font-weight: bold; padding-right: 10px;">
+              Balance As per Company Book </td>
+            <td style="padding: 5px 0px; text-align: right; padding-right: 10px;font-weight: 600;font-size:12px; ">
+              {{ !this.reconcileList  ?'0.00':(item.DRAMNT | twoDigitNumber)}}</td>
+            <td style="padding: 5px 0px; text-align: right; padding-right: 10px;font-weight: 600;font-size:12px; ">
+              {{ !this.reconcileList  ?'0.00':(item.CRAMNT | twoDigitNumber)}}</td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="showCompanybook == false;">
+          <tr>
+            <td style="padding: 5px 0px; text-align: right; font-size: 12px; font-weight: bold; padding-right: 10px;">
+              Balance As per Company Book </td>
+            <td style="padding: 5px 0px; text-align: right; padding-right: 10px;font-size:12px; font-weight: 600;">0.00
+            </td>
+            <td style="padding: 5px 0px; text-align: right; padding-right: 10px;font-size:12px; font-weight: 600;">0.00
+            </td>
+          </tr>
+        </ng-container>
+
+
+      </thead>
+      <tbody style="border: 1px;">
+
+        <ng-container *ngIf="reflectedBank == true;">
+          <tr *ngFor="let item of amountNotReflectedOnBank;" style="font-size: 11px;">
+            <td style="line-height: 15px;padding: 5px 0px;text-align: right; font-size:12x;font-weight: bold; ">Amount
+              Not
+              Reflected on Bank(opening) </td>
+            <td style="line-height: 15px;padding: 5px 10px;text-align: right;font-size:12x;font-weight: bold; ">
+              {{ parseFloat(item.DRAMNT) | twoDigitNumber  }}
+            </td>
+            <td style="line-height: 15px;padding: 5px 10px;text-align: right;font-size:12x;font-weight: bold; ">
+              {{ parseFloat(item.CRAMNT) | twoDigitNumber  }}
+            </td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="reflectedBank == false;">
+          <tr style="font-size: 12px;">
+            <td style="line-height: 15px;padding: 5px 10px;text-align: right; font-size:12x;font-weight: bold; ">Amount
+              Not
+              Reflected on Bank(opening) </td>
+            <td style="line-height: 15px;padding: 5px 10px;text-align: right;font-size:12x;font-weight: bold; ">0.00
+            </td>
+            <td style="line-height: 15px;padding: 5px 10px;text-align: right;font-size:12x;font-weight: bold; ">0.00
+            </td>
+          </tr>
+        </ng-container>
+
+
+
+        <tr style="font-size: 12px;">
+          <td style="line-height: 15px;padding: 5px 10px; text-align: right;font-size:12x;font-weight: bold; ">Amount
+            Not
+            Reflected on Bank (Periodic) </td>
+          <td style="line-height: 15px;padding: 5px 10px; text-align: right;font-size:12x;font-weight: bold; ">
+            {{!this.reconcileList ?'0.00':(notReflectedonBankDebit | twoDigitNumber)}} </td>
+          <td style="line-height: 15px;padding: 5px 10px; text-align: right;font-size:12x;font-weight: bold; ">
+            {{!this.reconcileList ?'0.00':(notReflectedonBankCredit | twoDigitNumber)}} </td>
+        </tr>
+
+        <tr style="font-size: 12px;">
+          <td style="line-height: 15px;padding: 5px 10px; text-align: right;font-size:12x;font-weight: bold; ">Balance
+            As Per
+            Bank Book </td>
+          <td style="line-height: 15px;padding: 5px 10px; text-align: right;font-size:12x;font-weight: bold; ">
+            {{!this.reconcileList ?'0.00': (balanceAsPerBankDebit | twoDigitNumber)}} </td>
+          <td style="line-height: 15px;padding: 5px 10px; text-align: right;font-size:12x;font-weight: bold; ">
+            {{!this.reconcileList ?'0.00': (balanceAsperBankCredit | twoDigitNumber)}}</td>
+        </tr>
+
+        <tr style="font-size: 12px;">
+          <td style="line-height: 15px;padding: 5px 10px; text-align: right;font-size:12x;font-weight: bold; ">
+            Difference</td>
+          <td style="line-height: 15px;padding: 5px 10px; text-align: right;font-size:12x;font-weight: bold; ">
+            {{!this.reconcileList?'0.00': (differenceDebit | twoDigitNumber)}}</td>
+          <td style="line-height: 15px;padding: 5px 10px; text-align: right;font-size:12x;font-weight: bold; ">
+            {{!this.reconcileList?'0.00': (differenceCredit | twoDigitNumber)}}</td>
+        </tr>
+
+      </tbody>
+
+    </table>
+  </div>
+
+</div>
+
+<generic-popup-grid #bankReconciliationGeneric [popupsettings]="gridbankReconciliationPopupSettings"
+  (onItemDoubleClick)="onItemDoubleClick($event)">
+</generic-popup-grid>

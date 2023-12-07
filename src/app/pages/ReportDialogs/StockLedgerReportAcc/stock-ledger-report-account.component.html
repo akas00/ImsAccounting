@@ -1,0 +1,149 @@
+<div class="container">
+    <div class="row">
+        <!-- Filter Starts -->
+        <div class="col-12 col-md-12">
+            <div style="background-color : #ffffff;width: 105%;height: 19rem;">
+
+                <div class="row">
+                    <div class="modal-header" style="border:0px;">
+                        <button type="button" class="close" data-dismiss="modal" (click)="closeReportBox()">&times;</button>
+                        <h4 class="modal-title" style="padding-left: 20px;">Stock Ledger Report</h4>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top: -2%;">
+                    <div class="row col-md-12" style="padding-top: 2%;">
+                        <!-- Left Column -->
+                        <div class="col-md-6" style="padding-left: 30px;">
+                            <fieldset>
+                                <legend style="font-size:11px;font-weight: bold; width:auto">Date Range Selection :
+                                </legend>
+                                <table>
+                                    <tr>
+                                        <td><label class="smallBoldLabel">From:(AD)</label></td>
+                                        <td><label class="smallBoldLabel">To:(AD)</label></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label class="smallBoldLabel"><input type="date"
+                                                    style="width:152px; min-width:50%;" placeholder="Year Start Date"
+                                                    [(ngModel)]="_reportFilterService.StockLedgerAccountObj.StockLedgerReportAcc_DATE1"
+                                                    (change)="changeEntryDate($event.target.value,'AD')"></label>
+                                        </td>
+                                        <td>
+                                            <label class="smallBoldLabel"><input type="date"
+                                                    style="width:152px; min-width:50%;" placeholder="Year Start Date"
+                                                    [(ngModel)]="_reportFilterService.StockLedgerAccountObj.StockLedgerReportAcc_DATE2"
+                                                    (change)="changeEndDate($event.target.value,'AD')"></label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <nepali-date-picker name="nepaliDatefrom" [id]="'nepaliDatefrom'"
+                                                (change)="changeEntryDate($event.detail.value,'BS')" [label]="'From'"
+                                                [(ngModel)]="_reportFilterService.StockLedgerAccountObj.StockLedgerReportAcc_BSDATE1">
+                                            </nepali-date-picker>
+                                        </td>
+                                        <td>
+                                            <nepali-date-picker name="nepaliDateto" [id]="'nepaliDateto'"
+                                                (change)="changeEndDate($event.detail.value,'BS')" [label]="'To'"
+                                                [(ngModel)]="_reportFilterService.StockLedgerAccountObj.StockLedgerReportAcc_BSDATE2">
+                                            </nepali-date-picker>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </fieldset>
+
+                        </div>
+                        <!-- Left column-->
+
+                        <!-- Right column-->
+                        <div class="col-md-6">
+
+
+                            <fieldset>
+                                <legend>Warehouse:</legend>
+                                <input type="text" class="form-control"
+                                    [(ngModel)]="_reportFilterService.StockLedgerAccountObj.StockLedgerReportAcc_WAREHOUSE"
+                                    placeholder="Press Enter or Tab for Warehouse"
+                                    (keydown.Tab)="WarehouseEnterClicked($event)"
+                                    (keydown.enter)="WarehouseEnterClicked($event)">
+                                <button type="button" *ngIf="_reportFilterService.showMultipleWarehouse"
+                                    (click)="addWarehouseToList()" class="btn btn-info"
+                                    style="float: right;">Add</button>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Product:</legend>
+                                <input type="text" class="form-control"
+                                    [(ngModel)]="_reportFilterService.StockLedgerAccountObj.StockLedgerReportAcc_ITEM"
+                                    placeholder="Press Enter or Tab for Product"
+                                    (keydown.Tab)="ProductEnterClicked($event)"
+                                    (keydown.enter)="ProductEnterClicked($event)">
+
+                            </fieldset>
+
+
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <input type="checkbox"
+                                        [(ngModel)]="_reportFilterService.StockLedgerAccountObj.StockLedgerReportAcc_SHOWBATCHWISE"
+                                        (change)="$event.target.checked?(_reportFilterService.StockLedgerAccountObj.StockLedgerReportAcc_SHOWBATCHWISE=1):(_reportFilterService.StockLedgerAccountObj.StockLedgerReportAcc_SHOWBATCHWISE=0)"
+                                        [checked]="_reportFilterService.StockLedgerAccountObj.StockLedgerReportAcc_SHOWBATCHWISE==1">
+                                </div>
+                                <div calss="col">
+                                    <label style="width: 200px;" class="smallBoldLabel">Show Batch
+                                        Wise Stock Report</label>
+                                </div>
+                            </div>
+<!-- 
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <input type="checkbox"
+                                        [(ngModel)]="_reportFilterService.StockLedgerAccountObj.StockLedgerReportAcc_SHOWDETAIL"
+                                        (change)="$event.target.checked?(_reportFilterService.StockLedgerAccountObj.StockLedgerReportAcc_SHOWDETAIL=1):(_reportFilterService.StockLedgerAccountObj.StockLedgerReportAcc_SHOWDETAIL=0)"
+                                        [checked]="_reportFilterService.StockLedgerAccountObj.StockLedgerReportAcc_SHOWDETAIL==1"
+                                        >
+                                </div>
+                                <div calss="col">
+                                    <label style="width: 200px;" class="smallBoldLabel">Show Item
+                                        Detail In Report</label>
+                                </div>
+                            </div> -->
+                        </div>
+
+
+                        <!-- Right column-->
+
+                    </div>
+                </div>
+                <div class="btn" style="float: right;">
+                    <button class="btn btn-info confirm-btn" type="button" (click)=onload()>RUN</button>
+                    <button type="button" (click)="closeReportBox()" title="Cancel" class="btn btn-info">Close</button>
+                </div>
+
+               
+            </div>
+            <!-- Filter Ends -->
+            <!-- Modal Ends -->
+        </div>
+        
+    </div>
+</div>
+
+<!-- 
+<popup-reports #genericGridProduct [popupsettings]="gridPopupSettingsForProduct"
+    (onItemDoubleClick)="dblClickProductSelect($event)">
+</popup-reports>
+
+<popup-reports #genericGridWarehouse [popupsettings]="gridPopupSettingsForWarehouse"
+    (onItemDoubleClick)="dblClickWarehouseSelect($event)">
+</popup-reports> -->
+
+
+<generic-popup-grid #genericGridWarehouse [popupsettings]="gridPopupSettingsForWarehouse"
+    (onItemDoubleClick)="dblClickWarehouseSelect($event)">
+</generic-popup-grid>
+
+<generic-popup-grid #genericGridProduct [popupsettings]="gridPopupSettingsForProduct"
+    (onItemDoubleClick)="dblClickProductSelect($event)">
+</generic-popup-grid>

@@ -1,0 +1,181 @@
+<style>
+    .modal-content {
+        padding: 1px;
+        margin: 0px;
+        float: right;
+    }
+
+    .table-scroll {
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+
+    tbody>tr:hover {
+        background-color: #f3f5f4;
+        cursor: pointer;
+    }
+
+    tr {
+        font-size: 11px;
+    }
+
+    .selected-row {
+        background-color: #ced6d3 !important;
+    }
+
+    td {
+        padding: 2px
+    }
+
+    .modal-sticky {
+        position: fixed;
+        bottom: 0px;
+        right: 25%;
+        width: 80%;
+        height: 68%;
+        z-index: 2;
+    }
+
+    .input {
+        width: 80%
+    }
+
+    td {
+        line-height: 0px !important
+    }
+
+    .table>tbody>tr>td {
+        border-top: 0px solid gainsboro !important;
+    }
+
+    .TopMargin {
+        Margin-Top: 10px
+    }
+
+    .table>tbody>tr>td:first-child {
+        text-align: left !important;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    label {
+        height: 21px;
+        font-weight: normal;
+        width: 100px;
+        margin: 2px;
+        vertical-align: middle;
+        font-size: 13px;
+        padding-top: 6px;
+    }
+</style>
+<div class="modal-sticky" [class.modal-sticky-hide]="!isActive" style="display : block; padding: 0px;">
+    <!-- Modal content -->
+    <div class="modal-content" style="background-color: #f1f1f1; width:60% !important;    height: 300px;">
+        <div class="modal-header" style="padding: 0px;background: #f1f1f1;;">
+
+            <h4 class="modal-title" style="text-align: center;">
+                Transporter
+            </h4>
+        </div>
+
+        <div class="col-md-12 plainBackGround"
+            style="    height: 70%;margin : 0px;  border-bottom: 1px solid silver;padding-top: 0px;">
+            <table class="table table-summary TopMargin" style="text-align: left">
+                <tr>
+                    <td><label>Distance*</label></td>
+                    <td>
+                        <input type="number" [(ngModel)]="service.selectedTransportObj.DISTANCE" />
+                    </td>
+
+                    <td><label>VehicleNo* </label></td>
+                    <td>
+                        <input type="text" [(ngModel)]="service.selectedTransportObj.VehicleNo"  />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Transporter</label></td>
+                    <td>
+                            <input #Transporter id="Transporter" type="text" [(ngModel)]="service.selectedTransportObj.TRANSPORTER"  (keyup.enter)="onEnterTransporter()"/>
+                            <!-- <select  [(ngModel)]="service.selectedTransportObj.TRANSPORTER" style="width:88%">
+                                    <option *ngFor="let i of TransporterList" value="{{i.TRANSPORTER}}">{{i.TRANSPORTER}}</option>
+                </select> -->
+                </td>
+<td><label>POD/LR No</label></td>
+                    <td>
+                        <input type="text" [(ngModel)]="service.selectedTransportObj.LRNO"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>POD/LR Date</label></td>
+                    <td>
+                        <input type="date" [(ngModel)]="service.selectedTransportObj.LRDATE" style="width:88%"  readonly=true />
+                    </td>
+               
+                    <td><label>Amount</label></td>
+                    <td>
+                        <input type="text" [(ngModel)]="service.selectedTransportObj.Amount" readonly=true  />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Mode</label></td>
+                    <td>
+                            <select  [(ngModel)]="service.selectedTransportObj.MODE" style="width:88%">
+                                    <option value="paid">Paid</option>
+                                    <option value="topay">To Pay</option>
+                            </select>
+                       
+                    </td>
+                
+                    <td><label>Weight</label></td>
+                    <td>
+                        <input type="text" [(ngModel)]="service.selectedTransportObj.TOTALWEIGHT" readonly=true />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Total Box</label></td>
+                    <td>
+                        <input type="text" [(ngModel)]="service.selectedTransportObj.TOTALBOX"/>
+                    </td>
+                
+                    <td><label>Vehicle Name</label></td>
+                    <td>
+                        <input type="text" [(ngModel)]="service.selectedTransportObj.VEHICLENO"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Driver Name</label></td>
+                    <td>
+                        <input type="text" [(ngModel)]="service.selectedTransportObj.DRIVERNAME"/>
+                    </td>
+               
+                    <td><label>Driver No.</label></td>
+                    <td>
+                        <input type="text" readonly=true [(ngModel)]="service.selectedTransportObj.DRIVERNO" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Person</label></td>
+                    <td>
+                        <input type="text" readonly=true [(ngModel)]="service.selectedTransportObj.PERSON" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+
+        <div class="Col-md-12">
+            <button type="button" class="btn btn-info TopMargin" style="width:80px" (click)="Update()">Update</button>
+            <button type="button" class="btn btn-warning TopMargin" style="margin-right:10px;"
+                (click)="hide()">Cancel</button>
+
+        </div>
+    </div>
+    <generic-popup-grid  
+    #genericGrid 
+    [popupsettings]="gridPopupSettings"
+    (onItemDoubleClick) = "onItemDoubleClick($event)"
+    ></generic-popup-grid>

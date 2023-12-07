@@ -1,0 +1,130 @@
+<div class="sticky-top">
+  <div class="clearfix">
+    <div class="col-md-1">
+      <voucher-master-toggler></voucher-master-toggler>
+    </div>
+    <div class="col-md-4">
+      <label
+        style="font-family: Segoe UI Light;font-weight: bold;font-size: 20px;padding-left: 5%;padding-top: 1%;width:auto">{{ _trnMainService.pageHeading }}</label>
+      <label style="font-size: 14px;width: 34%;margin-top: 10px;">&nbsp;>> {{ _trnMainService.TrnMainObj?.Mode | titlecase}}
+        Voucher</label>
+    </div>
+    <div class="col-md-7">
+      <account-master-action></account-master-action>
+    </div>
+  </div>
+</div>
+<div class="main-container" style="top:10px !important">
+  <div class="clearfix">
+    <!-- <voucher-date-entry style="margin-top:-15px;"></voucher-date-entry> -->
+    <trnmain-voucher-entry></trnmain-voucher-entry>
+    <div style="padding-bottom: 29px;
+    margin-top: -20px;">
+    <div *ngIf = "_trnMainService.userSetting.ENABLELOCALPURCHASE == 1" class="col-md-3" style="padding-left: 1px;">
+      <label style="margin-left: 20px;width: 100px;">Purchase Type : </label>
+      <select style="padding: 0px !important;width: 50%;margin-top:0px; margin-left: 0%;" [(ngModel)]="masterService.RefObj.PURCHASE_TYPE" [disabled]="_trnMainService.TrnMainObj.Mode=='EDIT' || _trnMainService.TrnMainObj.Mode=='VIEW'">
+        <option value="IMPORTPURCHASE">Import Purchase</option>
+        <option value="LOCALPURCHASE">Local Purchase</option>
+      </select>
+    </div>
+     <div class="col-md-3" style="padding-left: 1px;">
+      <label style="margin-left: 20px;">Ref PI NO : </label>
+      <input id ="REFPINO_AD" type="test" width="200px" style="width: 60%;" placeholder="Press Enter or Tab"
+        (keydown.Tab)="TabRefBill()" (keydown.Enter)="TabRefBill()" [(ngModel)]='masterService.RefObj.Refno' 
+        (keydown)="keyPress($event)" autocomplete="off"
+        [disabled]="_trnMainService.TrnMainObj.Mode=='EDIT' || _trnMainService.TrnMainObj.Mode=='VIEW'">
+      </div>
+   
+      <div class="col-md-3" style="padding-left: 0px;">
+        <label style="margin-left: 11px;">Invoice No : </label>
+      <input type="test" width="200px" style="width: 57%;" 
+        (keydown.Tab)="TabRefBill()" (keydown.Enter)="TabRefBill()" [(ngModel)]='masterService.RefObj.InvoiceNo'
+        readonly disabled>
+      </div>
+
+      <div class="col-md-3" style="padding-left: 0px;">
+        <label style="margin-left: -30px;">Supplier Name:</label>
+      <input type="test" width="200px" style="margin-left: 25px;width: 53%;" 
+        (keydown.Tab)="TabRefBill()" (keydown.Enter)="TabRefBill()" [(ngModel)]='masterService.RefObj.SupplierName' readonly disabled>
+      </div>
+      </div>
+    
+       
+    
+  </div>
+  <div class="clearfix" style="margin-top: 5px">
+    <ul class="nav nav-tabs" style="background-color: #e9e9e9 !important">
+      <li class="nav-item">
+        <a class="nav-link active" href="#Purchase" data-toggle="tab" style="color:black">Purchase Detail</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#AdditionalCost" data-toggle="tab" style="color:black">Additional Cost</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#CostingDetails" data-toggle="tab" style="color:black">Costing Details</a>
+      </li>
+      <!-- <li class="nav-item" *ngIf = "_trnMainService.userSetting.EnableRateEditInAddCosting == 1">
+        <a class="nav-link" href="#ImportDocumentDetails" data-toggle="tab" style="color:black" (click)="ImportDetailsClick()">Import Document Details</a>
+      </li> -->
+    </ul>
+    <form [formGroup]="form">
+      <div class="tab-content">
+        <div class="tab-pane active" id="Purchase">
+          
+            <div class="col-md-12 row" style="width: 100%;">
+              <purchaseDetail></purchaseDetail>
+            </div>
+          
+        </div>
+        <div class="tab-pane" id="AdditionalCost">
+          <!-- Contact Details -->
+          <div class="col-md-12 row">
+            <additionalCost></additionalCost>
+          </div>
+        </div>
+        <div class="tab-pane" id="CostingDetails">
+          <!-- Contact Details -->
+          <div class="col-md-12 row">
+            <costingDetail></costingDetail>
+          </div>
+        </div>
+        <div *ngIf = "_trnMainService.userSetting.EnableRateEditInAddCosting == 1"   class="tab-pane" id="ImportDocumentDetails">
+          <ba-card>
+            <div class="col-md-12 row" style="width: 100%; height: 23rem;">
+              <ImportDocumentDetailsComponent></ImportDocumentDetailsComponent>
+            </div>
+          </ba-card>
+          
+        </div>
+
+      </div>
+    </form>
+  </div>
+</div>
+<!-- <div class="sticky-bottom" style="background: gray;">
+  <div class="row" >
+    <div class="col-md-6">
+      &nbsp;
+    </div>
+    <div class="col-md-5" style="text-align: end;">
+      <label style="font-weight: bold;font-size: 16px; width: 125px;">Total Balance</label>
+      <label style="font-size: 15px;">{{additionalcostService.loadedTrnmain.TOTAMNT|twoDigitNumber}}</label>
+    </div>
+  </div>
+</div> -->
+
+
+<generic-popup-grid #genericGridRefBill [popupsettings]="gridPopupSettingsForRefBill"
+  (onItemDoubleClick)="onRefBillSelected($event)"></generic-popup-grid>
+
+  <!-- <table style="font-size: 13px;width: 100%;">
+    <thead>
+      <tr style="height: 30px;">
+        <th style="width: 15%;"></th>
+        <th style="width: 10%;"><h4>Total Balance</h4></th>
+        <th style="width: 5%;">{{_additionalCostService.loadedTrnmain.TOTAMNT|twoDigitNumber}}</th>
+
+      </tr>
+    </thead>
+
+  </table> -->

@@ -1,0 +1,247 @@
+<style>
+  .table-summary>tbody>tr>td {
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .table-summary>tbody>tr>td:first-child {
+    text-align: left !important;
+  }
+
+  .trn-main-voucher-entry {
+    width: 100%;
+    /* border: 2px solid #e6e6e6; */
+  }
+
+  .trn-main-entry-area {
+    min-height: 85px;
+    max-height: 210px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .Remarks1 {
+    margin-left: 0%;
+    padding: 0px;
+  }
+
+  .Remarks2 {
+    margin-left: 25%;
+    padding: 0px;
+  }
+
+  input,
+  select {
+    height: 23px;
+    vertical-align: middle;
+    font-size: 13px;
+    border: 1px solid #cbcbcb;
+    border-radius: 3px;
+    color: black;
+  }
+</style>
+<div class="sticky-top">
+  <div class="clearfix">
+    <div class="col-md-1">
+      <voucher-master-toggler></voucher-master-toggler>
+    </div>
+    <div class="col-md-4">
+      <label style="font-family: Segoe UI Light;font-weight: bold;font-size: 20px;padding-left: 5%;padding-top: 1%;">
+        Voucher Approval</label>
+      <label style="font-size: 14px;">&nbsp;>> {{ _trnMainService.TrnMainObj?.Mode | titlecase}} Voucher</label>
+    </div>
+
+    <div class="col-md-7">
+      <button #save style="margin: 0px 4px;" class="btn btn-info pull-right" (click)="SaveClick()"> F6 SAVE </button>
+      <button #reset style="margin: 0px 4px;" class="btn btn-info pull-right" (click)="Reset()"> F6 RESET </button>
+    </div>
+  </div>
+</div>
+<div class="main-container">
+  <div class="clearfix">
+    <div class="clearfix trn-main-voucher-entry">
+      <div class="clearfix" style="padding: 10px 5px">
+        <div class="col-md-12" style="border-bottom: 1px solid #828080;
+        margin-bottom: 5px;
+        background: #e2eaea; padding-top: 9px;">
+          <!-- /**Entry Date Date**/ -->
+          <div style="padding: 0px; margin-bottom: 10px;" class="col-md-4">
+            <label class="smallBoldLabel" style="margin-left:3%;">From Date :</label>
+            <input type="date" #adEntryDate id="L_FromDate" style="width:128px" placeholder="Year Start Date"
+              [(ngModel)]="Date.FDate" (change)="ChangeDate($event.target.value,'AD','FromAD')"> &nbsp;A.D&nbsp;
+            
+              <!-- <input id="nepaliDate" #bsEntryDate type="date" autocomplete="off"
+              style="width:90px;height:25px;text-align:left" class="nepali-calendar ndp-nepali-calendar"
+              [(ngModel)]="Date.BS_FDate" type="text" (change)="ChangeDate($event.target.value,'BS','FromBS')"
+              placeholder="yyyy-mm-dd">
+            &nbsp;B.S -->
+                <div style=" width: 134px;margin-left: 261px; margin-top: -29px;">
+                        <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDatefrom'"
+                          (change)="ChangeDate($event.detail.value,'BS','FromBS')"
+                          [label]="'dd/mm/yyyy'"
+                          [(ngModel)]="Date.BS_FDate">
+                          </nepali-date-picker>
+                </div>
+          </div>
+          <div style="padding: 0px; margin-bottom: 10px;" class="col-md-4">
+            <label class="smallBoldLabel">To Date :</label>
+            <input type="date" #adEntryDate id="L_TDate" style="width:128px" placeholder="Year Start Date"
+              [(ngModel)]="Date.TDate" (change)="ChangeDate($event.target.value,'AD','ToAD')"> &nbsp;A.D&nbsp;
+
+              <div style=" width: 134px;margin-left: 261px; margin-top: -29px;">
+                <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDateto'"
+                  (change)="ChangeDate1($event.detail.value,'BS','ToBS')"
+                  [label]="'dd/mm/yyyy'"
+                  [(ngModel)]="Date.BS_TDate">
+                  </nepali-date-picker>
+              </div>
+            <!-- <input id="nepaliDate" #bsEntryDate type="date" autocomplete="off"
+              style="width:90px;height:25px;text-align:left" class="nepali-calendar ndp-nepali-calendar"
+              [(ngModel)]="Date.BS_TDate" type="text" (change)="ChangeDate($event.target.value,'BS','ToBS')"
+              placeholder="yyyy-mm-dd">
+            &nbsp;B.S -->
+          </div>
+          <div class="col-md-3">
+            <label style="width: 40%;">Voucher Type</label>
+            <select [(ngModel)]="LObj.VTYPE" (change)="VTypeChange($event.target.value)">
+              <option *ngIf="_trnMainService.userSetting.EnableLatePost == 1" value = '%'></option>
+              <option *ngIf="_trnMainService.userSetting.EnableLatePost == 1" value = 'JV'>Journal Voucher</option>
+              <option *ngIf="_trnMainService.userSetting.EnableLatePost == 1" value = 'CV'>Contra Voucher</option>
+              <option *ngIf="_trnMainService.userSetting.EnableLatePost == 1" value = 'PV'>Payment Voucher</option>
+              <option *ngIf="_trnMainService.userSetting.EnableLatePost == 1" value = 'RV'>Receipt Voucher</option>
+              <option *ngIf="_trnMainService.userSetting.EnableLatePost == 1" value = 'CP'>Capitalize Purchase Voucher</option>
+              <option *ngIf="_trnMainService.userSetting.EnableLatePost == 1" value = 'AD'>Additional Cost Voucher</option>
+              <option *ngIf="_trnMainService.userSetting.ENABLELATEPOSTINPURCHASE == 1" value = 'PI'>Purchase Invoice</option>
+            </select>
+          </div>
+          <div class="col-md-1">
+            <button #reset style="margin: 0px 4px;" class="btn btn-info pull-right" (click)="OnLoadClick()"> Load </button>
+          </div>
+
+        </div>
+        <div [hidden]="!masterService.ShowMore" class="col-md-12">
+          <ng-container>
+            <div class="row">
+              <div class="col-md-12">
+              
+                <div class="col-md-3">
+                  <label style="width: 40%;">Voucher series</label>
+                  <select style="width: 52%;" [(ngModel)]="LObj.VSERIES">
+                         <option *ngFor="let un of prefixesObservable$ | async" [ngValue]="un.VNAME"> {{un.VNAME}}</option>
+                         </select>
+                </div>
+                <div class="col-md-6">
+                  <label style="width: 22%;">Account Selection</label>
+                  <input type="text" [(ngModel)]="ac_name" (keydown.Enter)="showAcList(i);" placeholder="Please enter to select">
+                </div>
+                
+                <div class="col-md-3">
+                  <label>Show Pending vouchers from beginning</label>
+                  <input type="checkbox">
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
+          <!-- <ng-container *ngIf="isNote">
+            <trntran-note-entry [noteType]="noteType"></trntran-note-entry>
+          </ng-container> -->
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="clearfix" style="margin-top: 5px">
+    <div style="padding-right: 0px !important; padding-left: 0px !important;">
+      <div style="height:480px; overflow-y: scroll">
+        <table style="margin-bottom: 5px;font-size: 13px;width: 99%;MARGIN-LEFT: 18px;">
+          <thead>
+            <tr style=" border-bottom: 2px solid #E6E6E6;
+                              border-top: 2px solid #E6E6E6;
+                              height: 30px;
+                              background: silver;
+                              color: black;">
+              <th style="width: 2%;">Check</th>
+
+              <th style="width:12%;padding-left: 1%;">Voucher No</th>
+              <th style="width: 8%;padding-left: 1%;">
+                Date
+              </th>
+              <th style="width:14%;padding-left: 1%;">
+                Account Description
+              </th>
+
+              <th style="width:8%;padding-left: 1%;">
+                DR Amount
+              </th>
+              <th style="width:8%;padding-left: 1%;">
+                CR Amount
+              </th>
+
+              <th style="width:9%;padding-left: 1%;">
+                Cheque No
+              </th>
+
+              <th style="width:11%;padding-left: 1%;">
+                Cheque Date </th>
+              <th style="width:13%;padding-left: 1%;">
+                Cost Center </th>
+              <th style="width:10%;padding-left: 1%;">
+                Salesman </th>
+              <th style="width:19%;padding-left: 0%;">
+                narration </th>
+            </tr>
+          </thead>
+          <tbody *ngFor = 'let x of voucherList'>
+            <tr style="border: 1px solid #e6e6e6;max-height:25px;" (dblclick)="drillDown(x)">
+              <td style="line-height:21px; text-align:center">
+               <input type="checkbox" [hidden]="!x.isShowCheck" [(ngModel)]="x.isCheck" style="width: 14px">
+               <input type="text" [hidden]="x.isCheck" style="border: none;
+               background: #e9e9e9;
+               background-color: #f1f1f1;width: 2px;" disabled>
+             
+              </td>
+
+              <td style="line-height:21px; text-align:center">
+                {{x.VOUCHERNO}}
+              </td>
+              <td style="line-height:21px; text-align:center">
+                {{x.TRNDATE}}
+              </td>
+              <td style="line-height:21px; text-align:center">
+                {{x.ACCOUNTNAME}}
+              </td>
+              <td style="line-height:21px; text-align:center">
+              {{x.DRAMNT}}
+
+              </td>
+              <td style="line-height:21px; text-align:center">
+              {{x.CRAMNT}}
+              </td>
+              <td style="line-height:21px; text-align:center">
+               {{x.CHEQUENO}}
+              </td>
+              <td style="line-height:21px; text-align:center">
+                {{x.CHEQUEDATE}}
+              </td>
+              <td style="line-height:21px; text-align:center">
+                {{x.COSTCENTER}}
+              </td>
+              <td style="line-height:21px; text-align:center">
+                {{x.COSTCENTER}}
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="sticky-bottom" style="background: gray;">
+
+</div>
+
+<generic-popup-grid #genericGridACList [popupsettings]="gridACListPopupSettings"
+  (onItemDoubleClick)="onAcSelect($event)"></generic-popup-grid>

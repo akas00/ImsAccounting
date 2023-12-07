@@ -1,0 +1,284 @@
+<form class="form-horizontal" [formGroup]="form" (ngSubmit)="onSave()">
+  <div class="row" style="height: 550px;
+  overflow: scroll;">
+    <ba-card [title]="modeTitle" baCardClass="with-scroll">
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Company ID*</label>
+        <div class="col-sm-2">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="INITIAL"
+            placeholder="maximum 3 Character"
+            placeholder="ID"
+          />
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Branch ID*</label>
+        <div class="col-sm-2">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="BRANCHID"
+            placeholder="ID"
+            placeholder="max 3 Char"
+          />
+        </div>
+      </div>
+      <div
+        class="alert alert-danger"
+        *ngIf="
+          form.controls['INITIAL'].touched && !form.controls['INITIAL'].valid
+        "
+      >
+        INITIAL is Required.
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Name*</label>
+        <div class="col-sm-5">
+          <input
+            type="text"
+            formControlName="NAME"
+            class="form-control"
+            placeholder="Name"
+          />
+        </div>
+      </div>
+      <div
+        class="alert alert-danger"
+        *ngIf="form.controls['NAME'].touched && !form.controls['NAME'].valid"
+      >
+        CompanyName is Required.
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Address:</label>
+        <div class="col-sm-5">
+          <textarea
+            placeholder="Address"
+            formControlName="ADDRESS"
+            name="Address"
+            class="form-control"
+            id="textarea01"
+          ></textarea>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Address2:</label>
+        <div class="col-sm-5">
+          <textarea
+            placeholder="Address"
+            formControlName="ADDRESS2"
+            name="Address2"
+            class="form-control"
+            id="textarea01"
+          ></textarea>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Place:</label>
+        <div class="col-sm-5">
+        <input type="text" formControlName="PLACE" class="form-control">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Telphone No:</label>
+        <div class="col-sm-5">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="TELA"
+            name="telno"
+            placeholder="Phone number"
+          />
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Mobile No:</label>
+        <div class="col-sm-5">
+          <input
+            type="number"
+            class="form-control"
+            formControlName="TELB"
+            name="mobileNo"
+            placeholder="Mobile number"
+          />
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">VAT*</label>
+        <div class="col-sm-5">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="VAT"
+            placeholder="VAT"
+          />
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">STATE*:</label>
+        <div class="col-sm-5">
+          <select formControlName="STATE" class="form-control">
+           <option *ngFor="let i of StateList" value="{{i.StateCode}}">{{i.StateName}}</option>
+          </select>
+        </div>
+      </div>
+      <div
+        class="alert alert-danger"
+        *ngIf="
+          form.controls['STATE'].touched &&
+          !form.controls['STATE'].valid
+        "
+      >
+        STATE is required!!
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">GSTNO:</label>
+        <div class="col-sm-5">
+         <input type="text" formControlName="GSTNO" class="form-control">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Email:</label>
+        <div class="col-sm-5">
+          <input
+            type="email"
+            class="form-control"
+            formControlName="EMAIL"
+            placeholder="Email"
+          />
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Year start*</label>
+        <div class="col-sm-5">
+          <input
+            type="date"
+            class="form-control"
+            formControlName="FBDATE"
+            placeholder="Year Start Date"
+          />
+        </div>
+      </div>
+      <div
+        class="alert alert-danger"
+        *ngIf="
+          form.controls['FBDATE'].touched && !form.controls['FBDATE'].valid
+        "
+      >
+        Year Start Date is Required.
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Year end*</label>
+        <div class="col-sm-5">
+          <input
+            type="date"
+            class="form-control"
+            formControlName="FEDATE"
+            placeholder="Year end Date"
+          />
+        </div>
+      </div>
+      <div
+        class="alert alert-danger"
+        *ngIf="
+          form.controls['FEDATE'].touched && !form.controls['FEDATE'].valid
+        "
+      >
+        Year End Date is Required.
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">Fiscal Year:</label>
+        <div class="col-sm-5">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="PhiscalID"
+            placeholder="Fiscal Year"
+          />
+        </div>
+      </div>
+      <div
+        class="alert alert-danger"
+        *ngIf="
+          form.controls['PhiscalID'].touched &&
+          !form.controls['PhiscalID'].valid
+        "
+      >
+        Fiscal Year is Required.
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">ORGTYPE *:</label>
+        <div class="col-sm-5">
+          <select formControlName="ORGTYPE" class="form-control">
+            <option value="central">Central</option>
+            <option value="superdistributor">Super-Distributor</option>
+            <option value="distributor">Distributor</option>
+            <option value="retailer">Retailor</option>
+            <option value="ak">AK</option>
+            <option value="ck">CK</option>
+            <option value="megastore">Mega-Store</option>
+            <option value="directparty">Direct-Party</option>
+          </select>
+        </div>
+      </div>
+      <div
+        class="alert alert-danger"
+        *ngIf="
+          form.controls['ORGTYPE'].touched &&
+          !form.controls['ORGTYPE'].valid
+        "
+      >
+        ORGTYPE is required!!
+      </div>
+      
+      
+      <div class="form-group row">
+        <label class="col-sm-2 form-control-label">POSTALCODE:</label>
+        <div class="col-sm-5">
+         <input type="text" formControlName="POSTALCODE" class="form-control">
+        </div>
+      </div>
+      <button
+        type="button"
+        (click)="onSaveClicked()"
+        title="onSave"
+        class="btn btn-info"
+        [disabled]="!form.valid"
+      >
+        Save
+      </button>
+
+      <!-- <button type="button" (click)="cancel()" title="Cancel" class="btn btn-info">Back</button> -->
+    </ba-card>
+  </div>
+  <div
+    class="modal fade"
+    bsModal
+    #childModal="bs-modal"
+    [config]="{ backdrop: 'static' }"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="mySmallModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button class="close" aria-label="Close" (click)="hideChildModal()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">Information</h4>
+        </div>
+        <div class="modal-body">
+          {{ DialogMessage }}
+        </div>
+        <!--<div class="modal-footer">
+                        <button class="btn btn-info confirm-btn" (click)="hideChildModal()">Save changes</button>
+                        <button class="btn btn-info confirm-btn" type="button" (click)=onsubmit()>Save</button>
+                    </div>!-->
+      </div>
+    </div>
+  </div>
+</form>

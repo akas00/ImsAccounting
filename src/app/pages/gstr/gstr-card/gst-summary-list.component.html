@@ -1,0 +1,1264 @@
+<style>
+  /* .table>tbody>tr>td:first-child {
+    text-align: left !important;
+  }
+
+  .table>tbody>tr>td {
+    line-height: 25px !important
+  }
+
+  table {
+    width: 100%;
+  }
+
+  td {
+    padding: 0px 10px !important;
+  }
+
+  th {
+    padding: 0px 10px;
+    font-size: 12px;
+  }
+
+  tbody {
+    background: #ffffff
+  } */
+
+
+  th {
+    background: skyblue;
+    border-right: 1px solid #dbd7d7;
+
+  }
+
+  thead td {
+    background: skyblue;
+    border-right: 1px solid #dbd7d7;
+
+  }
+
+
+  thead tr {
+    border-bottom: 1px solid #e6e6e6;
+  }
+
+  td {
+    height: 25px;
+    padding: 0 5px;
+  }
+
+  .borderdiv {
+    border: 1px solid rgba(119, 119, 119, 0.15)
+  }
+
+  .rowdiv {
+    border: 1px solid rgba(119, 119, 119, 0.15);
+    text-align: center;
+  }
+
+  .smalllabeldiv {
+    height: 16px;
+  }
+
+  .smallHeader {
+    font-size: 11px;
+    font-weight: bold;
+    margin: 0px;
+
+  }
+
+
+  .scrolldiv {
+    max-height: 75px;
+    padding-right: 30px;
+    overflow: auto;
+    scrollbar-3dlight-color: #FFFFFF;
+    scrollbar-arrow-color: #000000;
+    scrollbar-base-color: #FF9999;
+    scrollbar-darkshadow-color: #000000;
+    scrollbar-face-color: #000000;
+    scrollbar-highlight-color: #000000;
+    scrollbar-shadow-color: #0033CC;
+  }
+
+  .multiboxspan {
+    font-size: 11px;
+    font-weight: bold;
+    position: relative;
+    float: left;
+    display: block;
+    margin: 2px;
+    border: 1px solid silver;
+    border-radius: 5px;
+    background-color: lavenderblush;
+  }
+
+  .smallBoldLabel {
+    font-size: 11px;
+    font-weight: bold;
+    margin: 0px;
+    float: left;
+    /* margin-left: 10px; */
+    color: #222;
+    /* font-family: arial; */
+
+  }
+
+  .table-container {
+    height: 500px;
+
+  }
+
+  table {
+    display: flex;
+    flex-flow: column;
+    border-collapse: collapse;
+    height: 100%;
+  }
+
+  table thead {
+    /* head takes the height it requires, 
+    and it's not scaled when table is resized */
+    flex: 0 0 auto;
+    width: calc(100% - 0.9em);
+
+  }
+
+  table tbody {
+    /* body takes all the remaining available space */
+    flex: 1 1 auto;
+    display: block;
+    overflow-y: scroll;
+    background: #ffffff;
+  }
+
+  table tbody tr {
+    width: 99.6%;
+  }
+
+  table thead,
+  table tbody tr {
+    display: table;
+    table-layout: fixed;
+  }
+
+</style>
+
+
+<div class="row" style="margin-left: 0px !important;margin-right:0px !important">
+  <!-- <div class="col-md-12" *ngIf="listSetting" style="height: 500px;overflow-y:scroll;overflow-x:scroll"> -->
+  <div class="col-md-12" *ngIf="listSetting">
+    <!-- <div class="table-responsive">
+      <table class="table"> -->
+    <div class="table-container">
+      <table id="BlueHeaderResizableTable" #reportHtmlTable style="font-size:12px;  overflow-x :auto;">
+        <!-- Manual Header Entry Of GSTR1 -->
+
+        <ng-container *ngIf="_gstrService.gstMain.activeGstType=='GSTR-1'">
+          <ng-container *ngIf="_gstrService.gstMain.activeSubGstType=='B2B'">
+            <thead>
+              <tr style="border-bottom: 1px solid #E6E6E6; border-top: 1px solid #E6E6E6;">
+                <td colspan="13" width="2600px">Summary For {{listSetting?.title}}</td>
+              </tr>
+              <tr>
+                <td>No of Recipient</td>
+                <td>&nbsp;</td>
+                <td>No. of Invoices</td>
+                <td>&nbsp;</td>
+                <td>Total Invoice Value</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td class="text-right">Total Taxable Value</td>
+                <td class="text-right">Total Cess</td>
+              </tr>
+
+              <tr>
+                <td>{{gstSummaryDetail[0]?.TOTRECIPIENTS}}</td>
+                <td>&nbsp;</td>
+                <td>{{gstSummaryDetail[0]?.TOTINVOICE}}</td>
+                <td>&nbsp;</td>
+                <td>{{gstSummaryDetail[0]?.TOTINVOICEVALUE}}</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td class="text-right">{{gstSummaryDetail[0]?.TOTALTAXABLEVALUE |number:'1.2-2'}}</td>
+                <td class="text-right">{{gstSummaryDetail[0]?.TOTCESS|number:'1.2-2'}}</td>
+              </tr>
+            </thead>
+          </ng-container>
+          <ng-container *ngIf="_gstrService.gstMain.activeSubGstType=='B2BA'">
+            <thead style="
+                    background: #c5e3ed; 
+                    ">
+              <tr>
+                <td width="200px;">{{listSetting?.title}}</td>
+                <td width="600px;" colspan="3">&nbsp;</td>
+                <td width="2200px;" colspan="11" class="text-center">Revised Detail</td>
+              </tr>
+              <tr>
+                <td>No of Recipients</td>
+                <td>&nbsp;</td>
+                <td>No of Invoices</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td class="text-right">Total Invoice Value</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>Total Taxable Value</td>
+                <td>Total Cess</td>
+              </tr>
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+              </tr>
+            </thead>
+          </ng-container>
+          <ng-container *ngIf="_gstrService.gstMain.activeSubGstType=='B2CL'">
+            <thead style="background: #c5e3ed;">
+              <tr>
+                <td width="2000px;" colspan="10">{{listSetting?.title}}</td>
+              </tr>
+
+
+              <tr>
+                <td>No of Invoices</td>
+                <td></td>
+                <td style="text-align: right">Total Invoice Value</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right">Total Taxable Value</td>
+                <td style="text-align: right">Total Cess</td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>{{gstSummaryDetail[0]?.TOTINVOICE}}</td>
+                <td></td>
+                <td style="text-align: right">{{gstSummaryDetail[0]?.TOTINVOICEVALUE | number:'1.2-2'}}
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right">{{gstSummaryDetail[0]?.TOTALTAXABLEVALUE | number:'1.2-2'}}
+                </td>
+                <td style="text-align: right">{{gstSummaryDetail[0]?.TOTCESS | number:'1.2-2'}}</td>
+                <td></td>
+                <td></td>
+              </tr>
+            </thead>
+          </ng-container>
+          <ng-container *ngIf="_gstrService.gstMain.activeSubGstType=='B2CLA'">
+            <thead style="background: #c5e3ed;">
+              <tr>
+                <td width="200px">{{listSetting?.title}}</td>
+                <td width="400px;" colspan="2">Original Detail</td>
+                <td width="1800px;" colspan="9" class="text-center">Revised Detail</td>
+              </tr>
+              <tr>
+                <td>No of Invoices</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>Total Invoice Value</td>
+                <td></td>
+                <td></td>
+                <td>Total Taxable Value</td>
+                <td>Total Cess</td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+
+
+
+            </thead>
+          </ng-container>
+          <ng-container *ngIf="_gstrService.gstMain.activeSubGstType=='B2CS'">
+            <thead style="background: #c5e3ed;">
+              <tr>
+                <td width="1400px;" colspan="7">{{listSetting?.title}}</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right">Total Taxable Value</td>
+                <td style="text-align: right">Total Cess</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right">{{gstSummaryDetail[0]?.TOTALTAXABLEVALUE | number:'1.2-2'}}
+                </td>
+                <td style="text-align: right">{{gstSummaryDetail[0]?.TOTCESS | number:'1.2-2'}}</td>
+                <td></td>
+              </tr>
+            </thead>
+          </ng-container>
+          <ng-container *ngIf="_gstrService.gstMain.activeSubGstType=='B2CSA'">
+            <thead style="background: #c5e3ed;">
+              <tr>
+                <td width="200px">
+                  {{listSetting?.title}}
+                </td>
+                <td width="200px">Original Detail</td>
+                <td width="1400px;" colspan="7">Revised Detail</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>Total Taxable Value</td>
+                <td>Total Cess</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </thead>
+          </ng-container>
+          <ng-container *ngIf="_gstrService.gstMain.activeSubGstType=='CDNR'">
+            <thead style="background: #c5e3ed;">
+              <tr>
+                <td width="2800px;" colspan="14">{{listSetting?.title}}</td>
+              </tr>
+              <tr>
+                <td>No of Recipient</td>
+                <td></td>
+                <td>No of Invoices</td>
+                <td></td>
+                <td>No of Notes/Voucher</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>Total Note/Refund Voucher Value</td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right">Total Taxable Value</td>
+                <td style="text-align: right">Total Cess</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>{{gstSummaryDetail[0]?.TOTRECIPIENTS}}</td>
+                <td></td>
+                <td>{{gstSummaryDetail[0]?.TOTINVOICE}}</td>
+                <td></td>
+                <td>{{gstSummaryDetail[0]?.TOTALVOUCHER}}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{{gstSummaryDetail[0]?.TOTINVOICEVALUE}}</td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right">{{gstSummaryDetail[0]?.TOTALTAXABLEVALUE | number:'1.2-2'}}
+                </td>
+                <td style="text-align: right">{{gstSummaryDetail[0]?.TOTCESS | number:'1.2-2'}}</td>
+                <td></td>
+              </tr>
+            </thead>
+          </ng-container>
+          <ng-container *ngIf="_gstrService.gstMain.activeSubGstType=='CDNRA'">
+            <thead style="background: #c5e3ed;">
+              <tr>
+                <td width="200px">{{listSetting?.title}}</td>
+                <td width="1000px;" colspan="5">Original Detail</td>
+                <td width="2000px;" colspan="10">Revised Detail</td>
+              </tr>
+              <tr>
+                <td>No of Recipient</td>
+                <td></td>
+                <td>No of Invoices</td>
+                <td></td>
+                <td>No of Notes/Voucher</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>Total Note/Refund Voucher Value</td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right">Total Taxable Value</td>
+                <td style="text-align: right">Total Cess</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>{{gstSummaryDetail[0]?.TOTRECIPIENTS}}</td>
+                <td></td>
+                <td>{{gstSummaryDetail[0]?.TOTINVOICE}}</td>
+                <td></td>
+                <td>{{gstSummaryDetail[0]?.TOTALVOUCHER}}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{{gstSummaryDetail[0]?.TOTINVOICEVALUE}}</td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right">{{gstSummaryDetail[0]?.TOTALTAXABLEVALUE}}</td>
+                <td style="text-align: right">{{gstSummaryDetail[0]?.TOTCESS}}</td>
+                <td></td>
+              </tr>
+            </thead>
+          </ng-container>
+          <ng-container *ngIf="_gstrService.gstMain.activeSubGstType=='CDNUR'">
+            <thead style="background: #c5e3ed;">
+              <tr>
+                <td width="2600px;" colspan="13">{{listSetting?.title}}</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>No of Notes/Voucher</td>
+                <td></td>
+                <td></td>
+                <td>No of Invoices</td>
+                <td></td>
+                <td></td>
+                <td>Total Note Value</td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right">Total Taxable Value</td>
+                <td style="text-align: right">Total Cess</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>{{gstSummaryDetail[0]?.TOTALVOUCHER}}</td>
+                <td></td>
+                <td></td>
+                <td>{{gstSummaryDetail[0]?.TOTINVOICE}}</td>
+                <td></td>
+                <td></td>
+                <td>{{gstSummaryDetail[0]?.TOTINVOICEVALUE}}</td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right">{{gstSummaryDetail[0]?.TOTALTAXABLEVALUE}}</td>
+                <td style="text-align: right">{{gstSummaryDetail[0]?.TOTCESS}}</td>
+                <td></td>
+              </tr>
+            </thead>
+          </ng-container>
+          <ng-container *ngIf="_gstrService.gstMain.activeSubGstType=='CDNURA'">
+            <thead style="background: #c5e3ed;">
+              <tr>
+                <td width="200px">{{listSetting?.title}}</td>
+                <td width="800px;" colspan="4" style="text-align: center">Original Detail</td>
+                <td width="2000px;" colspan="10">Revised Detail</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>No of Notes/Voucher</td>
+                <td></td>
+
+                <td>No of Invoices</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>Total Note Value</td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right">Total Taxable Value</td>
+                <td style="text-align: right">Total Cess</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>{{gstSummaryDetail[0]?.TOTALVOUCHER}}</td>
+                <td></td>
+                <td>{{gstSummaryDetail[0]?.TOTINVOICE}}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{{gstSummaryDetail[0]?.TOTINVOICEVALUE}}</td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right">{{gstSummaryDetail[0]?.TOTALTAXABLEVALUE}}</td>
+                <td style="text-align: right">{{gstSummaryDetail[0]?.TOTCESS}}</td>
+                <td></td>
+              </tr>
+            </thead>
+          </ng-container>
+          <ng-container *ngIf="_gstrService.gstMain.activeSubGstType=='EXEMP'">
+            <thead style="background: #c5e3ed;">
+              <tr>
+                <td width="800px;" colspan="4">
+                  {{listSetting?.title}} </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td style="text-align: right">Total Nil Rated Supplies</td>
+                <td style="text-align: right">Total Exempted Supplies</td>
+                <td style="text-align: right">Total Non-GST Rated Supplies</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td style="text-align: right">
+                  {{gstSummaryDetail[0]?.NIL_RATED_SUPPLIES | number:'1.2-2'}}</td>
+                <td style="text-align: right">{{gstSummaryDetail[0]?.EXEMPTED_SUPPLIES | number:'1.2-2'}}
+                </td>
+                <td style="text-align: right">{{gstSummaryDetail[0]?.NONGST_SUPPLIES | number:'1.2-2'}}
+                </td>
+              </tr>
+            </thead>
+          </ng-container>
+          <ng-container *ngIf="_gstrService.gstMain.activeSubGstType=='HSN'">
+            <thead style="background: #c5e3ed;">
+              <tr>
+                <td width="2000px;" colspan="10">
+                  {{listSetting?.title}} </td>
+              </tr>
+              <tr>
+
+                <td>No.of HSN</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right">Total Value</td>
+                <td style="text-align: right">Total Taxable Value</td>
+                <td style="text-align: right">Total Integrated Tax</td>
+                <td style="text-align: right">Total Central Tax</td>
+                <td style="text-align: right">Total State/UT Tax</td>
+                <td style="text-align: right">Total Cess</td>
+              </tr>
+              <tr>
+                <td>{{gstSummaryDetail[0]?.NO_OF_HSN}}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right">{{gstSummaryDetail[0]?.TOTAL_VALUE}}</td>
+                <td style="text-align: right">{{gstSummaryDetail[0]?.TOTALTAXABLEVALUE|number:'1.2-2'}}
+                </td>
+                <td style="text-align: right">
+                  {{gstSummaryDetail[0]?.TOTAL_INTEGRATED_TAX|number:'1.2-2'}}</td>
+                <td style="text-align: right">{{gstSummaryDetail[0]?.TOTAL_CENTRAL_TAX|number:'1.2-2'}}
+                </td>
+                <td style="text-align: right">{{gstSummaryDetail[0]?.TOTAL_STATE_TAX|number:'1.2-2'}}
+                </td>
+                <td style="text-align: right">{{gstSummaryDetail[0]?.TOTAL_CESS|number:'1.2-2'}}</td>
+              </tr>
+            </thead>
+          </ng-container>
+          <ng-container *ngIf="_gstrService.gstMain.activeSubGstType=='DOCS'">
+            <thead style="background: #c5e3ed;">
+              <tr>
+                <td width="1000px;" colspan="5">
+                  {{listSetting?.title}} </td>
+              </tr>
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>Total Number</td>
+                <td>Total Cancelled</td>
+              </tr>
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>{{gstSummaryDetail[0]?.TOTAL_NUMBER}}</td>
+                <td>{{gstSummaryDetail[0]?.TOTAL_CANCEL}}</td>
+              </tr>
+            </thead>
+          </ng-container>
+          <ng-container *ngIf="_gstrService.gstMain.activeSubGstType=='EXP'">
+            <thead style="background: #c5e3ed;">
+              <tr>
+                <td width="2200px;" colspan="11">
+                  {{listSetting?.title}} </td>
+              </tr>
+              <tr>
+
+                <td></td>
+                <td style="text-align: right">Number Of Invoices</td>
+                <td></td>
+                <td style="text-align: right">Total Invoice Value</td>
+                <td></td>
+                <td>No.Of Shipping Bill</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>Total Taxable Value</td>
+              </tr>
+              <tr>
+
+                <td></td>
+                <td style="text-align: right"></td>
+                <td></td>
+                <td style="text-align: right"></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </thead>
+          </ng-container>
+          <ng-container *ngIf="_gstrService.gstMain.activeSubGstType=='EXPA'">
+            <thead>
+              <tr>
+                <td width="600px;" colspan="3">
+                  {{listSetting?.title}} </td>
+                <td width="400px;" colspan="2">Original Detail</td>
+                <td width="1600px;" colspan="8">Revised Detail</td>
+              </tr>
+              <tr>
+
+                <td></td>
+                <td style="text-align: right">Number Of Invoices</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right">Total Invoice Value</td>
+                <td></td>
+                <td>No.Of Shipping Bill</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>Total Taxable Value</td>
+              </tr>
+              <tr>
+
+                <td></td>
+                <td style="text-align: right"></td>
+                <td></td>
+                <td style="text-align: right"></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right"></td>
+                <td style="text-align: right"></td>
+              </tr>
+            </thead>
+          </ng-container>
+          <ng-container *ngIf="_gstrService.gstMain.activeSubGstType=='AT'">
+            <thead style="background: #c5e3ed;">
+              <tr>
+                <td width="1000px;" colspan="5">
+                  {{listSetting?.title}} </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right">Total Advance Received</td>
+                <td style="text-align: right">Total Cess</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right"></td>
+                <td style="text-align: right"></td>
+              </tr>
+            </thead>
+          </ng-container>
+          <ng-container *ngIf="_gstrService.gstMain.activeSubGstType=='ATA'">
+            <thead style="background: #c5e3ed;">
+              <tr>
+                <td width="200px">
+                  {{listSetting?.title}} </td>
+                <td width="400px;" colspan="2">Original Deetail</td>
+                <td width="800px;" colspan="4">Revised Detail</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right">Total Advance Received</td>
+                <td style="text-align: right">Total Cess</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right"></td>
+                <td style="text-align: right"></td>
+              </tr>
+            </thead>
+          </ng-container>
+          <ng-container *ngIf="_gstrService.gstMain.activeSubGstType=='ATADJ'">
+            <thead style="background: #c5e3ed;">
+              <tr>
+                <td width="1000px" colspan="5">
+                  Summary For Advance Adjusted(11B)
+                </td>
+
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+
+                <td style="text-align: right">Total Advance Adjusted</td>
+                <td style="text-align: right">Total Cess</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right"></td>
+                <td style="text-align: right"></td>
+              </tr>
+            </thead>
+          </ng-container>
+          <ng-container *ngIf="_gstrService.gstMain.activeSubGstType=='ATADJA'">
+            <thead style="background: #c5e3ed;">
+              <tr>
+                <td width="200px">
+                  {{listSetting?.title}}
+                </td>
+                <td width="400px;" colspan="2">Original Deetail</td>
+                <td width="800px;" colspan="4">Revised Detail</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right">Total Advance Adjusted</td>
+                <td style="text-align: right">Total Cess</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right"></td>
+                <td style="text-align: right"></td>
+              </tr>
+            </thead>
+          </ng-container>
+        </ng-container>
+        <!-- End Manual Header Entry Of GSTR1 -->
+
+
+
+
+
+        <!-- Manual Header Entry For GSTR2 -->
+        <ng-container *ngIf="_gstrService.gstMain.activeGstType=='GSTR-2'">
+          <ng-container
+            *ngIf="_gstrService.gstMain.activeSubGstType=='EXEMP' ||_gstrService.gstMain.activeSubGstType=='HSNSUM' ||_gstrService.gstMain.activeSubGstType=='ATADJ' ||_gstrService.gstMain.activeSubGstType=='AT' ||_gstrService.gstMain.activeSubGstType=='B2B' || _gstrService.gstMain.activeSubGstType=='B2BUR'|| _gstrService.gstMain.activeSubGstType=='IMPS'|| _gstrService.gstMain.activeSubGstType=='IMPG'|| _gstrService.gstMain.activeSubGstType=='CDNR'|| _gstrService.gstMain.activeSubGstType=='CDNUR'|| _gstrService.gstMain.activeSubGstType=='ITCR'">
+            <thead style="
+                    background: #c5e3ed; 
+                    font-size: 12px !important">
+              <tr style="border-bottom:1px solid #E6E6E6; border-top:1px solid #E6E6E6;">
+                <td [attr.width]="getWidth(listSetting.columns.length)" [attr.colspan]="listSetting.columns.length">{{listSetting?.title}}</td>
+              </tr>
+              <tr>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='HSNSUM'">No of HSN</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='B2B' || _gstrService.gstMain.activeSubGstType=='CDNR' ">
+                  No of Supplier</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='B2BUR'|| _gstrService.gstMain.activeSubGstType=='IMPG'|| _gstrService.gstMain.activeSubGstType=='ITCR' || _gstrService.gstMain.activeSubGstType=='HSNSUM'">
+                  &nbsp;
+                </td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='CDNR'||_gstrService.gstMain.activeSubGstType=='CDNUR'">
+                  No. of Notes/Vouchers</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='CDNR'||_gstrService.gstMain.activeSubGstType=='CDNUR'|| _gstrService.gstMain.activeSubGstType=='HSNSUM'">
+                  &nbsp;</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='B2B'|| _gstrService.gstMain.activeSubGstType=='CDNR'||_gstrService.gstMain.activeSubGstType=='CDNUR'">
+                  No. of Invoices</td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='IMPG'">No. of Bill of Entry</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='B2BUR' || _gstrService.gstMain.activeSubGstType=='IMPS'">
+                  No. of Invoices (Of Reg Recipient)</td>
+                <td>&nbsp;</td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='EXEMP'" class="text-right">Total Composition taxable
+                  person</td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='EXEMP'" class="text-right">Total Nil rated supplies
+                </td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='EXEMP'" class="text-right">Total exempted supplies
+                </td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='EXEMP'" class="text-right">Total Non-GST supplies
+                </td>
+
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='B2B'|| _gstrService.gstMain.activeSubGstType=='B2BUR' || _gstrService.gstMain.activeSubGstType=='IMPS'"
+                  class="text-right">
+                  Total Invoice Value</td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='IMPG'" class="text-right">Total Bill of Entry Value
+                </td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='CDNR'||_gstrService.gstMain.activeSubGstType=='CDNUR'">
+                  &nbsp;</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='CDNR'||_gstrService.gstMain.activeSubGstType=='CDNUR'">
+                  &nbsp;</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='CDNR'||_gstrService.gstMain.activeSubGstType=='CDNUR'">
+                  &nbsp;</td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='CDNUR'">&nbsp;</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType!='ITCR' && _gstrService.gstMain.activeSubGstType!='HSNSUM' && _gstrService.gstMain.activeSubGstType!='EXEMP'">
+                  &nbsp;</td>
+
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='CDNR'" class="text-right">Total Note/Voucher Value
+                </td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='CDNUR'" class="text-right">Total Note/Refund Voucher
+                  Value</td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='HSNSUM'" class="text-right">Total Value</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='B2BUR' || _gstrService.gstMain.activeSubGstType=='B2B' || _gstrService.gstMain.activeSubGstType=='IMPG'|| _gstrService.gstMain.activeSubGstType=='IMPS'">
+                  &nbsp;
+                </td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='B2BUR' || _gstrService.gstMain.activeSubGstType=='B2B' || _gstrService.gstMain.activeSubGstType=='IMPG'">
+                  &nbsp;</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='B2B'|| _gstrService.gstMain.activeSubGstType=='CDNR'||_gstrService.gstMain.activeSubGstType=='CDNUR'">
+                  &nbsp;</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType!='ITCR' && _gstrService.gstMain.activeSubGstType!='AT'&& _gstrService.gstMain.activeSubGstType!='ATADJ' && _gstrService.gstMain.activeSubGstType!='EXEMP'"
+                  class="text-right">Total Taxable Value</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType!='AT'&& _gstrService.gstMain.activeSubGstType!='ATADJ' && _gstrService.gstMain.activeSubGstType!='EXEMP'"
+                  class="text-right">Total
+                  Integrated Tax Amount</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='B2BUR' || _gstrService.gstMain.activeSubGstType=='B2B'|| _gstrService.gstMain.activeSubGstType=='CDNR'||_gstrService.gstMain.activeSubGstType=='CDNUR'  || _gstrService.gstMain.activeSubGstType=='HSNSUM' || _gstrService.gstMain.activeSubGstType=='ITCR'"
+                  class="text-right">
+                  Total Central Tax Amount
+                </td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='B2BUR' || _gstrService.gstMain.activeSubGstType=='B2B'|| _gstrService.gstMain.activeSubGstType=='CDNR'||_gstrService.gstMain.activeSubGstType=='CDNUR'  || _gstrService.gstMain.activeSubGstType=='HSNSUM' || _gstrService.gstMain.activeSubGstType=='ITCR'"
+                  class="text-right">
+                  Total TState/UT Tax Amount</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType!='AT'&& _gstrService.gstMain.activeSubGstType!='ATADJ' && _gstrService.gstMain.activeSubGstType!='EXEMP'  && _gstrService.gstMain.activeSubGstType!='ITCR'"
+                  class="text-right">Total Cess Paid</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType!='ITCR' && _gstrService.gstMain.activeSubGstType!='AT' && _gstrService.gstMain.activeSubGstType!='ATADJ'  && _gstrService.gstMain.activeSubGstType!='HSNSUM' && _gstrService.gstMain.activeSubGstType!='EXEMP' ">
+                </td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='AT'" class="text-right">Total Advance Paid</td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='ATADJ'" class="text-right">Total Advance Adjusted
+                </td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='AT' || _gstrService.gstMain.activeSubGstType=='ATADJ'"
+                  class="text-right">Total Cess Amount</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType!='AT' && _gstrService.gstMain.activeSubGstType!='ATADJ' && _gstrService.gstMain.activeSubGstType!='ITCR'  && _gstrService.gstMain.activeSubGstType!='HSNSUM' && _gstrService.gstMain.activeSubGstType!='EXEMP' "
+                  class="text-right">Total Availed ITC Integrated Tax </td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='B2BUR' || _gstrService.gstMain.activeSubGstType=='B2B'|| _gstrService.gstMain.activeSubGstType=='CDNR'||_gstrService.gstMain.activeSubGstType=='CDNUR'"
+                  class="text-right">
+                  Total Availed ITC Central Tax </td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='B2BUR' || _gstrService.gstMain.activeSubGstType=='B2B'|| _gstrService.gstMain.activeSubGstType=='CDNR'||_gstrService.gstMain.activeSubGstType=='CDNUR'"
+                  class="text-right">
+                  Total Availed ITC State/UT Tax </td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType!='AT' && _gstrService.gstMain.activeSubGstType!='ATADJ'  && _gstrService.gstMain.activeSubGstType!='HSNSUM' && _gstrService.gstMain.activeSubGstType!='EXEMP' && _gstrService.gstMain.activeSubGstType!='ITCR' "
+                  class="text-right">Total Availed ITC Cess</td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='ITCR'" class="text-right">Total ITC Cess Amount</td>
+              </tr>
+
+              <tr>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='HSN'">{{gstSummaryDetail[0]?.HSN}}</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='B2B'|| _gstrService.gstMain.activeSubGstType=='CDNR'">
+                  {{gstSummaryDetail[0]?.NOOFSUPPLIERS}}</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='B2BUR'|| _gstrService.gstMain.activeSubGstType=='IMPG'|| _gstrService.gstMain.activeSubGstType=='ITCR' || _gstrService.gstMain.activeSubGstType=='HSNSUM'|| _gstrService.gstMain.activeSubGstType=='EXEMP'">
+                  &nbsp;</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='CDNR'||_gstrService.gstMain.activeSubGstType=='CDNUR'">
+                  {{gstSummaryDetail[0]?.NOOFVOUCHER}}</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='CDNR'||_gstrService.gstMain.activeSubGstType=='CDNUR' || _gstrService.gstMain.activeSubGstType=='AT' && _gstrService.gstMain.activeSubGstType=='ATADJ' || _gstrService.gstMain.activeSubGstType=='HSNSUM'">
+                  &nbsp;</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='B2B'|| _gstrService.gstMain.activeSubGstType=='B2BUR' || _gstrService.gstMain.activeSubGstType=='IMPS'|| _gstrService.gstMain.activeSubGstType=='CDNR'||_gstrService.gstMain.activeSubGstType=='CDNUR'">
+                  {{gstSummaryDetail[0]?.TOTINVOICE}}
+                </td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType =='EXEMP'" class="text-right">
+                  {{gstSummaryDetail[0]?.TOTAL_COMPOSIT| number:'1.2-2'}}</td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType =='EXEMP'" class="text-right">
+                  {{gstSummaryDetail[0]?.TOTNILRATED| number:'1.2-2'}}
+                </td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType =='EXEMP'" class="text-right">
+                  {{gstSummaryDetail[0]?.TOTEXEMPTED | number:'1.2-2'}}</td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType =='EXEMP'" class="text-right">
+                  {{gstSummaryDetail[0]?.TOTALZERORATED | number:'1.2-2'}}</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType!='EXEMP' && _gstrService.gstMain.activeSubGstType!='ITCR'|| _gstrService.gstMain.activeSubGstType=='AT' && _gstrService.gstMain.activeSubGstType=='ATADJ'">
+                </td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='IMPG'"></td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='CDNR'||_gstrService.gstMain.activeSubGstType=='CDNUR'">
+                  &nbsp;</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='CDNR'||_gstrService.gstMain.activeSubGstType=='CDNUR'">
+                  &nbsp;</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='CDNR'||_gstrService.gstMain.activeSubGstType=='CDNUR'">
+                  &nbsp;</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='CDNR'||_gstrService.gstMain.activeSubGstType=='CDNUR'">
+                  &nbsp;</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='CDNUR' || _gstrService.gstMain.activeSubGstType=='HSNSUM'">
+                  &nbsp;</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='B2B'|| _gstrService.gstMain.activeSubGstType=='B2BUR' || _gstrService.gstMain.activeSubGstType=='IMPS' || _gstrService.gstMain.activeSubGstType=='CDNR'||_gstrService.gstMain.activeSubGstType=='CDNUR'"
+                  class="text-right">
+                  {{gstSummaryDetail[0]?.TOTINVOICEVALUE | number:'1.2-2'}}</td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='HSNSUM'" class="text-right">
+                  {{gstSummaryDetail[0]?.TOTAL_VALUE | number:'1.2-2'}}
+                </td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='IMPG'" class="text-right">&nbsp;</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='B2BUR' || _gstrService.gstMain.activeSubGstType=='B2B' || _gstrService.gstMain.activeSubGstType=='IMPG'|| _gstrService.gstMain.activeSubGstType=='IMPS'">
+                  &nbsp;
+                </td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='B2BUR' || _gstrService.gstMain.activeSubGstType=='B2B'|| _gstrService.gstMain.activeSubGstType=='IMPG'">
+                  &nbsp;</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='B2B'|| _gstrService.gstMain.activeSubGstType=='CDNR'||_gstrService.gstMain.activeSubGstType=='CDNUR'">
+                  &nbsp;</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='B2B'|| _gstrService.gstMain.activeSubGstType=='B2BUR'">
+                  &nbsp;</td>
+
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType!='HSNSUM' &&_gstrService.gstMain.activeSubGstType!='AT' && _gstrService.gstMain.activeSubGstType!='ATADJ' && _gstrService.gstMain.activeSubGstType!='EXEMP'"
+                  class="text-right">
+                  {{gstSummaryDetail[0]?.TOTALTAXABLEVALUE | number:'1.2-2'}}</td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='HSNSUM'" class="text-right">
+                  {{gstSummaryDetail[0]?.TOTAL_TAXABLE | number:'1.2-2'}}
+                </td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType!='HSNSUM' &&_gstrService.gstMain.activeSubGstType!='AT' && _gstrService.gstMain.activeSubGstType!='ATADJ' && _gstrService.gstMain.activeSubGstType!='EXEMP'&& _gstrService.gstMain.activeSubGstType!='ITCR'"
+                  class="text-right">
+                  {{gstSummaryDetail[0]?.TOT_INTEGRATED_TAX_PAID | number:'1.2-2'}}
+                </td>
+
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='HSNSUM'" class="text-right">
+                  {{gstSummaryDetail[0]?.TOTAL_INTEGRATED | number:'1.2-2'}}
+                </td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='HSNSUM'" class="text-right">
+
+                </td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='ITCR'" class="text-right">
+                  {{gstSummaryDetail[0]?.ITC_INTEGRATED_TAX_AMOUNT | number:'1.2-2'}}
+                </td>
+
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='B2BUR' || _gstrService.gstMain.activeSubGstType=='B2B'|| _gstrService.gstMain.activeSubGstType=='CDNR'||_gstrService.gstMain.activeSubGstType=='CDNUR'"
+                  class="text-right">
+                  {{gstSummaryDetail[0]?.TOT_CENTRAL_TAX_PAID | number:'1.2-2'}}
+                </td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='ITCR'" class="text-right">
+                  {{gstSummaryDetail[0]?.ITC_CENTRAL_TAX_AMOUNT | number:'1.2-2'}}
+                </td>
+
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='B2BUR' || _gstrService.gstMain.activeSubGstType=='B2B'|| _gstrService.gstMain.activeSubGstType=='CDNR'||_gstrService.gstMain.activeSubGstType=='CDNUR'"
+                  class="text-right">
+                  {{gstSummaryDetail[0]?.TOT_STATE_TAX_PAID | number:'1.2-2'}}
+                </td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='HSNSUM'" class="text-right">
+                  {{gstSummaryDetail[0]?.TOTAL_STATE | number:'1.2-2'}}
+                </td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='ITCR'" class="text-right">
+                  {{gstSummaryDetail[0]?.ITC_STATE_TAX_AMOUNT | number:'1.2-2'}}
+                </td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='AT' || _gstrService.gstMain.activeSubGstType=='ATADJ'"
+                  class="text-right">
+                  {{gstSummaryDetail[0]?.TOT_ADVANCE | number:'1.2-2'}}
+                </td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType!='EXEMP'&&_gstrService.gstMain.activeSubGstType!='ITCR'"
+                  class="text-right">
+                  {{gstSummaryDetail[0]?.TOTCESS | number:'1.2-2'}}</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType!='ITCR' && _gstrService.gstMain.activeSubGstType!='AT' && _gstrService.gstMain.activeSubGstType!='EXEMP' && _gstrService.gstMain.activeSubGstType!='HSNSUM'">
+                  &nbsp;</td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType!='AT' && _gstrService.gstMain.activeSubGstType!='ATADJ' && _gstrService.gstMain.activeSubGstType!='EXEMP' && _gstrService.gstMain.activeSubGstType!='ITCR'  && _gstrService.gstMain.activeSubGstType!='HSNSUM'"
+                  class="text-right">
+                  {{gstSummaryDetail[0]?.TOT_AVAILED_ITC_INTEGRATED | number:'1.2-2'}} </td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='IMPG' ||_gstrService.gstMain.activeSubGstType=='IMPS' ||_gstrService.gstMain.activeSubGstType=='B2BUR' || _gstrService.gstMain.activeSubGstType=='B2B'|| _gstrService.gstMain.activeSubGstType=='CDNR'||_gstrService.gstMain.activeSubGstType=='CDNUR'"
+                  class="text-right">
+                  {{gstSummaryDetail[0]?.TOT_AVAILED_ITC_CENTRAL | number:'1.2-2'}}
+                </td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType=='B2BUR' || _gstrService.gstMain.activeSubGstType=='B2B'|| _gstrService.gstMain.activeSubGstType=='CDNR'||_gstrService.gstMain.activeSubGstType=='CDNUR'"
+                  class="text-right">
+                  {{gstSummaryDetail[0]?.TOT_AVAILED_ITC_STATE | number:'1.2-2'}}
+                </td>
+                <td
+                  *ngIf="_gstrService.gstMain.activeSubGstType!='AT'  && _gstrService.gstMain.activeSubGstType!='ATADJ' && _gstrService.gstMain.activeSubGstType!='HSNSUM' && _gstrService.gstMain.activeSubGstType!='EXEMP'&& _gstrService.gstMain.activeSubGstType!='ITCR'"
+                  class="text-right">
+                  {{gstSummaryDetail[0]?.TOT_AVAILED_ITC_CESS | number:'1.2-2'}}</td>
+                <td *ngIf="_gstrService.gstMain.activeSubGstType=='ITCR'" class="text-right">
+                  {{gstSummaryDetail[0]?.TOTAl_ITC_CESS | number:'1.2-2'}}</td>
+
+
+              </tr>
+
+            </thead>
+          </ng-container>
+        </ng-container>
+
+        <!-- End Manual Header Entry Of GSTR2 -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <!-- These are the Header for All reports -->
+
+
+        <thead>
+          <tr style="border-bottom: 1px solid #E6E6E6; border-top: 1px solid #E6E6E6;    height: 30px;
+                background: silver; 
+                color: black;">
+            <ng-container *ngFor="let col of listSetting.columns;let i=index">
+              <th *ngIf="
+                   col.key!='INTEGRATED_TAX_AMOUNT' 
+                && col.key!='TOTAL_VALUE'
+                && col.key!='TOTVALUE'
+                && col.key!='TAXABLE'
+                && col.key!='CENTRAL_TAX_AMOUNT'
+                && col.key!='STATE_TAX_AMOUNT' 
+                && col.key!='CESSAMOUNT'
+                && col.key!='TOTAL_INTEGRATED_TAX' 
+                && col.key!='TOTAL_CENTRAL_TAX' 
+                && col.key!='TOTAL_STATE_TAX' 
+                && col.key!='NIL_RATED_SUPPLIES' 
+                && col.key!='EXEMPTED_SUPPLIES' 
+                && col.key!='NONGST_SUPPLIES' 
+                && col.key!='TAXABLE_VALUE' 
+                && col.key!='CESS_AMOUNT' 
+                && col.key!='INVOICE_VALUE'
+                && col.key!='AVAILED_ITC_CESS'
+                && col.key!='AVAILED_ITC_STATE'
+                && col.key!='AVAILED_ITC_CENTRAL'
+                && col.key!='AVAILED_ITC_INTEGRATED'
+                && col.key!='STATE_TAX'
+                && col.key!='CENTRAL_TAX'
+                && col.key!='INTEGRATED_TAX'
+                && col.key!='COMPOSITION_TAXABLE_PERSON'
+                && col.key!='ITC_INTEGRATED_TAX_AMOUNT'
+                && col.key!='ITC_CENTRAL_TAX_AMOUNT'
+                && col.key!='ITC_STATE_TAX_AMOUNT'
+                && col.key!='ITC_CESS'
+                " style="text-align: left !important" width="200px"><b>{{col.title}}</b>
+              </th>
+              <th *ngIf=" col.key=='INTEGRATED_TAX_AMOUNT' 
+                || col.key=='CENTRAL_TAX_AMOUNT'
+                || col.key=='TOTAL_VALUE'
+                || col.key=='TOTVALUE'
+                || col.key=='TAXABLE'
+                || col.key=='STATE_TAX_AMOUNT' 
+                || col.key=='CESSAMOUNT'
+                || col.key=='TOTAL_INTEGRATED_TAX' 
+                || col.key=='TOTAL_CENTRAL_TAX' 
+                || col.key=='TOTAL_STATE_TAX' 
+                || col.key=='NIL_RATED_SUPPLIES' 
+                || col.key=='EXEMPTED_SUPPLIES' 
+                || col.key=='NONGST_SUPPLIES' 
+                || col.key=='TAXABLE_VALUE' 
+                || col.key=='CESS_AMOUNT' 
+                || col.key=='INVOICE_VALUE'
+                || col.key=='AVAILED_ITC_CESS'
+                || col.key=='AVAILED_ITC_STATE'
+                || col.key=='AVAILED_ITC_CENTRAL'
+                || col.key=='AVAILED_ITC_INTEGRATED'
+                || col.key=='STATE_TAX'
+                || col.key=='CENTRAL_TAX'
+                || col.key=='INTEGRATED_TAX'
+                || col.key=='COMPOSITION_TAXABLE_PERSON'
+                || col.key=='ITC_INTEGRATED_TAX_AMOUNT'
+                || col.key=='ITC_CENTRAL_TAX_AMOUNT'
+                || col.key=='ITC_STATE_TAX_AMOUNT'
+                || col.key=='ITC_CESS'
+
+                
+                " style="text-align: right !important" width="200px"><b>{{col.title}}</b>
+              </th>
+            </ng-container>
+          </tr>
+        </thead>
+        <ng-container *ngIf="gstTotalDetail.length">
+          <tbody style="width: fit-content;">
+            <ng-container *ngFor="let itm of this.gstTotalDetail
+            let i = index;">
+
+              <tr style=" border: 1px solid #e6e6e6;max-height:25px;">
+                <ng-container *ngFor="let col of listSetting.columns">
+                  <td *ngIf="
+                        col.key!='TOTAL_INTEGRATED_TAX'
+                        && col.key!='TOTAL_VALUE'
+                        && col.key!='TOTVALUE'
+                        && col.key!='TAXABLE'
+                        && col.key!='TOTAL_CENTRAL_TAX'
+                        && col.key!='TOTAL_STATE_TAX' 
+                        && col.key!='INTEGRATED_TAX_AMOUNT' 
+                        && col.key!='CENTRAL_TAX_AMOUNT'
+                        && col.key!='STATE_TAX_AMOUNT' 
+                        && col.key!='CESSAMOUNT' 
+                        && col.key!='NIL_RATED_SUPPLIES' 
+                        && col.key!='EXEMPTED_SUPPLIES' 
+                        && col.key!='NONGST_SUPPLIES' 
+                        && col.key!='INVOICE_DATE' 
+                        && col.key!='TAXABLE_VALUE' 
+                        && col.key!='CESS_AMOUNT' 
+                        && col.key!='INVOICE_VALUE'
+                        && col.key!='AVAILED_ITC_CESS'
+                        && col.key!='AVAILED_ITC_STATE'
+                        && col.key!='AVAILED_ITC_CENTRAL'
+                        && col.key!='AVAILED_ITC_INTEGRATED'
+                        && col.key!='STATE_TAX'
+                        && col.key!='CENTRAL_TAX'
+                        && col.key!='INTEGRATED_TAX'
+                        && col.key!='COMPOSITION_TAXABLE_PERSON'
+                        && col.key!='ITC_INTEGRATED_TAX_AMOUNT'
+                        && col.key!='ITC_CENTRAL_TAX_AMOUNT'
+                        && col.key!='ITC_STATE_TAX_AMOUNT'
+                        && col.key!='ITC_CESS'
+                        " style="text-align: left" width="200px">
+                    {{itm[col.key]}}
+                  </td>
+                  <td *ngIf="
+                           col.key=='TOTAL_INTEGRATED_TAX'
+                        || col.key=='TOTAL_CENTRAL_TAX'
+                        || col.key=='TOTAL_VALUE'
+                        || col.key=='TAXABLE'
+                        || col.key=='TOTVALUE'
+                        || col.key=='TOTAL_STATE_TAX' 
+                        || col.key=='INTEGRATED_TAX_AMOUNT' 
+                        || col.key=='CENTRAL_TAX_AMOUNT'
+                        || col.key=='STATE_TAX_AMOUNT' 
+                        || col.key=='CESSAMOUNT' 
+                        || col.key=='NIL_RATED_SUPPLIES' 
+                        || col.key=='EXEMPTED_SUPPLIES' 
+                        || col.key=='NONGST_SUPPLIES'  
+                        || col.key=='TAXABLE_VALUE' 
+                        || col.key=='CESS_AMOUNT' 
+                        || col.key=='INVOICE_VALUE'
+                        || col.key=='AVAILED_ITC_CESS'
+                        || col.key=='AVAILED_ITC_STATE'
+                        || col.key=='AVAILED_ITC_CENTRAL'
+                        || col.key=='AVAILED_ITC_INTEGRATED'
+                        || col.key=='STATE_TAX'
+                        || col.key=='CENTRAL_TAX'
+                        || col.key=='INTEGRATED_TAX'
+                        || col.key=='COMPOSITION_TAXABLE_PERSON'
+                        || col.key=='ITC_INTEGRATED_TAX_AMOUNT'
+                        || col.key=='ITC_CENTRAL_TAX_AMOUNT'
+                        || col.key=='ITC_STATE_TAX_AMOUNT'
+                        || col.key=='ITC_CESS'
+                        " style="text-align: right" width="200px">
+                    {{itm[col.key] | number:'1.2-2'}}
+                  </td>
+                  <td *ngIf="col.key=='INVOICE_DATE'" style="text-align: left !important" width="200px">
+                    {{itm[col.key] | date:'shortDate'}}
+                  </td>
+
+
+                </ng-container>
+              </tr>
+            </ng-container>
+          </tbody>
+        </ng-container>
+      </table>
+    </div>
+  </div>
+</div>

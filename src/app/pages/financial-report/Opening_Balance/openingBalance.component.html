@@ -1,0 +1,74 @@
+<div class="clearfix">
+    <button class="btn btn-info pull-right" *ngIf="returnUrl" (click)="return()">
+      Back
+    </button>
+  </div>
+  
+  <div class="clearfix">
+    <div class="col-md-12" style="padding-left: 0;padding-right: 0px">
+      <div class="col-md-1" style="padding: 0;width: 30px !important">
+        <table>
+          <tr style="height:30px;width:30px">
+            <td style="border: 1pt solid black;">
+              <i (click)="loadFilter()" tooltip-placement="right" tooltip="Main filters" style="margin:5px"><span
+                  class="glyphicon glyphicon-filter" tooltip="Main filters"></span></i>
+            </td>
+          </tr>
+          <tr>
+            <td style="border: 1pt solid black;">
+              <i (click)="ExportReportInExcel()" style="margin:5px"> <span
+                      class="glyphicon glyphicon-export"></span></i>
+          </td>
+          </tr>
+        </table>
+      </div>
+      <div style="float:left;width:95%">
+
+        <!-- </aside> -->
+
+        <!-- <div class="widgets">
+            <div class="row table-container" >
+
+
+               
+                    
+                <table id="BlueHeaderResizableTable" #reportHtmlTable  style="font-size:12px; width: 98%; overflow-x :auto;" class="reportTabel">
+                        <thead>
+                          
+                            <tr>
+                                <th *ngFor="let column1 of reportHeaders" width="{{column1.width}}">
+                                    {{column1.colHeader}}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody style="width: fit-content;">
+                            <tr *ngFor=" let data of reportData"
+                                (click)="RowClick(i)">
+
+                                <td style="white-space: pre;overflow: auto;padding-left:3px;padding-right:3px"
+                                    *ngFor="let column of reportHeaders" width="{{column.width}}"
+                                    [style.text-align]="column.alignment==0?'inherit':'end'">{{getFormattedValue(data[column.mappingName])}}</td>
+                            </tr>
+                        </tbody>
+                        
+                      
+                    </table>
+
+             
+            </div>
+        </div> -->
+    </div>
+    <div class="col-md-11" style="padding: 0;width:96.66% !important">
+      <report-body *ngIf="ReportDataObj.particularsRow" [listSetting]="listSetting" [reportType]="reportType"
+        [particularsRow]="ReportDataObj.particularsRow" [totalRow]="ReportDataObj.totalRow" [ACNAME]="filterObj.ACCNAME"
+        [DATE1]="filterObj.DATE1" [DATE2]="filterObj.DATE2"></report-body>
+
+
+    </div>
+    </div>
+  </div>
+  
+  
+  
+  <report-filter #reportFilter (filterEmiiter)="queryAndLoad($event)" [reportType]="reportType"></report-filter>
+  

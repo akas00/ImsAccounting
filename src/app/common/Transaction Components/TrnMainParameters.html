@@ -1,0 +1,692 @@
+<style>
+  .prefixYes{
+    width: 34%;
+  }
+  .prefixNo{
+    width: 86%;
+  }
+</style>
+
+<div class="row plainBackGround" *ngIf="this.masterService.PCL_VALUE == 1">
+  <div class="row" style="margin-left:10px;">
+    <div class="col-md-5" style="margin: 10px; max-height: 150px; overflow-y: scroll; overflow-x: hidden">
+      <div class="row cell-with-comment">
+        <label style="width:25%;">Customer</label>
+        <input id="customerselectid" type="text" style="width:70%;"
+           [focus]="'true'" autocomplete="off" title="Enter or Tab to select"
+          [(ngModel)]="_trnMainService.TrnMainObj.BILLTO" />
+
+        <!-- <span class="cell-comment" style="margin-left: 27%">
+          Press ENTER or TAB to Select Customer
+        </span> -->
+      </div>
+      <div *ngIf="masterService.ShowMore==true">
+        <div class="row">
+          <label style="width: 25%;">Address</label>
+          <input type="text" style="width:70%;" 
+            [(ngModel)]="_trnMainService.TrnMainObj.BILLTOADD" readonly />
+        </div>
+
+        <div class="row">
+          <label style="width: 25%;">PAN No</label>
+          <input type="text" style="width:70%;"
+            [(ngModel)]="_trnMainService.TrnMainObj.BILLTOTEL" readonly />
+        </div>
+        <div *ngIf="_trnMainService.isSelfBill==true" class="row">
+
+          <label style="width:25%;">Warehouse</label>
+          <select style="width:70%;" [(ngModel)]="_trnMainService.TrnMainObj.MWAREHOUSE" >
+            <option *ngFor="let w of warehouseList" [ngValue]="w.NAME">{{w.NAME}}</option>
+          </select>
+
+
+        </div>
+        <!-- <div
+        class="row"
+        *ngIf="
+          _trnMainService.TrnMainObj.VoucherType == 1 ||
+          _trnMainService.TrnMainObj.VoucherType == 14
+        "
+      >
+        <label style="width: 25%;">Balance :</label>
+                    <input type="text" style="width:70%;" [ngModel]="_trnMainService.TrnMainObj.BALANCE  | number : '1.2-2'" readonly/>
+         
+      </div> -->
+
+        <!-- <div
+        class="row">
+        <label style="width: 25%;">Invoice Type</label>
+        <select
+          style="width:70%;"
+          [(ngModel)]="_trnMainService.TrnMainObj.INVOICETYPE"
+          [disabled]="_trnMainService.userProfile.CompanyInfo.ORG_TYPE== 'retailer'" >
+          <option value="retailinvoice" *ngIf="appType!=2">Retail Invoice</option>
+          <option value="taxinvoice">Tax Invoice</option>
+        </select>
+      </div> -->
+
+        <div class="row" *ngIf="_trnMainService.TrnMainObj.VoucherType == 15 && activeurlpath !=65">
+          <label style="width:25%;">{{appType==2?'Godown':'Warehouse'}}</label>
+          <input id="warehouseId" type="text" style="width:70%;" autocomplete="off" [disabled]="goDownDisabled() || _trnMainService.TrnMainObj.Mode=='VIEW'"
+            [(ngModel)]="_trnMainService.TrnMainObj.MWAREHOUSE"  />
+
+        </div>
+      <div *ngIf="_trnMainService.isSelfBill==false">
+        <div class="row"
+          *ngIf="_trnMainService.TrnMainObj.VoucherType==14 || _trnMainService.TrnMainObj.VoucherType==61 ">
+          <label style="width: 25%;">Sales Man</label>
+
+          <!-- <input
+      id = "salesMan"
+      type="text"
+      style="width:70%;" 
+      placeholder="Enter or Tab to SalesMan" 
+      [(ngModel)]="_trnMainService.TrnMainObj.SALESMAN" 
+      (keydown.tab)="salesManEnterCommand($event)" 
+      (keydown.enter)="salesManEnterCommand($event)" 
+      (keydown) ="preventInput($event)"
+         #focusSalesman
+      /> -->
+
+          <input id="salesMan" type="text" style="width:70%;" [disabled]="SalesmanFieldDisabled() || _trnMainService.TrnMainObj.Mode=='VIEW'"
+            [(ngModel)]="_trnMainService.salesmanName"  #focusSalesman />
+
+
+        </div>
+      </div>
+        <!-- //For ShelfBill only -->
+        <!-- <div *ngIf ="TrnMainObj.isSelfBill == true" class="row">
+          <label style="width:25%;">Warehouse</label>
+          <input id="warehouseId" type="text" style="width:70%;" autocomplete="off" [disabled]="goDownDisabled()"
+            [(ngModel)]="_trnMainService.TrnMainObj.MWAREHOUSE" (keydown.enter)="UnsalableWarehouseEnterCommand($event)"
+            (keydown.tab)="UnsalableWarehouseEnterCommand($event)" (keydown)="preventInput($event)" />
+
+        </div> -->
+        <div class="row" *ngIf="_trnMainService.TrnMainObj.VoucherType != 14 ">
+          <label style="width: 25%;">Remarks</label>
+          <input id="remarks" type="text" style="width:70%;"
+            [(ngModel)]="_trnMainService.TrnMainObj.REMARKS" />
+        </div>
+
+        <div class="row">
+          <label style="width: 25%;">A/C B/L :
+          </label><label>{{ this.differenceAmount | number }}</label>&nbsp;
+          <!-- <label style="width:30px !important;font-size:18px;color: #2dacd1;font-weight: bold;" *ngIf="diffAmountDrCrType == 'Dr'">Dr.</label> -->
+          <label style="width:30px !important;font-size:18px;color: #2dacd1;font-weight: bold;" *ngIf="diffAmountDrCrType == 'Cr'">Cr.</label>    
+     </div>
+
+        <!-- <div class="row">
+                    <label style="width: 20%;">Mobile :</label>
+                    <input type="text" style="width:70%;" formControlName="BILLTOMOB" />
+                </div>
+                <div class="row">
+                    <label style="width: 20%;">PAN No :</label>
+                    <input type="number" maxlength="9" minlength="9" formControlName="BILLTOTEL" ngDefaultControl />
+                </div> -->
+      </div>
+    </div>
+    
+    <div class="col-md-5" style="margin: 10px; max-height: 150px; overflow-y: scroll; overflow-x: hidden">
+      <!-- <div class="row" *ngIf="_trnMainService.TrnMainObj.VoucherType==14">
+      <label style="width: 25%;">Delivery Date</label>     
+      <input
+      type="date"
+      style="width:70%;"
+      [(ngModel)]="_trnMainService.TrnMainObj.DeliveryDate"
+    >
+      
+    
+    </div> -->
+      <div class="row" *ngIf="
+          _trnMainService.TrnMainObj.VoucherType == 2 ||
+          _trnMainService.TrnMainObj.VoucherType == 15 ||
+          _trnMainService.TrnMainObj.VoucherType == 61 ||
+          _trnMainService.TrnMainObj.VoucherType == 65 ||
+          activeurlpath == 'canceladdsientry' ||
+          activeurlpath == 'Reverse-Sales-Return'
+        ">
+        <label style="width: 25%;">Ref Bill No.</label>
+        <input id="refbill"  type="text" style="width:70%;"
+          [(ngModel)]="_trnMainService.TrnMainObj.REFBILL"  />
+      </div>
+      <div class="row" *ngIf="
+          _trnMainService.TrnMainObj.VoucherType == 2 ||
+          _trnMainService.TrnMainObj.VoucherType == 15 ||
+          _trnMainService.TrnMainObj.VoucherType == 65 ||
+          activeurlpath == 'Reverse-Sales-Return'
+        ">
+        <label style="width: 25%;">Return Mode</label>
+        <select style="width:70%;" [(ngModel)]="_trnMainService.TrnMainObj.TRNMODE">
+          <option value="credit">Credit</option>
+          <option value="cash">Cash</option>
+        </select>
+      </div>
+
+      <div class="row" *ngIf="ShowTransactionMode">
+        <label style="width: 25%;">Bill NO.</label>
+        <input id="remarks" type="text" style="width:70%;" [(ngModel)]="_trnMainService.TrnMainObj.VCHRNO" disabled />
+
+      </div>
+      <div *ngIf="masterService.ShowMore==true">
+        <div class="row" *ngIf="_trnMainService.TrnMainObj.VoucherType==14">
+          <label style="width: 25%;">Trn Date:</label>
+          <td style="float: right;
+      width: 70%;
+      margin-top: 7px;">
+            {{ _trnMainService.TrnMainObj.TRNDATE | date: 'dd-MM-yyyy' }}
+          </td>
+        </div>
+        <div class="row" *ngIf="_trnMainService.TrnMainObj.VoucherType==14">
+          <label style="width: 25%;">Due Date:</label>
+          <input *ngIf="_trnMainService.TrnMainObj.Mode == 'NEW'" style="width:70%;" type="date"
+            [(ngModel)]="_trnMainService.TrnMainObj.AdditionalObj.DUEDATE" />
+          <td *ngIf="_trnMainService.TrnMainObj.Mode != 'NEW'" style="float: right;
+      width: 70%;
+      margin-top: 7px;">
+            {{ _trnMainService.TrnMainObj.AdditionalObj.DUEDATE | date: 'dd-MM-yyyy' }}
+          </td>
+        </div>
+        <div class="row" *ngIf="ShowTransactionMode">
+          <label style="width: 25%;">Payment Type</label>
+          <select style="width:70%;"
+            [(ngModel)]="_trnMainService.TrnMainObj.TRNMODE" >
+            <option value="credit">Credit</option>
+            <option value="cash">Cash</option>
+            <!-- <option value="cashandcredit">Cash and Credit</option> -->
+          </select>
+        </div>
+        <div *ngIf = "_trnMainService.isCashPayment == true " class="row">
+          <label style="width: 25%;">Account</label>
+          <input id="customerselectid"  type="text" style="width:70%;"
+          [focus]="'true'" autocomplete="off" title="Enter or Tab to select"
+          [(ngModel)]="masterService.Account" />
+        </div>
+
+        <!-- <div *ngIf="_trnMainService.userProfile.CompanyInfo.ORG_TYPE=='distributor'"> -->
+        <!-- <div class="row"
+            *ngIf="_trnMainService.TrnMainObj.VoucherType==14 || _trnMainService.TrnMainObj.VoucherType==57|| _trnMainService.TrnMainObj.VoucherType==61  "> -->
+
+           
+
+
+        <div class="row"
+          *ngIf="_trnMainService.TrnMainObj.VoucherType==14 || _trnMainService.TrnMainObj.VoucherType==57 || _trnMainService.TrnMainObj.VoucherType==61 || _trnMainService.TrnMainObj.VoucherType==15 || _trnMainService.TrnMainObj.VoucherType==65 || _trnMainService.TrnMainObj.VoucherType ==38 ||  _trnMainService.TrnMainObj.VoucherType ==73">
+          <label style="width: 25%;">Unit</label>
+          <select  id="unit" style="width:70%;"
+            [(ngModel)]="_trnMainService.TrnMainObj.AdditionalObj.BILLUNITS" #focusInputUnit
+            (keydown.tab)="UniEnterCommand()" (keydown.enter)="UniEnterCommand()">
+            <option value="CASE">Case</option>
+            <option value="EACH">Each</option>
+          </select>
+        </div>
+        <div class="row" *ngIf="_trnMainService.TrnMainObj.VoucherType==14 || _trnMainService.TrnMainObj.VoucherType==57 || _trnMainService.TrnMainObj.VoucherType==61 || _trnMainService.TrnMainObj.VoucherType==15 ">
+          <label style="width: 25%;">Bill Format</label>
+          <select  style="width:70%;"
+            [(ngModel)]="_trnMainService.TrnMainObj.AdditionalObj.BILLFORMATS">
+            <option value="FULL">Full Bill</option>
+            <option value="HALF">Half Bill</option>
+          </select>
+        </div>
+
+
+        <div class="row"
+          *ngIf="_trnMainService.TrnMainObj.VoucherType==14 && _trnMainService.userProfile.CompanyInfo.ORG_TYPE== 'retailer'">
+          <label style="width: 25%;">Barcode</label>
+          <input id="itembarcode" type="text" style="width:70%;" [(ngModel)]="_trnMainService.BarcodeFromScan" />
+        </div>
+
+
+
+        <!-- <div
+        class="row"
+        *ngIf="
+          (_trnMainService.TrnMainObj.VoucherType == 1 ||
+            _trnMainService.TrnMainObj.VoucherType == 14) &&
+          _trnMainService.paymentAccountList.length > 0
+        "
+      >
+        <label style="width: 25%;">Payment Account :</label>
+        <select
+          style="width:70%;"
+          [(ngModel)]="_trnMainService.TrnMainObj.TRNAC"
+        >
+          <option
+            *ngFor="let p of _trnMainService.paymentAccountList"
+            [ngValue]="p.ACID"
+            >{{ p.ACNAME }}
+          </option>
+        </select>
+      </div> -->
+        <div class="row" *ngIf="_trnMainService.AppSettings.enableCostCenter != 0">
+          <label style="width:20%;">CostCenter</label>
+          <select *ngIf="_trnMainService.AppSettings.enableCostCenter != 0" style="width:70%;"
+            [(ngModel)]="_trnMainService.TrnMainObj.COSTCENTER">
+            <option *ngFor="let c of masterService.costCenterList$ | async" [ngValue]="c.CostCenterName">
+              {{ c.CostCenterName }}</option>
+          </select>
+        </div>
+
+        <div class="row" *ngIf="_trnMainService.AppSettings.ENABLEMULTICURRENCY == 1">
+          <label style="width:20%;">Currency</label>
+          <select style="width:30%;" [(ngModel)]="_trnMainService.TrnMainObj.FCurrency">
+            <option *ngFor="let c of masterService.Currencies" [ngValue]="c.CURNAME">{{ c.CURNAME }}
+            </option>
+          </select>
+
+          <label style="width:20%;">Exchange Rate</label>
+          <input type="text" style="width:18%;" [(ngModel)]="_trnMainService.TrnMainObj.EXRATE" readonly />
+        </div>
+        <!-- </div> -->
+        <!-- </div> -->
+      </div>
+      </div>
+  </div>
+</div>
+
+
+<!--IF masterService.PCL_VALUE= 2, NON_NESTLE-->
+<div *ngIf="this.masterService.PCL_VALUE ==2">
+<div class="row plainBackGround" >
+  <div style="padding: 15px;" class="row col-md-12">
+    <div class="col-md-4">
+      <div class="row" *ngIf="ShowTransactionMode">
+        <label style="width: 25%;">Bill No.</label>
+        <td style="float: right;
+            width: 73%;
+            margin-top: 7px;">
+          {{ _trnMainService.TrnMainObj.VCHRNO }}
+        </td>
+
+      </div>
+
+  
+      <div class="row" *ngIf="_trnMainService.TrnMainObj.VoucherType==14 || _trnMainService.TrnMainObj.VoucherType==15">
+        <label style="width: 25%;">Inv Date</label>
+        <td style="float: right;width: 73%;margin-top: 7px;">
+          <input style="width:52%;" type="text" [(ngModel)]="_trnMainService.TrnMainObj.TRNDATE"
+            [disabled]="_trnMainService.TrnMainObj.Mode=='VIEW'"  />
+          <input style="width:34%;" type="text" [(ngModel)]="_trnMainService.TrnMainObj.BSDATE"
+            [disabled]="_trnMainService.TrnMainObj.Mode=='VIEW'"  />
+
+          <!-- {{ _trnMainService.TrnMainObj.TRN_DATE | date: 'dd-MM-yyyy'}} -->
+        </td>
+      </div>
+
+      <div class="row" *ngIf="_trnMainService.TrnMainObj.VoucherType == 14 || _trnMainService.TrnMainObj.VoucherType == 15">
+        <label style="width: 25%;">Entry Date</label>
+        <td style="float: right;width: 73%;margin-top: 7px;">
+          <input style="width:52%;" 
+          type="text" 
+          [(ngModel)]="_trnMainService.TrnMainObj.TRN_DATE" 
+          [disabled]="_trnMainService.TrnMainObj.Mode=='VIEW'"
+          />
+          <input style="width:34%;" 
+          type="text" 
+          [(ngModel)]="_trnMainService.TrnMainObj.BS_DATE" 
+          [disabled]="_trnMainService.TrnMainObj.Mode=='VIEW'"
+          />     
+        </td>
+      </div>
+
+
+      <div class="row" *ngIf="
+      _trnMainService.TrnMainObj.VoucherType == 2 ||
+      _trnMainService.TrnMainObj.VoucherType == 15 ||
+      _trnMainService.TrnMainObj.VoucherType == 61 ||
+      activeurlpath == 'canceladdsientry'
+    ">
+      <label style="width: 25%;">Ref Bill No.</label>
+      <input id="refbill" 
+      [disabled]="RefBillFieldDisabled()" 
+      type="text" 
+      autocomplete="off"
+      style="width:63%;"
+      [(ngModel)]="_trnMainService.TrnMainObj.REFBILL" 
+      (keydown)="preventInput($event)"
+      [disabled]="_trnMainService.TrnMainObj.Mode=='VIEW'" 
+      placeholder="Please Enter To Select Ref Bill No"/>
+    </div>
+
+    <div class="row" *ngIf="userSetting.REFBILLCOMPULSORINCNOTE == 1 &&(_trnMainService.TrnMainObj.VoucherType == 15)" style="float: right;">
+      <div style="display: flex;
+      /* margin-left: 20px; */
+      padding-right: 36px;">
+      <input style="width:25px;height: 19px;margin-top: 4px;margin-right: 9px;" 
+      type="checkbox" 
+      (change)="$event.target.checked?(_trnMainService.TrnMainObj.DOFULLRETURN=1):(_trnMainService.TrnMainObj.DOFULLRETURN=0)"
+      [(ngModel)]="_trnMainService.TrnMainObj.DOFULLRETURN"         
+      [disabled]="_trnMainService.TrnMainObj.Mode=='VIEW'"
+      />
+      <label style="width: 100%;">Do Full Return</label>   
+    </div>
+
+        <!-- <label style="width: 35%;">Do NonSelable Return</label>
+          <input style="width:25px;height: 19px;" 
+          type="checkbox" 
+          (change)="$event.target.checked?(_trnMainService.TrnMainObj.DONONSALEABLERETURN=1):(_trnMainService.TrnMainObj.DONONSALEABLERETURN=0)"
+          [(ngModel)]="_trnMainService.TrnMainObj.DONONSALEABLERETURN"         
+          [disabled]="_trnMainService.TrnMainObj.Mode=='VIEW'"
+          /> -->
+
+    </div>
+
+    <div class="row" *ngIf="userSetting.REFBILLCOMPULSORINDNOTE == 1 &&(_trnMainService.TrnMainObj.VoucherType == 15)">
+ 
+
+    </div>
+
+
+      <div class="row" *ngIf="
+      ( _trnMainService.TrnMainObj.VoucherType == 14)">
+      <label style="width: 25%;">Refno.</label>
+      <td style="float: right;width: 73%;margin-top: 7px;">
+        <select *ngIf="userSetting.PrefixForRefNoInVEntry == 1" name="refno" id="refno" style="width:52%;" [(ngModel)]="_trnMainService.TrnMainObj.CHALANNOPREFIX"
+          [disabled]="_trnMainService.TrnMainObj.Mode=='VIEW'">
+          <ng-container *ngIf="chalanSeries && chalanSeries.length > 0">
+            <option value="{{chalan?.series}}" *ngFor="let chalan of chalanSeries;">{{chalan?.series}}</option>
+          </ng-container>
+          <option value="" *ngIf="chalanSeries && chalanSeries.length === 0">Chalan series not found!</option>
+        </select>
+        <input id="refnoInput" type="text" [ngClass]="userSetting.PrefixForRefNoInVEntry == 1?'prefixYes':'prefixNo'" [(ngModel)]="_trnMainService.TrnMainObj.REFBILL"
+          [disabled]="_trnMainService.TrnMainObj.Mode=='VIEW'" />
+
+        <!-- {{ _trnMainService.TrnMainObj.TRN_DATE | date: 'dd-MM-yyyy'}} -->
+      </td>
+
+    </div>
+
+    <div class="row" *ngIf="this.userSetting.ENABLEMULTISPRINTFORMAT ==1 && _trnMainService.TrnMainObj.VoucherType==14">
+      <label style="width:25%;">Bill Format</label>
+      <select style="width:63%;" [(ngModel)]="_trnMainService.TrnMainObj.AdditionalObj.BILLFORMATS" >
+        <option value="FULL">Full Bill</option>
+        <option value="HALF">Half Bill</option>
+      </select>
+    </div>
+
+    </div>    
+   
+    <div class="col-md-4" style= "overflow-x: hidden">
+      <!-- <div class="row" *ngIf="_trnMainService.TrnMainObj.VoucherType==14">
+    <label style="width: 25%;">Delivery Date</label>
+    <input
+    type="date"
+    style="width:70%;"
+    [(ngModel)]="_trnMainService.TrnMainObj.DeliveryDate"
+  >
+
+  </div> -->
+
+
+
+      <!-- <div class="row" *ngIf="
+        _trnMainService.TrnMainObj.VoucherType == 2 ||
+        _trnMainService.TrnMainObj.VoucherType == 15
+      ">
+        <label style="width: 25%;">Return Mode</label>
+        <select style="width:70%;" [(ngModel)]="_trnMainService.TrnMainObj.TRNMODE"
+          [disabled]="_trnMainService.TrnMainObj.Mode=='VIEW'">
+          <option value="credit">Credit</option>
+          <option value="cash">Cash</option>
+        </select>
+      </div> -->
+
+
+      <div *ngIf="   
+      _trnMainService.TrnMainObj.VoucherType == 14 ||
+      _trnMainService.TrnMainObj.VoucherType == 15
+    " class="row">
+    <label style="width: 25%;">{{paymentModeLabel}}</label>
+    <select style="width:70%;" 
+    [(ngModel)]="_trnMainService.TrnMainObj.TRNMODE" 
+    [disabled]="_trnMainService.TrnMainObj.Mode=='VIEW' || disableMaster.ReturnMode == true" >
+      <option value="credit">Credit</option>
+      <option value="cash">Cash</option>
+      <option value="creditcard">Credit Card</option>
+      <option value="cheque">Cheque Deposite</option>
+      
+    </select>
+  </div>
+
+
+  <div class="row" [hidden]="_trnMainService.TrnMainObj.VoucherType ==15 || _trnMainService.TrnMainObj.VoucherType ==14" >
+    <label style="width: 25%;">Card No/Cheque:</label>
+    <td style="float: right;width: 73%;">
+      <input style="width:52%;" 
+      type="text" 
+      [(ngModel)]="_trnMainService.TrnMainObj.CHEQUENO" 
+      [disabled]="_trnMainService.TrnMainObj.TRNMODE != 'cheque' && _trnMainService.TrnMainObj.TRNMODE !='creditcard'"        
+      />
+      <input style="width:44%;" 
+      type="date" 
+      [(ngModel)]="_trnMainService.TrnMainObj.CHEQUEDATE" 
+      [disabled]="_trnMainService.TrnMainObj.TRNMODE != 'cheque'"
+      />     
+    </td>
+  </div>
+
+
+  <div class="row" 
+  *ngIf="
+  _trnMainService.TrnMainObj.VoucherType == 14 ||
+  _trnMainService.TrnMainObj.VoucherType == 15
+  
+  ">
+
+    <label style="width:25%;">Account</label>
+    <input type="text" style="width:70%;" autocomplete="off"
+    [disabled]="_trnMainService.TrnMainObj.Mode=='VIEW' || disableMaster.Account == true"
+    [(ngModel)]="this._trnMainService.TrnMainObj.TRNACName" 
+    
+     placeholder="Press Enter to Select Account" />
+
+  </div>
+
+  <div class="row"
+   *ngIf=" 
+   _trnMainService.TrnMainObj.VoucherType == 14 ||
+   _trnMainService.TrnMainObj.VoucherType == 15
+   
+   "
+   >
+    <label style="width:25%;">Warehouse</label>
+    <input id="warehouseId" type="text" style="width:70%;" autocomplete="off"
+    [disabled]="_trnMainService.TrnMainObj.Mode=='VIEW' || disableMaster.Warehouse== true"
+      [(ngModel)]="_trnMainService.TrnMainObj.MWAREHOUSE" 
+       (keydown)="preventInput($event)" placeholder="Press Enter to Select Warehouse"  />
+
+  </div>
+
+
+
+      <div *ngIf="masterService.ShowMore==true">
+        <!-- <div class="row" *ngIf="ShowTransactionMode">
+          <label style="width: 25%;">Payment Type</label>
+          <select style="width:70%;" [(ngModel)]="_trnMainService.TrnMainObj.TRNMODE"
+            [disabled]="_trnMainService.TrnMainObj.Mode=='VIEW'" (change)="onpaymentmodechange()">
+            <option value="credit">Credit</option>
+            <option value="cash">Cash</option>            
+          </select>
+        </div> -->
+
+        <!-- <div class="row"
+          *ngIf="_trnMainService.TrnMainObj.VoucherType==14 || _trnMainService.TrnMainObj.VoucherType==61 ">
+          <label style="width: 25%;">Sales Man
+        </label>
+          <input id="salesMan" type="text" style="width:70%;" [disabled]="SalesmanFieldDisabled()"
+            [(ngModel)]="_trnMainService.TrnMainObj.SALESMAN" (keydown)="preventInput($event)" #focusSalesman />
+
+        </div> -->
+
+        <div class="row" *ngIf="this.userSetting.enableCostCenter ==1">
+          <label style="width:25%;">Cost Center</label>
+          <select id="costCenter"  style="width:70%;" [(ngModel)]="_trnMainService.TrnMainObj.COSTCENTER"
+            [disabled]="_trnMainService.TrnMainObj.Mode=='VIEW' || disableMaster.CostCenter== true" >
+            <option *ngFor="let c of costlists" [ngValue]="c.CCID">
+              {{ c.COSTCENTERNAME }}</option>
+          </select>
+        </div>
+
+        <div class="row" *ngIf="(_trnMainService.TrnMainObj.VoucherType==57 ||
+   _trnMainService.TrnMainObj.VoucherType==61) 
+  && userSetting.EnableBillFormatInBilling == 1">
+          <label style="width: 25%;">Bill Format</label>
+          <select [disabled]="UnitandFormatDisabled()" style="width:70%;"
+            [(ngModel)]="_trnMainService.TrnMainObj.AdditionalObj.BILLFORMATS">
+            <option value="FULL">Full Bill</option>
+            <option value="HALF">Half Bill</option>
+          </select>
+        </div>
+
+        <div class="row"
+          *ngIf="(_trnMainService.TrnMainObj.VoucherType==57 || _trnMainService.TrnMainObj.VoucherType==61) && userSetting.EnableBillFormatInBilling == 1 ">
+          <label style="width: 25%;">Unit</label>
+          <select [disabled]="UnitandFormatDisabled()" id="unit" style="width:70%;"
+            [(ngModel)]="_trnMainService.TrnMainObj.AdditionalObj.BILLUNITS" #focusInputUnit>
+            <option value="CASE">Case</option>
+            <option value="EACH">Each</option>
+          </select>
+        </div>
+
+        <div class="row" *ngIf="this.userSetting.ENABLEMULTISPRINTFORMAT ==1 && _trnMainService.TrnMainObj.VoucherType==15">
+          <label style="width:25%;">Bill Format</label>
+          <select style="width:63%;" [(ngModel)]="_trnMainService.TrnMainObj.AdditionalObj.BILLFORMATS" [disabled]="UnitandFormatDisabled()">
+            <option value="FULL">Full Bill</option>
+            <option value="HALF">Half Bill</option>
+          </select>
+        </div>
+
+
+
+        <div class="row"
+          *ngIf="_trnMainService.TrnMainObj.VoucherType==14 && _trnMainService.userProfile.CompanyInfo.ORG_TYPE== 'retailer'">
+          <label style="width: 25%;">Barcode</label>
+          <input id="itembarcode" type="text" style="width:70%;" [(ngModel)]="_trnMainService.BarcodeFromScan"
+             />
+
+          <div class="row" *ngIf="_trnMainService.AppSettings.ENABLEMULTICURRENCY == 1">
+            <label style="width:20%;">Currency</label>
+            <select style="width:30%;" [(ngModel)]="_trnMainService.TrnMainObj.FCurrency" >
+              <option *ngFor="let c of masterService.Currencies" [ngValue]="c.CURNAME">{{ c.CURNAME }}
+              </option>
+            </select>
+
+            <label style="width:20%;">Exchange Rate</label>
+            <input type="text" style="width:18%;" [(ngModel)]="_trnMainService.TrnMainObj.EXRATE" readonly />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4" style= "overflow-x: hidden">
+      <div class="row cell-with-comment">
+        <label style="width:25%;">Customer</label>
+        <input id="customerselectid" [disabled]="CustomerFieldDisabled() ||  disableMaster.Customer == true" type="text" style="width:70%;"
+          (change)="customerFieldChange()" autocomplete="off" title="Enter or Tab to select"
+          [(ngModel)]="_trnMainService.TrnMainObj.BILLTO"
+           
+          
+          placeholder="Press ENTER to Select Customer"  #focusInputFormat />
+     
+      </div>
+      <div *ngIf="masterService.ShowMore==true">
+        <div class="row">
+          <label style="width: 25%;">Address</label>
+          <input type="text" style="width:70%;" [(ngModel)]="_trnMainService.TrnMainObj.BILLTOADD"
+            [disabled]="_trnMainService.TrnMainObj.Mode=='VIEW'" readonly />
+        </div>
+        <div class="row">
+          <label style="width: 25%;">VATNO</label>
+          <input type="text" style="width:70%;" [(ngModel)]="_trnMainService.TrnMainObj.BILLTOTEL" readonly
+            [disabled]="_trnMainService.TrnMainObj.Mode=='VIEW'" />
+        </div>
+
+        <div class="row">
+          <label style="width: 25%;">Remarks</label>
+          <input id="remarksid" type="text" style="width:70%;" [(ngModel)]="_trnMainService.TrnMainObj.remarks" 
+            [disabled]="_trnMainService.TrnMainObj.Mode=='VIEW'" />
+        </div>
+        <div class="row">
+          <div class="col-md-6" style="padding: 0px;">
+            <label style="width: 50%;">Flat Dis(%)</label>
+            <input type="text" style="width:46%;"  readonly
+              [disabled]="_trnMainService.TrnMainObj.Mode=='VIEW' || disableMaster.FlatDisPer== true" />
+          </div>
+          <div class="col-md-6" style="padding: 0px;">
+            <label style="width: 45%;">Flat Dis(Rs)</label>
+            <input type="text" style="width:46%;" [(ngModel)]="_trnMainService.TrnMainObj.TOTALFLATDISCOUNT" readonly
+              [disabled]="_trnMainService.TrnMainObj.Mode=='VIEW' || disableMaster.FlatDisRs== true" />
+          </div>
+        </div>
+
+      
+      </div>
+    </div>
+
+  
+  </div>
+
+</div>
+</div>
+      <!-- <div class="print-modal-sticky" *ngIf="promptSalesReturnType" style="display : block; padding: 0px;  margin-bottom: 25px;height: auto;
+  position: absolute;right: 35%;top: 5px;width: 25%;z-index: 9999999">
+
+        <div class="modal-content modal-content-main-area">
+          <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">Sales Return Type</h4>
+          </div>
+          <div class="modal-body">
+            <form>
+              <input type="radio" id="FullBill" [(ngModel)]="BillReturnType" name="printOption" value=0> <label
+                for="FullBill"> Full Bill Return </label><br>
+              <input type="radio" id="PartialBill" [(ngModel)]="BillReturnType" name="printOption" value=1
+                checked="checked"><label style="width: 130px !important;" for="PartialBill">&nbsp;Partial Bill
+                Return</label> <br>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal" (click)="popupCancel()">Cancel</button>
+            <button type="button" class="btn btn-primary" (click)="popupok()">Ok</button>
+          </div>
+        </div>
+
+      </div> -->
+      <!-- <new-generic-popup-grid #genericGridCustomer [popupsettings]="gridPopupSettingsForCustomer"
+        (onItemDoubleClick)="onCustomerSelected($event)">
+      </new-generic-popup-grid>
+
+
+      <generic-popup-grid #genericGridSalesMan [popupsettings]="gridPopupSettingsForSalesMan"
+        (onItemDoubleClick)="onSalesManSelect($event)">
+      </generic-popup-grid>
+
+
+
+      <generic-popup-grid #genericGridRefBill [popupsettings]="gridPopupSettingsForRefBill"
+        (onItemDoubleClick)="onRefBillSelected($event)">
+      </generic-popup-grid>
+
+      <generic-popup-grid #genericGridWarehouse [popupsettings]="gridPopupSettingsForWarehouse"
+        (onItemDoubleClick)="onWarehouseSelected($event)">
+      </generic-popup-grid>
+
+      <new-generic-popup-grid #genericGridCustomerListBySalesmanAndRoute
+        [popupsettings]="gridPopupSettingsForCustomerListBySalesmanAndRoute"
+        (onItemDoubleClick)="onCustomerSelected($event)">
+      </new-generic-popup-grid>
+      <generic-popup-grid #genericGridForTaxCancel [popupsettings]="gridPopupSettingsForTaxCancel"
+        (onItemDoubleClick)="onItemDoubleClick($event)">
+      </generic-popup-grid>
+
+      <new-generic-popup-grid #newgenericGridForTaxCancel [popupsettings]="newgridPopupSettingsForTaxCancel"
+        (onItemDoubleClick)="onItemDoubleClick($event)">
+      </new-generic-popup-grid>
+
+      <new-generic-popup-grid #newgenericGridForSalesReturn [popupsettings]="newgridPopupSettingsForSalesReturn"
+        (onItemDoubleClick)="onRefBillSelected($event)">
+      </new-generic-popup-grid>
+
+
+      <generic-popup-grid #genericGridAccountList
+        [popupsettings]="GridAccountList"
+        (onItemDoubleClick)="onAccountSelected($event)">
+      <generic-popup-grid> -->

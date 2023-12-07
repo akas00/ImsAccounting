@@ -1,0 +1,54 @@
+<ba-card>
+    <div class="row borderdiv" style="padding:15px">
+        
+        <form class="dynamic-form" [formGroup]="form">
+            <div class="table" >
+                <div class="row" *ngFor="let c of reportMaster.controls" >
+                    <div  class={{col.column}}  *ngFor="let col of c.row">
+                        <!--<div class="rowdiv" style="padding-left:15px;padding-right:15px;padding-top:5px;padding-bottom:5px">-->
+                        <reportcontrols [control]="col" [form]="form"></reportcontrols>
+                        <!--</div>-->
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</ba-card>
+    <div style="margin: 15px;">
+        <button style="height: 40px;width:80px;" title="Save" class="btn btn-info" data-dismiss="modal" (click)="onloadReportClickEvent()">Run</button>
+         <button style="height: 40px;width:80px;" title="Save" class="btn btn-info" data-dismiss="modal" (click)="onloadExcelEvent()">Excel</button>
+         <button style="height: 40px;width:80px;" title="Save" class="btn btn-info" data-dismiss="modal" (click)="csvDownload()">CSV</button>
+         <button style="height: 40px;width:80px;" title="Save" class="btn btn-info" data-dismiss="modal" (click)="xmlDownloadFromHtml()">XML</button>
+          <button style="height: 40px;width:80px;" title="Save" class="btn btn-info" data-dismiss="modal" (click)="onloadPreviewEvent()">Preview</button>
+        <!--<button type="button" title="Cancel" class="btn btn-info" data-dismiss="modal" (click)="onClear()">Clear</button>-->
+    </div>
+    <!--<div #PreviewReportHeader style="height:0px">
+<previewReport ></previewReport>
+<div>-->
+    
+    <div class="row"  #reportHtmlTable id="reportTabelSection">
+        <reporttable [reportname]="reportname" [source]="gridTabel" [data]="data" [reportDrill]="contextMenuActions" [repordGridData]="reportMaster.reportQuery" (contextmenuEmit)="contextMenuParam($event)"></reporttable>
+    </div>
+    <div class="modal fade" bsModal #childModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" aria-label="Close" (click)="childModal.hide()">
+          <span aria-hidden="true">&times;</span>
+          
+        </button>
+                    <h4 class="modal-title">Information</h4>
+                </div>
+                <div class="modal-body">
+                    {{DialogMessage}}
+                </div>
+                <!--<div class="modal-footer">
+                        <button class="btn btn-info confirm-btn" (click)="hideChildModal()">Save changes</button>
+                        <button class="btn btn-info confirm-btn" type="button" (click)=onsubmit()>Save</button>
+                    </div>!-->
+
+            </div>
+        </div>
+    </div>
+    

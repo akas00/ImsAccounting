@@ -1,0 +1,92 @@
+import { Component, ViewContainerRef, HostListener } from '@angular/core';
+import { GlobalState } from './global.state';
+import { BaImageLoaderService, BaThemePreloader, BaThemeSpinner } from './theme/services';
+import { BaThemeConfig } from './theme/theme.config';
+import { layoutPaths } from './theme/theme.constants';
+import { Http, Headers, Response, RequestOptions } from '@angular/http';
+import 'style-loader!./app.scss';
+import 'style-loader!./theme/initial.scss';
+import { Observable, Subscription } from 'rxjs';
+
+
+
+
+
+
+/*
+ * App Component
+ * Top Level Component
+ */
+@Component({
+  selector: 'app',
+  template: `
+    <main [ngClass]="{'menu-collapsed': isMenuCollapsed}" baThemeRun>
+      <div class="additional-bg"></div>
+      <router-outlet></router-outlet>
+    </main>
+  `
+})
+export class App {
+
+  isMenuCollapsed: boolean = false;
+  constructor(private _state: GlobalState,
+    private _imageLoader: BaImageLoaderService,
+    private _spinner: BaThemeSpinner,
+    private viewContainerRef: ViewContainerRef,
+    private themeConfig: BaThemeConfig,
+    private http: Http) {
+
+
+    themeConfig.config();
+    // this._loadImages();
+
+    this._state.subscribe('menu.isCollapsed', (isCollapsed) => {
+      this.isMenuCollapsed = isCollapsed;
+    });
+    this.http.get("/appConfig.json")
+      .map(res => res.json())
+      .subscribe(data => {
+        this._state.setGlobalSetting("apiUrl", [data.apiUrl])
+      }, error => {
+<<<<<<< HEAD
+        this._state.setGlobalSetting("apiUrl", ["http://localhost:8080/api"])
+=======
+        this._state.setGlobalSetting("apiUrl", ["http://18.136.44.204:9999/Account/Published/api"])
+>>>>>>> 0e5a1e55bcb6d3ac929617bc5ec2eb50a92f3c37
+      });
+
+    // this.startTimer();
+    
+  }
+
+  public ngAfterViewInit(): void {
+    // hide spinner once all loaders are completed
+    BaThemePreloader.load().then((values) => {
+      this._spinner.hide();
+    });
+
+  }
+  ticks = 0;
+  sub: Subscription;
+  // private startTimer() {
+  //   try {
+  //     let header = new Headers({ 'content-type': 'application/json' });
+  //     let option = new RequestOptions({ headers: header })
+  //     let timer = Observable.timer(1, 60000);
+  //     this.sub = timer.subscribe(
+  //       t => {
+  //         this.ticks = t;
+  //         var apicall = this._state.getGlobalSetting("apiUrl") + "/TestConnection";
+  //         this.http.get(apicall, option).subscribe(x => { }),
+  //           () => { },
+  //           error => { };
+  //       }
+  //     );
+  //   } catch (ex) { }
+  // }
+  private _loadImages(): void {
+    // register some loaders
+    BaThemePreloader.registerLoader(this._imageLoader.load(layoutPaths.images.root + 'sky-bg.jpg'));
+  }
+
+}

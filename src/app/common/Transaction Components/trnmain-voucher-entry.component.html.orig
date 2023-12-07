@@ -1,0 +1,253 @@
+<style>
+  .table-summary>tbody>tr>td {
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .table-summary>tbody>tr>td:first-child {
+    text-align: left !important;
+  }
+
+  .trn-main-voucher-entry {
+    width: 100%;
+    border: 2px solid #e6e6e6;
+  }
+
+  .trn-main-entry-area {
+    min-height: 85px;
+    max-height: 210px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+</style>
+<div class="clearfix trn-main-voucher-entry">
+  <div class="clearfix" style="padding: 10px 5px">
+    <div class="col-md-12" style="border-bottom: 1px solid #828080;
+    margin-bottom: 5px;
+    background: #e2eaea;">
+      <!-- /**Voucher No**/ -->
+      <div style="padding: 0px;" class="col-md-3">
+        <label>Voucher No:</label>
+        <input [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'" 
+         [(ngModel)]="_transactionService.TrnMainObj.VCHRNO">
+      </div>
+
+      <div style="padding: 0px;" class="col-md-4" *ngIf="isShowingDate && (voucherType != 22 && voucherType != 23)">
+        <label class="smallBoldLabel"><b>Date</b></label>
+        <div *ngIf="isShowingDate && (voucherType != 22 && voucherType != 23)">{{EntryDate.DATE3}}</div>
+      </div>
+      <!-- /**Entry Date Date**/ -->
+      <div style="padding: 0px; margin-bottom: 10px;" class="col-md-4" *ngIf="!isShowingDate">
+        <label class="smallBoldLabel"><b>Entry Date</b></label>
+        <input type="date" id="date" style="width:105px" placeholder="Year Start Date" 
+        [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'" 
+        [(ngModel)]="EntryDate.DATE3"
+        (change)="changeEntryDate1($event.target.value,'AD')" 
+        max="{{date1 | date:'yyyy-MM-dd'}}"> &nbsp;A.D&nbsp;
+        <input id="nepaliDate" style="width:90px;height:25px;text-align:left"
+          class="nepali-calendar ndp-nepali-calendar"
+          [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'" 
+           [(ngModel)]="EntryDate.BSDATE1" type="text"
+          (change)="changeEntryDate1($event.target.value,'BS')" placeholder="yyyy-mm-dd"> &nbsp;B.S
+      </div>
+      <!-- /**TrnDate Date**/ -->
+      <div style="padding: 0px; margin-bottom: 10px;" class="col-md-4" *ngIf="!isShowingDate">
+        <label class="smallBoldLabel"><b>Trn Date</b></label>
+        <input type="date" style="width:105px" placeholder="Year Start Date"
+        [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'" 
+          (change)="changeEntryDate($event.target.value,'AD')"  [(ngModel)]="VoucherEntry.DATE1" max="{{date1 | date:'yyyy-MM-dd'}}"> &nbsp;A.D&nbsp;
+        
+        <input *ngIf="voucherType != 22 && voucherType != 23" id="nepaliDate"
+          style="width:90px;height:25px;text-align:left" class="nepali-calendar ndp-nepali-calendar"
+          [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'" 
+          [(ngModel)]="VoucherEntry.BSDATE1" type="text" 
+          (change)="changeEntryDate($event.target.value,'BS')"
+          placeholder="yyyy-mm-dd" /> &nbsp;B.S
+      </div>
+      <!-- /**Phiscal Year Date**/ -->
+      <div style="padding: 0px; margin-bottom: 10px;" class="col-md-3" *ngIf="voucherType == 22 || voucherType == 23">
+        <label class="smallBoldLabel"><b>Date</b></label>
+        {{EntryDate.PhiscalADDate}}
+        <input id="nepaliDate" style="width:90px;height:25px;text-align:left" disabled
+          class="nepali-calendar ndp-nepali-calendar" [(ngModel)]="EntryDate.PhiscalBSDate" type="text"
+          (change)="changeEntryDate1($event.target.value,'BS')" placeholder="yyyy-mm-dd">
+      </div>
+
+      <div style="padding: 0px; margin-bottom: 10px;" class="col-md-3" *ngIf="isShowingDate && (voucherType != 22 && voucherType != 23)">
+        <label class="smallBoldLabel"><b>Trn
+            Date</b></label>
+        {{VoucherEntry.DATE1}}
+      </div>
+
+    </div>
+    <div [hidden]="masterService.ShowMore"  class="col-md-12">
+      <ng-container>
+        <div class="row">
+          <div class="col-md-12"
+            >
+              <div style="padding: 0px;" class="col-md-3">
+                <label>Cost Center</label>
+                <select 
+                [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'"
+                [(ngModel)]="_transactionService.TrnMainObj.COSTCENTER" 
+                style="width: 60%;
+                padding-left: 14px;">
+                  <option [ngValue]=""></option>
+                  <option *ngFor="let c of costlists" [ngValue]="c.CCID">
+                    {{ c.COSTCENTERNAME }}</option>
+                </select>
+              </div>
+              
+            
+              <div style="padding: 0px;"  class="col-md-4" [hidden]="userSetting.PrefixForRefNoInvEntry ==0">
+               <!-- For PrefixForRefNoInVEntry is 1-->
+             
+                <label>Refno.</label>
+                
+                  <select name="prefix" id="prefix"
+                  [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'"
+                    [(ngModel)]="_transactionService.TrnMainObj.CHALANNOPREFIX">
+                    <option value="" selected="selected">Choose Prefix</option>
+                    <option value="{{chalan.series}}" *ngFor="let chalan of chalanSeries;">{{chalan.series}}</option>
+                  </select>
+                  <input
+                   type="text"
+                   [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'"
+                   [(ngModel)]="_transactionService.TrnMainObj.CHALANNO"
+                    (change)="setChalanNumber()" />
+            </div>
+    
+              <!-- For PrefixForRefNoInVEntry is 0-->
+              <div style="padding: 0px;" class="col-md-4" [hidden]="userSetting.PrefixForRefNoInvEntry ==1">
+                <label>Refno.</label>
+                <input type="text" style="width:32.5%"
+                [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'"
+                [(ngModel)]="_transactionService.TrnMainObj.CHALANNO"
+                  (change)="setChalanNumber()" />
+              </div>
+            
+              
+           
+            <div  style="padding: 0px;" class="col-md-4" >
+              <div style="padding: 0px;" *ngIf="voucherType != 22 && voucherType != 23">
+              <label>Remarks:</label>
+              <input type = "text" style="width: 65%;"
+              [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'" 
+               [(ngModel)]="_transactionService.TrnMainObj.REMARKS"
+                name="REMARKS"
+                placeholder="       Remarks" rows="2">
+              </div>
+           
+  
+           
+          </div>
+            <div class="col-md-12" style="padding: 0px;" *ngIf="voucherType != 12 && voucherType != 62">
+              <div style="padding: 0px;" class="col-md-3">
+                <label *ngIf="voucherType == 18 || voucherType == 17 || voucherType == 65">Voucher
+                  Type:</label>
+                <label *ngIf="voucherType == 15 || voucherType == 16" style="width:30%">Party Type:</label>
+                <select
+<<<<<<< HEAD
+                 *ngIf="voucherType == 18 || voucherType == 17 || voucherType == 65 ||  voucherType == 15 || voucherType == 16   "  style="width: 60%"
+=======
+                 *ngIf="voucherType == 18 || voucherType == 17 || voucherType == 65 || voucherType == 15 || voucherType == 16"  style="width: 60%"
+>>>>>>> a40017f722669e09c43f5cc1435f0306f0e5800b
+                 [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'" 
+                 [(ngModel)]="_transactionService.TrnMainObj.TRNMODE" name="TRNMODE"
+                (change)="VoucherTypeChangeEvent($event.target.value); TRNACName?.focus()
+                    ">
+                  <option *ngIf="voucherType == 18" value="Income Voucher">Income Voucher</option>
+                  <option *ngIf="voucherType == 18" value="Party Receipt">Party Receipt</option>
+                 
+
+                  <option *ngIf="voucherType == 17 || voucherType == 65" value="Expenses Voucher">Expenses Voucher
+                  </option>
+                  <option *ngIf="voucherType == 17 || voucherType == 65" value="Party Payment">Party Payment</option>
+                 
+
+                  <option *ngIf="voucherType == 15 || voucherType == 16" value="Customer">Customer</option>
+                  <option *ngIf="voucherType == 15 || voucherType == 16" value="Supplier">Supplier</option>
+                </select>
+             
+              </div>
+              <div *ngIf="voucherType != 12 && voucherType != 62  && voucherType != 17 " style="padding: 0px;"  class="col-md-4">
+              <!-- //CashBank -->
+                <label *ngIf="
+                      
+                      _transactionService.TrnMainObj.TRNMODE == 'Party Receipt' ||
+                      _transactionService.TrnMainObj.TRNMODE == 'Income Voucher' ||
+                      
+                      ( _transactionService.TrnMainObj.TRNMODE == 'Expenses Voucher' && voucherType != 65) ||
+                      (_transactionService.TrnMainObj.TRNMODE == 'Party Payment'&& voucherType != 65) 
+                    " >Cash/Bank:</label>
+
+                <label *ngIf="(_transactionService.TrnMainObj.TRNMODE == 'Single Payment' || partyArray == 0) || 
+                (voucherType == 65 && _transactionService.TrnMainObj.TRNMODE == 'Party Payment' && partyArray)"
+                  >Party A/C:</label>
+
+                <label *ngIf="(_transactionService.TrnMainObj.TRNMODE == 'Single Payment' && partyArray == 1) || 
+                  (voucherType == 65 && _transactionService.TrnMainObj.TRNMODE == 'Expenses Voucher')"
+                 >Expenses A/C:</label>
+
+                <label *ngIf="_transactionService.TrnMainObj.TRNMODE == 'Bank Withdraw Voucher' ||
+                      _transactionService.TrnMainObj.TRNMODE == 'Cheque Encash'" >Cash:</label>
+
+                <label *ngIf="_transactionService.TrnMainObj.TRNMODE == 'Bank Deposit Voucher'"
+                 >Cash/Cheque:</label>
+
+                <label *ngIf="_transactionService.TrnMainObj.TRNMODE == 'Cash Transfer'" >Transfer
+                  From:</label>
+
+                <label *ngIf="voucherType == 16 " >Dr. Account:</label>
+                <label *ngIf="voucherType == 15 " >Cr. Account:</label>
+                <span *ngIf="voucherType != 12 && voucherType != 62  && voucherType !=22 && voucherType !=23 && voucherType !=17 " class="cell-with-comment">
+                  <input type="text"
+                  [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'"  
+                  [(ngModel)]="_transactionService.TrnMainObj.TRNACName"
+                   name="TRNAC" #TRNACName
+                   (keydown)="preventInput($event)" 
+                   (keydown.Tab)="showAcPartyList(); TRNACName.blur();"
+                   (keydown.Enter)="showAcPartyList(); TRNACName.blur();" style="width:67.5%" />
+                  <span class="cell-comment" style="left: 135px;">
+                    press ENTER or TAB to Select A/C
+                  </span>
+                </span>
+                <!-- <input disabled type="text" style="width:47%" [(ngModel)]="_transactionService.TrnMainObj.TRNACName"
+                  name="TRNACName" /> -->
+              </div>
+              <div style="padding: 0px;" class="col-md-4" style="margin-top: 10px;" *ngIf="voucherType == 16 || voucherType == 15">
+                <!-- <label style="width:10%">Narration :</label> -->
+                <input type="checkbox" [(ngModel)]="_transactionService.TrnMainObj.IsVATBill" (change)="vatBillChange()">
+                Exclude Transaction in Tax Report
+    
+              </div>
+                  <div style="padding: 0px;"  class="col-md-4" *ngIf="voucherType == 18 || voucherType == 17">
+                    <label *ngIf="voucherType == 18">Received From :</label>
+                    <label  *ngIf="voucherType == 17">Pay To :</label>
+                    <input #BILLTO type="text" style="width:65%;"
+                     [(ngModel)]="_transactionService.TrnMainObj.BILLTO"
+                     [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'" 
+                      name="BILLTO" *ngIf="voucherType == 18" placeholder="Received From" />
+                    <input #BILLTO type="text" style="width:65%;"
+                     [(ngModel)]="_transactionService.TrnMainObj.BILLTO"
+                     [disabled]="_transactionService.TrnMainObj.Mode == 'VIEW'" 
+                      name="BILLTO" *ngIf="voucherType == 17" placeholder="Pay To" />
+                  </div>
+            </div>
+         
+          </div>
+        </div>
+
+      </ng-container>
+
+      <!-- <ng-container *ngIf="isNote">
+        <trntran-note-entry [noteType]="noteType"></trntran-note-entry>
+      </ng-container> -->
+
+    </div>
+
+  </div>
+</div>
+
+<generic-popup-grid #genericGridACListParty [popupsettings]="gridACListPartyPopupSettings"
+  (onItemDoubleClick)="onAcPartySelect($event)"></generic-popup-grid>

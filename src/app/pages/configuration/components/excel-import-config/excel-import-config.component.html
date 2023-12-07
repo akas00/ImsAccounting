@@ -1,0 +1,555 @@
+<style>
+  input.non-editable {
+    border: none;
+    background: #f1f1f1;
+    text-align: left;
+  }
+
+  .table > thead > tr > th:first-child {
+    text-align: left;
+  }
+
+  input {
+    min-width: 90px;
+    height: 23px;
+  }
+
+  tr {
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+  }
+</style>
+<div class="main-container" style="margin-top: 0px;; margin-bottom: 0px;height: auto">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="tabbable" id="sheet-generation-tabs">
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a
+              class="nav-link active"
+              href="#sheet-generation"
+              data-toggle="tab"
+              >Sheet Generation</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#upload-sheet" data-toggle="tab"
+              >Upload Sheet</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#update-status" data-toggle="tab"
+              >Upload Status</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#Scheme" data-toggle="tab"
+              >Scheme</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#Margin" data-toggle="tab"
+              >Margin</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#Product" data-toggle="tab"
+              >Product</a
+            >
+          </li>
+
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="sheet-generation">
+            <div class="row clearfix">
+              <div class="col-md-12">
+                <div class="col-md-4" *ngIf="!excelImportConfig.length">
+                  <div class="form-group row" *ngIf="!excelImportConfig.length">
+                    <label class="col-md-4 form-control-label"
+                      >Select a Master
+                    </label>
+                    <div class=" col-md-8">
+                      <select
+                        class="form-control"
+                        style="color:black"
+                        name="selectedMaster"
+                        [(ngModel)]="selectedMasterName"
+                      >
+                        <option
+                          *ngFor="let item of masterList"
+                          value="{{ item }}"
+                          >{{ item }}</option
+                        >
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4" *ngIf="excelImportConfig.length">
+                  <label class="col-md-6"
+                    >Master :: {{ selectedMasterName }}</label
+                  >
+                </div>
+                <div class="col-md-8">
+                  <button
+                    type="button"
+                    (click)="loadConfig()"
+                    class="btn btn-info"
+                    style="margin-right : 10px;"
+                  >
+                    Load Config
+                  </button>
+                  <button
+                    type="button"
+                    (click)="onSave()"
+                    class="btn btn-info"
+                    style="margin-right : 10px;"
+                  >
+                    Save Config
+                  </button>
+                  <button
+                    type="button"
+                    (click)="downloadConfigCSV()"
+                    class="btn btn-info"
+                    style="margin-right : 10px;"
+                  >
+                    Download CSV
+                  </button>
+
+                  <button
+                    type="button"
+                    (click)="resetConfig()"
+                    class="btn btn-info"
+                    style="margin-right : 10px;"
+                  >
+                    Clear Config
+                  </button>
+                  <button
+                    type="button "
+                    class="btn btn-info"
+                    (click)="cancel()"
+                    style="margin-right : 10px;"
+                  >
+                    Back
+                  </button>
+                </div>
+              </div>
+            </div>
+            <hr/>
+            <form
+              class="row clearfix"
+              class="form-horizontal"
+              [formGroup]="form"
+            >
+              <div class="col-md-12" style="height: 400px; overflow-y:auto">
+                <table class="table" *ngIf="excelImportConfig.length">
+                  <thead>
+                    <tr>
+                      <th>SI NO</th>
+                      <th>Caption Name</th>
+                      <th>Column Size</th>
+                      <th>Data Type</th>
+                      <th>Mandatory</th>
+                      <th>Add to Sheet</th>
+                      <th>Column Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container
+                      formArrayName="items"
+                      *ngFor="
+                        let item of form.get('items').controls;
+                        let i = index
+                      "
+                    >
+                      <tr [formGroupName]="i">
+                        <td>
+                          <input
+                            class="non-editable"
+                            formControlName="SNO"
+                            readonly
+                          />
+                        </td>
+                        <td>
+                          <input
+                            class="non-editable"
+                            formControlName="ColumnName"
+                            readonly
+                          />
+                        </td>
+                        <td>
+                          <input
+                            class="non-editable"
+                            formControlName="ColumnSize"
+                            readonly
+                          />
+                        </td>
+                        <td>
+                          <input
+                            class="non-editable"
+                            formControlName="DataType"
+                            readonly
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="checkbox"
+                            class="non-editable"
+                            formControlName="Mandatory"
+                            (change)="MandatoryChanged($event, i)"
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="checkbox"
+                            class="non-editable"
+                            formControlName="AddToSheet"
+                            (change)="AddToSheetChanged($event, i)"
+                          />
+                        </td>
+                        <td>
+                          <input
+                            class="non-editable"
+                            formControlName="ColumnValue"
+                            readonly
+                          />
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </form>
+          </div>
+          <div class="tab-pane" id="upload-sheet">
+            <div class="row clearfix">
+              <div class="col-md-12">
+                <div class="col-md-4">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label>Select a Master </label>
+                      <select
+                        class="form-control"
+                        style="color:black"
+                        name="selectedMaster"
+                        [(ngModel)]="selectedMasterName"
+                        style="height:35px"
+                      >
+                        <option
+                          *ngFor="let item of masterList"
+                          value="{{ item }}"
+                          >{{ item }}</option
+                        >
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label>Choose a Path </label>
+                      <input
+                        #fileSelector_Import
+                        class="form-control"
+                      
+                        type="file"
+                        accept=".xlsx, .csv"
+                        (change)="onFileChange($event)"
+                        style="height:35px"
+                      />
+                    </div>
+                    <button (click)="importConfig()" class="btn btn-info">
+                      Upload File
+                    </button>
+                    <button
+                      type="button "
+                      class="btn btn-info"
+                      (click)="cancel()"
+                      style="margin-right : 10px;"
+                    >
+                      Back
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-pane" id="update-status">
+            <div class="row clearfix">
+              <div class="col-md-12">
+                <div class="col-md-4" *ngIf="!importErrorList.length">
+                  <div class="form-group row" *ngIf="!excelImportConfig.length">
+                    <label class="col-md-4  form-control-label"
+                      >Select a Master
+                    </label>
+                    <div class=" col-md-8">
+                      <select
+                        class="form-control"
+                        style="color:black"
+                        name="selectedMaster"
+                        [(ngModel)]="selectedMasterName"
+                      >
+                        <option
+                          *ngFor="let item of masterList"
+                          value="{{ item }}"
+                          >{{ item }}</option
+                        >
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4" *ngIf="importErrorList.length">
+                  <label class="col-md-6"
+                    >Master :: {{ selectedMasterName }}</label
+                  >
+                </div>
+                <div class="col-md-8">
+                  <button
+                    type="button"
+                    (click)="onLoadMaster()"
+                    class="btn btn-info"
+                    style="margin-right : 10px;"
+                  >
+                    Load
+                  </button>
+                  <button
+                    type="button"
+                    (click)="onSaveMaster()"
+                    class="btn btn-info"
+                    style="margin-right : 10px;"
+                  >
+                    Save Master
+                  </button>
+                  <button
+                    type="button"
+                    (click)="resetConfig()"
+                    class="btn btn-info"
+                    style="margin-right : 10px;"
+                  >
+                    Clear Config
+                  </button>
+                  <button
+                    type="button "
+                    class="btn btn-info"
+                    (click)="cancel()"
+                    style="margin-right : 10px;"
+                  >
+                    Back
+                  </button>
+                </div>
+              </div>
+              <hr/>
+              <div
+                class="col-md-12"
+                *ngIf="importErrorList.length"
+                style="width: 100%; height: 400px;  overflow: auto;"
+              >
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th *ngFor="let key of importErrorList[0] | keys">
+                        {{ key }}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let c of importErrorList; let i = index">
+                      <td *ngFor="let key of c | keys; let j = index">
+                        <input
+                          type="text"
+                          class="form-control"
+                          [(ngModel)]="c[key]"
+                          name="{{ i }}_{{ j }}"
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-pane" id="Margin">
+            <div class="row clearfix">
+              <div class="col-md-12">            
+                <div class="col-md-8">
+                  <button
+                    type="button"
+                    (click)="showImportMargin()"
+                    class="btn btn-info"
+                    style="margin-right : 10px;"
+                  >
+                    Load
+                  </button>
+                  <button
+                    type="button"
+                    (click)="UpdateMarginImport()"
+                    class="btn btn-info"
+                    style="margin-right : 10px;"
+                  >
+                    Update
+                  </button>
+
+                </div>
+              </div>
+              <hr/>
+              <div
+                class="col-md-12"
+                *ngIf="importErrorList.length"
+                style="width: 100%; height: 400px;  overflow: auto;"
+              >
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th *ngFor="let key of importErrorList[0] | keys">
+                        {{ key }}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let c of importErrorList; let i = index">
+                      <td *ngFor="let key of c | keys; let j = index">
+                        <input
+                          type="text"
+                          class="form-control"
+                          [(ngModel)]="c[key]"
+                          name="{{ i }}_{{ j }}"
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-pane" id="Scheme">
+            <div class="row clearfix">
+              <div class="col-md-12">            
+                <div class="col-md-8">
+                  <button
+                    type="button"
+                    (click)="showImportScheme()"
+                    class="btn btn-info"
+                    style="margin-right : 10px;"
+                  >
+                    Load
+                  </button>
+                  <button
+                    type="button"
+                    (click)="UpdateSchemeImport()"
+                    class="btn btn-info"
+                    style="margin-right : 10px;"
+                  >
+                    Update
+                  </button>
+
+                </div>
+              </div>
+              <hr/>
+              <div
+                class="col-md-12"
+                *ngIf="importErrorList.length"
+                style="width: 100%; height: 400px;  overflow: auto;"
+              >
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th *ngFor="let key of importErrorList[0] | keys">
+                        {{ key }}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let c of importErrorList; let i = index">
+                      <td *ngFor="let key of c | keys; let j = index">
+                        <input
+                          type="text"
+                          class="form-control"
+                          [(ngModel)]="c[key]"
+                          name="{{ i }}_{{ j }}"
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-pane" id="Product">
+            <div class="row clearfix">
+              <div class="col-md-12">            
+                <div class="col-md-8">
+                  <button
+                    type="button"
+                    (click)="showImportScheme()"
+                    class="btn btn-info"
+                    style="margin-right : 10px;"
+                  >
+                    Load
+                  </button>
+                  <button
+                    type="button"
+                    (click)="UpdateSchemeImport()"
+                    class="btn btn-info"
+                    style="margin-right : 10px;"
+                  >
+                    Update
+                  </button>
+
+                </div>
+              </div>
+              <hr/>
+              <div
+                class="col-md-12"
+                *ngIf="importErrorList.length"
+                style="width: 100%; height: 400px;  overflow: auto;"
+              >
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th *ngFor="let key of importErrorList[0] | keys">
+                        {{ key }}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let c of importErrorList; let i = index">
+                      <td *ngFor="let key of c | keys; let j = index">
+                        <input
+                          type="text"
+                          class="form-control"
+                          [(ngModel)]="c[key]"
+                          name="{{ i }}_{{ j }}"
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+
+
+
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<file-uploader-popup
+    #fileUploadPopup 
+    [popupsettings]="fileUploadPopupSettings"
+    (onUploaded) = "fileUploadSuccessStatus($event)"
+> 
+</file-uploader-popup>
+
+

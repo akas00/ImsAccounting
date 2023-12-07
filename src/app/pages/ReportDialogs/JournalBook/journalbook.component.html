@@ -1,0 +1,110 @@
+<div id="journalBookReportId"   style="background-color : #ffffff; height : auto; padding:1%;">
+        <div class="row">
+           <div class="modal-header"  style="width : 97%; margin : 0px auto;">
+              <button type="button" class="close" data-dismiss="modal" (click)="closeReportBox()">&times;</button>
+              <h4 class="modal-title">Journal Book Report</h4>
+           </div>
+           <div class="col-md-12">
+              <table>
+                 <tr>
+                    <td>
+                       <input type="radio" name="rangeSelection" value="0" [(ngModel)]="ReportParameters.OPT_REPMODE"/>&nbsp;Date Range Selection
+                    </td>
+                    <td>
+                       <input type="radio" name="rangeSelection" value="1" [(ngModel)]="ReportParameters.OPT_REPMODE" />&nbsp;Voucher Range Selection
+                    </td>
+                 </tr>
+                 <tr>
+                    <td>
+                       <fieldset>
+                          <legend>Date Range Selection</legend>
+                          <table> 
+                                <tr>
+                                   <td><label class="smallBoldLabel">From(AD):</label></td>
+                                   <td><label class="smallBoldLabel">To(AD):</label></td>
+                                </tr>
+                                <tr>
+                                   <td>                                                 
+                                         <label class="smallBoldLabel"><input  type="date"  style="width:152px; min-width:50%;"  placeholder="Year Start Date" [(ngModel)]="ReportParameters.DATE1"  (change)="changestartDate($event.target.value,'AD')"  ></label>
+                                   </td>
+                                   <td>                                                 
+                                         <label class="smallBoldLabel"><input  type="date" style="width:152px; min-width:50%;"  placeholder="Year Start Date" [(ngModel)]="ReportParameters.DATE2"  (change)="changeEndDate($event.target.value,'AD')"   ></label>
+                                   </td>
+                                </tr>
+                                <tr>
+                                   <td>
+                                         <label class="smallBoldLabel"><input id="nepaliDate" style="width:152px;height:25px;text-align:center" class="nepali-calendar ndp-nepali-calendar" [(ngModel)]="ReportParameters.BSDATE1"
+                                      type="text" (change)="changestartDate($event.target.value,'BS')"
+                                      placeholder="yyyy-mm-dd" /> </label>
+                                   </td>
+                                   <td>
+                                         <label class="smallBoldLabel"><input id="nepaliDate" style="width:152px;height:25px;text-align:center" class="nepali-calendar ndp-nepali-calendar" [(ngModel)]="ReportParameters.BSDATE2"
+                                      type="text" (change)="changeEndDate($event.target.value,'BS')"
+                                      placeholder="yyyy-mm-dd" /> </label>
+                                   </td>
+                                </tr>
+                             </table>
+                       </fieldset>
+                    </td>
+                    <td>
+                       <fieldset>
+                          <legend>Voucher Range Selection</legend>
+                          <table>
+                             <tr>
+                                <td>From</td>
+                                <td style="border:1px solid;">
+                                   <span style="border-right: 1px solid; ">JV-</span><input style="border : none; width : 130px;" type="text" name="fromRV" [(ngModel)]="ReportParameters.VNO1" />
+                                </td>
+                             </tr>
+                      
+                             <tr>
+                                <td>To</td>
+                                <td style="border:1px solid;">
+                                   <span style="border-right: 1px solid;">JV-</span><input style="border : none; width:130px; " type="text" name="toRV" [(ngModel)]="ReportParameters.VNO2" />
+                                </td>
+                             </tr>
+                          </table>
+                       </fieldset>
+                    </td>
+                 </tr>
+                 <tr>
+                    <td>
+                        <fieldset>
+                            <legend>Division Selection:</legend>
+                                <select [(ngModel)]="ReportParameters.DIVISION" style="width : 100%;">
+                                 <option value="%" *ngIf="masterService.userSetting.userwisedivision==0">All</option>
+                                    <option *ngFor="let div of division" value="{{ div.INITIAL }}">
+                                        {{ div.NAME }}
+                                    </option>
+                                </select>
+                        </fieldset>
+                    </td>
+                    <td>
+                       <fieldset>
+                          <legend>Journal Voucher Series Selection</legend>
+                          <select style="width : 100%;">
+                             <option>--Series Selection--</option>
+                          </select>
+                       </fieldset>
+                    </td>
+                 </tr>
+              </table>
+              <fieldset>
+                 <legend>Report Filter Option</legend>
+                 <div>
+                    <span style="border : none;">Account Name: </span>
+                    <select style="width : 100%;">
+                       <option>All</option>
+                       <option *ngFor="let ac of aclist">
+                          {{ ac.ACNAME }}
+                       </option>
+                    </select>
+                 </div>
+              </fieldset>
+           </div>
+           <div class="btn">
+                <button class="btn btn-info confirm-btn" type="button"  (click)=onload()>RUN</button>
+                <button type="button"  title="Cancel" class="btn btn-info">Close</button>  
+            </div>
+        </div>
+     </div>

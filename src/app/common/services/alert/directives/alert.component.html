@@ -1,0 +1,64 @@
+<div
+  class="modal fade"
+  bsModal
+  #alertModeal="bs-modal"
+  [config]="{ backdrop: 'static' }"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="mySmallModalLabel"
+  aria-hidden="true" 
+>
+  <div class="modal-dialog modal-sm" *ngIf="message && message.type != 'license'">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" aria-label="Close" (click)="close()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" *ngIf="displayHeading">
+            <i *ngIf="message.type == 'success'" class="fa fa-check" aria-hidden="true" style="color: green"></i> 
+            <i *ngIf="message.type == 'warning'" class="fa fa-warning" aria-hidden="true" style="color: yellow"></i>
+            <i *ngIf="message.type == 'error'" class="fa fa-warning" aria-hidden="true" style="color: rgb(212, 149, 149)"></i>
+            <i *ngIf="message.type == 'info'" class="fa fa-warning" aria-hidden="true" style="color: rgb(169, 195, 233)"></i>
+            {{ displayHeading }}
+        </h4>
+      </div>
+      <div class="modal-body">
+        <p *ngIf="displayMessage">{{ displayMessage }}</p>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-success"
+          (click)="close()"
+        >
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-dialog modal-sm" *ngIf="message && message.type == 'license'" style="   min-width: 320px; position: absolute;
+  float: left;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);">
+    <div class="modal-content" style="min-height: 200px;">
+      <div class="modal-header" style="border: none;  height: 5rem;">
+        <button class="close" aria-label="Close" (click)="close()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-break" style="margin-top: 40px;">
+        <p style="text-align: center;" *ngIf="displayMessage" [innerHTML]="displayMessage"></p>
+        <fieldset class="linkField">
+          <span *ngIf="displayLink"  [innerHTML]="displayLink" style="text-decoration: underline;word-wrap: break-word !important;"></span>
+
+        </fieldset>
+      </div>
+      <div class="modal-footer" style="border: none; margin-top:4vh">
+        <button type="button" class="btn btn-info" (click)="close()">
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

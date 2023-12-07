@@ -1,0 +1,81 @@
+@import '../../theme/sass/auth';
+.ims-logo {
+    position: absolute;
+    z-index: 9;
+    left: 40px;
+    top: 20px;
+    img{
+        width: 65%;
+            @media screen and (max-width:991px) {
+                width:40%;
+                filter: brightness(0) invert(1);
+            }
+    }
+}
+.login-vector{
+      
+    img{
+    width: 43%;
+    position: absolute;
+    right: 76px;
+    bottom: 168px;
+    border-bottom: 2px solid #Ddd;
+    @media screen and (max-width:991px) {
+      display: none;
+    }
+    }
+
+}
+.FiscalYear{
+    select{
+        @media screen and (max-width:767px) {
+      margin-left: 0px !important;
+  
+          }
+
+    }
+    
+
+}
+
+// .form-control{
+//     padding: 0.8rem 0.75rem !important; 
+//     font-size: 15px !important;
+//     background-color: none;
+// }
+ .loginForm{
+    padding-top: 40px;
+    padding-bottom: 40px;
+//   box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+    border-radius: 10px;
+    position: absolute;
+    width: 100%;
+    top: 45%;
+    left: 55%;
+    @media screen and (max-width:991px) {
+ 
+     margin-top: 0 ; 
+    
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+    border-radius: 10px;
+    top: 27%;
+    position: absolute;
+    left: 14% ;
+    width: 80%;
+  
+
+}
+ @media screen and (max-width:767px) {
+    width: 74%;
+    background-color: #fff;
+ }
+ }
+ .FiscalYear{
+    @media screen and (max-width:767px) {
+        width: 50%;
+        
+    }
+ }
+
+

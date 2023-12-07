@@ -1,0 +1,97 @@
+<style>
+        .modal-content {
+          padding: 1px;
+          margin: 0px;
+          float: right;
+        }
+        .table-scroll {
+          overflow-y: scroll;
+          overflow-x: hidden;
+        }
+
+        tbody > tr:hover {
+          background-color: #f3f5f4;
+          cursor: pointer;
+        }
+        tr {
+          font-size: 11px;
+        }
+        .selected-row {
+          background-color: #ced6d3 !important;
+        }
+
+        .table > tbody > tr > td:first-child {
+          text-align: left !important;
+          padding: 0px 0px 0px 11px !important;
+        }
+
+        .modal-content{
+          box-shadow: -10px 0px 10px 1px #aaaaaa;
+        }
+
+        .modal-content-main-area {
+          max-height: 100%;
+          height: 100%;
+          overflow: auto;
+          overflow-x: hidden;
+        }
+
+        .modal-content-summary-area {
+          max-height: 20%;
+          height: 20%;
+          overflow: auto;
+          overflow-x: hidden;
+        }
+      </style>
+      <div
+        class="modal-sticky"
+        style="display : block; padding: 0px;height: 400px; margin-bottom: 60px"
+      >
+        <!-- Modal content -->
+        <div class="modal-content modal-content-main-area">
+          <div >
+            <div>
+              <div class="modal-header" style="padding: 0px;background: #8cccfb;">
+                <button class="close" aria-label="Close" (click)="hide()">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" style="text-align: center;">
+                ITEMS
+                </h4>
+              </div>
+
+              <div class="col-md-12 table-scroll">
+                <table class="table">
+                  <thead>
+                    <tr style="background: #8cccfb;" >
+                       <th > DESCRIPTION</th>
+                       <th > CODE</th>
+                       <th > STOCK</th>
+                       <th>MRP</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="_trnMainService.ItemsListForMultiItemBarcode.length">
+                    <tr
+                      class="highlight"
+                      [class.selected-row]="selectedRowIndex == i"
+                      *ngFor="let item of _trnMainService.ItemsListForMultiItemBarcode; let i = index"
+                      (dblclick)="doubleClick(item)"
+                      (click)="singleClick(i)"
+                      title="double click for detail view"
+                    >
+                      <td >{{ item.DESCA }} </td>
+                      <td >{{ item.MENUCODE }} </td>
+                      <td >{{ item.STOCK }} </td>
+                      <td >{{ item.MRP }} </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+              </div>
+            </div>
+            <div style="margin-left: 25px " *ngIf="summary" [innerHTML]="summary">
+
+            </div>
+          </div>
+        </div>
+      </div>

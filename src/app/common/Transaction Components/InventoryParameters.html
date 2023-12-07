@@ -1,0 +1,52 @@
+<div class="row plainBackGround" *ngIf="masterService.ShowMore == true">
+        <div class="row" style="margin-left:10px;">
+                <div class="col-md-4" style="margin: 10px; max-height: 150px; overflow-y: scroll; overflow-x: hidden">
+                        <div *ngIf="_trnMainService.TrnMainObj.VoucherType==7" class="row">
+                                <label style="width:25%;">Branch In :</label>
+                                <select style="width:70%;" [(ngModel)]="_trnMainService.TrnMainObj.BILLTOADD">
+                                        <option *ngFor="let d of masterService.allDivisionList$ | async"
+                                                [ngValue]="d.INITIAL">{{d.NAME}}</option>
+                                </select>
+
+
+                        </div>
+                        <div *ngIf="_trnMainService.TrnMainObj.VoucherType==8" class="row">
+                                <label style="width:25%;">Branch Out :</label>
+                                <select style="width:70%;" [(ngModel)]="_trnMainService.TrnMainObj.BILLTOADD">
+                                        <option *ngFor="let d of masterService.allDivisionList$ | async"
+                                                [ngValue]="d.INITIAL">{{d.NAME}}</option>
+                                </select>
+
+
+                        </div>
+                        <div *ngIf="_trnMainService.TrnMainObj.VoucherType==5" class="row">
+                                <label style="width:25%;">From Warehouse :</label>
+                                <select style="width:70%;" [(ngModel)]="_trnMainService.TrnMainObj.BILLTO" [disabled]="FromWarehouseFieldDisabled()" >
+                                        <option *ngFor="let w of warehouseList"
+                                                [ngValue]="w.NAME">{{w.NAME}}</option>
+                                </select>
+
+
+                        </div>
+                        <div *ngIf="_trnMainService.TrnMainObj.VoucherType==5" class="row">
+                                <label style="width: 25%;">To Warehouse :</label>
+                                <select style="width:70%;" [(ngModel)]="_trnMainService.TrnMainObj.BILLTOADD">
+                                        <option *ngFor="let w of warehouseList"
+                                                [ngValue]="w.NAME">{{w.NAME}}</option>
+                                </select>
+                        </div>
+                        <div *ngIf="_trnMainService.TrnMainObj.VoucherType==9 || _trnMainService.TrnMainObj.VoucherType==59 "
+                                class="row">
+                                <label style="width: 25%;">Settlement Mode :</label>
+                                <select style="width:70%;" [(ngModel)]="_trnMainService.TrnMainObj.TRNMODE">
+                                        <option *ngFor="let s of _trnMainService.settlementList"
+                                                [ngValue]="s.DESCRIPTION">{{s.DESCRIPTION}}</option>
+                                </select>
+                        </div>
+                        <div class="row">
+                                <label style="width: 25%;">Remarks :</label>
+                                <input type="text" style="width:70%;"
+                                        [(ngModel)]="_trnMainService.TrnMainObj.REMARKS" />
+                        </div>
+
+                </div>

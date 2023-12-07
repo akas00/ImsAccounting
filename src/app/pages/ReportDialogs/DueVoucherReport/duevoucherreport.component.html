@@ -1,0 +1,92 @@
+<div id="duevoucherReportId" style="background-color : #ffffff; padding :1%; height : auto; width : 60%; ">
+    <div class="row">
+        <div class="modal-header" style="width : 97%; margin : 0px auto;">
+            <button type="button" class="close" data-dismiss="modal" (click)="closeReportBox()">&times;</button>
+            <h4 class="modal-title">Due Voucher Report</h4>
+        </div>
+
+        <div class="col-md-12">
+            <fieldset>
+                <label class="smallBoldLabel"><input type="radio" value="1" name="optReportType"
+                        [(ngModel)]="ReportParameters.ROPTION ">&nbsp;Summary Report</label><br>
+                <label class="smallBoldLabel"><input type="radio" value="2" name="optReportType"
+                        [(ngModel)]="ReportParameters.ROPTION ">&nbsp;Detail Report</label><br>
+            </fieldset>
+            <fieldset>
+                <legend>As On Dated:</legend>
+                <span>
+                    <label class="smallBoldLabel"><input type="date" style="width:152px; min-width:50%;"
+                            placeholder="Year Start Date" [(ngModel)]="ReportParameters.DATE1"
+                            (change)="changestartDate($event.target.value,'AD')"></label>
+                    <label class="smallBoldLabel"><input id="nepaliDate"
+                            style="width:152px;height:25px;text-align:center"
+                            class="nepali-calendar ndp-nepali-calendar" [(ngModel)]="ReportParameters.BSDATE1"
+                            type="text" (change)="changestartDate($event.target.value,'BS')" placeholder="yyyy-mm-dd" />
+                        (Miti) </label>
+                </span>
+            </fieldset>
+            <fieldset>
+                <legend>Customer / Supplier Selection :</legend>
+                <table>
+                    <tr>
+                        <td>
+                            <label class="smallBoldLabel">A/C Code:</label>
+                        </td>
+                        <td>
+                            <label class="smallBoldLabel"><input tabindex="2" type="text" class="form-control input-sm"
+                                    style="height: 26px;" (keydown.enter)="accodeChanged($event.target.value)"
+                                    [(ngModel)]="ACCODE"></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="smallBoldLabel">Account Name:</label>
+                        </td>
+                        <td>
+                            <label class="smallBoldLabel"><input tabindex="2" ngui-auto-complete
+                                    class="form-control input-sm" [source]="dropListItem.bind(this)" max-num-list="25"
+                                    [(ngModel)]="ACCNAME" list-formatter="ACNAME" style="height: 26px;"
+                                    (ngModelChange)="itemChanged($event)" name="AcName"
+                                    display-property-name="ACNAME"></label>
+
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+            <fieldset>
+                <table>
+                    <tr>
+                        <td>
+                            <label class="smallBoldLabel">
+                                Voucher Age <br> Between
+                            </label>
+                        </td>
+                        <td>
+                            <label class="smallBoldLabel">
+                                <input type="text" style="width : 92%;" /> -
+                            </label>
+                        </td>
+                        <td>
+                            <label class="smallBoldLabel">
+                                <input type="text" style="width : 92%;" />
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+            <label class="smallBoldLabel"><input type="checkbox" style="vertical-align: middle;"
+                    (change)="$event.target.checked?(ReportParameters.TOPNSORT=1):(ReportParameters.TOPNSORT=0)"
+                    [checked]="ReportParameters.TOPNSORT == 1" name="showClerVoucAlso">&nbsp;Show Cleared/Tracked
+                Voucher Also</label>
+
+
+            <div class="btn">
+                <!-- <button type="button"  title="onSave" class="btn btn-info">Run</button>    -->
+                <button class="btn btn-info confirm-btn" type="button" (click)=onload()>RUN</button>
+                <button type="button" title="Cancel" class="btn btn-info" (click)="closeReportBox()">Close</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>

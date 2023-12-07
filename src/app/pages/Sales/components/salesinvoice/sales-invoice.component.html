@@ -1,0 +1,240 @@
+﻿ <div class="sticky-top">
+  <div class="row clearfix">
+    <voucher-master-toggler></voucher-master-toggler>
+    <voucher-master-action 
+    (onViewClickEmit)="onViewClicked($event)" 
+    ></voucher-master-action>
+  </div>
+</div>
+<div class="main-container">
+  <div
+    class="row clearfix"
+    style="margin: 10px; max-height: 150px; overflow-y: scroll; overflow-x: hidden"
+  >
+    <trnmain-sales-invoice-entry
+      (DialogOpenEmit)="DialogOpenEmitEvent($event)"
+    ></trnmain-sales-invoice-entry>
+  </div>
+
+  <div class="row" style="margin-top: 5px">
+    <div class="col-md-12">
+      <div class="col-md-10">
+        <productentry [voucherType]="voucherType"></productentry>
+        <!-- <voucher-message-remarks></voucher-message-remarks> -->
+      </div>
+      <div
+        class="col-md-2 plainBackGround"
+        style="height:350px; overflow: scroll; margin : 0px; border: 1px solid #f1ebeb;"
+      >
+        <table class="table table-summary" style="text-align: left">
+          <tr>
+            <td>Bill No:</td>
+            <td>{{ TrnMainObj.VoucherNo }}</td>
+          </tr>
+          <tr>
+            <td>Bill Date:</td>
+            <td>{{ TrnMainObj.TRN_DATE }}</td>
+          </tr>
+          <tr>
+            <td>Item Disc Amount</td>
+            <td>{{ TrnMainObj.TOTALDISCOUNT | twoDigitNumber }}</td>
+          </tr>
+          <tr>
+            <td>Disc%</td>
+            <td>
+              <input
+                type="number"
+                style="width:80px;"
+                value="{{ flatDiscountValue }}"
+                (input)="flatDisChange($event.target.value)"
+              />
+              <select
+                style="width:70px"
+                (change)="flatDiscountUnitChange($event.target.value)"
+              >
+                <option value="percent">%</option>
+                <option value="amount">Amount</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Disc Amount</td>
+            <td>{{ TrnMainObj.TOTALDISCOUNT | twoDigitNumber }}</td>
+          </tr>
+          <tr>
+            <td>Round off Amount</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Taxable Amt:</td>
+            <td>{{ TrnMainObj.TAXABLE | twoDigitNumber }}</td>
+          </tr>
+          <tr>
+            <td>Non-Taxable:</td>
+            <td>{{ TrnMainObj.NONTAXABLE | twoDigitNumber }}</td>
+          </tr>
+          <tr>
+            <td>Rounding Adj:</td>
+            <td>{{ TrnMainObj.ROUNDOFF | twoDigitNumber }}</td>
+          </tr>
+          <tr>
+            <td>Net Amt</td>
+            <td>{{ TrnMainObj.NETAMNT | twoDigitNumber }}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div> 
+<div class="sticky-bottom">
+  <voucher-total-area></voucher-total-area> 
+</div>
+
+
+<!-- <div class="modal fade" bsModal #TrnMainListchildModal="bs-modal" style="top:0;padding-top:10px" [config]="{backdrop: 'static'}" tabindex="-1"
+    role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" aria-label="Close" (click)="TrnMainListchildModal.hide()">
+            <span aria-hidden="true">&times;</span>
+            
+          </button>
+                <h4 class="modal-title">Dispatch List</h4>
+            </div>
+            <div class="modal-body">
+                <div style="background:#d4c8c8; height:2px;width:100%"></div>
+                <table  style="margin:10px;width:100%" class="GRNPopUp">
+                    <div style="height:30px;width:100%;font-weight: bold;">
+                        <tr>
+                            <th style="width:100px">Voucher No.</th>
+                            <th style="width:200px">Division</th>
+                           
+                            <th style="width:100px">Date</th>
+                            <th style="width:100px">Miti</th>
+                            <th style="width:150px">Trn. A/C</th>
+                           
+                        </tr>
+                    </div>
+                    <div style="height:400px;width:100%;overflow:auto;scrollbar-3dlight-color:#FFFFFF;scrollbar-arrow-color:#000000;scrollbar-base-color:#FF9999;scrollbar-darkshadow-color:#000000;scrollbar-face-color:#000000;scrollbar-highlight-color:#000000;scrollbar-shadow-color:#0033CC;">
+                        <tr *ngFor="let t of WTMList;let i=index" style="height:28px;" (click)="WTMrowClick(t,i)" [class.active]="i == selectedWTMRowIndex">
+    
+                          
+                            <td style="width:100px"> {{t.VCHRNO}} </td>
+                            <td style="width:200px">{{t.DIVISIONNAME}}</td>
+                            <td style="width:100px">{{t.TRNDATE}}</td>
+                            <td style="width:100px">{{t.BSDATE}}</td>
+                            <td style="width:150px">{{t.TRNNAME}}</td>
+                        </tr>
+    
+    
+                    </div>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer">
+    
+            <button class="btn btn-info confirm-btn" type="button" (click)=onLoadWTMItemDetail()>Load</button>
+        </div>
+    
+    
+    </div>
+    </div> -->
+<!-- <div class="modal fade" bsModal #ItemDetailchildModal="bs-modal" style="top:0;padding-top:10px" [config]="{backdrop: 'static'}" tabindex="-1"
+    role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" aria-label="Close" (click)="ItemDetailchildModal.hide()">
+            <span aria-hidden="true">&times;</span>
+            
+          </button>
+                <h4 class="modal-title">Information</h4>
+            </div>
+            <div class="modal-body">
+                <div style="background:#d4c8c8; height:2px;width:100%"></div>
+                <table  style="margin:10px;width:100%" class="GRNPopUp">
+                    <div style="height:30px;width:100%;font-weight: bold;">
+                        <tr>
+                            <th style="width:40px">SNo</th>
+                           
+                            <th style="width:150px">ItemCode</th>
+                            <th style="width:300px">ItemName</th>
+                            <th style="width:60px">Unit</th>
+                            <th style="width:100px">Rate</th>
+                            <th style="width:60px">Quantity</th>
+                            <th style="width:50px">Include</th>
+                        </tr>
+                    </div>
+                    <div style="height:400px;width:100%;overflow:auto;scrollbar-3dlight-color:#FFFFFF;scrollbar-arrow-color:#000000;scrollbar-base-color:#FF9999;scrollbar-darkshadow-color:#000000;scrollbar-face-color:#000000;scrollbar-highlight-color:#000000;scrollbar-shadow-color:#0033CC;">
+                        <tr *ngFor="let t of WTMItemDetails;let i=index" style="height:28px;" >
+                            <td style="width:40px"> {{i+1}}</td>
+                           
+                            <td style="width:150px">{{t.MENUCODE}}</td>
+                            <td style="width:300px">{{t.ITEMDESC}}</td>
+                            <td style="width:60px">{{t.UNIT}}</td>
+                            <td style="width:100px">{{t.RATE}}</td>
+                            <td style="width:60px">{{t.Quantity}}</td>
+                            <td style="width:50px"><input type="checkbox" [(ngModel)]="t.isCheckForImport"></td>
+                        </tr>
+    
+    
+                    </div>
+                </table>
+            </div>
+        </div>
+            <div class="modal-footer">
+                          
+                          <button class="btn btn-info confirm-btn" type="button" (click)=onsubmitItemDetail()>OK</button>
+                      </div>
+    
+       
+    </div>
+    </div> -->
+
+<!-- <div class="modal fade" bsModal #WarentyVoucherchildModal="bs-modal" style="top:0;padding-top:10px" [config]="{backdrop: 'static'}" tabindex="-1"
+    role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" aria-label="Close" (click)="WarentyVoucherchildModal.hide()">
+            <span aria-hidden="true">&times;</span>
+            
+          </button>
+                <h4 class="modal-title">Information</h4>
+            </div>
+            <div class="modal-body">
+                <div style="background:#d4c8c8; height:2px;width:100%"></div>
+                <table  style="margin:10px;width:100%" class="GRNPopUp">
+                    <div style="height:30px;width:100%;font-weight: bold;">
+                        <tr>
+                            <th style="width:40px">SNo</th>
+                            <th style="width:100px">VoucherNo.</th>
+                            <th style="width:200px">Division</th>
+                            <th style="width:150px">TrnAc</th>
+                            <th style="width:50px">Include</th>
+                        </tr>
+                    </div>
+                    <div style="height:400px;width:100%;overflow:auto;scrollbar-3dlight-color:#FFFFFF;scrollbar-arrow-color:#000000;scrollbar-base-color:#FF9999;scrollbar-darkshadow-color:#000000;scrollbar-face-color:#000000;scrollbar-highlight-color:#000000;scrollbar-shadow-color:#0033CC;">
+                        <tr *ngFor="let t of WarrentyVList;let i=index" style="height:28px;" >
+                            <td style="width:40px"> {{i+1}}</td>
+                            <td style="width:100px">{{t.VCHRNO}}</td>
+                            <td style="width:200px">{{t.DIVISIONNAME}}</td>
+                            <td style="width:150px">{{t.ACNAME}}</td>
+                          
+                            <td style="width:50px"><input type="checkbox" [(ngModel)]="t.isCheckForImport"></td>
+                        </tr>
+    
+    
+                    </div>
+                </table>
+            </div>
+        </div>
+            <div class="modal-footer">
+                          
+                          <button class="btn btn-info confirm-btn" type="button" (click)=onsubmitWarrentyVoucher()>OK</button>
+                      </div>
+    
+       
+    </div>
+    </div> -->

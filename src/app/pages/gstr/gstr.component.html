@@ -1,0 +1,82 @@
+<div class="clearfix">
+  <div class="col-md-2">
+    <input class="form-control" type="text" ngxDaterangepickerMd [(ngModel)]="selectedDate" [showDropdowns]="true"
+      [showCustomRangeLabel]="true" [alwaysShowCalendars]="true" [locale]="locale" [ranges]="ranges" [showCancel]="true"
+      placeholder="Date Range..." (ngModelChange)="dateChanged($event)" />
+
+  </div>
+
+  <div class="col-md-6">
+    <ng-container *ngIf="_gstrService.gstMain.isGstSubReport">
+      Showing {{_gstrService.gstMain.activeGstType?_gstrService.gstMain.activeGstType:''}}
+      {{_gstrService.gstMain.activeSubGstType?'/'+_gstrService.gstMain.activeSubGstType:''}} Report For
+      <label title="Double Click to change the date">
+        <b> {{_gstrService.gstMain.startDate | date}} to {{_gstrService.gstMain.endDate|date}}
+        </b>
+      </label>
+    </ng-container>
+  </div>
+  <div class="col-md-4">
+      <button class="btn btn-info pull-right" style="margin-left: 5px;" (click)="SHOWGSTRREPORT=true">Export</button>
+    <button *ngIf="_gstrService.gstMain.isGstReport||_gstrService.gstMain.isGstSubReport"
+      class="btn btn-info pull-right" routerLink="/pages/account/gstr">DashBoard</button>
+    <button *ngIf="_gstrService.gstMain.isGstSubReport" class="btn btn-info pull-right"
+      routerLink="/pages/account/gstr/{{_gstrService.gstMain.activeGstType|lowercase}}" style="margin-right: 10px;">Go
+      Back</button>
+  </div>
+</div>
+
+
+
+<div class="pull-right" style="    float: right;
+position: fixed;
+right: 15px;
+bottom: 25px;
+font-size: 30px;
+padding: 10px 10px;
+background: #2dacd1;
+border-radius: 25px;
+cursor: pointer;
+z-index: 999999;">
+  <i class="fa fa-refresh" (click)="reloadGst()" [ngClass]="{'fa-spin':refresh}"
+    style="position:relative;right:-3px;"></i>
+</div>
+<router-outlet></router-outlet>
+
+
+
+
+
+<div class="modal-sticky" *ngIf="SHOWGSTRREPORT" style="display : block; padding: 0px;  margin-bottom: 25px;height: 225px;
+  position: absolute;right: 23%;top: 75px;width: 300px;z-index: 9999999">
+
+  <div class="modal-content modal-content-main-area" style="height: inherit">
+    <div class="modal-header">
+      <h4 class="modal-title" id="myModalLabel">Please Select GST type to export</h4>
+    </div>
+    <div class="modal-body">
+
+      <div class="col-md-12">
+        <div class="form-group">
+          <label>Select GST </label>
+          <select name="gsttype" class="form-control" [(ngModel)]="gstSelectedForExport">
+            <option *ngFor="let gst of listOfGST" value="{{gst.GSTID}}">{{gst.GSTID}}</option>
+          </select>
+          <label>Select Export Type </label>
+          <select name="exporttype" class="form-control" [(ngModel)]="typeSelectedForExport">
+            <option  value="excel">Excel</option>
+            <option  value="json">Json</option>
+          </select>
+
+        </div>
+      </div>
+      <div class="col-md-12">
+        <button style="margin-top: 5px;" class="btn btn-info" data-dismiss="modal"
+          (click)="SHOWGSTRREPORT=!SHOWGSTRREPORT">Cancel</button>
+        <button style="margin-top: 5px;" class="btn btn-info" (click)="onokClick()">Ok</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,144 @@
+<div class="row" style="padding-top: 10px;">
+    <div class="col-lg-6">
+        <h4 style="color: black; text-transform: capitalize; padding-left: 15px;">Local Purchase Cost Allocation &nbsp;
+            >> {{DATA_MODE }}</h4>
+    </div>
+    <div class="col-lg-6">
+        <button style="margin: 0px 4px;" (click)="onBackClicked()" class="btn btn-info pull-right">
+            F10 BACK
+        </button>
+        <button #reset style="margin: 0px 4px;" (click)="resetAll()" class="btn btn-info pull-right">
+            F3 RESET
+        </button>
+        <button style="margin: 0px 4px;" (click)="ExcelUpload()" class="btn btn-info pull-right"
+            [disabled]="DATA_MODE=='VIEW' || DATA_MODE=='EDIT'">
+            Load From Excel
+        </button>
+        <button style="margin: 0px 4px;" (click)="Save()" class="btn btn-info pull-right"
+            [disabled]="DATA_MODE=='VIEW'">
+            F6 SAVE
+        </button>
+    </div>
+</div>
+<div class="container">
+
+    <div class="row">
+        <div class=" col-lg-12 " style=" padding: 0px;margin-top: 10px;">
+            <!-- Modal content -->
+            <div class="modal-content" style="background-color: #fff; border: 1px solid #ddd; width: 100%;">
+                <div class="modal-header" style="padding: 0px;background: #f1f1f1;;">
+                    <h4 class="modal-title" style="text-align: center;    background-color: #8cccfb; padding: 3px 0;">
+                        Local Purchase Cost Allocation
+                    </h4>
+                </div>
+
+                <div class="col-md-12">
+                    <table class="headindTable" style="width:100%">
+                        <tr>
+                            <td>Ref No:</td>
+                            <td class="pd-r">
+                                <input type="text" class="form-control" id="refvoucherno"
+                                    [(ngModel)]="vehicle_costtracking.CAPITALPURCHASE_VCHRNO"
+                                    (keydown.Enter)="CPVoucherPopup()" autocomplete="off"
+                                    placeholder="Press Enter to Select" [disabled]="this.BillList.length"
+                                    (keydown)="keyPress($event)">
+                            </td>
+                            <td>Account :</td>
+                            <td class="pd-r">
+                                <input type="text" id="acname" class="form-control"
+                                    [(ngModel)]="vehicle_costtracking.ACNAME" (keydown.Enter)="AccountSelect()"
+                                    autocomplete="off" placeholder="Press Enter to Select"
+                                    [disabled]="DATA_MODE=='VIEW'" (keydown)="keyPress($event)">
+                                    <ng-container *ngIf="_trnMainService.userSetting.ENABLESUBLEDGER==1 && vehicle_costtracking.ACNAME && DATA_MODE!='VIEW' ">
+                                        <div style="display: flex;"  >
+                                               <div class="tooltips">
+                                                <p *ngIf="vehicle_costtracking.SL_ACNAME">Sub Ledger :</p>
+                                                <p>{{vehicle_costtracking.SL_ACNAME}}</p>
+                                               </div>
+                                          </div>
+                                    </ng-container>
+                            </td>
+                            <td>Amount :</td>
+                            <td class="pd-r">
+                                <input type="number" id="amount" class="form-control"
+                                    [(ngModel)]="vehicle_costtracking.AMOUNT" [disabled]="DATA_MODE=='VIEW'"
+                                    (keydown.Enter)="onAmountEnter()" decimalPlacesRestriction="2">
+                            </td>
+                            <td>PI No:</td>
+                            <td class="pd-r">
+                                <input type="text" id="pivchrno" class="form-control"
+                                    [(ngModel)]="vehicle_costtracking.VCHRNO" (keydown.Enter)="PIVoucherPopup()"
+                                    autocomplete="off" placeholder="Press Enter to Select"
+                                    [disabled]="DATA_MODE=='VIEW'" (keydown)="keyPress($event)">
+                            </td>
+                            <button class="btn btn-info btn-add-focus" id="addbutton"
+                                style="margin-top: 7px !important;" (click)="onAddClick()"
+                                [disabled]="DATA_MODE=='VIEW'">ADD</button>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="col-md-12" style="overflow: scroll;max-height: 60vh;height:60vh;">
+                    <table style="width:100%">
+                        <tr style="background-color:#8cccfb;    font-size: 13px; position: sticky;top: -1px;
+        font-weight: bolder;
+        height: 25px;">
+                            <th>Ref No</th>
+                            <th>Account</th>
+                            <th>Amount</th>
+                            <th>PI Voucherno</th>
+                            <th></th>
+                        </tr>
+                        <tbody *ngFor="let i of BillList; let index = index" class="tablebody">
+                            <tr style="font-size: 12px;">
+                                <td style="padding-left: 3px;">{{i.CAPITALPURCHASE_VCHRNO}}</td>
+                                <td style="padding-left: 3px;">{{i.ACNAME}}
+                                    <div class="tooltips">
+                                        <p *ngIf="i.SL_ACID">Sub Ledger :</p>
+                                        <p>{{i.SL_ACNAME}}</p>
+                                     </div>
+                                </td>
+                                <td style="text-align: right;padding-right: 3px;">{{i.AMOUNT | number : '1.2-2'}}</td>
+                                <td style="padding-left: 3px;">{{i.VCHRNO}}</td>
+                                <td style="text-align: center;"><button class="btn btn-info btn-add-danger"
+                                        (click)="onDeleteClick(i,index)" [disabled]="DATA_MODE=='VIEW'">Remove</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-12">
+                    <table style="width:100%">
+                        <tr style="font-size: 14.5px;font-weight: bolder;height: 25px;">
+                            <td style="width: 30%;    padding-top: 5px;
+                    padding-bottom: 10px;
+                    border: none;">
+                                <p>Ref No Total Amount : {{RefNoTotalAmount | number : '1.2-2'}}</p>
+                            </td>
+                            <td style="border:none;width: 10%;">
+                                <p>Total Amount : {{totalBillListTotal | number : '1.2-2'}}</p>
+                            </td>
+                            <td style="border:none;width:20%"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<generic-popup-grid #genericGridCPVoucher [popupsettings]="gridCPVoucherPopupSettings"
+    (onItemDoubleClick)="DblClickCPVoucherSelect($event)"></generic-popup-grid>
+
+<generic-popup-grid #genericGridAccount [popupsettings]="gridAccountPopupSettings"
+    (onItemDoubleClick)="DblClickAccountSelect($event)"></generic-popup-grid>
+
+<generic-popup-grid #genericGridPIVoucher [popupsettings]="gridPIVoucherPopupSettings"
+    (onItemDoubleClick)="DblClickPIVoucherSelect($event)"></generic-popup-grid>
+
+<generic-popup-grid #gridSubLedgerSettingList [popupsettings]="gridSubLedgerSetting"
+  (onItemDoubleClick)="onSubLedgerSelect($event)"></generic-popup-grid>
+
+<file-uploader-popup #fileUploadPopup [popupsettings]="fileUploadPopupSettings"
+    (onUploaded)="fileUploadSuccess($event)">
+</file-uploader-popup>

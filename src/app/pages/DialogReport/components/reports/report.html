@@ -1,0 +1,69 @@
+<!--<div class="row">
+    <div class="btn-toolbar-example">
+        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+            <div class="btn-group" role="group" aria-label="First group">
+                <ul class="btn-list">
+                    <li *ngFor="let mnu of reportMenus;let i=index">
+                        <menu-btn [menuName]="mnu.name" (menuClick) = "onMenuClick($event)" ></menu-btn>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>-->
+
+
+<!--<div class="row">
+    <nav id="nav">
+        <ul id="navigation">
+            <li *ngFor="let mnu of reportMenus;"><a>{{mnu.title}}<label *ngIf="mnu.children.length>0" >&raquo;</label></a>
+                <ul *ngIf="mnu.children.length>0">
+                    <li *ngFor="let c of mnu.children;"><a (click)="onMenuClick(c)">{{c.title}}<label *ngIf="c.children.length>0" >&raquo;</label></a>
+                        <ul *ngIf="c.children.length>0">
+                            <li *ngFor="let c2 of c.children;"><a (click)="onMenuClick(c2)">{{c2.title}}<label *ngIf="c2.children.length>0" >&raquo;</label></a>
+                                <ul *ngIf="c2.children.length>0">
+                                    <li *ngFor="let c3 of c2.children;"><a (click)="onMenuClick(c3)">{{c3.title}}<label *ngIf="c3.children.length>0" >&raquo;</label></a>
+                                        <ul *ngIf="c3.children.length>0">
+                                            <li *ngFor="let c4 of c3.children;"><a (click)="onMenuClick(c4)">{{c4.title}}<label *ngIf="c4.children.length>0">&raquo;</label></a>
+                                                <ul *ngIf="c4.children.length>0">
+                                                    <li *ngFor="let c5 of c4.children;"><a (click)="onMenuClick(c5)">{{c5.title}}<label *ngIf="c5.children.length>0">&raquo;</label></a>
+                                                        <ul *ngIf="c5.children.length>0">
+                                                            <li *ngFor="let c6 of c5.children;"><a (click)="onMenuClick(c6)">{{c6.title}}<label *ngIf="c6.children.length>0">&raquo;</label></a>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+
+        </ul>
+    </nav>
+</div>-->
+<div class="row">
+    <p-menubar [model]="menuItems" ></p-menubar>
+    <tabsA [reportTabs]="reportTabs" [reportname]="reportname" (contextmenuEmit)="contextMenuParam($event)" [loadFromDrill]="loadFromDrill" [activeIndex]= "activeIndex$ |async " ></tabsA>
+
+</div>
+
+
+<!--<table id="BlueHeaderResizableTable" width="100%" border="0" cellpadding="0" cellspacing="0">
+			<tr>
+				<th>header</th><th>header</th><th>header</th>
+			</tr>
+			<tr>
+				<td class="left">cell</td><td>cell</td><td class="right">cell</td>
+			</tr>
+			<tr>
+				<td class="left">cell</td><td>cell</td><td class="right">cell</td>
+			</tr>
+			<tr>
+				<td class="left bottom">cell</td><td class="bottom">cell</td><td class="bottom right">cell</td>
+			</tr>																	
+		</table>-->

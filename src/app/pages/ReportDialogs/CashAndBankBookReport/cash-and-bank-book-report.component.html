@@ -1,0 +1,157 @@
+<style>
+    .input-text{
+        width : 100%;
+        /* height: 30px !important; */
+        font-weight: bold;
+    }
+    .td-class{
+        border: none !important;
+    }
+    .date-input{
+        width: 93%;
+        font-size: 12px !important;
+        height: 30px !important;
+    }
+       @media screen and (max-width:991px) {
+         .report-container{
+           width: 100% !important;
+    }
+    .report-height{
+        height:52vh; 
+        overflow:auto;
+    }
+    }
+         @media screen and (max-width:767px) {
+            .smallBoldLabel{
+                  width: auto !important;
+            }
+            
+        
+    }
+</style>
+<div class="container report-container " style="background-color : #ffffff; padding :1%; height : auto;  ">
+    <div class="row">
+        <div class="modal-header" style="width : 97%; margin : 0px auto;">
+            <button type="button" class="close" data-dismiss="modal" (click)="closeReportBox()">&times;</button>
+            <h4 class="modal-title">Cash & Bank Book Report</h4>
+        </div>
+        <div class="col-md-12 report-height">
+            <!-- Left Column -->
+            <div class="col-md-6">
+                <fieldset>
+                    <legend style="font-size:11px;font-weight: bold; width:auto">Date Range Selection :</legend>
+                <table>
+                        <tr>
+                            <td class="td-class"><label class="smallBoldLabel">From:(AD)</label></td>
+                            <td class="td-class"><label class="smallBoldLabel">To:(AD)</label></td>
+                        </tr>
+                        <tr>
+                            <td class="td-class">
+                                    <input type="date"
+                                    class="date-input form-control" placeholder="Year Start Date"
+                                        [(ngModel)]="_reportFilterService.CashAndBankBookObj.CashBankBook_DATE1"
+                                        (change)="changeEntryDate($event.target.value,'AD')" (focusout)="focusOutFromDate($event.target.value)" max="{{masterService.date1 | date:'yyyy-MM-dd'}}" min="{{masterService.date2 | date:'yyyy-MM-dd'}}">
+                            </td>
+                            <td class="td-class">
+                                    <input type="date"
+                                    class="date-input form-control" placeholder="Year Start Date"
+                                        [(ngModel)]="_reportFilterService.CashAndBankBookObj.CashBankBook_DATE2"
+                                        (change)="changeEndDate($event.target.value,'AD')" max="{{masterService.date1 | date:'yyyy-MM-dd'}}" min="{{masterService.date2 | date:'yyyy-MM-dd'}}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td-class">
+                              <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDatefrom'"
+                              (change)="changeEntryDate($event.detail.value,'BS')"
+                              [label]="'From'"
+                              [(ngModel)]="_reportFilterService.CashAndBankBookObj.CashBankBook_BSDATE1">
+                            </nepali-date-picker>
+                                     <!-- <input id="nepaliDate"
+                                     style="text-align:center;"
+                                     class="nepali-calendar ndp-nepali-calendar date-input form-control"
+                                        [(ngModel)]="_reportFilterService.CashAndBankBookObj.CashBankBook_BSDATE1" type="text"
+                                        (change)="changeEntryDate($event.target.value,'BS')"
+                                        placeholder="yyyy-mm-dd" />                 -->
+                            </td>
+                            <td class="td-class">
+                              <nepali-date-picker name="nepaliDateFrom" [id]="'nepaliDateTo'"
+                              (change)="changeEndDate($event.detail.value,'BS')"
+                              [label]="'To'"
+                              [(ngModel)]="_reportFilterService.CashAndBankBookObj.CashBankBook_BSDATE2">
+                            </nepali-date-picker>
+                                    <!-- <input id="nepaliDate" style="text-align:center;"
+                                    class="nepali-calendar ndp-nepali-calendar date-input form-control"
+                                        [(ngModel)]="_reportFilterService.CashAndBankBookObj.CashBankBook_BSDATE2" type="text"
+                                        (change)="changeEndDate($event.target.value,'BS')"
+                                        placeholder="yyyy-mm-dd" /> -->
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Division Selection:</legend>
+                    <select [(ngModel)]="_reportFilterService.CashAndBankBookObj.CashBankBook_DIV" style="height: 30px !important;"
+                    class="form-control input-text">
+                    <option value="%" *ngIf="masterService.userSetting.userwisedivision==0 ||  masterService.showAll">ALL</option>
+                        <option *ngFor="let div of division" value="{{ div.INITIAL }}">
+                            {{ div.NAME }}
+                        </option>
+                    </select>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Report Option</legend>
+                    <label class="smallBoldLabel"><input type="radio" style="padding-right:15px;" name="BalViewOp1"
+                            [(ngModel)]="_reportFilterService.CashAndBankBookObj.REPORTMODE" value="1"
+                            (change)="checkReportMode()">&nbsp;Cash Only</label><br>
+                    <label class="smallBoldLabel"><input type="radio" name="BalViewOp1"
+                            [(ngModel)]="_reportFilterService.CashAndBankBookObj.REPORTMODE" value="2"
+                            (change)="checkReportMode()">&nbsp;Bank Only</label><br>
+                    <label class="smallBoldLabel"><input type="radio" name="BalViewOp1"
+                            [(ngModel)]="_reportFilterService.CashAndBankBookObj.REPORTMODE" value="0"
+                            [disabled]="_reportFilterService.CashAndBankBookObj.CashBankBook_DETAILREPORT=='1'">&nbsp;Both</label>
+                </fieldset>
+                <div class="checkbox" style="padding-top:5px;width:200px;">
+                    <label class="smallBoldLabel" style="width:225px;">
+                        <input type="checkbox" [(ngModel)]="_reportFilterService.CashAndBankBookObj.CashBankBook_INCLUDEPOSTDATE" style="margin-left: 21px;"
+                        (change)="$event.target.checked?(_reportFilterService.CashAndBankBookObj.CashBankBook_INCLUDEPOSTDATE=1):(_reportFilterService.CashAndBankBookObj.CashBankBook_INCLUDEPOSTDATE=0)"
+                [checked]="_reportFilterService.CashAndBankBookObj.CashBankBook_INCLUDEPOSTDATE == 1" >
+                        Include Post Dated Transaction Also
+                    </label>
+                </div> 
+            </div>
+            <!-- Right Column -->
+            <div class="col-md-6">
+                <fieldset>
+                    <legend>Report Type:</legend>
+                    <label class="smallBoldLabel" style="padding-right:15px;"><input type="radio" name="BalViewOpt"
+                            [(ngModel)]="_reportFilterService.CashAndBankBookObj.CashBankBook_DETAILREPORT" value=0
+                            (change)="checkSummary()">&nbsp;Summary Report</label>
+                    <label class="smallBoldLabel"><input type="radio" name="BalViewOpt"
+                            [(ngModel)]="_reportFilterService.CashAndBankBookObj.CashBankBook_DETAILREPORT" value=1
+                            (change)="checkSummary()">&nbsp;Detail Report</label>
+                </fieldset>
+
+                <!-- <account-list></account-list> -->
+                <fieldset>
+                    <legend>Account Selection: </legend>
+                    <input type="text" style="font-weight: bold;" class="form-control"
+                        [disabled]="_reportFilterService.CashAndBankBookObj.CashBankBook_DETAILREPORT==0"
+                        [(ngModel)]="_reportFilterService.CashAndBankBookObj.ACCNAME" placeholder="Press Enter or Tab for Account List"
+                        (keydown.Tab)="AccountEnterClicked($event)" (keydown.enter)="AccountEnterClicked($event)">
+                </fieldset>
+
+            </div>
+        </div>
+
+        <div class="modal-footer" style="width : 97%; margin : 0px auto;">
+            <button class="btn btn-info confirm-btn" type="button" (click)=onload()>RUN</button>
+            <button type="button" (click)="closeReportBox()" title="Cancel" class="btn btn-info">Close</button>
+        </div>
+
+    </div>
+
+    <generic-popup-grid #genericGridCashBankBook [popupsettings]="gridPopupSettingsForAccountList"
+    (onItemDoubleClick)="dblClickAccountSelect($event)">
+</generic-popup-grid>

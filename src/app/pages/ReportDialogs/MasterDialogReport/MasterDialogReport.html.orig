@@ -1,0 +1,23 @@
+<account-payable-report *ngIf="activeurlpath=='accountpayablereport'" (reportdataEmit)="reportdataEmit($event)"  ></account-payable-report>
+<account-receivable-report *ngIf="activeurlpath=='accountreceivablereport'" (reportdataEmit)="reportdataEmit($event)"  ></account-receivable-report>
+<gst-sales-summary *ngIf="activeurlpath=='gstsalessummary'" (reportdataEmit)="reportdataEmit($event)"  ></gst-sales-summary>
+<gst-purchase-summary *ngIf="activeurlpath=='gstpurchasesummary'" (reportdataEmit)="reportdataEmit($event)"  ></gst-purchase-summary>
+<aging-receivable-report *ngIf="activeurlpath=='agingreceivable'" (reportdataEmit)="reportdataEmit($event)"  ></aging-receivable-report>
+<aging-payable-report *ngIf="activeurlpath=='agingpayable'" (reportdataEmit)="reportdataEmit($event)"  ></aging-payable-report>
+<result-purchasebookreport-dialog  *ngIf="activeurlpath=='purchasebookreport'" (reportdataEmit)="reportdataEmit($event)"></result-purchasebookreport-dialog>
+<result-cashbookreport-dialog (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='cashbookreport'"></result-cashbookreport-dialog>
+<result-salesbookreport-dialog (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='salesbookreport'"></result-salesbookreport-dialog>
+<result-journalbook-dialog (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='journalbook'"></result-journalbook-dialog>
+<result-duevoucherreport-dialog (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='duevoucherreport'"></result-duevoucherreport-dialog>
+<result-debtorsreport-dialog  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='debtorsreport'"></result-debtorsreport-dialog>
+<result-creditorsreport-dialog  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='creditorsreport'"></result-creditorsreport-dialog>
+<result-partyledger-dialog  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='PartyLedger'"></result-partyledger-dialog>
+<result-debtors-aging-report-dialog  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='debtorsagingreport'"  ></result-debtors-aging-report-dialog>
+<result-creditros-aging-report-dialog (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='creditorsagingreport'" ></result-creditros-aging-report-dialog>
+<result-debtors-outstanding-report-dialog (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='debtorsoutstandingreport'" ></result-debtors-outstanding-report-dialog>
+<result-creditors-outstanding-report-dialog (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='creditorsoutstandingreport'"  ></result-creditors-outstanding-report-dialog>
+<summary-ledger-report  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='summaryledgerreport'"></summary-ledger-report>
+<account-ledger-report  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='accountledgerreport'"></account-ledger-report>
+<summary-party-ledger  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='summarypartyledger'"></summary-party-ledger>
+<party-ledger-report  (reportdataEmit)="reportdataEmit($event)" *ngIf="activeurlpath=='partyledgerreport'"></party-ledger-report>
+
